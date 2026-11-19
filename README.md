@@ -7,21 +7,27 @@
 
 A homebrew app for a modded Nintendo Switch that adds achievements to your games.
 It reads your play statistics and save files **read-only**, unlocks achievements,
-and remembers them on the SD card.
+and remembers them on the SD card. A background module shows a popup when you unlock one.
 
-## What you get (v0.7.0)
+![Achievement popup in Breath of the Wild](docs/popup-botw.jpg)
+
+**Download:** [latest release](https://github.com/Imp3r1us/TrophyNX/releases/latest) — unzip `TrophyNX-sd.zip`
+at the root of the SD card. Then update from the app with ZL.
+
+## What you get
 
 | Source | Works for | Examples |
 |---|---|---|
 | Play statistics (system play log) | **every installed game** | first launch, 10/50/100 hours, 25 launches |
 | Global | your whole library | play 5/20/50 games, 100/500/1000 hours, unlock 25/100 achievements |
 | Save file | **Zelda: Breath of the Wild** (33) | first minutes (Old Shirt, Sheikah Slate, leaving the cave), shrines, Divine Beasts, Master Sword, Ganon, Koroks, hearts, stamina, Lynels... |
-| Play log, themed | **36 more games** (Persona 5 Royal, Metroid Dread, Slay the Spire...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
+| Play log, themed | **33 more games** (Persona 5 Royal, Metroid Dread, Slay the Spire...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
 | Save file | **Super Smash Bros. Ultimate** (23 + 4 play-time) | fighters unlocked, KOs, Classic Mode, World of Light, spirits, online, Elite Smash... |
 | Save file | **Mario Kart 8 Deluxe** (17 + 4 play-time) | coins, drifts, mini-turbos, online races/wins, VR, battles (offsets not yet confirmed on a current save) |
 | Save file | **Zelda: Tears of the Kingdom** (37) | shrines, Skyview Towers, Lightroots, Koroks, caves, wells, Bubbulfrogs, Gleeoks... |
 | Save file | **Super Mario Odyssey** (59 + 4 play-time) | Power Moons, captures, each kingdom visited, kingdom stories cleared, regional coins, outfits/hats, souvenirs, checkpoints, music, jump/cap-throw counts, Jaxi, Toadette's achievements... |
 | Save file | **Hollow Knight** (56 + 4 play-time) | charms, masks, soul vessels, every boss and dream boss, Dreamers, essence, grubs, stags, maps, Hunter's Journal, Colosseum, Grimm Troupe, pantheons, 112%... |
+| Save file | **SIGNALIS** (13 + 4 play-time) | the game's own 13 achievements, with their original names (3 endings hidden) |
 
 Unlocks are permanent: if you later delete or overwrite a save, what you unlocked stays unlocked.
 When a game has several save slots, the best slot counts.
