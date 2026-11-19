@@ -1,0 +1,87 @@
+{
+  "title_id": "01007EF00011E000",
+  "name": "The Legend of Zelda: Breath of the Wild",
+  "reader": "gamedata_hash",
+  "save_files": [
+    "0/game_data.sav", "1/game_data.sav", "2/game_data.sav", "3/game_data.sav", "4/game_data.sav",
+    "5/game_data.sav", "6/game_data.sav", "7/game_data.sav", "8/game_data.sav", "9/game_data.sav"
+  ],
+  "achievements": [
+    { "id": "old_shirt", "name": "Rise and Shine", "desc": "Find the Old Shirt in the Shrine of Resurrection", "points": 5,
+      "rule": { "type": "flag", "name": "IsGet_Armor_043_Upper" } },
+    { "id": "sheikah_slate", "name": "Sheikah Slate", "desc": "Take the Sheikah Slate from its pedestal", "points": 5,
+      "rule": { "type": "flag", "name": "IsGet_Obj_DRStone_Get" } },
+    { "id": "out_of_cave", "name": "Out of the Cave", "desc": "Leave the Shrine of Resurrection and pick up a Tree Branch", "points": 5,
+      "rule": { "type": "flag", "name": "IsGet_Weapon_Sword_044" } },
+
+    { "id": "plateau", "name": "Leap of Faith", "desc": "Glide down from the Great Plateau", "points": 10,
+      "rule": { "type": "flag", "name": "FirstTouchdown" } },
+
+    { "id": "shrine_1", "name": "Trial Taker", "desc": "Complete your first shrine", "points": 10,
+      "rule": { "type": "count", "pattern": "Clear_Dungeon%03d", "from": 0, "to": 119, "target": 1 } },
+    { "id": "shrine_30", "name": "Pilgrim", "desc": "Complete 30 shrines", "points": 25,
+      "rule": { "type": "count", "pattern": "Clear_Dungeon%03d", "from": 0, "to": 119, "target": 30 } },
+    { "id": "shrine_60", "name": "Sheikah Scholar", "desc": "Complete 60 shrines", "points": 25,
+      "rule": { "type": "count", "pattern": "Clear_Dungeon%03d", "from": 0, "to": 119, "target": 60 } },
+    { "id": "shrine_120", "name": "Monk's Blessing", "desc": "Complete all 120 shrines", "points": 100,
+      "rule": { "type": "count", "pattern": "Clear_Dungeon%03d", "from": 0, "to": 119, "target": 120 } },
+
+    { "id": "beast_ruta", "name": "Calm Waters", "desc": "Free Divine Beast Vah Ruta", "points": 25,
+      "rule": { "type": "flag", "name": "Clear_RemainsWater" } },
+    { "id": "beast_medoh", "name": "Clear Skies", "desc": "Free Divine Beast Vah Medoh", "points": 25,
+      "rule": { "type": "flag", "name": "Clear_RemainsWind" } },
+    { "id": "beast_rudania", "name": "Cooled Mountain", "desc": "Free Divine Beast Vah Rudania", "points": 25,
+      "rule": { "type": "flag", "name": "Clear_RemainsFire" } },
+    { "id": "beast_naboris", "name": "Desert Storm", "desc": "Free Divine Beast Vah Naboris", "points": 25,
+      "rule": { "type": "flag", "name": "Clear_RemainsElectric" } },
+    { "id": "beast_all", "name": "Champions Reunited", "desc": "Free all four Divine Beasts", "points": 50,
+      "rule": { "type": "count", "names": ["Clear_RemainsWater", "Clear_RemainsWind", "Clear_RemainsFire", "Clear_RemainsElectric"], "target": 4 } },
+
+    { "id": "master_sword", "name": "The Sword That Seals the Darkness", "desc": "Obtain the Master Sword", "points": 50,
+      "rule": { "type": "flag", "name": "IsGet_Weapon_Sword_070" } },
+    { "id": "ganon", "name": "Light of the Princess", "desc": "Defeat Dark Beast Ganon", "points": 100, "hidden": true,
+      "rule": { "type": "flag", "name": "Defeated_Enemy_GanonBeast_Num" } },
+
+    { "id": "korok_10", "name": "Yahaha!", "desc": "Find 10 Korok seeds", "points": 10,
+      "rule": { "type": "flag", "name": "HiddenKorok_Number", "target": 10 } },
+    { "id": "korok_100", "name": "Forest Friend", "desc": "Find 100 Korok seeds", "points": 25,
+      "rule": { "type": "flag", "name": "HiddenKorok_Number", "target": 100 } },
+    { "id": "korok_441", "name": "Hestu's Maracas", "desc": "Find 441 Korok seeds", "points": 50,
+      "rule": { "type": "flag", "name": "HiddenKorok_Number", "target": 441 } },
+    { "id": "korok_900", "name": "Golden Gift", "desc": "Find all 900 Korok seeds", "points": 100,
+      "rule": { "type": "flag", "name": "HiddenKorok_Number", "target": 900 } },
+
+    { "id": "hearts_10", "name": "Hearty", "desc": "Reach 10 heart containers", "points": 10,
+      "rule": { "type": "flag", "name": "MaxHartValue", "target": 40, "divisor": 4 } },
+    { "id": "hearts_20", "name": "Lionheart", "desc": "Reach 20 heart containers", "points": 25,
+      "rule": { "type": "flag", "name": "MaxHartValue", "target": 80, "divisor": 4 } },
+    { "id": "stamina_3", "name": "Marathon Runner", "desc": "Fill all three stamina wheels", "points": 25,
+      "rule": { "type": "flag", "name": "StaminaMax", "float": true, "target": 3000, "divisor": 1000 } },
+
+    { "id": "rupees_1000", "name": "Saving Up", "desc": "Hold 1,000 rupees", "points": 10,
+      "rule": { "type": "flag", "name": "CurrentRupee", "target": 1000 } },
+    { "id": "rupees_10000", "name": "Hylian Tycoon", "desc": "Hold 10,000 rupees", "points": 25,
+      "rule": { "type": "flag", "name": "CurrentRupee", "target": 10000 } },
+    { "id": "mons_1000", "name": "Kilton's Best Customer", "desc": "Hold 1,000 mon", "points": 10,
+      "rule": { "type": "flag", "name": "CurrentMamo", "target": 1000 } },
+
+    { "id": "lynel_1", "name": "Lynel Slayer", "desc": "Defeat a Lynel", "points": 25,
+      "rule": { "type": "sum", "names": ["Defeated_Enemy_Lynel_Junior_Num", "Defeated_Enemy_Lynel_Middle_Num", "Defeated_Enemy_Lynel_Senior_Num", "Defeated_Enemy_Lynel_Dark_Num", "Defeated_Enemy_Lynel_Gold_Num"], "target": 1 } },
+    { "id": "lynel_10", "name": "Lynel Hunter", "desc": "Defeat 10 Lynels", "points": 50,
+      "rule": { "type": "sum", "names": ["Defeated_Enemy_Lynel_Junior_Num", "Defeated_Enemy_Lynel_Middle_Num", "Defeated_Enemy_Lynel_Senior_Num", "Defeated_Enemy_Lynel_Dark_Num", "Defeated_Enemy_Lynel_Gold_Num"], "target": 10 } },
+    { "id": "hinox_1", "name": "Giant Killer", "desc": "Defeat a Hinox", "points": 10,
+      "rule": { "type": "flag", "name": "DefeatedForestGiantNum", "target": 1 } },
+    { "id": "talus_1", "name": "Rock Breaker", "desc": "Defeat a Stone Talus", "points": 10,
+      "rule": { "type": "flag", "name": "DefeatedGolemNum", "target": 1 } },
+    { "id": "molduga_1", "name": "Sand Shark", "desc": "Defeat a Molduga", "points": 25,
+      "rule": { "type": "flag", "name": "DefeatedSandwormNum", "target": 1 } },
+
+    { "id": "trial_sword", "name": "Trial of the Sword", "desc": "Awaken the Master Sword's true power (DLC 1)", "points": 50,
+      "rule": { "type": "flag", "name": "Open_MasterSword_FullPower" } },
+    { "id": "motorcycle", "name": "Master Cycle Zero", "desc": "Receive the Master Cycle Zero (DLC 2)", "points": 50,
+      "rule": { "type": "flag", "name": "IsGet_Obj_Motorcycle" } },
+
+    { "id": "playtime_100", "name": "A Hundred Years Later", "desc": "Spend 100 hours in Hyrule (in-game clock)", "points": 25,
+      "rule": { "type": "flag", "name": "PlayReport_PlayTime", "target": 360000, "divisor": 3600 } }
+  ]
+}

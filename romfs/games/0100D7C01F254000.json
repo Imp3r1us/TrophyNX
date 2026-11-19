@@ -1,0 +1,48 @@
+{
+ "title_id": "0100D7C01F254000",
+ "name": "Dragon Quest I & II HD-2D Remake",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Descendant of Erdrick",
+   "desc": "Launch Dragon Quest I & II HD-2D Remake 20 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 20
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Slime Slayer",
+   "desc": "Play Dragon Quest I & II HD-2D Remake for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Hero of Alefgard",
+   "desc": "Play Dragon Quest I & II HD-2D Remake for 30 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  },
+  {
+   "id": "t_hours_75",
+   "name": "Legend Reborn",
+   "desc": "Play Dragon Quest I & II HD-2D Remake for 75 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 75
+   }
+  }
+ ]
+}

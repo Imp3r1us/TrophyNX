@@ -1,0 +1,450 @@
+{
+ "game": {
+  "gameName": "Hollow Knight",
+  "availableGameStats": {
+   "achievements": [
+    {
+     "name": "CHARMED",
+     "defaultvalue": 0,
+     "displayName": "Charmed",
+     "hidden": 0,
+     "description": "Acquire your first Charm"
+    },
+    {
+     "name": "FK_DEFEAT",
+     "defaultvalue": 0,
+     "displayName": "Falsehood",
+     "hidden": 0,
+     "description": "Defeat the False Knight"
+    },
+    {
+     "name": "HORNET_1",
+     "defaultvalue": 0,
+     "displayName": "Test of Resolve",
+     "hidden": 0,
+     "description": "Defeat Hornet in Greenpath"
+    },
+    {
+     "name": "STAG_STATION_HALF",
+     "defaultvalue": 0,
+     "displayName": "Connection",
+     "hidden": 0,
+     "description": "Open half of Hallownest's Stag Stations"
+    },
+    {
+     "name": "PROTECTED",
+     "defaultvalue": 0,
+     "displayName": "Protected",
+     "hidden": 0,
+     "description": "Acquire 4 Mask Shards"
+    },
+    {
+     "name": "SOUL_MASTER_DEFEAT",
+     "defaultvalue": 0,
+     "displayName": "Illumination",
+     "hidden": 0,
+     "description": "Defeat the Soul Master"
+    },
+    {
+     "name": "MANTIS_LORDS",
+     "defaultvalue": 0,
+     "displayName": "Respect",
+     "hidden": 0,
+     "description": "Defeat the Mantis Lords"
+    },
+    {
+     "name": "SOULFUL",
+     "defaultvalue": 0,
+     "displayName": "Soulful",
+     "hidden": 0,
+     "description": "Acquire 3 Vessel Fragments"
+    },
+    {
+     "name": "DUNG_DEFENDER",
+     "defaultvalue": 0,
+     "displayName": "Honour",
+     "hidden": 0,
+     "description": "Defeat the Dung Defender"
+    },
+    {
+     "name": "BROKEN_VESSEL",
+     "defaultvalue": 0,
+     "displayName": "Release",
+     "hidden": 0,
+     "description": "Defeat the Broken Vessel"
+    },
+    {
+     "name": "ENCHANTED",
+     "defaultvalue": 0,
+     "displayName": "Enchanted",
+     "hidden": 0,
+     "description": "Acquire half of Hallownest's Charms"
+    },
+    {
+     "name": "BEAST",
+     "defaultvalue": 0,
+     "displayName": "Beast",
+     "hidden": 0,
+     "description": "Destroy Herrah the Beast"
+    },
+    {
+     "name": "HORNET_2",
+     "defaultvalue": 0,
+     "displayName": "Proof of Resolve",
+     "hidden": 1,
+     "description": "Defeat Hornet in Kingdom's Edge"
+    },
+    {
+     "name": "GRUBFRIEND",
+     "defaultvalue": 0,
+     "displayName": "Grubfriend",
+     "hidden": 0,
+     "description": "Rescue half of the imprisoned grubs"
+    },
+    {
+     "name": "ATTUNEMENT",
+     "defaultvalue": 0,
+     "displayName": "Attunement",
+     "hidden": 0,
+     "description": "Collect 600 Essence"
+    },
+    {
+     "name": "TEACHER",
+     "defaultvalue": 0,
+     "displayName": "Teacher",
+     "hidden": 0,
+     "description": "Destroy Monomon the Teacher"
+    },
+    {
+     "name": "COLOSSEUM_1",
+     "defaultvalue": 0,
+     "displayName": "Warrior",
+     "hidden": 0,
+     "description": "Complete the Trial of the Warrior"
+    },
+    {
+     "name": "WATCHER",
+     "defaultvalue": 0,
+     "displayName": "Watcher",
+     "hidden": 0,
+     "description": "Destroy Lurien the Watcher"
+    },
+    {
+     "name": "MAP",
+     "defaultvalue": 0,
+     "displayName": "Cartographer",
+     "hidden": 0,
+     "description": "Acquire a map of each area"
+    },
+    {
+     "name": "COLOSSEUM_2",
+     "defaultvalue": 0,
+     "displayName": "Conqueror",
+     "hidden": 0,
+     "description": "Complete the Trial of the Conqueror"
+    },
+    {
+     "name": "TRAITOR_LORD",
+     "defaultvalue": 0,
+     "displayName": "Execution",
+     "hidden": 0,
+     "description": "Defeat the Traitor Lord"
+    },
+    {
+     "name": "STAG_STATION_ALL",
+     "defaultvalue": 0,
+     "displayName": "Hope",
+     "hidden": 0,
+     "description": "Open all of Hallownest's Stag Stations and discover the Stag Nest"
+    },
+    {
+     "name": "COLLECTOR",
+     "defaultvalue": 0,
+     "displayName": "Obsession",
+     "hidden": 1,
+     "description": "Defeat the Collector"
+    },
+    {
+     "name": "DREAM_BROKEN_VESSEL",
+     "defaultvalue": 0,
+     "displayName": "Peace",
+     "hidden": 1,
+     "description": "Defeat the Lost Kin"
+    },
+    {
+     "name": "AWAKENING",
+     "defaultvalue": 0,
+     "displayName": "Awakening",
+     "hidden": 0,
+     "description": "Collect 1800 Essence and awaken the Dream Nail"
+    },
+    {
+     "name": "ZOTE",
+     "defaultvalue": 0,
+     "displayName": "Rivalry",
+     "hidden": 1,
+     "description": "Defeat Zote in the Colosseum of Fools"
+    },
+    {
+     "name": "GRIMM",
+     "defaultvalue": 0,
+     "displayName": "Grand Performance",
+     "hidden": 1,
+     "description": "Defeat Troupe Leader Grimm"
+    },
+    {
+     "name": "DREAM_FK",
+     "defaultvalue": 0,
+     "displayName": "Strength",
+     "hidden": 1,
+     "description": "Defeat the Failed Champion"
+    },
+    {
+     "name": "METAMORPHOSIS",
+     "defaultvalue": 0,
+     "displayName": "Metamorphosis",
+     "hidden": 0,
+     "description": "Rescue all of the imprisoned grubs"
+    },
+    {
+     "name": "VOID",
+     "defaultvalue": 0,
+     "displayName": "Void",
+     "hidden": 1,
+     "description": "Remember the past and unite the Abyss"
+    },
+    {
+     "name": "WORLDSOUL",
+     "defaultvalue": 0,
+     "displayName": "Worldsoul",
+     "hidden": 0,
+     "description": "Acquire all Vessel Fragments"
+    },
+    {
+     "name": "QUIRREL_EPILOGUE",
+     "defaultvalue": 0,
+     "displayName": "Witness",
+     "hidden": 1,
+     "description": "Spend a final moment with Quirrel"
+    },
+    {
+     "name": "ENDING_A",
+     "defaultvalue": 0,
+     "displayName": "The Hollow Knight",
+     "hidden": 1,
+     "description": "Defeat the Hollow Knight and become the Vessel"
+    },
+    {
+     "name": "DREAM_SOUL_MASTER_DEFEAT",
+     "defaultvalue": 0,
+     "displayName": "Mortality",
+     "hidden": 1,
+     "description": "Defeat the Soul Tyrant"
+    },
+    {
+     "name": "GREY_PRINCE",
+     "defaultvalue": 0,
+     "displayName": "Dark Romance",
+     "hidden": 1,
+     "description": "Defeat Grey Prince Zote"
+    },
+    {
+     "name": "MOURNER",
+     "defaultvalue": 0,
+     "displayName": "Solace",
+     "hidden": 0,
+     "description": "Bring peace to the Grey Mourner"
+    },
+    {
+     "name": "COLOSSEUM_3",
+     "defaultvalue": 0,
+     "displayName": "Fool",
+     "hidden": 0,
+     "description": "Complete the Trial of the Fool"
+    },
+    {
+     "name": "ENDING_C",
+     "defaultvalue": 0,
+     "displayName": "Dream No More",
+     "hidden": 1,
+     "description": "Defeat the Radiance and consume the light"
+    },
+    {
+     "name": "MASKED",
+     "defaultvalue": 0,
+     "displayName": "Masked",
+     "hidden": 0,
+     "description": "Acquire all Mask Shards"
+    },
+    {
+     "name": "ASCENSION",
+     "defaultvalue": 0,
+     "displayName": "Ascension",
+     "hidden": 0,
+     "description": "Collect 2400 Essence and hear the Seer's final words"
+    },
+    {
+     "name": "BLESSED",
+     "defaultvalue": 0,
+     "displayName": "Blessed",
+     "hidden": 0,
+     "description": "Acquire all Charms and receive Salubra's blessing"
+    },
+    {
+     "name": "COMPLETION",
+     "defaultvalue": 0,
+     "displayName": "Completion",
+     "hidden": 0,
+     "description": "Achieve 100% game completion and finish the game"
+    },
+    {
+     "name": "ENDING_B",
+     "defaultvalue": 0,
+     "displayName": "Sealed Siblings",
+     "hidden": 1,
+     "description": "Defeat the Hollow Knight with Hornet by your side"
+    },
+    {
+     "name": "WHITE_DEFENDER",
+     "defaultvalue": 0,
+     "displayName": "Memory",
+     "hidden": 1,
+     "description": "Defeat White Defender"
+    },
+    {
+     "name": "NAILSMITH_KILL",
+     "defaultvalue": 0,
+     "displayName": "Purity",
+     "hidden": 1,
+     "description": "Slay the Nailsmith with the Pure Nail"
+    },
+    {
+     "name": "PANTHEON1",
+     "defaultvalue": 0,
+     "displayName": "Brotherhood",
+     "hidden": 1,
+     "description": "Complete the Pantheon of the Master"
+    },
+    {
+     "name": "PANTHEON2",
+     "defaultvalue": 0,
+     "displayName": "Inspiration",
+     "hidden": 1,
+     "description": "Complete the Pantheon of the Artist"
+    },
+    {
+     "name": "NIGHTMARE_GRIMM",
+     "defaultvalue": 0,
+     "displayName": "Ritual",
+     "hidden": 1,
+     "description": "Defeat the Nightmare King and complete the Ritual"
+    },
+    {
+     "name": "PANTHEON3",
+     "defaultvalue": 0,
+     "displayName": "Focus",
+     "hidden": 1,
+     "description": "Complete the Pantheon of the Sage"
+    },
+    {
+     "name": "NAILSMITH_SPARE",
+     "defaultvalue": 0,
+     "displayName": "Happy Couple",
+     "hidden": 1,
+     "description": "Allow the Nailsmith to find a new calling"
+    },
+    {
+     "name": "PANTHEON4",
+     "defaultvalue": 0,
+     "displayName": "Soul & Shade",
+     "hidden": 1,
+     "description": "Complete the Pantheon of the Knight"
+    },
+    {
+     "name": "BANISHMENT",
+     "defaultvalue": 0,
+     "displayName": "Banishment",
+     "hidden": 1,
+     "description": "Banish the Grimm Troupe from Hallownest"
+    },
+    {
+     "name": "HUNTER_1",
+     "defaultvalue": 0,
+     "displayName": "Keen Hunter",
+     "hidden": 0,
+     "description": "Record all of Hallownest's creatures in the Hunter's Journal"
+    },
+    {
+     "name": "NEGLECT",
+     "defaultvalue": 0,
+     "displayName": "Neglect",
+     "hidden": 0,
+     "description": "Leave Zote to die"
+    },
+    {
+     "name": "HUNTER_2",
+     "defaultvalue": 0,
+     "displayName": "True Hunter",
+     "hidden": 0,
+     "description": "Receive the Hunter's Mark"
+    },
+    {
+     "name": "COMPLETIONGG",
+     "defaultvalue": 0,
+     "displayName": "Pure Completion",
+     "hidden": 0,
+     "description": "Achieve 112% game completion and finish the game."
+    },
+    {
+     "name": "MR_MUSHROOM",
+     "defaultvalue": 0,
+     "displayName": "Passing of the Age",
+     "hidden": 1,
+     "description": "Aid the Herald in moving on"
+    },
+    {
+     "name": "SPEEDRUN_1",
+     "defaultvalue": 0,
+     "displayName": "Speedrun 1",
+     "hidden": 0,
+     "description": "Complete the game in under 10 hours"
+    },
+    {
+     "name": "SPEED_COMPLETION",
+     "defaultvalue": 0,
+     "displayName": "Speed Completion",
+     "hidden": 0,
+     "description": "Achieve 100% game completion and finish the game in under 20 hours"
+    },
+    {
+     "name": "SPEEDRUN_2",
+     "defaultvalue": 0,
+     "displayName": "Speedrun 2",
+     "hidden": 0,
+     "description": "Complete the game in under 5 hours"
+    },
+    {
+     "name": "ENDINGD",
+     "defaultvalue": 0,
+     "displayName": "Embrace the Void",
+     "hidden": 1,
+     "description": "Ascend the Pantheon of Hallownest and take your place at its peak"
+    },
+    {
+     "name": "STEELSOUL",
+     "defaultvalue": 0,
+     "displayName": "Steel Soul",
+     "hidden": 0,
+     "description": "Finish the game in Steel Soul mode"
+    },
+    {
+     "name": "STEELSOUL_COMPLETION",
+     "defaultvalue": 0,
+     "displayName": "Steel Heart",
+     "hidden": 0,
+     "description": "Achieve 100% game completion and finish the game in Steel Soul mode"
+    }
+   ]
+  }
+ }
+}

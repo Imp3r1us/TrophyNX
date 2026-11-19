@@ -1,0 +1,6 @@
+# Builds the app for Linux with a mock platform layer (frames saved as PNG).
+SRC := $(wildcard source/*.cpp) host/host_impl.cpp
+CXXFLAGS := -std=gnu++17 -O2 -g -Wall -Iinclude
+all: host/achievements_host
+host/achievements_host: $(SRC) source/cJSON.c include/*.h
+	$(CXX) $(CXXFLAGS) $(SRC) -x c source/cJSON.c -o $@

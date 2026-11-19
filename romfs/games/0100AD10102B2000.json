@@ -1,0 +1,48 @@
+{
+ "title_id": "0100AD10102B2000",
+ "name": "BioShock: The Collection",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Would You Kindly",
+   "desc": "Launch BioShock: The Collection 20 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 20
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Rapture Arrival",
+   "desc": "Play BioShock: The Collection for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Columbia Tourist",
+   "desc": "Play BioShock: The Collection for 30 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  },
+  {
+   "id": "t_hours_75",
+   "name": "A Man Chooses",
+   "desc": "Play BioShock: The Collection for 75 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 75
+   }
+  }
+ ]
+}

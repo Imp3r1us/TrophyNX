@@ -1,0 +1,48 @@
+{
+ "title_id": "0100D810170D0000",
+ "name": "Nine Sols",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Wake of Yi",
+   "desc": "Launch Nine Sols 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Taopunk Rookie",
+   "desc": "Play Nine Sols for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Parry Master",
+   "desc": "Play Nine Sols for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Solarian Hunter",
+   "desc": "Play Nine Sols for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}

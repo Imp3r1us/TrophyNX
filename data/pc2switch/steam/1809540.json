@@ -1,0 +1,216 @@
+{
+ "appid": 1809540,
+ "name": "Nine Sols",
+ "achievements": [
+  {
+   "name": "Ach_Main_A1_Finished",
+   "displayName": "My Revenge Starts Here",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A2_Finished",
+   "displayName": "I'm Coming for You, Old Friend",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A3_Finished",
+   "displayName": "Reap What You Sow",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A4_Finished",
+   "displayName": "You Should Respect Your Elders",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_Jail_Finished",
+   "displayName": "Jail Break",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A5_Finished",
+   "displayName": "No Pain, No Gain",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A7_Finished",
+   "displayName": "Wake Up From My Sin",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A10_Finished",
+   "displayName": "Come, Sweet Death",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A9_Finished",
+   "displayName": "We Have Each Other",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_A11_Finished",
+   "displayName": "Learned From the Best",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_Good_End",
+   "displayName": "Shooting Star",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_Bad_End",
+   "displayName": "Home Sweet Home",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Main_NormalMode_Finished",
+   "displayName": "Fight Through Hardship",
+   "description": "Finish Nine Sols on Standard Mode.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Op_Poison_Jie",
+   "displayName": "Fight Dirty",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_Save_Village",
+   "displayName": "The Cavalry's Here",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_Shennong_Finished",
+   "displayName": "Passing on the Torch",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_ChiYou_Finished",
+   "displayName": "Rest for the Wicked",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_9000_Finished",
+   "displayName": "Found You",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_Cat_Founded",
+   "displayName": "Evolution",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_MagicalBean_Finished",
+   "displayName": "Magical Bean",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_AllFish_Saved",
+   "displayName": "Repurposed",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_Lear_Finished",
+   "displayName": "Across Time and Space",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Ach_Op_A9MusicBell_Finished",
+   "displayName": "Blessed Messages",
+   "description": "Discover the message board for blessings upon the Departure of New Kunlun's Voyage.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Op_A3MusicBell_Finished",
+   "displayName": "Do Re Mi So La",
+   "description": "Unravel the mystery of the Daybreak Tower's music sheet.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Col_Skill_Finished",
+   "displayName": "The Warrior Within",
+   "description": "Master all skills in the skill tree.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Col_All_Item",
+   "displayName": "Treasure Hunter",
+   "description": "Find all resources and information marked by Shanhai 9000.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Col_All_Jade",
+   "displayName": "Well Prepared",
+   "description": "Collect every Jade.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Col_All_Arrow",
+   "displayName": "My Most Trusted Friend",
+   "description": "Max out the ammo capacity of the Azure Bow and obtain Cloud Piercer X, Thunder Buster X, and Shadow Hunter X.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Col_All_Health",
+   "displayName": "I'm Yi, I Have a Drinking Problem",
+   "description": "Drink all the wine brewed by Shennong.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Col_All_Miniboss",
+   "displayName": "One Man Army",
+   "description": "Defeat every optional miniboss.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Misc_Pot_Breaked",
+   "displayName": "What Have You Done?!",
+   "description": "Break the clay pot made by Shuanshuan",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Misc_RoboFight",
+   "displayName": "Robo Fight!",
+   "description": "Defeat Tianshou while driving a robot.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Misc_Coin_Sold",
+   "displayName": "Stonks!",
+   "description": "Recycle Shuanshuan's coin.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Misc_Fish_Killed",
+   "displayName": "You Bastard...",
+   "description": "Obtain map data from Shanhai 9000 by force.",
+   "hidden": 0
+  },
+  {
+   "name": "Ach_Op_XuanXuan_Finished",
+   "displayName": "Gimme Gimme",
+   "description": "Establish a deep relationship with Shuanshuan.",
+   "hidden": 0
+  }
+ ]
+}

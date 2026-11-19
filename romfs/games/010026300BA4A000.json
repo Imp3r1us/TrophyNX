@@ -1,0 +1,48 @@
+{
+ "title_id": "010026300BA4A000",
+ "name": "Slay the Spire",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "One More Run",
+   "desc": "Launch Slay the Spire 15 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_2",
+   "name": "Deckbuilder",
+   "desc": "Play Slay the Spire for 2 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 2
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Spire Climber",
+   "desc": "Play Slay the Spire for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Heart Breaker",
+   "desc": "Play Slay the Spire for 30 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  }
+ ]
+}

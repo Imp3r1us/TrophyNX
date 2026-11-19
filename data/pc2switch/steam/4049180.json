@@ -1,0 +1,252 @@
+{
+ "appid": 4049180,
+ "name": "Disney•Pixar Toy Story 3 Complete Edition",
+ "achievements": [
+  {
+   "name": "1",
+   "displayName": "Train Catcher",
+   "description": "Finish \"Loco Motives\"",
+   "hidden": 0
+  },
+  {
+   "name": "2",
+   "displayName": "Off the Hook",
+   "description": "Finish \"Hold the Phone\"",
+   "hidden": 0
+  },
+  {
+   "name": "3",
+   "displayName": "Defeat Zurg",
+   "description": "Finish \"To Infinity and Beyond\"",
+   "hidden": 0
+  },
+  {
+   "name": "4",
+   "displayName": "Carnival Conqueror",
+   "description": "Finish \"Fair Play\"",
+   "hidden": 0
+  },
+  {
+   "name": "5",
+   "displayName": "Rocket Launcher",
+   "description": "Finish \"Witch Way Out\"",
+   "hidden": 0
+  },
+  {
+   "name": "6",
+   "displayName": "Making a Break for It",
+   "description": "Finish \"Hide-N-Sneak\"",
+   "hidden": 0
+  },
+  {
+   "name": "7",
+   "displayName": "Mashing the Masher",
+   "description": "Finish \"Trash Thrash\"",
+   "hidden": 0
+  },
+  {
+   "name": "8",
+   "displayName": "Muffin Massacre",
+   "description": "Finish \"Muffin to Fear\"",
+   "hidden": 0
+  },
+  {
+   "name": "9",
+   "displayName": "The Collector",
+   "description": "Gather every collectible in the game",
+   "hidden": 0
+  },
+  {
+   "name": "10",
+   "displayName": "Mapnipulator",
+   "description": "Explore all the objects on the map",
+   "hidden": 0
+  },
+  {
+   "name": "11",
+   "displayName": "Sneaky Sneaky",
+   "description": "Finish the Prison Break without ever tripping an alarm",
+   "hidden": 0
+  },
+  {
+   "name": "12",
+   "displayName": "Space Ranger Elite",
+   "description": "Reach Zurg’s base without losing all your health",
+   "hidden": 0
+  },
+  {
+   "name": "13",
+   "displayName": "True Carny",
+   "description": "Achieve gold on all carnival games",
+   "hidden": 0
+  },
+  {
+   "name": "14",
+   "displayName": "No Toy Left Behind",
+   "description": "Rescue all the orphans on the Train",
+   "hidden": 0
+  },
+  {
+   "name": "15",
+   "displayName": "We Can Rebuild Him",
+   "description": "Collect all of Zurg's Parts",
+   "hidden": 0
+  },
+  {
+   "name": "16",
+   "displayName": "Memories",
+   "description": "Collect all of Andy's Memorabilia",
+   "hidden": 0
+  },
+  {
+   "name": "17",
+   "displayName": "Townspeople Hunter",
+   "description": "Find all the hidden townspeople",
+   "hidden": 0
+  },
+  {
+   "name": "18",
+   "displayName": "No Claw Required",
+   "description": "Find all the hidden aliens",
+   "hidden": 0
+  },
+  {
+   "name": "19",
+   "displayName": "Really Holding All the Cards",
+   "description": "Find all the Special Cards",
+   "hidden": 0
+  },
+  {
+   "name": "20",
+   "displayName": "Holding All the Cards",
+   "description": "Find all the Regular Cards",
+   "hidden": 0
+  },
+  {
+   "name": "21",
+   "displayName": "Welcome to Town",
+   "description": "Finish the Woody's Roundup tutorials",
+   "hidden": 0
+  },
+  {
+   "name": "22",
+   "displayName": "No Swimming",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "23",
+   "displayName": "Rescue Space Ranger",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "24",
+   "displayName": "Give Me My Gold Back",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "25",
+   "displayName": "Gold Super Star",
+   "description": "Collect all the Gold Stars",
+   "hidden": 0
+  },
+  {
+   "name": "26",
+   "displayName": "First Sale",
+   "description": "Buy a toy from the Toy Store",
+   "hidden": 0
+  },
+  {
+   "name": "27",
+   "displayName": "Toy Collector",
+   "description": "Purchase every item in the Toy Store",
+   "hidden": 0
+  },
+  {
+   "name": "28",
+   "displayName": "Pict-O-Amateur",
+   "description": "Complete 1 disc of Pict-O-Matic missions",
+   "hidden": 0
+  },
+  {
+   "name": "29",
+   "displayName": "Pict-O-Collector",
+   "description": "Find all 6 discs of Pict-O-Matic missions",
+   "hidden": 0
+  },
+  {
+   "name": "30",
+   "displayName": "Pict-O-Master",
+   "description": "Complete all Pict-O-Matic missions",
+   "hidden": 0
+  },
+  {
+   "name": "31",
+   "displayName": "Spooky Town",
+   "description": "Purchase Sid's Haunted House",
+   "hidden": 0
+  },
+  {
+   "name": "32",
+   "displayName": "Cuddly Town",
+   "description": "Purchase Lotso's Enchanted Glen",
+   "hidden": 0
+  },
+  {
+   "name": "33",
+   "displayName": "To Infinity…",
+   "description": "Purchase Zurg's Spaceport",
+   "hidden": 0
+  },
+  {
+   "name": "34",
+   "displayName": "Airborn Ranger",
+   "description": "Hit 15 Paratrooper targets",
+   "hidden": 0
+  },
+  {
+   "name": "35",
+   "displayName": "First Bronze",
+   "description": "Earn a bronze medal in a vehicle challenge",
+   "hidden": 0
+  },
+  {
+   "name": "36",
+   "displayName": "First Silver",
+   "description": "Earn a silver medal in a vehicle challenge",
+   "hidden": 0
+  },
+  {
+   "name": "37",
+   "displayName": "First Gold",
+   "description": "Earn a gold medal in a vehicle challenge",
+   "hidden": 0
+  },
+  {
+   "name": "38",
+   "displayName": "Photojournalist",
+   "description": "Complete all Toy Camera missions",
+   "hidden": 0
+  },
+  {
+   "name": "39",
+   "displayName": "The Emperor's Clothes",
+   "description": "Transform into Emperor Zurg",
+   "hidden": 0
+  },
+  {
+   "name": "40",
+   "displayName": "Evil Emperor Zurg",
+   "description": "Complete all Zurg missions",
+   "hidden": 0
+  },
+  {
+   "name": "41",
+   "displayName": "Pack Collector",
+   "description": "Purchase every customization pack from the Toy Store",
+   "hidden": 0
+  }
+ ]
+}

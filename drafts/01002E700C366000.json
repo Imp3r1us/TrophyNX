@@ -1,0 +1,53 @@
+{
+ "title_id": "01002E700C366000",
+ "name": "Cocoon",
+ "reader": "json",
+ "save_files": [
+  "UniverseProgressSave",
+  "UniverseSettingsSave"
+ ],
+ "_steam_appid": 1497440,
+ "_generated": "pc2switch (review before use)",
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Worlds Within Worlds",
+   "desc": "Launch COCOON 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Hatchling",
+   "desc": "Play COCOON for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_4",
+   "name": "Orb Carrier",
+   "desc": "Play COCOON for 4 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 4
+   }
+  },
+  {
+   "id": "t_hours_8",
+   "name": "World Weaver",
+   "desc": "Play COCOON for 8 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 8
+   }
+  }
+ ]
+}

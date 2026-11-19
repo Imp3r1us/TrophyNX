@@ -1,0 +1,384 @@
+{
+ "appid": 367520,
+ "name": "Hollow Knight",
+ "achievements": [
+  {
+   "name": "CHARMED",
+   "displayName": "Charmed",
+   "description": "Acquire your first Charm",
+   "hidden": 0
+  },
+  {
+   "name": "ENCHANTED",
+   "displayName": "Enchanted",
+   "description": "Acquire half of Hallownest's Charms",
+   "hidden": 0
+  },
+  {
+   "name": "BLESSED",
+   "displayName": "Blessed",
+   "description": "Acquire all Charms and receive Salubra's blessing",
+   "hidden": 0
+  },
+  {
+   "name": "PROTECTED",
+   "displayName": "Protected",
+   "description": "Acquire 4 Mask Shards",
+   "hidden": 0
+  },
+  {
+   "name": "MASKED",
+   "displayName": "Masked",
+   "description": "Acquire all Mask Shards",
+   "hidden": 0
+  },
+  {
+   "name": "SOULFUL",
+   "displayName": "Soulful",
+   "description": "Acquire 3 Vessel Fragments",
+   "hidden": 0
+  },
+  {
+   "name": "WORLDSOUL",
+   "displayName": "Worldsoul",
+   "description": "Acquire all Vessel Fragments",
+   "hidden": 0
+  },
+  {
+   "name": "FK_DEFEAT",
+   "displayName": "Falsehood",
+   "description": "Defeat the False Knight",
+   "hidden": 0
+  },
+  {
+   "name": "DREAM_FK",
+   "displayName": "Strength",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "HORNET_1",
+   "displayName": "Test of Resolve",
+   "description": "Defeat Hornet in Greenpath",
+   "hidden": 0
+  },
+  {
+   "name": "HORNET_2",
+   "displayName": "Proof of Resolve",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "SOUL_MASTER_DEFEAT",
+   "displayName": "Illumination",
+   "description": "Defeat the Soul Master",
+   "hidden": 0
+  },
+  {
+   "name": "BROKEN_VESSEL",
+   "displayName": "Release",
+   "description": "Defeat the Broken Vessel",
+   "hidden": 0
+  },
+  {
+   "name": "DREAM_BROKEN_VESSEL",
+   "displayName": "Peace",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "DUNG_DEFENDER",
+   "displayName": "Honour",
+   "description": "Defeat the Dung Defender",
+   "hidden": 0
+  },
+  {
+   "name": "MANTIS_LORDS",
+   "displayName": "Respect",
+   "description": "Defeat the Mantis Lords",
+   "hidden": 0
+  },
+  {
+   "name": "COLLECTOR",
+   "displayName": "Obsession",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ZOTE",
+   "displayName": "Rivalry",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ATTUNEMENT",
+   "displayName": "Attunement",
+   "description": "Collect 600 Essence",
+   "hidden": 0
+  },
+  {
+   "name": "AWAKENING",
+   "displayName": "Awakening",
+   "description": "Collect 1800 Essence and awaken the Dream Nail",
+   "hidden": 0
+  },
+  {
+   "name": "ASCENSION",
+   "displayName": "Ascension",
+   "description": "Collect 2400 Essence and hear the Seer's final words",
+   "hidden": 0
+  },
+  {
+   "name": "GRUBFRIEND",
+   "displayName": "Grubfriend",
+   "description": "Rescue half of the imprisoned grubs",
+   "hidden": 0
+  },
+  {
+   "name": "METAMORPHOSIS",
+   "displayName": "Metamorphosis",
+   "description": "Rescue all of the imprisoned grubs",
+   "hidden": 0
+  },
+  {
+   "name": "NEGLECT",
+   "displayName": "Neglect",
+   "description": "Leave Zote to die",
+   "hidden": 0
+  },
+  {
+   "name": "NAILSMITH_KILL",
+   "displayName": "Purity",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "NAILSMITH_SPARE",
+   "displayName": "Happy Couple",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "QUIRREL_EPILOGUE",
+   "displayName": "Witness",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "MOURNER",
+   "displayName": "Solace",
+   "description": "Bring peace to the Grey Mourner",
+   "hidden": 0
+  },
+  {
+   "name": "TRAITOR_LORD",
+   "displayName": "Execution",
+   "description": "Defeat the Traitor Lord",
+   "hidden": 0
+  },
+  {
+   "name": "STAG_STATION_HALF",
+   "displayName": "Connection",
+   "description": "Open half of Hallownest's Stag Stations",
+   "hidden": 0
+  },
+  {
+   "name": "STAG_STATION_ALL",
+   "displayName": "Hope",
+   "description": "Open all of Hallownest's Stag Stations and discover the Stag Nest",
+   "hidden": 0
+  },
+  {
+   "name": "TEACHER",
+   "displayName": "Teacher",
+   "description": "Destroy Monomon the Teacher",
+   "hidden": 0
+  },
+  {
+   "name": "WATCHER",
+   "displayName": "Watcher",
+   "description": "Destroy Lurien the Watcher",
+   "hidden": 0
+  },
+  {
+   "name": "BEAST",
+   "displayName": "Beast",
+   "description": "Destroy Herrah the Beast",
+   "hidden": 0
+  },
+  {
+   "name": "MAP",
+   "displayName": "Cartographer",
+   "description": "Acquire a map of each area",
+   "hidden": 0
+  },
+  {
+   "name": "COLOSSEUM_1",
+   "displayName": "Warrior",
+   "description": "Complete the Trial of the Warrior",
+   "hidden": 0
+  },
+  {
+   "name": "COLOSSEUM_2",
+   "displayName": "Conqueror",
+   "description": "Complete the Trial of the Conqueror",
+   "hidden": 0
+  },
+  {
+   "name": "COLOSSEUM_3",
+   "displayName": "Fool",
+   "description": "Complete the Trial of the Fool",
+   "hidden": 0
+  },
+  {
+   "name": "ENDING_A",
+   "displayName": "The Hollow Knight",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ENDING_B",
+   "displayName": "Sealed Siblings",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ENDING_C",
+   "displayName": "Dream No More",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "VOID",
+   "displayName": "Void",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "SPEEDRUN_1",
+   "displayName": "Speedrun 1",
+   "description": "Complete the game in under 10 hours",
+   "hidden": 0
+  },
+  {
+   "name": "SPEEDRUN_2",
+   "displayName": "Speedrun 2",
+   "description": "Complete the game in under 5 hours",
+   "hidden": 0
+  },
+  {
+   "name": "COMPLETION",
+   "displayName": "Completion",
+   "description": "Achieve 100% game completion and finish the game",
+   "hidden": 0
+  },
+  {
+   "name": "SPEED_COMPLETION",
+   "displayName": "Speed Completion",
+   "description": "Achieve 100% game completion and finish the game in under 20 hours",
+   "hidden": 0
+  },
+  {
+   "name": "STEELSOUL",
+   "displayName": "Steel Soul",
+   "description": "Finish the game in Steel Soul mode",
+   "hidden": 0
+  },
+  {
+   "name": "STEELSOUL_COMPLETION",
+   "displayName": "Steel Heart",
+   "description": "Achieve 100% game completion and finish the game in Steel Soul mode",
+   "hidden": 0
+  },
+  {
+   "name": "HUNTER_1",
+   "displayName": "Keen Hunter",
+   "description": "Record all of Hallownest's creatures in the Hunter's Journal",
+   "hidden": 0
+  },
+  {
+   "name": "HUNTER_2",
+   "displayName": "True Hunter",
+   "description": "Receive the Hunter's Mark",
+   "hidden": 0
+  },
+  {
+   "name": "MR_MUSHROOM",
+   "displayName": "Passing of the Age",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "DREAM_SOUL_MASTER_DEFEAT",
+   "displayName": "Mortality",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "WHITE_DEFENDER",
+   "displayName": "Memory",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "GREY_PRINCE",
+   "displayName": "Dark Romance",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "GRIMM",
+   "displayName": "Grand Performance",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "NIGHTMARE_GRIMM",
+   "displayName": "Ritual",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "BANISHMENT",
+   "displayName": "Banishment",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "PANTHEON1",
+   "displayName": "Brotherhood",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "PANTHEON2",
+   "displayName": "Inspiration",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "PANTHEON3",
+   "displayName": "Focus",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "PANTHEON4",
+   "displayName": "Soul & Shade",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ENDINGD",
+   "displayName": "Embrace the Void",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "COMPLETIONGG",
+   "displayName": "Pure Completion",
+   "description": "Achieve 112% game completion and finish the game.",
+   "hidden": 0
+  }
+ ]
+}

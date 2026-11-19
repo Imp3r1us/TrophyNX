@@ -1,0 +1,294 @@
+{
+ "appid": 2893570,
+ "name": "DRAGON QUEST I & II HD-2D Remake",
+ "achievements": [
+  {
+   "name": "ACHIEVEMENT_00",
+   "displayName": "Living Legend",
+   "description": "Awarded for earning all other achievements.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_01",
+   "displayName": "The Quest Begins",
+   "description": "DQ I: Awarded for heading out into the world.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_02",
+   "displayName": "Robbin' Who?",
+   "description": "DQ I: Awarded for defeating Robbin' 'Ood.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_03",
+   "displayName": "Dragon Defeated",
+   "description": "DQ I: Awarded for defeating the dragon in Quagmire Cave.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_04",
+   "displayName": "Stone Cold Killer",
+   "description": "DQ I: Awarded for defeating the golem.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_05",
+   "displayName": "Late Knight",
+   "description": "DQ I: Awarded for defeating the knight aberrant in Damdara.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_06",
+   "displayName": "Made Your Marks",
+   "description": "DQ I: Awarded for crafting all five sigils.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_07",
+   "displayName": "Light Bringer",
+   "description": "DQ I: Awarded for triumphing over a draconic evil.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_08",
+   "displayName": "See Thy Duty Done",
+   "description": "DQ II: Awarded for heading out into the world.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_09",
+   "displayName": "Lost & Found",
+   "description": "DQ II: Awarded for joining forces with the Prince of Cannock.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_10",
+   "displayName": "Call Me Cousin",
+   "description": "DQ II: Awarded for joining forces with the Princess of Moonbrooke.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_11",
+   "displayName": "Oceans Await",
+   "description": "DQ II: Awarded for obtaining a ship.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_12",
+   "displayName": "Late to the Party",
+   "description": "DQ II: Awarded for joining forces with the Princess of Cannock.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_13",
+   "displayName": "Tried and Tested",
+   "description": "DQ II: Awarded for obtaining the Moon Sigil.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_14",
+   "displayName": "Mask Off",
+   "description": "DQ II: Awarded for obtaining the Star Sigil.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_15",
+   "displayName": "Into the Light",
+   "description": "DQ II: Awarded for obtaining the Sun Sigil.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_16",
+   "displayName": "Under the Sea",
+   "description": "DQ II: Awarded for visiting Mersea for the first time after saving the mermaids.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_17",
+   "displayName": "Swag Bagged",
+   "description": "DQ II: Awarded for obtaining the Water Sigil.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_18",
+   "displayName": "In Deep",
+   "description": "DQ II: Awarded for obtaining the Soul Sigil.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_19",
+   "displayName": "Good Morning, Goddess",
+   "description": "DQ II: Awarded for obtaining all the sigils and waking Rubiss.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_20",
+   "displayName": "Twice Tested, Twice Bested",
+   "description": "DQ II: Awarded for proving your might to the King of Dirkandor.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_21",
+   "displayName": "Into a World of White",
+   "description": "DQ II: Awarded for reaching Rendarak.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_22",
+   "displayName": "Deities Destroyed",
+   "description": "DQ II: Awarded for defeating Atlas, Pazuzu and Belial.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_23",
+   "displayName": "Hargon Hath Fallen",
+   "description": "DQ II: Awarded for defeating Hargon.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_24",
+   "displayName": "Long Live the King",
+   "description": "DQ II: Awarded for triumphing over evil.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_25",
+   "displayName": "Welcome Home, Muffin",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_26",
+   "displayName": "Make a Wish",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_27",
+   "displayName": "Ally to Alefgard",
+   "description": "DQ I: Awarded for defeating 800 monsters.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_28",
+   "displayName": "Monster Masher",
+   "description": "DQ II: Awarded for defeating 1500 monsters.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_29",
+   "displayName": "Item Enthusiast",
+   "description": "DQ I: Awarded for obtaining 150 items.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_30",
+   "displayName": "They've Gotta Have It",
+   "description": "DQ II: Awarded for obtaining 320 items.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_31",
+   "displayName": "A Man of Many Talents",
+   "description": "DQ I: Awarded for learning every spell and ability.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_32",
+   "displayName": "Masters of Arts",
+   "description": "DQ II: Awarded for learning every spell and ability.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_33",
+   "displayName": "Medal Maniac",
+   "description": "DQ I: Awarded for obtaining all the Monarch of Medals' prizes.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_34",
+   "displayName": "Master of Medals",
+   "description": "DQ II: Awarded for obtaining all the Maharaja of Medals' prizes.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_35",
+   "displayName": "Die Hard",
+   "description": "DQ II: Awarded for defeating a total of 10 metal slimes and liquid metal slimes combined.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_36",
+   "displayName": "My First Scroll",
+   "description": "Awarded for reading a scroll for the first time.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_37",
+   "displayName": "Wipeout",
+   "description": "Awarded for wiping out in battle for the first time.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_38",
+   "displayName": "Erdrick's Legacy",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_39",
+   "displayName": "A Night to Remember",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_40",
+   "displayName": "Master Crafter",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_41",
+   "displayName": "Dealing with the Devil",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_42",
+   "displayName": "Happy Homecoming",
+   "description": "DQ I: Awarded for taking Princess Gwaelin home to Tantegel Castle.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_43",
+   "displayName": "A New Song of Erdrick",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_44",
+   "displayName": "The Ultimate Test",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_45",
+   "displayName": "Felicitations, Friend!",
+   "description": "DQ II: Awarded for winning the ultimate prize at a tombola stall.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_46",
+   "displayName": "Like Cats and Dogs",
+   "description": "DQ II: Awarded for having all four party members dress up in animal costumes.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_47",
+   "displayName": "Treasure-Hunter",
+   "description": "",
+   "hidden": 1
+  }
+ ]
+}

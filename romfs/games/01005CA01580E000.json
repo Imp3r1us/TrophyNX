@@ -1,0 +1,48 @@
+{
+ "title_id": "01005CA01580E000",
+ "name": "Persona 5 Royal",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Back to Shujin",
+   "desc": "Launch Persona 5 Royal 20 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 20
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Phantom Thief Recruit",
+   "desc": "Play Persona 5 Royal for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Mementos Regular",
+   "desc": "Play Persona 5 Royal for 30 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  },
+  {
+   "id": "t_hours_75",
+   "name": "Take Your Time",
+   "desc": "Play Persona 5 Royal for 75 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 75
+   }
+  }
+ ]
+}

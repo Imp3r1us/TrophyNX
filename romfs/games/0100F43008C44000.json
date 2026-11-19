@@ -1,0 +1,48 @@
+{
+ "title_id": "0100F43008C44000",
+ "name": "Pokémon Legends: Z-A",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Lumiose Arrival",
+   "desc": "Launch Pokémon Legends: Z-A 20 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 20
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Wild Zone Rookie",
+   "desc": "Play Pokémon Legends: Z-A for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Mega Evolution",
+   "desc": "Play Pokémon Legends: Z-A for 30 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  },
+  {
+   "id": "t_hours_75",
+   "name": "Lumiose Legend",
+   "desc": "Play Pokémon Legends: Z-A for 75 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 75
+   }
+  }
+ ]
+}

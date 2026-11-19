@@ -1,0 +1,48 @@
+{
+ "title_id": "010048701995E000",
+ "name": "Luigi's Mansion 2 HD",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Ghost Hunter on Call",
+   "desc": "Launch Luigi's Mansion 2 HD 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Poltergust Trainee",
+   "desc": "Play Luigi's Mansion 2 HD for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Gloomy Manor Regular",
+   "desc": "Play Luigi's Mansion 2 HD for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "E. Gadd's Best Assistant",
+   "desc": "Play Luigi's Mansion 2 HD for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}

@@ -1,0 +1,711 @@
+{
+ "title_id": "0100633007D48000",
+ "name": "Hollow Knight",
+ "reader": "json",
+ "save_files": [
+  "user1.dat",
+  "user2.dat",
+  "user3.dat",
+  "user4.dat"
+ ],
+ "achievements": [
+  {
+   "id": "charm_first",
+   "name": "Lucky Trinket",
+   "desc": "Obtain your first charm",
+   "points": 5,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/hasCharm",
+    "target": 1
+   }
+  },
+  {
+   "id": "charm_20",
+   "name": "Charm Hoarder",
+   "desc": "Own 20 charms",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/charmsOwned",
+    "target": 20
+   }
+  },
+  {
+   "id": "charm_blessing",
+   "name": "Salubra's Favourite",
+   "desc": "Collect every charm and receive Salubra's blessing",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/salubraBlessing",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "mask_1",
+   "name": "Thicker Shell",
+   "desc": "Complete a new mask from 4 Mask Shards",
+   "points": 5,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/maxHealthBase",
+    "target": 6
+   }
+  },
+  {
+   "id": "mask_all",
+   "name": "Unbreakable",
+   "desc": "Reach the maximum of 9 masks",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/maxHealthBase",
+    "target": 9
+   }
+  },
+  {
+   "id": "vessel_1",
+   "name": "Spare Soul",
+   "desc": "Complete a Soul Vessel from 3 Vessel Fragments",
+   "points": 5,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/MPReserveMax",
+    "target": 33
+   }
+  },
+  {
+   "id": "vessel_all",
+   "name": "Brimming Soul",
+   "desc": "Fill all three Soul Vessels",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/MPReserveMax",
+    "target": 99
+   }
+  },
+  {
+   "id": "boss_false_knight",
+   "name": "Armour Without a Knight",
+   "desc": "Defeat the False Knight",
+   "points": 5,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/falseKnightDefeated",
+    "target": 1
+   }
+  },
+  {
+   "id": "boss_hornet_1",
+   "name": "Duel in Greenpath",
+   "desc": "Defeat Hornet in Greenpath",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/hornet1Defeated",
+    "target": 1
+   }
+  },
+  {
+   "id": "boss_soul_master",
+   "name": "Lights Out at the Sanctum",
+   "desc": "Defeat the Soul Master",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/mageLordDefeated",
+    "target": 1
+   }
+  },
+  {
+   "id": "boss_mantis",
+   "name": "Bow to the Lords",
+   "desc": "Defeat the Mantis Lords",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedMantisLord",
+    "target": 1
+   }
+  },
+  {
+   "id": "boss_dung",
+   "name": "Hero of the Waterways",
+   "desc": "Defeat the Dung Defender",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedDungDefender",
+    "target": 1
+   }
+  },
+  {
+   "id": "boss_broken_vessel",
+   "name": "Shattered",
+   "desc": "Defeat the Broken Vessel",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedInfectedKnight",
+    "target": 1
+   }
+  },
+  {
+   "id": "boss_hornet_2",
+   "name": "Rematch at the Edge",
+   "desc": "Defeat Hornet in Kingdom's Edge",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/hornetOutskirtsDefeated",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "boss_collector",
+   "name": "Jar Smasher",
+   "desc": "Defeat the Collector",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedJarCollector",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "boss_traitor",
+   "name": "Garden Justice",
+   "desc": "Defeat the Traitor Lord",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedTraitorLord",
+    "target": 1
+   }
+  },
+  {
+   "id": "dream_failed_champion",
+   "name": "Old Glory",
+   "desc": "Defeat the Failed Champion",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/falseKnightDreamDefeated",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "dream_soul_tyrant",
+   "name": "Tyranny Ended",
+   "desc": "Defeat the Soul Tyrant",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/mageLordDreamDefeated",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "dream_lost_kin",
+   "name": "Kin No More",
+   "desc": "Defeat the Lost Kin",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/infectedKnightDreamDefeated",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "dream_white_defender",
+   "name": "Dung Forever",
+   "desc": "Defeat the White Defender",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedWhiteDefender",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "dream_grey_prince",
+   "name": "Zote the Mightiest",
+   "desc": "Defeat Grey Prince Zote",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedGreyPrince",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "dreamer_monomon",
+   "name": "Lesson Learned",
+   "desc": "Put Monomon the Teacher to rest",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/monomonDefeated",
+    "target": 1
+   }
+  },
+  {
+   "id": "dreamer_lurien",
+   "name": "Eyes Closed",
+   "desc": "Put Lurien the Watcher to rest",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/lurienDefeated",
+    "target": 1
+   }
+  },
+  {
+   "id": "dreamer_herrah",
+   "name": "Deep Slumber",
+   "desc": "Put Herrah the Beast to rest",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/hegemolDefeated",
+    "target": 1
+   }
+  },
+  {
+   "id": "void_heart",
+   "name": "One with the Void",
+   "desc": "Obtain the Void Heart",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/gotShadeCharm",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "end_hollow_knight",
+   "name": "Vessel",
+   "desc": "Defeat the Hollow Knight",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedHollowKnight",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "end_radiance",
+   "name": "Light Consumed",
+   "desc": "Defeat the Radiance",
+   "points": 100,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedFinalBoss",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "essence_600",
+   "name": "Dreamcatcher",
+   "desc": "Collect 600 Essence",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/dreamOrbs",
+    "target": 600
+   }
+  },
+  {
+   "id": "dream_nail_awake",
+   "name": "Wide Awake",
+   "desc": "Awaken the Dream Nail",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/dreamNailUpgraded",
+    "target": 1
+   }
+  },
+  {
+   "id": "seer_departed",
+   "name": "Seer's Farewell",
+   "desc": "Collect 2400 Essence and hear the Seer's last words",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/mothDeparted",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "grubs_23",
+   "name": "Grub Buddy",
+   "desc": "Free 23 grubs",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/grubsCollected",
+    "target": 23
+   }
+  },
+  {
+   "id": "grubs_46",
+   "name": "Grubfather Approved",
+   "desc": "Free all 46 grubs",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/grubsCollected",
+    "target": 46
+   }
+  },
+  {
+   "id": "stag_4",
+   "name": "Ticket Holder",
+   "desc": "Open 4 Stag Stations",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/stationsOpened",
+    "target": 4
+   }
+  },
+  {
+   "id": "stag_nest",
+   "name": "Return to the Nest",
+   "desc": "Open every Stag Station and find the Stag Nest",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/openedStagNest",
+    "target": 1
+   }
+  },
+  {
+   "id": "maps_all",
+   "name": "Map Maker",
+   "desc": "Own the map of all 13 areas",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "playerData/mapCrossroads",
+     "playerData/mapGreenpath",
+     "playerData/mapFogCanyon",
+     "playerData/mapRoyalGardens",
+     "playerData/mapFungalWastes",
+     "playerData/mapCity",
+     "playerData/mapWaterways",
+     "playerData/mapMines",
+     "playerData/mapDeepnest",
+     "playerData/mapCliffs",
+     "playerData/mapOutskirts",
+     "playerData/mapRestingGrounds",
+     "playerData/mapAbyss"
+    ],
+    "target": 13
+   }
+  },
+  {
+   "id": "hunter_journal",
+   "name": "Field Biologist",
+   "desc": "Complete every Hunter's Journal entry",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/journalEntriesCompleted",
+    "target": 164
+   },
+   "hidden": true
+  },
+  {
+   "id": "hunter_mark",
+   "name": "Hunter's Respect",
+   "desc": "Receive the Hunter's Mark",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedHunterMark",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "zote_neglect",
+   "name": "Not My Problem",
+   "desc": "Let Zote meet his fate",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/zoteDead",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "zote_rivalry",
+   "name": "Precepts Refuted",
+   "desc": "Defeat Zote in the Colosseum of Fools",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedZote",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "quirrel",
+   "name": "A Quiet Goodbye",
+   "desc": "Share a last moment with Quirrel",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/quirrelEpilogueCompleted",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "mourner",
+   "name": "Delivered",
+   "desc": "Bring the Grey Mourner her flower",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/xunRewardGiven",
+    "target": 1
+   }
+  },
+  {
+   "id": "nailsmith_kill",
+   "name": "Perfect Edge",
+   "desc": "Slay the Nailsmith with the Pure Nail",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/nailsmithKilled",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "nailsmith_spare",
+   "name": "New Calling",
+   "desc": "Let the Nailsmith find a new calling",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/nailsmithConvoArt",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "trial_warrior",
+   "name": "Warrior",
+   "desc": "Complete the Trial of the Warrior",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/colosseumBronzeCompleted",
+    "target": 1
+   }
+  },
+  {
+   "id": "trial_conqueror",
+   "name": "Conqueror",
+   "desc": "Complete the Trial of the Conqueror",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/colosseumSilverCompleted",
+    "target": 1
+   }
+  },
+  {
+   "id": "trial_fool",
+   "name": "Fool",
+   "desc": "Complete the Trial of the Fool",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/colosseumGoldCompleted",
+    "target": 1
+   }
+  },
+  {
+   "id": "grimm_troupe",
+   "name": "Encore",
+   "desc": "Defeat Troupe Master Grimm",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/killedGrimm",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "grimm_nightmare",
+   "name": "Ritual Complete",
+   "desc": "Defeat the Nightmare King and finish the ritual",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/defeatedNightmareGrimm",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "grimm_banish",
+   "name": "Show Cancelled",
+   "desc": "Banish the Grimm Troupe from Hallownest",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/destroyedNightmareLantern",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "pantheon_1",
+   "name": "Master Class",
+   "desc": "Complete the Pantheon of the Master",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/bossDoorStateTier1/completed",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "pantheon_2",
+   "name": "Muse",
+   "desc": "Complete the Pantheon of the Artist",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/bossDoorStateTier2/completed",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "pantheon_3",
+   "name": "Sage Advice",
+   "desc": "Complete the Pantheon of the Sage",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/bossDoorStateTier3/completed",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "pantheon_4",
+   "name": "Knightly Virtue",
+   "desc": "Complete the Pantheon of the Knight",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/bossDoorStateTier4/completed",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "pantheon_5",
+   "name": "Godhome Summit",
+   "desc": "Complete the Pantheon of Hallownest",
+   "points": 100,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/bossDoorStateTier5/completed",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "completion_100",
+   "name": "Hundred Percent",
+   "desc": "Reach 100% game completion",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/completionPercentage",
+    "target": 100
+   }
+  },
+  {
+   "id": "completion_112",
+   "name": "Beyond Complete",
+   "desc": "Reach 112% game completion",
+   "points": 100,
+   "rule": {
+    "type": "flag",
+    "path": "playerData/completionPercentage",
+    "target": 112
+   },
+   "hidden": true
+  },
+  {
+   "id": "t_launch",
+   "name": "Rest at the Bench",
+   "desc": "Launch Hollow Knight 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Hallownest Wanderer",
+   "desc": "Play Hollow Knight for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Path of Pain Seeker",
+   "desc": "Play Hollow Knight for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Void Embraced",
+   "desc": "Play Hollow Knight for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}

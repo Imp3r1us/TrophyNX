@@ -1,0 +1,97 @@
+# PC -> Switch: matches every Switch game with its Steam version, fetches achievement lists, drafts
+# definitions from console scans in samples/, and opens a pull request with the results. No AI involved.
+# Needs the repository secret STEAM_API_KEY (free key: https://steamcommunity.com/dev/apikey) and
+# Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
+name: PC to Switch
+on:
+  workflow_dispatch:
+    inputs:
+      max_schemas:
+        description: Steam achievement lists to fetch this run (cached between runs)
+        default: '3000'
+      harvest:
+        description: Look for PC saves of the most played games on GitHub (harvest.js)
+        type: boolean
+        default: true
+      harvest_top:
+        description: How many of the most played games to look at
+        default: '100'
+      install:
+        description: Copy drafts with sure rules confirmed on a Switch save into romfs/games (in the pull request)
+        type: boolean
+        default: false
+  schedule:
+    - cron: '23 3 * * 1'        # Mondays 03:23 UTC
+  push:
+    branches: [main]
+    paths: ['samples/**']
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: pc2switch
+  cancel-in-progress: false
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Restore cache (titledb, Steam app list, achievement lists, reviews, PCGamingWiki)
+        uses: actions/cache/restore@v4
+        with:
+          path: .pc2switch-cache
+          key: pc2switch-${{ github.run_id }}
+          restore-keys: pc2switch-
+      - name: Tests
+        run: |
+          node tools/pc2switch/test/test_pc2switch.js
+          node tools/savelab/test/test_engine.js
+          node tools/savelab/test/test_formats.js
+      - name: Catalogue
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+        run: node tools/pc2switch/catalog.js --max-schemas "${{ github.event.inputs.max_schemas || '3000' }}"
+      - name: PC saves of the most played games (GitHub)
+        if: github.event_name == 'schedule' || github.event.inputs.harvest == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEARCH_TOKEN || github.token }}
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+        timeout-minutes: 60
+        continue-on-error: true
+        run: node tools/pc2switch/harvest.js --top "${{ github.event.inputs.harvest_top || '100' }}" --max-minutes 50
+      - name: Drafts from samples/
+        run: node tools/pc2switch/draft.js
+      - name: Every game (Switch + PC saves, engines from PCGamingWiki)
+        timeout-minutes: 20
+        run: node tools/pc2switch/bulk.js --engines ${{ github.event.inputs.install == 'true' && '--install' || '' }}
+      - name: Rebuild Save Lab with the new data
+        run: python3 tools/savelab/build.py
+      - name: Save cache (also when a step failed or timed out)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .pc2switch-cache
+          key: pc2switch-${{ github.run_id }}
+      - name: Pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # samples/pc only exists once harvest.js has run (it is skipped with harvest=false)
+          for p in data/pc2switch drafts romfs/games samples/pc tools/savelab/index.html; do
+            if [ -e "$p" ]; then git add "$p"; fi
+          done
+          if git diff --cached --quiet; then echo "Nothing new."; exit 0; fi
+          branch=pc2switch/update
+          git config user.name "pc2switch"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git commit -q -m "PC to Switch: catalogue and drafts ($(date -u +%F))"
+          git push -f origin "$branch"
+          if ! gh pr view "$branch" --json state -q .state 2>/dev/null | grep -q OPEN; then
+            { echo "Automatic update (no AI). Review the drafts, then merge."; echo; cat drafts/README.md; echo; sed -n 3p drafts/all/coverage.md; echo; echo "Every game: drafts/all/coverage.md"; echo "PC saves found: samples/pc/SOURCES.md"; echo "Catalogue: data/pc2switch/catalog.md"; } > /tmp/body.md
+            gh pr create --head "$branch" --base main --title "PC to Switch: catalogue and drafts" --body-file /tmp/body.md
+          fi

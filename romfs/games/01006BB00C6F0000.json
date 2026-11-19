@@ -1,0 +1,48 @@
+{
+ "title_id": "01006BB00C6F0000",
+ "name": "The Legend of Zelda: Link's Awakening",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Wake Up, Link",
+   "desc": "Launch The Legend of Zelda: Link's Awakening 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Mabe Village Guest",
+   "desc": "Play The Legend of Zelda: Link's Awakening for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_4",
+   "name": "Instrument Collector",
+   "desc": "Play The Legend of Zelda: Link's Awakening for 4 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 4
+   }
+  },
+  {
+   "id": "t_hours_8",
+   "name": "Wind Fish Dreamer",
+   "desc": "Play The Legend of Zelda: Link's Awakening for 8 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 8
+   }
+  }
+ ]
+}

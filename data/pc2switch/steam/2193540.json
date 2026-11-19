@@ -1,0 +1,252 @@
+{
+ "appid": 2193540,
+ "name": "Wizard of Legend 2",
+ "achievements": [
+  {
+   "name": "ACH_BAHADORS_BANE",
+   "displayName": "Bahador's Bane",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_JABARRAHS_END",
+   "displayName": "Jabarrah's End",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_A_DYNASTYS_FALL",
+   "displayName": "A Dynasty’s Fall",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_BECOME_A_LEGEND",
+   "displayName": "Become a Legend",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_GRAND_STRATEGIST",
+   "displayName": "Grand Strategist",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_DRESSED_TO_KILL",
+   "displayName": "Dressed To Kill",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_I_MAKE_THIS_LOOK_GOOD",
+   "displayName": "I Make This Look Good",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_FORGOTTEN_KNOWLEDGE",
+   "displayName": "Forgotten Knowledge",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_NOT_FORGOTTEN_ANYMORE",
+   "displayName": "Not Forgotten Anymore!",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_OUTMATCH_YOUR_MASTER",
+   "displayName": "Outmatch Your Master",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_MASTER_OF_THE_ELEMENTS",
+   "displayName": "Master of the Elements",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_ARCANA_APPRENTICE",
+   "displayName": "Arcana Apprentice",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_ARCANA_ADEPT",
+   "displayName": "Arcana Adept",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_ARCANA_MASTER",
+   "displayName": "Arcana Master",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_WAY_OF_THE_CHAOS",
+   "displayName": "Way of the Chaos",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_HEART_OF_THE_CHAOS",
+   "displayName": "Heart of the Chaos",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_ELEMENTAL_MONOPOLY",
+   "displayName": "Elemental Monopoly",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_MIMIC_SLAYER",
+   "displayName": "Mimic Slayer",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_BOLD_WIZARD",
+   "displayName": "Bold Wizard",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_LUCKY_STREAK",
+   "displayName": "Lucky Streak",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_ARCANE_ASCENSION",
+   "displayName": "Arcane Ascension",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_C99",
+   "displayName": "C99",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_ELITE_ELIMINATOR",
+   "displayName": "Elite Eliminator",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_SPIRIT_SAVIOR",
+   "displayName": "Spirit Savior",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TOURNAMENT_ENTRY",
+   "displayName": "Tournament Entry",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CHAMPION_OF_SERJIK",
+   "displayName": "Champion of Serjik",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_RELIC_OF_LEGEND",
+   "displayName": "Relic of Legend",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_SET_COLLECTOR",
+   "displayName": "Set Collector",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_EXPERT_TRADER",
+   "displayName": "Expert Trader",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_SHOPAHOLIC",
+   "displayName": "Shopaholic",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_NOX_THE_UNFORTUNATE",
+   "displayName": "Nox the Unfortunate",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_BEST_FRIENDS_FOREVER",
+   "displayName": "Best Friends Forever",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_LIFE_IS_CHARMING",
+   "displayName": "Life is Charming",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_HARD_DAYS_CHAMPION",
+   "displayName": "Hard Day’s Champion",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CHARM_NOVICE",
+   "displayName": "Charm Novice",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CHARM_MASTER",
+   "displayName": "Charm Master",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TASKMASTER",
+   "displayName": "Taskmaster",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_DANGER_IS_MY_MIDDLE_NAME",
+   "displayName": "Danger is My Middle Name",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_HAPPY_BIRTHDAY",
+   "displayName": "Happy Birthday!",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_WIZARD_OF_LEGEND",
+   "displayName": "Wizard of Legend",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_FIERCE_RIVAL",
+   "displayName": "Fierce Rival",
+   "description": "",
+   "hidden": 1
+  }
+ ]
+}

@@ -1,0 +1,1464 @@
+{
+ "appid": 1794680,
+ "name": "Vampire Survivors",
+ "achievements": [
+  {
+   "name": "ReachLV5",
+   "displayName": "Wings",
+   "description": "Reach Level 5.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV10",
+   "displayName": "Crown",
+   "description": "Reach Level 10.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive1Minute",
+   "displayName": "Hollow Heart",
+   "description": "Survive 1 minute with any character.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive5MinutesWithDiamond",
+   "displayName": "Runetracer",
+   "description": "Survive 5 minutes with Pasqualina.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive10Minutes",
+   "displayName": "Peachone",
+   "description": "Survive 10 minutes with any character.",
+   "hidden": 0
+  },
+  {
+   "name": "GetFireWandToLevel4",
+   "displayName": "Arca",
+   "description": "Get Fire Wand to Level 4.",
+   "hidden": 0
+  },
+  {
+   "name": "GetHolyBookToLevel4",
+   "displayName": "Bracer",
+   "description": "Get King Bible to Level 4.",
+   "hidden": 0
+  },
+  {
+   "name": "GetHolyWaterToLevel4",
+   "displayName": "Candelabrador",
+   "description": "Get Santa Water to Level 4.",
+   "hidden": 0
+  },
+  {
+   "name": "GetLightningRingToLevel4",
+   "displayName": "Porta",
+   "description": "Get Lightning Ring to Level 4.",
+   "hidden": 0
+  },
+  {
+   "name": "GetMagicMissileToLevel7",
+   "displayName": "Duplicator",
+   "description": "Get Magic Wand to Level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "GetPeachoneToLevel7",
+   "displayName": "Ebony Wings",
+   "description": "Get Peachone to Level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "GetRunetracerToLevel7",
+   "displayName": "Spellbinder",
+   "description": "Get Runetracer to Level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "Have6DifferentWeapons",
+   "displayName": "Empty Tome",
+   "description": "Hold 6 different weapons at once.",
+   "hidden": 0
+  },
+  {
+   "name": "Destroy20Candles",
+   "displayName": "Fire Wand",
+   "description": "Destroy 20 light sources.",
+   "hidden": 0
+  },
+  {
+   "name": "Eat5PotRoast",
+   "displayName": "Garlic",
+   "description": "Find 5 Floor Chickens.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAClover",
+   "displayName": "Clover",
+   "description": "Find a Little Clover.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAVacuum",
+   "displayName": "Magnet",
+   "description": "Find a Vacuum.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAnOrologion",
+   "displayName": "Clock Lancet",
+   "description": "Find an Orologion.",
+   "hidden": 0
+  },
+  {
+   "name": "FindARosary",
+   "displayName": "Cross",
+   "description": "Find a Rosary.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat5000Enemies",
+   "displayName": "Lightning Ring",
+   "description": "Defeat a total of 5000 enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat3000Skeletons",
+   "displayName": "Mortaccio",
+   "description": "Defeat a total of 3000 Skeletons.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive20Minutes",
+   "displayName": "Pentagram",
+   "description": "Survive 20 minutes with any character.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatBossMadForest",
+   "displayName": "Hyper Mad Forest",
+   "description": "Defeat the giant Blue Venus in the Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatBossLibrary",
+   "displayName": "Hyper Inlaid Library",
+   "description": "Defeat the Hag in the Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV20InMadForest",
+   "displayName": "Inlaid Library",
+   "description": "Reach Level 20 in the Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive5MinutesWithKnife",
+   "displayName": "Pummarola",
+   "description": "Survive 5 minutes with Gennaro.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAStoneMask",
+   "displayName": "Stone Mask",
+   "description": "Find a Stone Mask.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveWhip",
+   "displayName": "Bloody Tear",
+   "description": "Evolve the Whip.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveMagicWand",
+   "displayName": "Holy Wand",
+   "description": "Evolve the Magic Wand.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveKnife",
+   "displayName": "Thousand Edge",
+   "description": "Evolve the Knife.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveAxe",
+   "displayName": "Death Spiral",
+   "description": "Evolve the Axe.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveCross",
+   "displayName": "Heaven Sword",
+   "description": "Evolve the Cross.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveKingBible",
+   "displayName": "Unholy Vespers",
+   "description": "Evolve the King Bible.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveFireWand",
+   "displayName": "Hellfire",
+   "description": "Evolve the Fire Wand.",
+   "hidden": 0
+  },
+  {
+   "name": "GetGarlicToLevel7",
+   "displayName": "Poe Ratcho",
+   "description": "Get Garlic to Level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveGarlic",
+   "displayName": "Soul Eater",
+   "description": "Evolve the Garlic.",
+   "hidden": 0
+  },
+  {
+   "name": "UniteBirds",
+   "displayName": "Vandalier",
+   "description": "Unite Ebony Wings and Peachone.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock2Hypers",
+   "displayName": "Green Acres",
+   "description": "Unlock Hyper mode for 2 normal stages.",
+   "hidden": 0
+  },
+  {
+   "name": "Recover1000HP",
+   "displayName": "Suor Clerici",
+   "description": "Recover a total of 1000 HP.",
+   "hidden": 0
+  },
+  {
+   "name": "Earn5000CoinsInASingleRun",
+   "displayName": "Dommario",
+   "description": "Earn 5000 coins in a single run.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat100KEnemies",
+   "displayName": "Krochi",
+   "description": "Defeat a total of 100000 enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive20MinutesWithCross",
+   "displayName": "Tiragisú",
+   "description": "Survive 20 minutes with Krochi.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveSantaWater",
+   "displayName": "La Borra",
+   "description": "Evolve the Santa Water.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveLightning",
+   "displayName": "Thunder Loop",
+   "description": "Evolve the Lightning Ring.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV100WithMortaccio",
+   "displayName": "Reroll 1",
+   "description": "Reach Level 80 with Mortaccio.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive30MinutesInGreenAcres",
+   "displayName": "Skip 2",
+   "description": "Survive 30 minutes in Green Acres.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV100WithCavallo",
+   "displayName": "Reroll 2",
+   "description": "Reach Level 80 with Yatta Cavallo.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat3000Buers",
+   "displayName": "Yatta Cavallo",
+   "description": "Defeat a total of 3000 Lion Heads.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive20MinutesWithCurse",
+   "displayName": "Lama",
+   "description": "Survive 20 minutes with at least +10% Curse.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive30MinutesWithAxe",
+   "displayName": "Skull O'Maniac",
+   "description": "Survive 30 minutes with Lama.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV40InLibrary",
+   "displayName": "Dairy Plant",
+   "description": "Reach Level 40 in the Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatBossPlant",
+   "displayName": "Hyper Dairy Plant",
+   "description": "Defeat the Sword Guardian in the Dairy Plant.",
+   "hidden": 0
+  },
+  {
+   "name": "FindMilkyWayMap",
+   "displayName": "Milky Way Map",
+   "description": "Find the Milky Way Map.",
+   "hidden": 0
+  },
+  {
+   "name": "FindCoffinStage3",
+   "displayName": "Coffin: Dairy Plant",
+   "description": "Find and open the coffin in the Dairy Plant.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesWithSong",
+   "displayName": "Song of Mana",
+   "description": "Survive 15 minutes with Poppea.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveSongOfMana",
+   "displayName": "Mannajja",
+   "description": "Evolve the Song Of Mana.",
+   "hidden": 0
+  },
+  {
+   "name": "GetPentagramToLevel7",
+   "displayName": "Christine",
+   "description": "Get Pentagram to Level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock3Hypers",
+   "displayName": "Il Molise",
+   "description": "Unlock Hyper mode for any normal stage.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesInMolise",
+   "displayName": "Skip 1",
+   "description": "Survive 15 minutes in Molise.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolvePentagram",
+   "displayName": "Gorgeous Moon",
+   "description": "Evolve the Pentagram.",
+   "hidden": 0
+  },
+  {
+   "name": "See50Items",
+   "displayName": "Mindbender",
+   "description": "Fill 50 entries in the Collection.",
+   "hidden": 0
+  },
+  {
+   "name": "FindCoffinStage1",
+   "displayName": "Coffin: Mad Forest",
+   "description": "Find and open the coffin in the Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive10MinutesWithGuns",
+   "displayName": "Phiera Der Tuphello",
+   "description": "Survive 10 minutes with Pugnala.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesWithGuns",
+   "displayName": "Eight The Sparrow",
+   "description": "Survive 15 minutes with Pugnala.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveGuns",
+   "displayName": "Phieraggi",
+   "description": "Evolve and unite Phiera Der Tuphello and Eight The Sparrow.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveRunetracer",
+   "displayName": "NO FUTURE",
+   "description": "Evolve the Runetracer.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV100WithRamba",
+   "displayName": "Reroll 3",
+   "description": "Reach Level 80 with Bianca Ramba.",
+   "hidden": 0
+  },
+  {
+   "name": "See60Items",
+   "displayName": "Banish 1",
+   "description": "Fill 60 entries in the Collection.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatBossTower",
+   "displayName": "Hyper Gallo Tower",
+   "description": "Defeat the Giant Enemy Crab in Gallo Tower.",
+   "hidden": 0
+  },
+  {
+   "name": "FindSorceressTears",
+   "displayName": "Sorceress' Tears",
+   "description": "Find the Sorceress' Tears.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV60InDairyPlant",
+   "displayName": "Gallo Tower",
+   "description": "Reach Level 60 in the Dairy Plant.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat3000Milk",
+   "displayName": "Bianca Ramba",
+   "description": "Defeat a total of 3000 Milk Elementals.",
+   "hidden": 0
+  },
+  {
+   "name": "See70Items",
+   "displayName": "Banish 2",
+   "description": "Fill 70 entries in the Collection.",
+   "hidden": 0
+  },
+  {
+   "name": "FindRandomazzo",
+   "displayName": "Randomazzo",
+   "description": "Find the Randomazzo.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesWithGatti",
+   "displayName": "Gatti Amari",
+   "description": "Survive 15 minutes with Giovanna.",
+   "hidden": 0
+  },
+  {
+   "name": "FindCoffinStage2",
+   "displayName": "Coffin: Inlaid Library",
+   "description": "Find and open the coffin in the Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithGiovanna",
+   "displayName": "V - Chaos in the Dark Night",
+   "description": "Reach Level 50 with Giovanna.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithKroci",
+   "displayName": "IV - Awake",
+   "description": "Reach Level 50 with Krochi.",
+   "hidden": 0
+  },
+  {
+   "name": "FindRandomazzoT06",
+   "displayName": "VI - Sarabande of Healing",
+   "description": "Find the Randomazzo.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithLama",
+   "displayName": "XVI - Slash",
+   "description": "Reach Level 50 with Lama.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithPoppea",
+   "displayName": "XVII - Lost and Found Painting",
+   "description": "Reach Level 50 with Poppea.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithArca",
+   "displayName": "XIX - Heart of Fire",
+   "description": "Reach Level 50 with Arca.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat3000Hydra",
+   "displayName": "O'Sole Meeo",
+   "description": "Defeat a total of 3000 Dragon Shrimps.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock3Hypers_Correct",
+   "displayName": "The Bone Zone",
+   "description": "Unlock Hyper mode for 3 normal stages.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive30MinutesInBoneZone",
+   "displayName": "Skip 3",
+   "description": "Survive 30 minutes in The Bone Zone.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV100WithOsole",
+   "displayName": "Reroll 4",
+   "description": "Reach Level 80 with O'Sole Meeo.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithImelda",
+   "displayName": "XI - Waltz of Pearls",
+   "description": "Reach Level 50 with Imelda.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithGennaro",
+   "displayName": "VII - Iron Blue Will",
+   "description": "Reach Level 50 with Gennaro.",
+   "hidden": 0
+  },
+  {
+   "name": "FindCoffinStage4",
+   "displayName": "Coffin: Gallo Tower",
+   "description": "Find and open the coffin in the Gallo Tower.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithConcetta",
+   "displayName": "XVIII - Boogaloo of Illusions",
+   "description": "Reach Level 50 with Concetta.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveGatti",
+   "displayName": "Vicious Hunger",
+   "description": "Evolve the Gatti Amari.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveShadow",
+   "displayName": "Valkyrie Turner",
+   "description": "Evolve the Shadow Pinion.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive31MinutesInLibrary",
+   "displayName": "XV - Disco of Gold",
+   "description": "Reach minute 31 in the Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "See80Items",
+   "displayName": "Banish 3",
+   "description": "Fill 80 entries in the Collection.",
+   "hidden": 0
+  },
+  {
+   "name": "FindMagicBanger",
+   "displayName": "Magic Banger",
+   "description": "Find the Magic Banger.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesWithShadow",
+   "displayName": "Shadow Pinion",
+   "description": "Survive 15 minutes with Concetta.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock4Hypers",
+   "displayName": "Moongolow",
+   "description": "Unlock Hyper mode for 4 normal stages.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesInMoongolow",
+   "displayName": "Skip 4",
+   "description": "Survive 15 minutes in Moongolow.",
+   "hidden": 0
+  },
+  {
+   "name": "BuyGlassMask",
+   "displayName": "Glass Vizard",
+   "description": "Find and buy the Glass Vizard.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithPasqualina",
+   "displayName": "XIV - Jail of Crystal",
+   "description": "Reach Level 50 with Pasqualina.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive31MinutesInTower",
+   "displayName": "XII - Out of Bounds",
+   "description": "Reach minute 31 in the Gallo Tower.",
+   "hidden": 0
+  },
+  {
+   "name": "See90Items",
+   "displayName": "Banish 4",
+   "description": "Fill 90 entries in the Collection.",
+   "hidden": 0
+  },
+  {
+   "name": "FindYellowSign",
+   "displayName": "Yellow Sign",
+   "description": "Find the Yellow Sign.",
+   "hidden": 0
+  },
+  {
+   "name": "ObtainTheInfiniteCorridor",
+   "displayName": "Seeker of the Infinite Corridor",
+   "description": "Obtain the Infinite Corridor.",
+   "hidden": 0
+  },
+  {
+   "name": "ObtainTheCrimsonShroud",
+   "displayName": "Seeker of the Crimson Shroud",
+   "description": "Obtain the Crimson Shroud.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithAntonio",
+   "displayName": "X - Beginning",
+   "description": "Reach Level 50 with Antonio.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive31MinutesInForest",
+   "displayName": "VIII - Mad Groove",
+   "description": "Reach minute 31 in the Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "Have6Evolutions",
+   "displayName": "Torrona's Box",
+   "description": "Hold 6 different weapon evolutions at once.",
+   "hidden": 0
+  },
+  {
+   "name": "GetTorroneToLevel9",
+   "displayName": "Omni",
+   "description": "Get Torrona's Box to Level 9.",
+   "hidden": 0
+  },
+  {
+   "name": "FindYellowSignS5",
+   "displayName": "Cappella Magna",
+   "description": "Reach Level 80 in the Gallo Tower.",
+   "hidden": 0
+  },
+  {
+   "name": "FindCoffinStage5",
+   "displayName": "Coffin: Cappella Magna",
+   "description": "Find and open the coffin in the Cappella Magna.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesWithWind",
+   "displayName": "Vento Sacro",
+   "description": "Survive 15 minutes with Zi'Assunta.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveWind",
+   "displayName": "Fuwalafuwaloo",
+   "description": "Unite Vento Sacro and Bloody Tear.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatBossChapel",
+   "displayName": "Hyper Cappella Magna",
+   "description": "Defeat the Trinacria in the Cappella Magna.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat6000StageKillers",
+   "displayName": "Sir Ambrojoe",
+   "description": "Defeat a total of 6000 Stage Killers.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithPorta",
+   "displayName": "III - Tragic Princess",
+   "description": "Reach Level 50 with Porta.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive31MinutesInDairyPlant",
+   "displayName": "XX - Silent Old Sanctuary",
+   "description": "Reach minute 31 in the Dairy Plant.",
+   "hidden": 0
+  },
+  {
+   "name": "See100Items",
+   "displayName": "Banish 5",
+   "description": "Fill 100 entries in the Collection.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV100WithAmbrojoe",
+   "displayName": "Reroll 5",
+   "description": "Reach Level 80 with Sir Ambrojoe.",
+   "hidden": 0
+  },
+  {
+   "name": "FindGrimoire",
+   "displayName": "Grim Grimoire",
+   "description": "Find the Grim Grimoire.",
+   "hidden": 0
+  },
+  {
+   "name": "FindGouda",
+   "displayName": "Ars Gouda",
+   "description": "Find the Ars Gouda.",
+   "hidden": 0
+  },
+  {
+   "name": "FindGGospel",
+   "displayName": "Great Gospel",
+   "description": "Find the Great Gospel.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatBossChapel2",
+   "displayName": "Game Killer",
+   "description": "Defeat the final enemy in the Cappella Magna.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock5Hypers",
+   "displayName": "Boss Rash",
+   "description": "Unlock Hyper mode for all 5 normal stages.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive15MinutesInBossRash",
+   "displayName": "Skip 5",
+   "description": "Survive 15 minutes in Boss Rash.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithDommario",
+   "displayName": "II - Twilight Requiem",
+   "description": "Reach Level 50 with Dommario.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithPugnala",
+   "displayName": "I - Gemini",
+   "description": "Reach Level 50 with Pugnala.",
+   "hidden": 0
+  },
+  {
+   "name": "FindForbiddenScroll",
+   "displayName": "Forbidden Scrolls",
+   "description": "Find the Forbidden Scrolls of Morbane.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithChristine",
+   "displayName": "XIII - Wicked Season",
+   "description": "Reach Level 50 with Christine.",
+   "hidden": 0
+  },
+  {
+   "name": "CompleteCollection",
+   "displayName": "Queen Sigma",
+   "description": "Complete the Collection 1.0.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat100kWithSigma",
+   "displayName": "Victory Sword",
+   "description": "Defeat 100000 enemies in a single run with Queen Sigma.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithClerici",
+   "displayName": "IX - Divine Bloodline",
+   "description": "Reach Level 50 with Suor Clerici.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV99WithPoe",
+   "displayName": "XXI - Blood Astronomia",
+   "description": "Reach Level 50 with Poe.",
+   "hidden": 0
+  },
+  {
+   "name": "GalloDivano",
+   "displayName": "Bracelet",
+   "description": "Survive 30 minutes with either Gallo or Divano.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveBracelet",
+   "displayName": "Tri-Bracelet",
+   "description": "Evolve the Bracelet and then the Bi-Bracelet.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveAll",
+   "displayName": "Candybox",
+   "description": "Discover every standard evolution and union.",
+   "hidden": 0
+  },
+  {
+   "name": "ObtainAllRelics",
+   "displayName": "The Eudaimonia Machine",
+   "description": "Obtain all standard relics from all stages.",
+   "hidden": 0
+  },
+  {
+   "name": "ObtainGraciasMirror",
+   "displayName": "Gracia's Mirror",
+   "description": "Obtain Gracia's Mirror.",
+   "hidden": 0
+  },
+  {
+   "name": "ObtainSeventhTrumpet",
+   "displayName": "Seventh Trumpet",
+   "description": "Obtain the Seventh Trumpet.",
+   "hidden": 0
+  },
+  {
+   "name": "GreatestJubilee",
+   "displayName": "Greatest Jubilee",
+   "description": "See the final fireworks.",
+   "hidden": 0
+  },
+  {
+   "name": "Banish10Items",
+   "displayName": "EXTRA: Seal I",
+   "description": "Banish 10 or more weapons in a single run.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV80InverseTower",
+   "displayName": "EXTRA: Tiny Bridge",
+   "description": "Reach Level 80 in Inverse Gallo Tower.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON01_FindCoffin",
+   "displayName": "Miang",
+   "description": "Find and open the coffin in Mt.Moonspell.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON02_Survive15Miang",
+   "displayName": "Silver Wind",
+   "description": "Survive 15 minutes with Miang Moonspell.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON03_EvolveSilverWind",
+   "displayName": "Menya",
+   "description": "Evolve the Silver Wind.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON04_Survive15Menya",
+   "displayName": "Four Seasons",
+   "description": "Survive 15 minutes with Menya Moonspell.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON05_EvolveFourSeasons",
+   "displayName": "Syuuto",
+   "description": "Evolve the Four Seasons.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON06_Survive15Syuuto",
+   "displayName": "Summon Night",
+   "description": "Survive 15 minutes with Syuuto Moonspell.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON07_EvolveSummonNight",
+   "displayName": "Babi-Onna",
+   "description": "Evolve the Summon Night.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON08_Survive15BabiOnna",
+   "displayName": "Mirage Robe",
+   "description": "Survive 15 minutes with Babi-Onna.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON09_EvolveMirageRobe",
+   "displayName": "McCoy-Oni",
+   "description": "Evolve the Mirage Robe.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON10_Survive15McCoy",
+   "displayName": "108 Bocce",
+   "description": "Survive 15 minutes with McCoy-Oni.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON11_Defeat100kVanya",
+   "displayName": "Megalo Menya",
+   "description": "Defeat 100000 enemies in a single run with Menya Moonspell.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON12_Defeat100kVadjouel",
+   "displayName": "Megalo Syuuto",
+   "description": "Defeat 100000 enemies in a single run with Syuuto Moonspell.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON13_Defeat6kWater",
+   "displayName": "Gav'Et-Oni",
+   "description": "Defeat 6000 Kappa.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON14_FindNightSword",
+   "displayName": "Night Sword",
+   "description": "Find a Night Sword.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON15_EvolveNightSword",
+   "displayName": "Muramasa",
+   "description": "Evolve the Night Sword.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON16_DefeatBossRuins",
+   "displayName": "Hyper Mt.Moonspell",
+   "description": "Defeat the Orochimario in Mt.Moonspell.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON17_EvolveBubbles",
+   "displayName": "Boo Roo Boolle",
+   "description": "Evolve the Mille Bolle Blu.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV80InverseForest",
+   "displayName": "EXTRA: Bat Country",
+   "description": "Reach Level 80 in Inverse Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "FindApoplexy",
+   "displayName": "EXTRA: Apoplexy",
+   "description": "Find the Apoplexy at minute 09:00 in Bat Country.",
+   "hidden": 0
+  },
+  {
+   "name": "FindChaosMalachite",
+   "displayName": "EXTRA: Chaos Malachite",
+   "description": "Find the Chaos Malachite at minute 18:00 in Bat Country.",
+   "hidden": 0
+  },
+  {
+   "name": "Banish20Items",
+   "displayName": "EXTRA: Seal II",
+   "description": "Banish 20 or more weapons in a single run.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC01_FindCoffin",
+   "displayName": "Eleanor Uziron",
+   "description": "Find and open the coffin in Lake Foscari.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC02_Survive15Eleanor",
+   "displayName": "SpellString",
+   "description": "Survive 15 minutes with Eleanor Uziron.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC03_GetStreamToLevel6",
+   "displayName": "SpellStream",
+   "description": "Get SpellStream to Level 6.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC04_GetStrikeToLevel6",
+   "displayName": "SpellStrike",
+   "description": "Get SpellStrike to Level 6.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC05_UniteSpells",
+   "displayName": "Maruto Cuts",
+   "description": "Unite SpellString, SpellStream, and SpellStrike.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC06_Survive15Viktor",
+   "displayName": "Eskizzibur",
+   "description": "Survive 15 minutes with Maruto Cuts.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC07_EvolveEskizzibur",
+   "displayName": "Keitha Muort",
+   "description": "Evolve the Eskizzibur.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC08_Survive15Keira",
+   "displayName": "Flash Arrow",
+   "description": "Survive 15 minutes with Keitha Muort.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC09_EvolveFlashArrow",
+   "displayName": "Millionaire",
+   "description": "Evolve the Flash Arrow.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC10_BreakSeal1",
+   "displayName": "Abyss Foscari",
+   "description": "With Keitha, break the Seal of the Lake.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC11_BreakSeal2",
+   "displayName": "Luminaire Foscari",
+   "description": "With Maruto, break the Seal of the Abyss.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC12_BreakSeal3",
+   "displayName": "Genevieve Gruyère",
+   "description": "With Eleanor, break the Seal of the Banished.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC13_Survive15Luminaire",
+   "displayName": "Prismatic Missile",
+   "description": "Survive 15 minutes with Luminaire Foscari.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC14_EvolvePrismatic",
+   "displayName": "Luminaire",
+   "description": "Evolve the Prismatic Missile.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC15_Survive15Genevieve",
+   "displayName": "Shadow Servant",
+   "description": "Survive 15 minutes with Genevieve Gruyère.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC16_EvolveShadow",
+   "displayName": "Ophion",
+   "description": "Evolve the Shadow Servant.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC17_Defeat100kGenevieve",
+   "displayName": "Je-Ne-Viv",
+   "description": "Defeat 100000 enemies in a single run with Genevieve Gruyère.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC18_Defeat6kFairy",
+   "displayName": "Happy Birthday",
+   "description": "Defeat a total of 6000 Sammies.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC19_Defeat6kHorror",
+   "displayName": "Rottin'Ghoul",
+   "description": "Defeat a total of 6000 Rotting Ghouls.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC20_DefeatBossLake",
+   "displayName": "Hyper Lake Foscari",
+   "description": "Defeat the Avatar of Gaea in Lake Foscari.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC21_DefeatBossAbyss",
+   "displayName": "Hyper Abyss Foscari",
+   "description": "Defeat Je-Ne-Viv in Abyss Foscari.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV80InverseLibrary",
+   "displayName": "EXTRA: Astral Stair",
+   "description": "Reach Level 80 in Inverse Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "FindChaosRosalia",
+   "displayName": "EXTRA: Chaos Rosalia",
+   "description": "Find the Chaos Rosalia in Astral Stair.",
+   "hidden": 0
+  },
+  {
+   "name": "FindTrisection",
+   "displayName": "EXTRA: Trisection",
+   "description": "Find the Trisection in Astral Stair.",
+   "hidden": 0
+  },
+  {
+   "name": "FindMap_AstralStair",
+   "displayName": "EXTRA: Astral Stair Map",
+   "description": "Find the Astral Stair Map.",
+   "hidden": 0
+  },
+  {
+   "name": "MOON18_FindMap_Moonspell",
+   "displayName": "Mt.Moonspell Map",
+   "description": "Find the Mt.Moonspell Map.",
+   "hidden": 0
+  },
+  {
+   "name": "FOSC22_FindMap_Foscari",
+   "displayName": "Lake Foscari Map",
+   "description": "Find the Lake Foscari Map.",
+   "hidden": 0
+  },
+  {
+   "name": "FindChaosAltemanna",
+   "displayName": "EXTRA: Chaos Altemanna",
+   "description": "Find the Chaos Altemanna in Tiny Bridge.",
+   "hidden": 0
+  },
+  {
+   "name": "FindManyOrologions",
+   "displayName": "EXTRA: Whiteout",
+   "description": "Find 20 Orologions.",
+   "hidden": 0
+  },
+  {
+   "name": "GetGlassFandangoToLevel7",
+   "displayName": "EXTRA: Glass Fandango",
+   "description": "Get Glass Fandango to Level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveGlassFandango",
+   "displayName": "EXTRA: Celestial Voulge",
+   "description": "Evolve the Glass Fandango.",
+   "hidden": 0
+  },
+  {
+   "name": "SurviveUntilTheEndOfWhiteout",
+   "displayName": "EXTRA: She-Moon Eeta",
+   "description": "Survive 20 minutes in Whiteout.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAntidote",
+   "displayName": "EXTRA: Antidote",
+   "description": "Find the Antidote in Whiteout.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAtlas",
+   "displayName": "EXTRA: Adventures",
+   "description": "Obtain the Atlas Gate in Boss Rash.",
+   "hidden": 0
+  },
+  {
+   "name": "FindManyGoldenFinger",
+   "displayName": "EXTRA: Space 54",
+   "description": "Find 5 Golden Fingers.",
+   "hidden": 0
+  },
+  {
+   "name": "GetPhas3rToLevel7",
+   "displayName": "EXTRA: Phas3r",
+   "description": "Get Phas3r to level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolvePhas3r",
+   "displayName": "EXTRA: Evolve the Phas3r.",
+   "description": "Evolve the Phas3r.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive20MinutesInSpace54",
+   "displayName": "EXTRA: Space Dude",
+   "description": "Survive 20 minutes in Space 54.",
+   "hidden": 0
+  },
+  {
+   "name": "FindBraveStory",
+   "displayName": "EXTRA: Brave Story",
+   "description": "Find the Brave Story at minute 18 in Space 54.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatManyBats",
+   "displayName": "EXTRA: Pako Battiliar",
+   "description": "Defeat a total of 161616 bats.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveBattilia",
+   "displayName": "EXTRA: Bat Robbert",
+   "description": "Evolve the Pako Battiliar.",
+   "hidden": 0
+  },
+  {
+   "name": "FindManyRosaries",
+   "displayName": "EXTRA: Laborratory",
+   "description": "Find 33 Rosaries.",
+   "hidden": 0
+  },
+  {
+   "name": "GetJavelinToLevel7",
+   "displayName": "EXTRA: Santa Javelin",
+   "description": "Get Santa Javelin to level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveJavelin",
+   "displayName": "EXTRA: Seraphic Cry",
+   "description": "Evolve the Santa Javelin.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive20MinutesInLaborratory",
+   "displayName": "EXTRA: Santa Ladonna",
+   "description": "Survive 20 minutes in Laborratory.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAnArmaDio",
+   "displayName": "EXTRA: Arma Dio",
+   "description": "Find an Arma Dio.",
+   "hidden": 0
+  },
+  {
+   "name": "HitManyEnemiesWithTrain",
+   "displayName": "EXTRA: Carlo Cart",
+   "description": "Deal a total of 25120 damage with the Laborratory Train. ",
+   "hidden": 0
+  },
+  {
+   "name": "Banish40Items",
+   "displayName": "EXTRA: Seal III",
+   "description": "Banish 40 or more weapons in a single run.",
+   "hidden": 0
+  },
+  {
+   "name": "CompleteAdv_AGarlicParadise",
+   "displayName": "EXTRA: A Garlic Paradise",
+   "description": "Complete once the adventure A Garlic Paradise.",
+   "hidden": 0
+  },
+  {
+   "name": "CompleteAdv_WorldOfLightAndDark",
+   "displayName": "EXTRA: World of Light and Dark",
+   "description": "Complete once the adventure World of Light and Dark.",
+   "hidden": 0
+  },
+  {
+   "name": "CastForbiddenBox",
+   "displayName": "EXTRA: Room 1665",
+   "description": "Dare to cast the spell ",
+   "hidden": 0
+  },
+  {
+   "name": "ObtainDarkasso",
+   "displayName": "EXTRA: Darkasso",
+   "description": "Be embraced by the Darkasso.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_06Darkasso",
+   "displayName": "EXTRA: VI - Moonlight Bolero",
+   "description": "Be embraced by the Darkasso.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_01SpaceDude",
+   "displayName": "EXTRA: I - Sapphire Mist",
+   "description": "Reach a Cooldown bonus of -85% with Space Dude.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_10Santa",
+   "displayName": "EXTRA: X - Hail from the Future",
+   "description": "Trigger a Weird Souls Purifier with Santa Ladonna.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_12Shemoon",
+   "displayName": "EXTRA: XII - Crystal Cries",
+   "description": "Trigger a Starry Heavens with She-Moon Eeta.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_21Robert",
+   "displayName": "EXTRA: XXI - Wandering the Jet Black",
+   "description": "Reach 665 Max Health with Bat Robbert.",
+   "hidden": 0
+  },
+  {
+   "name": "FindManyChickens",
+   "displayName": "EXTRA: Hyper The Coop",
+   "description": "Find 500 Floor Chickens.",
+   "hidden": 0
+  },
+  {
+   "name": "FindAParmAegis",
+   "displayName": "EXTRA: Parm Aegis",
+   "description": "Find a Parm Aegis in The Coop.",
+   "hidden": 0
+  },
+  {
+   "name": "FindChickenClock",
+   "displayName": "EXTRA: Game Speed Modifier",
+   "description": "Find the Roast chicken with a clock in the middle at the end of The Coop.",
+   "hidden": 0
+  },
+  {
+   "name": "Defeat0EnemiesInCoop",
+   "displayName": "EXTRA: Gaze of Gaea",
+   "description": "Defeat 0 enemies in The Coop.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveOfGaea",
+   "displayName": "EXTRA: Gazebo",
+   "description": "Survive 20 minutes in The Coop.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_03Gazebo",
+   "displayName": "EXTRA: III - Hidden Anathema",
+   "description": "Eat as much as possible with Gazebo.",
+   "hidden": 0
+  },
+  {
+   "name": "Banish80Items",
+   "displayName": "EXTRA: Seal All",
+   "description": "Banish 80 or more weapons in a single run.",
+   "hidden": 0
+  },
+  {
+   "name": "CompleteAdv_ToEndAnIceAge",
+   "displayName": "EXTRA: To End An Ice Age",
+   "description": "Complete once the adventure To End An Ice Age.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveOfGaea_Fix",
+   "displayName": "EXTRA: Embrace of Gaea",
+   "description": "Evolve the Gaze of Gaea.",
+   "hidden": 0
+  },
+  {
+   "name": "FindManyClovers",
+   "displayName": "EXTRA: Westwoods",
+   "description": "Find 23 Little Clovers.",
+   "hidden": 0
+  },
+  {
+   "name": "Survive20minutesInWestwoods",
+   "displayName": "EXTRA: Chula-Reh",
+   "description": "Survive 20 minutes in Westwoods. ",
+   "hidden": 0
+  },
+  {
+   "name": "FindKaromasMana",
+   "displayName": "EXTRA: Karoma's Mana",
+   "description": "Find a Karoma's Mana in Westwoods.",
+   "hidden": 0
+  },
+  {
+   "name": "FindMasquerade",
+   "displayName": "EXTRA: Masquerade",
+   "description": "Find the Masquerade Relic in Westwoods.",
+   "hidden": 0
+  },
+  {
+   "name": "GetMagiStoneToLevel7",
+   "displayName": "EXTRA: Magi-Stone",
+   "description": "Get Magi-Stone To Level 7.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveMagiStone",
+   "displayName": "EXTRA: Kyra-Stones",
+   "description": "Evolve the Magi-Stone.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_13Chula",
+   "displayName": "EXTRA: XIII - Call of a Mad Moon",
+   "description": "Reach +999% Luck with Chula-Reh.",
+   "hidden": 0
+  },
+  {
+   "name": "ReachLV80InverseWarehouse",
+   "displayName": "EXTRA: Mazerella",
+   "description": "Reach Level 80 in Inverse Dairy Plant.",
+   "hidden": 0
+  },
+  {
+   "name": "FindChaosLazulia",
+   "displayName": "EXTRA: Chaos Lazulia",
+   "description": "Find the Chaos Lazulia in Mazerella.",
+   "hidden": 0
+  },
+  {
+   "name": "FindRecycle",
+   "displayName": "EXTRA: Preserve",
+   "description": "Find the Wax Fetish in Mazerella.",
+   "hidden": 0
+  },
+  {
+   "name": "DefeatShootingEnemies",
+   "displayName": "EXTRA: Ammo Appalate",
+   "description": "Defeat a total of 251096 Shooting Enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "EvolveAmmoAppalate",
+   "displayName": "EXTRA: Zi'Appunta Belpaese",
+   "description": "Evolve the Ammo Appalate.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_05Appunta",
+   "displayName": "EXTRA: V - Pale Diamond Incursion",
+   "description": "Find 10 Treasure Chests from Zi'Appunta's ability in a single run.",
+   "hidden": 0
+  },
+  {
+   "name": "Dark_18Challenge",
+   "displayName": "EXTRA: XVIII - Victorian Horror",
+   "description": "Survive 30 minutes with no weapons in Inverse Green Acres.",
+   "hidden": 0
+  }
+ ]
+}

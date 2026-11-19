@@ -1,0 +1,972 @@
+{
+ "appid": 3265700,
+ "name": "Vampire Crawlers: The Turbo Wildcard from Vampire Survivors",
+ "achievements": [
+  {
+   "name": "Character_Antonio",
+   "displayName": "Antonio",
+   "description": "Rescued Antonio in the average Italian countryside.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_PancakeOfPower",
+   "displayName": "Combo Stack",
+   "description": "Found these Pancakes in the Tutorial.",
+   "hidden": 0
+  },
+  {
+   "name": "Inn",
+   "displayName": "The Inn",
+   "description": "Crawler Selection Unlocked.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_GemHammer",
+   "displayName": "Gem Hammer",
+   "description": "Find the Gem Hammer Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "HollowHeart",
+   "displayName": "Hollow Heart",
+   "description": "Reach Level 10.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_BloodyTear",
+   "displayName": "Discover Bloody Tear",
+   "description": "Evolve Whip.",
+   "hidden": 0
+  },
+  {
+   "name": "Crown",
+   "displayName": "Crown",
+   "description": "Reach Level 15.",
+   "hidden": 0
+  },
+  {
+   "name": "PowerUpShop",
+   "displayName": "Power Ups Shop",
+   "description": "Collect 250 coins.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_InlaidLibrary_01",
+   "displayName": "Unlock Inlaid Library",
+   "description": "Reach Level 10 in Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_GuidingLight",
+   "displayName": "Guiding Light",
+   "description": "Find the Guiding Light Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Pasqualina",
+   "displayName": "Pasqualina",
+   "description": "Reach Level 20 with Imelda Belpaese in Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "Runetracer",
+   "displayName": "Runetracer",
+   "description": "Reach a high Level with Pasqualina Belpaese.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_NoFuture",
+   "displayName": "Discover NO FUTURE",
+   "description": "Evolve Runetracer.",
+   "hidden": 0
+  },
+  {
+   "name": "Spellbinder",
+   "displayName": "Spellbinder",
+   "description": "Play Runetracer cards 10 times.",
+   "hidden": 0
+  },
+  {
+   "name": "StoneMask",
+   "displayName": "Stone Mask",
+   "description": "Find and play a Stone Mask.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_MadForest_02",
+   "displayName": "Unlock Furious Forest",
+   "description": "Complete Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Gennaro",
+   "displayName": "Gennaro",
+   "description": "Defeat the Mantichana in Mad Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "Bracer",
+   "displayName": "Bracer",
+   "description": "Play King Bible cards 99 times.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_ThousandEdge",
+   "displayName": "Discover Thousand Edge",
+   "description": "Evolve Knife.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_Polentir",
+   "displayName": "Polentír",
+   "description": "Find the Polentír Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "RelicMuseum",
+   "displayName": "Relic Museum",
+   "description": "Play two dungeons.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Arca",
+   "displayName": "Arca",
+   "description": "Play Fire Wand cards lots of times.",
+   "hidden": 0
+  },
+  {
+   "name": "FireWand",
+   "displayName": "Fire Wand",
+   "description": "Destroy 20 light sources.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_HellFire",
+   "displayName": "Discover Hellfire",
+   "description": "Evolve Fire Wand.",
+   "hidden": 0
+  },
+  {
+   "name": "ManaSython",
+   "displayName": "Mana Syphon",
+   "description": "Gain lots and lots of Mana in a turn.",
+   "hidden": 0
+  },
+  {
+   "name": "EmptyTome",
+   "displayName": "Empty Tome",
+   "description": "Collect 2 Mana Orbs.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_HolyWand",
+   "displayName": "Discover Holy Wand",
+   "description": "Evolve Magic Wand.",
+   "hidden": 0
+  },
+  {
+   "name": "SharpMind",
+   "displayName": "Sharp Mind",
+   "description": "Play lots of purple cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Poe",
+   "displayName": "Poe",
+   "description": "Play Garlic cards lots of times.",
+   "hidden": 0
+  },
+  {
+   "name": "Pummarola",
+   "displayName": "Pummarola",
+   "description": "Reach Level 10 with Gennaro Belpaese.",
+   "hidden": 0
+  },
+  {
+   "name": "Garlic",
+   "displayName": "Garlic",
+   "description": "Pick up 5 Floor Chickens.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_SoulEater",
+   "displayName": "Discover Soul Eater",
+   "description": "Evolve Garlic.",
+   "hidden": 0
+  },
+  {
+   "name": "Peachone",
+   "displayName": "Peachone",
+   "description": "Reach Level 25.",
+   "hidden": 0
+  },
+  {
+   "name": "EbonyWing",
+   "displayName": "Ebony Wings",
+   "description": "Play Peachone card once.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_Vandalier",
+   "displayName": "Discover Vandalier",
+   "description": "Unite Peachone and Ebony Wings.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_InlaidLibrary_02",
+   "displayName": "Unlock Library West Wing",
+   "description": "Complete Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "AttractionOrb",
+   "displayName": "Attractorb",
+   "description": "Find and play Vacuum cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_GrimGrimoire",
+   "displayName": "Grim Grimoire",
+   "description": "Find the Grim Grimoire Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_TinyBridge_01",
+   "displayName": "Unlock Teeny Bridge",
+   "description": "Reach Level 15 in Inlaid Library.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Dommario",
+   "displayName": "Dommario",
+   "description": "Collect lots and lots of coins.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_UnholyVespers",
+   "displayName": "Discover Unholy Vespers",
+   "description": "Evolve King Bible.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_Overkill",
+   "displayName": "Overkill",
+   "description": "Find the Overkill Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_Blacksmith",
+   "displayName": "Stardust Anvil",
+   "description": "Find the Stardust Anvil Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Lama",
+   "displayName": "Lama",
+   "description": "Complete a dungeon with 10% Curse or more.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_DeathSpiral",
+   "displayName": "Discover Death Spiral",
+   "description": "Evolve Axe.",
+   "hidden": 0
+  },
+  {
+   "name": "SkullOManiac",
+   "displayName": "Skull O'Maniac",
+   "description": "Reach Level 30 with Lama Ladonna.",
+   "hidden": 0
+  },
+  {
+   "name": "OverTheTop",
+   "displayName": "Over The Top",
+   "description": "Play lots of Crawler cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_DairyPlant_01",
+   "displayName": "Unlock Dairy Plant",
+   "description": "Complete Teeny Bridge.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Ramba",
+   "displayName": "Ramba",
+   "description": "Defeat the Milk Elemental.",
+   "hidden": 0
+  },
+  {
+   "name": "Carrello",
+   "displayName": "Carréllo",
+   "description": "Destroy lots of Mine Carts.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Porta",
+   "displayName": "Porta",
+   "description": "Play lots of Lightning Ring cards.",
+   "hidden": 0
+  },
+  {
+   "name": "LightningRing",
+   "displayName": "Lightning Ring",
+   "description": "Defeat many enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "Duplicator",
+   "displayName": "Duplicator",
+   "description": "Play Magic Wand cards lots of times.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_Thunderloop",
+   "displayName": "Discover Thunder Loop",
+   "description": "Evolve Lightning Ring.",
+   "hidden": 0
+  },
+  {
+   "name": "MakeAScene",
+   "displayName": "Make a Scene",
+   "description": "Activate lots and lots of Crawler trigger abilities.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_MadForest_03",
+   "displayName": "Berserk Wood",
+   "description": "Complete Furious Forest.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Mortuccio",
+   "displayName": "Mortaccio",
+   "description": "Defeat many Skeletons.",
+   "hidden": 0
+  },
+  {
+   "name": "Bone",
+   "displayName": "Bone",
+   "description": "Reach a high Level with Mortaccio.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Pugnala",
+   "displayName": "Pugnala",
+   "description": "Find the Coffin in Berserk Wood.",
+   "hidden": 0
+  },
+  {
+   "name": "Tirajisu",
+   "displayName": "Tirajisú",
+   "description": "Reach Level 20 with Krochi Freetto.",
+   "hidden": 0
+  },
+  {
+   "name": "EightTheSparrow",
+   "displayName": "Eight The Sparrow",
+   "description": "Reach a high Level with Pugnala Provola.",
+   "hidden": 0
+  },
+  {
+   "name": "PhieraDerTuphello",
+   "displayName": "Phiera Der Tuphello",
+   "description": "Reach a very high Level with Pugnala Provola.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_Phierragi",
+   "displayName": "Discover Phieraggi",
+   "description": "Unite Eight The Sparrow and Phiera Der Tuphello.",
+   "hidden": 0
+  },
+  {
+   "name": "AndAnother",
+   "displayName": "And Another",
+   "description": "Play lots of Free-to-Play cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_InlaidLibrary_03",
+   "displayName": "Unlock Library Sanctum",
+   "description": "Complete Library West Wing.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Cavallo",
+   "displayName": "Cavallo",
+   "description": "Defeat many Lion Heads.",
+   "hidden": 0
+  },
+  {
+   "name": "CherryBomb",
+   "displayName": "Cherry Bomb",
+   "description": "Reach Level 15 with Yatta Cavallo.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Giovanna",
+   "displayName": "Giovanna",
+   "description": "Find the Coffin in the Library Sanctum.",
+   "hidden": 0
+  },
+  {
+   "name": "GattiAmari",
+   "displayName": "Gatti Amari",
+   "description": "Reach a high Level with Giovanna Grana.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_ViciousHunger",
+   "displayName": "Discover Vicious Hunger",
+   "description": "Evolve Gatti Amari.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_Randomazzo",
+   "displayName": "Randomazzo",
+   "description": "Find the Randomazzo Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "SwollenFist",
+   "displayName": "Swollen Fist",
+   "description": "Reach 40 Deck size.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_DairyPlant_02",
+   "displayName": "Unlock Milk Factory",
+   "description": "Complete Dairy Plant.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_BombaInfernale",
+   "displayName": "Bomba Infernale",
+   "description": "Find the Bomba Infernale Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Krochi",
+   "displayName": "Krochi",
+   "description": "Defeat many, many enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "Cross",
+   "displayName": "Cross",
+   "description": "Find and play a Rosary card.",
+   "hidden": 0
+  },
+  {
+   "name": "Clover",
+   "displayName": "Clover",
+   "description": "Find and play Little Clover cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_HeavenSword",
+   "displayName": "Discover Heaven Sword",
+   "description": "Evolve Cross.",
+   "hidden": 0
+  },
+  {
+   "name": "YourShieldMyLiege",
+   "displayName": "Your Shield My Liege",
+   "description": "Gain 2,000 Armor.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_TinyBridge_02",
+   "displayName": "Unlock Weeny Bridge",
+   "description": "Reach Level 15 in Dairy Plant.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Clerici",
+   "displayName": "Clerici",
+   "description": "Recover lots and lots of HP.",
+   "hidden": 0
+  },
+  {
+   "name": "Candelabrador",
+   "displayName": "Candelabrador",
+   "description": "Play 3 Santa Water cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_LaBorra",
+   "displayName": "Discover La Borra",
+   "description": "Evolve Santa Water.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_GalloTower_01",
+   "displayName": "Unlock Gallo Tower",
+   "description": "Complete Weeny Bridge.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_Jeweller",
+   "displayName": "Lapidary Loupe",
+   "description": "Find the Lapidary Loupe Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_SorcerersTears",
+   "displayName": "Sorceress' Tears",
+   "description": "Find the Sorceress' Tears Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_OSole",
+   "displayName": "O'Sole",
+   "description": "Defeat many Dragon Shrimps.",
+   "hidden": 0
+  },
+  {
+   "name": "CelestialDusting",
+   "displayName": "Celestial Dusting",
+   "description": "Reach a high Level with O'Sole Meeo.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Concetta",
+   "displayName": "Concetta",
+   "description": "Find the Coffin in Gallo Tower.",
+   "hidden": 0
+  },
+  {
+   "name": "ShadowPinion",
+   "displayName": "Shadow Pinion",
+   "description": "Reach Level 15 with Concetta Caciotta.",
+   "hidden": 0
+  },
+  {
+   "name": "Wings",
+   "displayName": "Wings",
+   "description": "Reach Level 40.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_ValkyrieTurner",
+   "displayName": "Discover Valkyrie Turner",
+   "description": "Evolve Shadow Pinion.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Gallo",
+   "displayName": "Gallo",
+   "description": "Defeat Gallo.",
+   "hidden": 0
+  },
+  {
+   "name": "ClockLancet",
+   "displayName": "Clock Lancet",
+   "description": "Find and play an Orologion card.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Christine",
+   "displayName": "Christine",
+   "description": "Find and play the Pentagram card.",
+   "hidden": 0
+  },
+  {
+   "name": "Pentagram",
+   "displayName": "Pentagram",
+   "description": "Reach Level 35.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_GorgeousMoon",
+   "displayName": "Discover Gorgeous Moon",
+   "description": "Evolve Pentagram.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_TinyBridge_03",
+   "displayName": "Unlock Meany Bridge",
+   "description": "Defeat the Giant Enemy Crab in Gallo Tower.",
+   "hidden": 0
+  },
+  {
+   "name": "ChainLink",
+   "displayName": "Chain Link",
+   "description": "Reach 12 Combo or above.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_DairyPlant_03",
+   "displayName": "Unlock Curd Refinery",
+   "description": "Complete Milk Factory.",
+   "hidden": 0
+  },
+  {
+   "name": "Character_Poppea",
+   "displayName": "Poppea",
+   "description": "Find the Coffin in Milk Factory.",
+   "hidden": 0
+  },
+  {
+   "name": "SongOfMana",
+   "displayName": "Song of Mana",
+   "description": "Reach a high Level with Poppea Pecorina.",
+   "hidden": 0
+  },
+  {
+   "name": "Evo_Mannajja",
+   "displayName": "Discover Mannajja",
+   "description": "Evolve Song of Mana.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_UltimateOverkill",
+   "displayName": "Ultimate Ultra Overkill",
+   "description": "Find the Ultimate Ultra Overkill Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_CappellaMagna_01",
+   "displayName": "Unlock Cappella Magna",
+   "description": "Complete Meany Bridge.",
+   "hidden": 0
+  },
+  {
+   "name": "JestersHat",
+   "displayName": "Jester's Hat",
+   "description": "Play lots of Wild cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock_CappellaMagna_02",
+   "displayName": "Unlock Cappella Ultima",
+   "description": "Complete Cappella Magna.",
+   "hidden": 0
+  },
+  {
+   "name": "WildCombo",
+   "displayName": "Friendship Amulet",
+   "description": "Reach a very high Combo.",
+   "hidden": 0
+  },
+  {
+   "name": "WildDefence",
+   "displayName": "Parm Aegis",
+   "description": "Reach a very very high Combo.",
+   "hidden": 0
+  },
+  {
+   "name": "WildAttack",
+   "displayName": "Bracelet",
+   "description": "Reach a very very very high Combo.",
+   "hidden": 0
+  },
+  {
+   "name": "Relic_Ovenkilt",
+   "displayName": "Ovenkilt",
+   "description": "Find the Ovenkilt Relic.",
+   "hidden": 0
+  },
+  {
+   "name": "WildStrength",
+   "displayName": "Wild Buff",
+   "description": "Play lots and lots of cards picked up from light sources.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_02_CompIL1",
+   "displayName": "Nduja Gem",
+   "description": "Defeat Nesufritto.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_CompleteDP3",
+   "displayName": "Fireproof Gem",
+   "description": "Complete Curd Refinery.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_CompleteIL3",
+   "displayName": "Crawler Caller Gem",
+   "description": "Complete Library Sanctum.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_CompleteMF3",
+   "displayName": "Yin Yang Gem",
+   "description": "Complete Berserk Wood",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Arcane",
+   "displayName": "Mana Rebate Gem",
+   "description": "Gain lots and lots and lots of Mana in a turn.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Blue",
+   "displayName": "Blue Trigger Gem",
+   "description": "Play lots of blue cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Bombard",
+   "displayName": "Bombard Gem",
+   "description": "Play lots of Cherry Bomb cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Boost",
+   "displayName": "Growth Gem",
+   "description": "Play Crown cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Calcium",
+   "displayName": "Calcium Gem",
+   "description": "Play lots of Bone cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Charge",
+   "displayName": "Countdown Gem",
+   "description": "Play lots of Empty Tome cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Clone",
+   "displayName": "Copy Gem",
+   "description": "Play lots and lots of cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Demi",
+   "displayName": "Decimate Gem",
+   "description": "Deal lots and lots of damage.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Destroy",
+   "displayName": "Destroy Gem",
+   "description": "Play lots of cards picked up from light sources.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Discharge",
+   "displayName": "Easy Combo Gem",
+   "description": "Reach 5 Combo or above.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Drain",
+   "displayName": "Drain Gem",
+   "description": "Heal lots of HP.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Duration",
+   "displayName": "Duration Gem",
+   "description": "Play Spellbinder cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Echo",
+   "displayName": "Echo Gem",
+   "description": "Play lots and lots and lots and lots of cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Free",
+   "displayName": "Free To Play Gem",
+   "description": "Play lots and lots of Free-to-Play cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Hail",
+   "displayName": "Freeze Gem",
+   "description": "Play Clock Lancet card.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Heal",
+   "displayName": "Restore Health Gem",
+   "description": "Play lots of Pummarola cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Jingle",
+   "displayName": "Coin Count Gem",
+   "description": "Collect a vast fortune of coins.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Leader",
+   "displayName": "Leader Gem",
+   "description": "Deal lots and lots and lots of damage.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Luck",
+   "displayName": "Luck Gem",
+   "description": "Play Clover cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_MagicHat",
+   "displayName": "Magic Hat Gem",
+   "description": "Play lots of Peachone cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Magnet",
+   "displayName": "Magnetic Gem",
+   "description": "Play lots and lots and lots of cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_ManaPlusMinus",
+   "displayName": "Mana Cost Gems",
+   "description": "Collect lots of Mana Orbs.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_ManaPlusMinus2",
+   "displayName": "Mana Cost Gems 2",
+   "description": "Collect lots and lots of Mana Orbs.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Midas",
+   "displayName": "Midas Gem",
+   "description": "Collect lots and lots and lots of coins.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Purple",
+   "displayName": "Purple Trigger Gem",
+   "description": "Play lots and lots of purple cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Rainbow",
+   "displayName": "Rainbow Gem",
+   "description": "Activate lots of Crawler trigger abilities.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Red",
+   "displayName": "Red Trigger Gem",
+   "description": "Play lots of red cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Refresh",
+   "displayName": "Refund Gem",
+   "description": "Gain lots of Mana in a turn.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Remote",
+   "displayName": "Remote Gem",
+   "description": "Destroy lots and lots of Mine Carts.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Retain",
+   "displayName": "Retain Gem",
+   "description": "Have 7 cards in a Hand.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Return",
+   "displayName": "Return Gem",
+   "description": "Play lots of cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Reverse",
+   "displayName": "Reverse Combo Gem",
+   "description": "Reach a high Combo.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Slayer",
+   "displayName": "Kill Count Gem",
+   "description": "Defeat many, many, many enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Spike",
+   "displayName": "Armor Strike Gem",
+   "description": "Gain lots of Armor in a turn.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Sprightly",
+   "displayName": "Recycle Gem",
+   "description": "Have 8 cards in a Hand.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Steal",
+   "displayName": "Mug Gem",
+   "description": "Collect lots of coins.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Swift",
+   "displayName": "Quick Draw Gem",
+   "description": "Reach 30 Deck size.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Thief",
+   "displayName": "Coin Card Gem",
+   "description": "Find and play lots of Big Coin Bag cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_TripleDamage",
+   "displayName": "Triple Damage Gem",
+   "description": "Deal lots of damage.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Uncrackable",
+   "displayName": "Uncrackable Gem",
+   "description": "Defeat The Trickster.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Wild",
+   "displayName": "Wild Gem",
+   "description": "Play lots and lots of Wild cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_XCost",
+   "displayName": "Mana X Damage Gem",
+   "description": "Play lots and lots and lots of purple cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Mild",
+   "displayName": "Mild Gem",
+   "description": "Complete Gallo Tower with Gallo.",
+   "hidden": 0
+  },
+  {
+   "name": "Gems_Yellow",
+   "displayName": "Yellow Trigger Gem",
+   "description": "Play lots of yellow cards.",
+   "hidden": 0
+  },
+  {
+   "name": "Plunder",
+   "displayName": "Greed Gem",
+   "description": "Play Stone Mask cards 10 times.",
+   "hidden": 0
+  }
+ ]
+}

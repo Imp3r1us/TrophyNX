@@ -1,0 +1,108 @@
+{
+ "appid": 1497440,
+ "name": "COCOON",
+ "achievements": [
+  {
+   "name": "ACH_TRA_MOON_1",
+   "displayName": "Off the Beaten Path",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TRA_MOON_2",
+   "displayName": "The Space Between the Stars",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TRA_MOON_3",
+   "displayName": "A Perspective on Things",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_BUL_MOON_1",
+   "displayName": "End of the Line",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_BUL_MOON_2",
+   "displayName": "Conduit",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CLK_MOON_1",
+   "displayName": "Mariner's Branch",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CLK_MOON_2",
+   "displayName": "Mesh Network",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CLK_MOON_3",
+   "displayName": "Cryptographer",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CLK_MOON_4",
+   "displayName": "Loophole Maneuvers",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TEL_MOON_1",
+   "displayName": "Skin Deep",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TEL_MOON_2",
+   "displayName": "Different Destinations",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_COMPLETE_GAME",
+   "displayName": "Cosmic Architect",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TRA_ABL",
+   "displayName": "Pathfinder",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_CLK_ABL",
+   "displayName": "Fundamental Changes",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_TEL_ABL",
+   "displayName": "From There to Here",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_BUL_ABL",
+   "displayName": "This Has Potential",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_COMPLETE_SUN",
+   "displayName": "Daybreak",
+   "description": "",
+   "hidden": 1
+  }
+ ]
+}

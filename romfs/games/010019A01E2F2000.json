@@ -1,0 +1,48 @@
+{
+ "title_id": "010019A01E2F2000",
+ "name": "Metroid Prime 4: Beyond",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Bounty Hunter",
+   "desc": "Launch Metroid Prime 4: Beyond 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Visor Online",
+   "desc": "Play Metroid Prime 4: Beyond for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Psychic Explorer",
+   "desc": "Play Metroid Prime 4: Beyond for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Beyond Viewros",
+   "desc": "Play Metroid Prime 4: Beyond for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}

@@ -1,0 +1,31 @@
+build/
+*.elf
+*.nacp
+*.nro
+*.map
+dist/
+host/achievements_host
+host/out/
+host/sd/
+host/saves/
+host/icons/
+host2/out/
+host2/sd/
+host2/icons/
+sysmodule/build/
+sysmodule/*.elf
+sysmodule/*.nso
+sysmodule/*.npdm
+sysmodule/*.nsp
+sysmodule/*.map
+sysmodule/data/botw.json
+sysmodule/data/icon.jpg
+host2/saves/01006A800016E000/
+host2/saves/0100152000022000/
+
+# pc2switch cache (titledb, Steam app list, achievement lists)
+.pc2switch-cache/
+sysmodule/data/games.bin
+
+# your console scan (ZR): personal (user id, copies of your saves) - keep it out of a public repo
+samples/scan_bundle.json

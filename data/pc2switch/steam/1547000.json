@@ -1,0 +1,216 @@
+{
+ "appid": 1547000,
+ "name": "Grand Theft Auto: San Andreas – The Definitive Edition",
+ "achievements": [
+  {
+   "name": "ACH01",
+   "displayName": "Getting Started",
+   "description": "Complete \"Big Smoke\".",
+   "hidden": 0
+  },
+  {
+   "name": "ACH02",
+   "displayName": "With Extra Dip",
+   "description": "Buy 8 meals from Cluckin' Bell throughout the game.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH03",
+   "displayName": "The End of the Line",
+   "description": "Complete \"End of the Line\".",
+   "hidden": 0
+  },
+  {
+   "name": "ACH04",
+   "displayName": "Hoopin' it Up",
+   "description": "Score at least 30 points in the basketball mini-game.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH05",
+   "displayName": "A Legitimate Business",
+   "description": "Export all three car lists.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH06",
+   "displayName": "I’ll Have Two Number 9s",
+   "description": "Reach maximum weight.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH07",
+   "displayName": "The American Dream",
+   "description": "Purchase any house.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH08",
+   "displayName": "Pay 'n' Spray",
+   "description": "Use a Pay 'n' Spray with wanted level.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH09",
+   "displayName": "Bike or Biker",
+   "description": "Complete BMX or NRG challenge.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH10",
+   "displayName": "Who Needs Directions?",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH11",
+   "displayName": "Liberty City State of Mind",
+   "description": "Complete the \"Saint Mark's Bistro\" mission.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH12",
+   "displayName": "Swiss Army Strife",
+   "description": "Max all weapon skills.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH13",
+   "displayName": "School's Out",
+   "description": "Fully complete a vehicle school.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH14",
+   "displayName": "Horror of the Santa Maria",
+   "description": "Drown.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH15",
+   "displayName": "They Can’t Stop All of Us",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH16",
+   "displayName": "Smooth Moves",
+   "description": "Perform a perfect dance routine.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH17",
+   "displayName": "What the City Needs",
+   "description": "Complete 12 levels of Vigilante.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH18",
+   "displayName": "Saviour",
+   "description": "Complete 12 levels of Paramedic.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH19",
+   "displayName": "Rescue a Kitten Too?",
+   "description": "Complete 12 levels of Firefighter.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH20",
+   "displayName": "Yes I Speak English",
+   "description": "Reach 50 fares in Taxi Mode.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH21",
+   "displayName": "Lucky Spinner",
+   "description": "Win at least $1,000 in a single spin of the Wheel of Fortune.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH22",
+   "displayName": "What happens in Las Venturas...",
+   "description": "Complete \"Yay Ka-Boom-Boom\".",
+   "hidden": 0
+  },
+  {
+   "name": "ACH23",
+   "displayName": "All Dressed Up for San Fierro",
+   "description": "Complete \"The Green Sabre\".",
+   "hidden": 0
+  },
+  {
+   "name": "ACH24",
+   "displayName": "Not a Player",
+   "description": "Go on at least one date with every potential girlfriend.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH25",
+   "displayName": "What are the Odds",
+   "description": "Win a race in Inside Track Betting.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH26",
+   "displayName": "Double or Nothin'",
+   "description": "Put all your money or the maximum bet on red or black and win.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH27",
+   "displayName": "Assassin",
+   "description": "Stealth kill all enemies in the mission \"Madd Dogg's Rhymes\".",
+   "hidden": 0
+  },
+  {
+   "name": "ACH28",
+   "displayName": "Original Gangster",
+   "description": "Reach maximum respect.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH29",
+   "displayName": "Today Was a Good Day",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH30",
+   "displayName": "Public Enemy No. 1",
+   "description": "Reach 6 wanted stars.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH31",
+   "displayName": "Chick Magnet",
+   "description": "Achieve maximum sex appeal.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH32",
+   "displayName": "Ain’t Nothing But a G Thing",
+   "description": "Own all gang warfare turfs, properties and have $1,000,000.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH33",
+   "displayName": "Remastered",
+   "description": "Earn 100% completion.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH34",
+   "displayName": "...Here we go again",
+   "description": "Start a new game after getting 100% on a save file.",
+   "hidden": 0
+  },
+  {
+   "name": "ACH35",
+   "displayName": "I Ain't No Buster",
+   "description": "Unlock all achievements.",
+   "hidden": 0
+  }
+ ]
+}

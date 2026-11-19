@@ -1,0 +1,48 @@
+{
+ "title_id": "0100D870045B6000",
+ "name": "NES – Nintendo Switch Online",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Press Start, 1985",
+   "desc": "Launch NES – Nintendo Switch Online 15 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_2",
+   "name": "8-Bit Session",
+   "desc": "Play NES – Nintendo Switch Online for 2 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 2
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Retro Regular",
+   "desc": "Play NES – Nintendo Switch Online for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "NES Archivist",
+   "desc": "Play NES – Nintendo Switch Online for 30 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  }
+ ]
+}

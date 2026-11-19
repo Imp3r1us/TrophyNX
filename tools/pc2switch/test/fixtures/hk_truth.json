@@ -1,0 +1,185 @@
+{
+ "CHARMED": [
+  "playerData/hasCharm"
+ ],
+ "FK_DEFEAT": [
+  "playerData/falseKnightDefeated",
+  "playerData/killedFalseKnight"
+ ],
+ "HORNET_1": [
+  "playerData/hornet1Defeated"
+ ],
+ "STAG_STATION_HALF": [
+  "playerData/stationsOpened"
+ ],
+ "PROTECTED": [
+  "playerData/maxHealthBase"
+ ],
+ "SOUL_MASTER_DEFEAT": [
+  "playerData/mageLordDefeated",
+  "playerData/killedMageLord"
+ ],
+ "MANTIS_LORDS": [
+  "playerData/killedMantisLord"
+ ],
+ "SOULFUL": [
+  "playerData/MPReserveMax"
+ ],
+ "DUNG_DEFENDER": [
+  "playerData/killedDungDefender",
+  "playerData/defeatedDungDefender"
+ ],
+ "BROKEN_VESSEL": [
+  "playerData/killedInfectedKnight"
+ ],
+ "ENCHANTED": [
+  "playerData/charmsOwned"
+ ],
+ "BEAST": [
+  "playerData/hegemolDefeated"
+ ],
+ "HORNET_2": [
+  "playerData/hornetOutskirtsDefeated"
+ ],
+ "GRUBFRIEND": [
+  "playerData/grubsCollected"
+ ],
+ "ATTUNEMENT": [
+  "playerData/dreamOrbs"
+ ],
+ "TEACHER": [
+  "playerData/monomonDefeated"
+ ],
+ "COLOSSEUM_1": [
+  "playerData/colosseumBronzeCompleted"
+ ],
+ "WATCHER": [
+  "playerData/lurienDefeated"
+ ],
+ "MAP": [
+  "@group:map"
+ ],
+ "COLOSSEUM_2": [
+  "playerData/colosseumSilverCompleted"
+ ],
+ "TRAITOR_LORD": [
+  "playerData/killedTraitorLord"
+ ],
+ "STAG_STATION_ALL": [
+  "playerData/openedStagNest"
+ ],
+ "COLLECTOR": [
+  "playerData/killedJarCollector",
+  "playerData/collectorDefeated"
+ ],
+ "DREAM_BROKEN_VESSEL": [
+  "playerData/infectedKnightDreamDefeated"
+ ],
+ "AWAKENING": [
+  "playerData/dreamNailUpgraded"
+ ],
+ "ZOTE": [
+  "playerData/killedZote"
+ ],
+ "GRIMM": [
+  "playerData/killedGrimm"
+ ],
+ "DREAM_FK": [
+  "playerData/falseKnightDreamDefeated"
+ ],
+ "METAMORPHOSIS": [
+  "playerData/grubsCollected"
+ ],
+ "VOID": [
+  "playerData/gotShadeCharm"
+ ],
+ "WORLDSOUL": [
+  "playerData/MPReserveMax"
+ ],
+ "QUIRREL_EPILOGUE": [
+  "playerData/quirrelEpilogueCompleted"
+ ],
+ "ENDING_A": [
+  "playerData/killedHollowKnight"
+ ],
+ "DREAM_SOUL_MASTER_DEFEAT": [
+  "playerData/mageLordDreamDefeated"
+ ],
+ "GREY_PRINCE": [
+  "playerData/killedGreyPrince"
+ ],
+ "MOURNER": [
+  "playerData/xunRewardGiven"
+ ],
+ "COLOSSEUM_3": [
+  "playerData/colosseumGoldCompleted"
+ ],
+ "ENDING_C": [
+  "playerData/killedFinalBoss"
+ ],
+ "MASKED": [
+  "playerData/maxHealthBase"
+ ],
+ "ASCENSION": [
+  "playerData/mothDeparted"
+ ],
+ "BLESSED": [
+  "playerData/salubraBlessing"
+ ],
+ "COMPLETION": [
+  "playerData/completionPercentage"
+ ],
+ "ENDING_B": [],
+ "WHITE_DEFENDER": [
+  "playerData/killedWhiteDefender"
+ ],
+ "NAILSMITH_KILL": [
+  "playerData/nailsmithKilled"
+ ],
+ "PANTHEON1": [
+  "playerData/bossDoorStateTier1/completed"
+ ],
+ "PANTHEON2": [
+  "playerData/bossDoorStateTier2/completed"
+ ],
+ "NIGHTMARE_GRIMM": [
+  "playerData/defeatedNightmareGrimm",
+  "playerData/killedNightmareGrimm"
+ ],
+ "PANTHEON3": [
+  "playerData/bossDoorStateTier3/completed"
+ ],
+ "NAILSMITH_SPARE": [
+  "playerData/nailsmithConvoArt"
+ ],
+ "PANTHEON4": [
+  "playerData/bossDoorStateTier4/completed"
+ ],
+ "BANISHMENT": [
+  "playerData/destroyedNightmareLantern"
+ ],
+ "HUNTER_1": [
+  "playerData/journalEntriesCompleted"
+ ],
+ "NEGLECT": [
+  "playerData/zoteDead"
+ ],
+ "HUNTER_2": [
+  "playerData/killedHunterMark",
+  "playerData/hasHuntersMark"
+ ],
+ "COMPLETIONGG": [
+  "playerData/completionPercentage"
+ ],
+ "MR_MUSHROOM": [
+  "playerData/mrMushroomState"
+ ],
+ "SPEEDRUN_1": [],
+ "SPEED_COMPLETION": [],
+ "SPEEDRUN_2": [],
+ "ENDINGD": [
+  "playerData/bossDoorStateTier5/completed"
+ ],
+ "STEELSOUL": [],
+ "STEELSOUL_COMPLETION": []
+}

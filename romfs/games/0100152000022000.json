@@ -1,0 +1,274 @@
+{
+ "title_id": "0100152000022000",
+ "name": "Mario Kart 8 Deluxe",
+ "reader": "binary_le",
+ "magic": "SUTC",
+ "close_scan": false,
+ "close_scan_note": "offsets wrong on the current game version (17 false unlocks): no scan on close until they are fixed",
+ "save_files": [
+  "userdata.dat"
+ ],
+ "achievements": [
+  {
+   "id": "coins_1000",
+   "name": "Coin Collector",
+   "desc": "Collect 1,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x195C",
+    "size": 4,
+    "target": 1000,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "coins_10000",
+   "name": "Coin Hoarder",
+   "desc": "Collect 10,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x195C",
+    "size": 4,
+    "target": 10000,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "coins_50000",
+   "name": "Golden Kart",
+   "desc": "Collect 50,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offset": "0x195C",
+    "size": 4,
+    "target": 50000,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "drift_1000",
+   "name": "Drift King",
+   "desc": "Drift 1,000 times",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1968",
+    "size": 4,
+    "target": 1000,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "drift_25000",
+   "name": "Sideways Forever",
+   "desc": "Drift 25,000 times",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1968",
+    "size": 4,
+    "target": 25000,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "mt_1000",
+   "name": "Mini-Turbo",
+   "desc": "Perform 1,000 Mini-Turbos",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1970",
+    "size": 4,
+    "target": 1000,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "smt_500",
+   "name": "Super Mini-Turbo",
+   "desc": "Perform 500 Super Mini-Turbos",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1974",
+    "size": 4,
+    "target": 500,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "umt_100",
+   "name": "Ultra Mini-Turbo",
+   "desc": "Perform 100 Ultra Mini-Turbos",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1978",
+    "size": 4,
+    "target": 100,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "jump_500",
+   "name": "Trick Shot",
+   "desc": "Perform 500 jump boosts",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1964",
+    "size": 4,
+    "target": 500,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "online_race_1",
+   "name": "Worldwide",
+   "desc": "Finish an online race",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1EA8",
+    "size": 4,
+    "target": 1,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "online_race_100",
+   "name": "Online Regular",
+   "desc": "Finish 100 online races",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1EA8",
+    "size": 4,
+    "target": 100,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "online_gold_1",
+   "name": "Online Winner",
+   "desc": "Win an online race",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1EAC",
+    "size": 4,
+    "target": 1,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "online_gold_50",
+   "name": "Online Ace",
+   "desc": "Win 50 online races",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1EAC",
+    "size": 4,
+    "target": 50,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "vr_5000",
+   "name": "5,000 VR",
+   "desc": "Reach a race rating of 5,000",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1E94",
+    "size": 4,
+    "target": 5000,
+    "max": 99999
+   }
+  },
+  {
+   "id": "vr_10000",
+   "name": "10,000 VR",
+   "desc": "Reach a race rating of 10,000",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1E94",
+    "size": 4,
+    "target": 10000,
+    "max": 99999
+   }
+  },
+  {
+   "id": "balloon_win",
+   "name": "Pop Star",
+   "desc": "Win an online Balloon Battle",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1EBC",
+    "size": 4,
+    "target": 1,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "local_race_10",
+   "name": "Couch Racer",
+   "desc": "Finish 10 local wireless races",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x1F08",
+    "size": 4,
+    "target": 10,
+    "max": 10000000
+   }
+  },
+  {
+   "id": "t_launch",
+   "name": "Grand Prix Regular",
+   "desc": "Launch Mario Kart 8 Deluxe 15 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_2",
+   "name": "Rookie Racer",
+   "desc": "Play Mario Kart 8 Deluxe for 2 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 2
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Drift Master",
+   "desc": "Play Mario Kart 8 Deluxe for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Rainbow Road Veteran",
+   "desc": "Play Mario Kart 8 Deluxe for 30 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  }
+ ]
+}

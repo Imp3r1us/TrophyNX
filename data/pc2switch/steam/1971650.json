@@ -1,0 +1,204 @@
+{
+ "appid": 1971650,
+ "name": "OCTOPATH TRAVELER II",
+ "achievements": [
+  {
+   "name": "ALL_ACHIEVEMENT",
+   "displayName": "A Story All Your Own",
+   "description": "Unlocked all achievements.",
+   "hidden": 0
+  },
+  {
+   "name": "FIRST_BREAK",
+   "displayName": "First Break",
+   "description": "Broke an enemy for the first time in battle.",
+   "hidden": 0
+  },
+  {
+   "name": "FIRST_FULL_BOOST_ATTACK",
+   "displayName": "Max Boost",
+   "description": "Acted at maximum boost for the first time.",
+   "hidden": 0
+  },
+  {
+   "name": "FIRST_ABILITY_ACQUISTION",
+   "displayName": "A New Skill",
+   "description": "Learned a skill for the first time.",
+   "hidden": 0
+  },
+  {
+   "name": "ONE_CHAPTER_CLEAR",
+   "displayName": "The Journey Begins",
+   "description": "Embarked on a journey.",
+   "hidden": 0
+  },
+  {
+   "name": "FIRST_LINER_SHIP",
+   "displayName": "Setting Sail",
+   "description": "Rode the ferry to a new land.",
+   "hidden": 0
+  },
+  {
+   "name": "JOINED_PLAYER_CHARACTER",
+   "displayName": "Eight Travelers",
+   "description": "Gathered all eight travelers.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_GAK_STORY",
+   "displayName": "An Answer, a Journey",
+   "description": "Completed Osvald's story.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_KUS_STORY",
+   "displayName": "Eir's Apothecaries",
+   "description": "Completed Castti's story.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_TOU_STORY",
+   "displayName": "The Collar Removed",
+   "description": "Completed Throné's story.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_KAR_STORY",
+   "displayName": "Protector of the Island",
+   "description": "Completed Ochette's story.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_SHO_STORY",
+   "displayName": "The Road to Prosperity",
+   "description": "Completed Partitio's story.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_ODO_STORY",
+   "displayName": "Agnea the Star",
+   "description": "Completed Agnea's story.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_SIN_STORY",
+   "displayName": "The Truth Lies in the Flame",
+   "description": "Completed Temenos's story.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_KEN_STORY",
+   "displayName": "Clear Skies",
+   "description": "Completed Hikari's story.",
+   "hidden": 0
+  },
+  {
+   "name": "FIRST_DIVINE_ABILITY_ACQUISITION",
+   "displayName": "Master of Your Craft",
+   "description": "Learned a job's divine skill.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_ODO_KEN_COUPLE_STORY",
+   "displayName": "By the Light of the Heart",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CLEAR_SIN_TOU_COUPLE_STORY",
+   "displayName": "The Detective and His Assistant",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CLEAR_KUS_KAR_COUPLE_STORY",
+   "displayName": "A Peaceful Little Forest",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CLEAR_GAK_SHO_COUPLE_STORY",
+   "displayName": "Mysteries of the Night Sky",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CLEAR_LAST_CHAPTER",
+   "displayName": "Dawn Breaks",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CLEAR_EPILOGUE",
+   "displayName": "Octopath Traveler",
+   "description": "Approached the end of your journey.",
+   "hidden": 0
+  },
+  {
+   "name": "ACQUISITION_ALL_ADVANCED_ABILITY",
+   "displayName": "EX Skill Master",
+   "description": "Learned all EX skills.",
+   "hidden": 0
+  },
+  {
+   "name": "GET_ALL_JOB_ITEM",
+   "displayName": "Job Master",
+   "description": "Learned all secondary jobs.",
+   "hidden": 0
+  },
+  {
+   "name": "ALL_VISTED_MAP",
+   "displayName": "Master of Solistia",
+   "description": "Traveled to every location on the map.",
+   "hidden": 0
+  },
+  {
+   "name": "FIRST_9999_DAMAGE",
+   "displayName": "Hard Hitter",
+   "description": "Dealt 9,999 or more damage.",
+   "hidden": 0
+  },
+  {
+   "name": "CLEAR_EX_BOSS",
+   "displayName": "Gate to the Netherworld",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CLEAR_ALL_SUB_STORY",
+   "displayName": "Worth the Detour",
+   "description": "Finished all side stories.",
+   "hidden": 0
+  },
+  {
+   "name": "GET_MUSIC_RECORD",
+   "displayName": "Record Collector",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "GET_BATTLE_TASTED_WEAPON",
+   "displayName": "Battle-Tested Gear",
+   "description": "Obtained all battle-tested equipment.",
+   "hidden": 0
+  },
+  {
+   "name": "INFORMATION_FIELD_COMMAND_SUCCESS_100",
+   "displayName": "Informed Adventurer",
+   "description": "Gleaned information from 100 townspeople.",
+   "hidden": 0
+  },
+  {
+   "name": "FOLLOWING_NPC_4_PERSON",
+   "displayName": "Octopath Traveler...?",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "STUN_NPC",
+   "displayName": "100 Out Cold",
+   "description": "",
+   "hidden": 1
+  }
+ ]
+}

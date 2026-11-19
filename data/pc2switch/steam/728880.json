@@ -1,0 +1,330 @@
+{
+ "appid": 728880,
+ "name": "Overcooked! 2",
+ "achievements": [
+  {
+   "name": "Complete the game",
+   "displayName": "The Unbread",
+   "description": "Complete the main story campaign",
+   "hidden": 0
+  },
+  {
+   "name": "Complete all hidden levels with 3 stars",
+   "displayName": "The Secret Ingredient",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Deliver X recipes",
+   "displayName": "A Grand Dining Experience",
+   "description": "Deliver 1000 Meals",
+   "hidden": 0
+  },
+  {
+   "name": "Complete world 4 with 3 stars",
+   "displayName": "Sous Chef",
+   "description": "Get 3 stars on every level in World 4",
+   "hidden": 0
+  },
+  {
+   "name": "Complete world 5 with 3 stars",
+   "displayName": "Head Chef",
+   "description": "Get 3 stars on every level in World 5",
+   "hidden": 0
+  },
+  {
+   "name": "Complete world 6 with 3 stars",
+   "displayName": "Executive Chef",
+   "description": "Get 3 stars on every level in World 6",
+   "hidden": 0
+  },
+  {
+   "name": "Deliver each recipe in the game",
+   "displayName": "The Spice of Life",
+   "description": "Deliver every type of meal in the game",
+   "hidden": 0
+  },
+  {
+   "name": "Complete a level in recipe order",
+   "displayName": "Clockwork Kitchen",
+   "description": "Complete a level by doing all the recipes in order",
+   "hidden": 0
+  },
+  {
+   "name": "Land X ingredients in pots",
+   "displayName": "Hot Pot Shot",
+   "description": "Throw 100 ingredients into a cooking pot",
+   "hidden": 0
+  },
+  {
+   "name": "Win X versus games",
+   "displayName": "Battered!",
+   "description": "Win 10 games in versus mode",
+   "hidden": 0
+  },
+  {
+   "name": "Complete world 1 with 3 stars",
+   "displayName": "Kitchen Porter",
+   "description": "Get 3 stars on every level in World 1",
+   "hidden": 0
+  },
+  {
+   "name": "Complete world 2 with 3 stars",
+   "displayName": "Commis Chef",
+   "description": "Get 3 stars on every level in World 2",
+   "hidden": 0
+  },
+  {
+   "name": "Complete world 3 with 3 stars",
+   "displayName": "Chef de Partie",
+   "description": "Get 3 stars on every level in World 3",
+   "hidden": 0
+  },
+  {
+   "name": "Unlock all chefs",
+   "displayName": "Too Many Cooks",
+   "description": "Unlock all the chefs",
+   "hidden": 0
+  },
+  {
+   "name": "Extinguish a burning kitchen",
+   "displayName": "If You Can't Stand the Heat",
+   "description": "Extinguish a burning kitchen",
+   "hidden": 0
+  },
+  {
+   "name": "Complete the tutorial level",
+   "displayName": "And Suet Begins",
+   "description": "Complete the tutorial level",
+   "hidden": 0
+  },
+  {
+   "name": "Play X party games",
+   "displayName": "Dinner Party Posse",
+   "description": "Finish 15 Arcade games",
+   "hidden": 0
+  },
+  {
+   "name": "Play X versus games",
+   "displayName": "It's A Cook-Off!",
+   "description": "Finish 15 versus games",
+   "hidden": 0
+  },
+  {
+   "name": "Throw X items",
+   "displayName": "Toss Lightly",
+   "description": "Throw 500 items",
+   "hidden": 0
+  },
+  {
+   "name": "Catch X items",
+   "displayName": "I Ain't No Butterfingers",
+   "description": "Catch 250 items",
+   "hidden": 0
+  },
+  {
+   "name": "X food binned",
+   "displayName": "Bangers And Trash",
+   "description": "Put 99 items in the bin",
+   "hidden": 0
+  },
+  {
+   "name": "Wash X plates",
+   "displayName": "Dishwasher",
+   "description": "Wash 300 plates",
+   "hidden": 0
+  },
+  {
+   "name": "Use all emotes",
+   "displayName": "It's Bean Emotional",
+   "description": "Use every emote",
+   "hidden": 0
+  },
+  {
+   "name": "Go through X portals",
+   "displayName": "Jelly-Porter",
+   "description": "Go through portals 75 times",
+   "hidden": 0
+  },
+  {
+   "name": "Chop X ingredients",
+   "displayName": "Get To The Chopper",
+   "description": "Chop 800 items",
+   "hidden": 0
+  },
+  {
+   "name": "Hit all switches on the world map",
+   "displayName": "Switch It Up",
+   "description": "Hit all the switches on the world map",
+   "hidden": 0
+  },
+  {
+   "name": "Complete all DLC levels 3 star",
+   "displayName": "Surf 'n' Turf",
+   "description": "Get 3 stars on all Surf 'n' Turf levels",
+   "hidden": 0
+  },
+  {
+   "name": "Deliver all individual recipes in the DLC",
+   "displayName": "You Got Served",
+   "description": "Deliver every type of meal in Surf 'n' Turf",
+   "hidden": 0
+  },
+  {
+   "name": "Complete DLC World 1",
+   "displayName": "Smoothie Criminal",
+   "description": "Get 3 stars on every level in Surf 'n' Turf World 1",
+   "hidden": 0
+  },
+  {
+   "name": "Complete DLC World 2",
+   "displayName": "Skewer Rat",
+   "description": "Get 3 stars on every level in Surf 'n' Turf World 2",
+   "hidden": 0
+  },
+  {
+   "name": "Complete DLC World 3",
+   "displayName": "Carte Blanched",
+   "description": "Get 3 stars on every level in Surf 'n' Turf World 3",
+   "hidden": 0
+  },
+  {
+   "name": "Clean X dirty plates or glasses with the water gun",
+   "displayName": "Soaker Cola",
+   "description": "Wash 150 dirty plates or glasses with the water gun",
+   "hidden": 0
+  },
+  {
+   "name": "Heat up X BBQs with the bellows",
+   "displayName": "Heat and Greet",
+   "description": "Use the Bellows on BBQs 500 times",
+   "hidden": 0
+  },
+  {
+   "name": "DLC05 3 star all levels",
+   "displayName": "Cooked Off!",
+   "description": "Get 3 stars on all Campfire Cook Off levels",
+   "hidden": 0
+  },
+  {
+   "name": "DLC05 Deliver all recipes",
+   "displayName": "Full Mashings",
+   "description": "Deliver every type of meal in Campfire Cook Off",
+   "hidden": 0
+  },
+  {
+   "name": "DLC05 Complete World 1",
+   "displayName": "S'more Than a Feeling",
+   "description": "Get 3 stars on every level in Campfire Cook Off World 1",
+   "hidden": 0
+  },
+  {
+   "name": "DLC05 Complete World 2",
+   "displayName": "The Greasy Spoon",
+   "description": "Get 3 stars on every level in Campfire Cook Off World 2",
+   "hidden": 0
+  },
+  {
+   "name": "DLC05 Complete World 3",
+   "displayName": "Specials Board",
+   "description": "Get 3 stars on every level in Campfire Cook Off World 3",
+   "hidden": 0
+  },
+  {
+   "name": "DLC05 Burn X pieces of wood",
+   "displayName": "Tree Hater",
+   "description": "Burn 300 pieces of wood",
+   "hidden": 0
+  },
+  {
+   "name": "DLC05 Take X items from backpack",
+   "displayName": "Backpack Hijack",
+   "description": "Take 500 items from a backpack",
+   "hidden": 0
+  },
+  {
+   "name": "DLC07 Perfect all Horde stages",
+   "displayName": "You Shallot Pass!",
+   "description": "Survive all horde stages in Night of the Hangry Horde with full kitchen health",
+   "hidden": 0
+  },
+  {
+   "name": "DLC07 3 star all levels",
+   "displayName": "Star Braiser",
+   "description": "Get 3 stars on all Night of the Hangry Horde levels with a star rating",
+   "hidden": 0
+  },
+  {
+   "name": "DLC07 Complete World 1",
+   "displayName": "Get Roasted",
+   "description": "Get 3 stars on every level in Night of the Hangry Horde World 1",
+   "hidden": 0
+  },
+  {
+   "name": "DLC07 Complete World 2",
+   "displayName": "Pie Me a River",
+   "description": "Get 3 stars on every level in Night of the Hangry Horde World 2",
+   "hidden": 0
+  },
+  {
+   "name": "DLC07 Complete World 3",
+   "displayName": "Wrap Artist",
+   "description": "Get 3 stars on every level in Night of the Hangry Horde World 3",
+   "hidden": 0
+  },
+  {
+   "name": "DLC07 Burn X pieces of coal",
+   "displayName": "Coal of Duty",
+   "description": "Burn 300 buckets of coal in the furnace",
+   "hidden": 0
+  },
+  {
+   "name": "DLC07 Chop X items with guillotine",
+   "displayName": "Heads Will Roll",
+   "description": "Chop 500 ingredients using the guillotine",
+   "hidden": 0
+  },
+  {
+   "name": "DLC08 Achievement 01",
+   "displayName": "Carnival of Chaos",
+   "description": "Get 3 stars on all Carnival of Chaos levels",
+   "hidden": 0
+  },
+  {
+   "name": "DLC08 Achievement 02",
+   "displayName": "Fast Foodie",
+   "description": "Deliver every type of meal in Carnival of Chaos",
+   "hidden": 0
+  },
+  {
+   "name": "DLC08 Achievement 03",
+   "displayName": "Mealer Dealer",
+   "description": "Get 3 stars on every level in Carnival of Chaos World 1",
+   "hidden": 0
+  },
+  {
+   "name": "DLC08 Achievement 04",
+   "displayName": "The Breaded Lady",
+   "description": "Get 3 stars on every level in Carnival of Chaos World 2",
+   "hidden": 0
+  },
+  {
+   "name": "DLC08 Achievement 05",
+   "displayName": "Big Topping",
+   "description": "Get 3 stars on every level in Carnival of Chaos World 3",
+   "hidden": 0
+  },
+  {
+   "name": "DLC08 Achievement 06",
+   "displayName": "Cannoned Goods",
+   "description": "Fire a Chef from a Cannon 100 times",
+   "hidden": 0
+  },
+  {
+   "name": "DLC08 Achievement 07",
+   "displayName": "Condiment Connoisseur",
+   "description": "Add mustard or ketchup to a recipe 100 times",
+   "hidden": 0
+  }
+ ]
+}

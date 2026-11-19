@@ -1,0 +1,48 @@
+{
+ "title_id": "01006FD0080B2000",
+ "name": "Overcooked! 2",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Kitchen Reopened",
+   "desc": "Launch Overcooked! 2 15 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_2",
+   "name": "Line Cook",
+   "desc": "Play Overcooked! 2 for 2 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 2
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Sous Chef",
+   "desc": "Play Overcooked! 2 for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Onion King's Favourite",
+   "desc": "Play Overcooked! 2 for 30 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  }
+ ]
+}

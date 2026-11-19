@@ -1,0 +1,56 @@
+{
+ "title_id": "0100698009C6E000",
+ "name": "Blasphemous",
+ "reader": "nrbf",
+ "save_files": [
+  "Save_0.bin",
+  "Save_1.bin",
+  "Save_2.bin",
+  "Save_3.bin",
+  "Save_4.bin"
+ ],
+ "_steam_appid": 774361,
+ "_generated": "pc2switch (review before use)",
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Penitent Returns",
+   "desc": "Launch Blasphemous 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Guilt Bearer",
+   "desc": "Play Blasphemous for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Pilgrim of Cvstodia",
+   "desc": "Play Blasphemous for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Mea Culpa",
+   "desc": "Play Blasphemous for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}

@@ -1,0 +1,568 @@
+{
+ "title_id": "01006A800016E000",
+ "name": "Super Smash Bros. Ultimate",
+ "reader": "binary_le",
+ "file_size": 5982968,
+ "save_files": [
+  "save_data/system_data.bin",
+  "system_data.bin"
+ ],
+ "achievements": [
+  {
+   "id": "fighters_20",
+   "name": "New Challengers",
+   "desc": "Unlock 20 fighters (base roster)",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "offsets": [
+     "0x53FF40",
+     "0x53FF48",
+     "0x53FF50",
+     "0x53FF58",
+     "0x53FF60",
+     "0x53FF68",
+     "0x53FF70",
+     "0x53FF78",
+     "0x53FF80",
+     "0x53FF88",
+     "0x53FF90",
+     "0x53FF98",
+     "0x53FFA0",
+     "0x53FFA8",
+     "0x53FFB0",
+     "0x53FFB8",
+     "0x53FFC0",
+     "0x53FFC8",
+     "0x53FFD0",
+     "0x53FFD8",
+     "0x53FFE0",
+     "0x53FFE8",
+     "0x53FFF0",
+     "0x53FFF8",
+     "0x540000",
+     "0x540008",
+     "0x540010",
+     "0x540018",
+     "0x540020",
+     "0x540028",
+     "0x540030",
+     "0x540038",
+     "0x540040",
+     "0x540048",
+     "0x540050",
+     "0x540058",
+     "0x540060",
+     "0x540068",
+     "0x540070",
+     "0x540078",
+     "0x540080",
+     "0x540088",
+     "0x540090",
+     "0x540098",
+     "0x5400A0",
+     "0x5400A8",
+     "0x5400B0",
+     "0x5400B8",
+     "0x5400C0",
+     "0x5400C8",
+     "0x5400D0",
+     "0x5400D8",
+     "0x5400E0",
+     "0x5400E8",
+     "0x5400F0",
+     "0x5400F8",
+     "0x540100",
+     "0x540108",
+     "0x540110",
+     "0x540118",
+     "0x540120",
+     "0x540128",
+     "0x540130",
+     "0x540138",
+     "0x540138",
+     "0x540140",
+     "0x540148",
+     "0x540150",
+     "0x540158",
+     "0x540160",
+     "0x540168"
+    ],
+    "size": 1,
+    "max": 1,
+    "target": 20
+   }
+  },
+  {
+   "id": "fighters_45",
+   "name": "Growing Roster",
+   "desc": "Unlock 45 fighters (base roster)",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "offsets": [
+     "0x53FF40",
+     "0x53FF48",
+     "0x53FF50",
+     "0x53FF58",
+     "0x53FF60",
+     "0x53FF68",
+     "0x53FF70",
+     "0x53FF78",
+     "0x53FF80",
+     "0x53FF88",
+     "0x53FF90",
+     "0x53FF98",
+     "0x53FFA0",
+     "0x53FFA8",
+     "0x53FFB0",
+     "0x53FFB8",
+     "0x53FFC0",
+     "0x53FFC8",
+     "0x53FFD0",
+     "0x53FFD8",
+     "0x53FFE0",
+     "0x53FFE8",
+     "0x53FFF0",
+     "0x53FFF8",
+     "0x540000",
+     "0x540008",
+     "0x540010",
+     "0x540018",
+     "0x540020",
+     "0x540028",
+     "0x540030",
+     "0x540038",
+     "0x540040",
+     "0x540048",
+     "0x540050",
+     "0x540058",
+     "0x540060",
+     "0x540068",
+     "0x540070",
+     "0x540078",
+     "0x540080",
+     "0x540088",
+     "0x540090",
+     "0x540098",
+     "0x5400A0",
+     "0x5400A8",
+     "0x5400B0",
+     "0x5400B8",
+     "0x5400C0",
+     "0x5400C8",
+     "0x5400D0",
+     "0x5400D8",
+     "0x5400E0",
+     "0x5400E8",
+     "0x5400F0",
+     "0x5400F8",
+     "0x540100",
+     "0x540108",
+     "0x540110",
+     "0x540118",
+     "0x540120",
+     "0x540128",
+     "0x540130",
+     "0x540138",
+     "0x540138",
+     "0x540140",
+     "0x540148",
+     "0x540150",
+     "0x540158",
+     "0x540160",
+     "0x540168"
+    ],
+    "size": 1,
+    "max": 1,
+    "target": 45
+   }
+  },
+  {
+   "id": "fighters_71",
+   "name": "Everyone Is Here!",
+   "desc": "Unlock every base-roster fighter, Mario to Incineroar",
+   "points": 100,
+   "rule": {
+    "type": "count",
+    "offsets": [
+     "0x53FF40",
+     "0x53FF48",
+     "0x53FF50",
+     "0x53FF58",
+     "0x53FF60",
+     "0x53FF68",
+     "0x53FF70",
+     "0x53FF78",
+     "0x53FF80",
+     "0x53FF88",
+     "0x53FF90",
+     "0x53FF98",
+     "0x53FFA0",
+     "0x53FFA8",
+     "0x53FFB0",
+     "0x53FFB8",
+     "0x53FFC0",
+     "0x53FFC8",
+     "0x53FFD0",
+     "0x53FFD8",
+     "0x53FFE0",
+     "0x53FFE8",
+     "0x53FFF0",
+     "0x53FFF8",
+     "0x540000",
+     "0x540008",
+     "0x540010",
+     "0x540018",
+     "0x540020",
+     "0x540028",
+     "0x540030",
+     "0x540038",
+     "0x540040",
+     "0x540048",
+     "0x540050",
+     "0x540058",
+     "0x540060",
+     "0x540068",
+     "0x540070",
+     "0x540078",
+     "0x540080",
+     "0x540088",
+     "0x540090",
+     "0x540098",
+     "0x5400A0",
+     "0x5400A8",
+     "0x5400B0",
+     "0x5400B8",
+     "0x5400C0",
+     "0x5400C8",
+     "0x5400D0",
+     "0x5400D8",
+     "0x5400E0",
+     "0x5400E8",
+     "0x5400F0",
+     "0x5400F8",
+     "0x540100",
+     "0x540108",
+     "0x540110",
+     "0x540118",
+     "0x540120",
+     "0x540128",
+     "0x540130",
+     "0x540138",
+     "0x540138",
+     "0x540140",
+     "0x540148",
+     "0x540150",
+     "0x540158",
+     "0x540160",
+     "0x540168"
+    ],
+    "size": 1,
+    "max": 1,
+    "target": 71
+   }
+  },
+  {
+   "id": "ko_100",
+   "name": "KO Artist",
+   "desc": "Score 100 KOs",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x540288",
+    "size": 4,
+    "target": 100,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "ko_1000",
+   "name": "Smash Master",
+   "desc": "Score 1,000 KOs",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x540288",
+    "size": 4,
+    "target": 1000,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "ko_10000",
+   "name": "Ten Thousand Launches",
+   "desc": "Score 10,000 KOs",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offset": "0x540288",
+    "size": 4,
+    "target": 10000,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "damage_100k",
+   "name": "Percent Machine",
+   "desc": "Deal 100,000% damage in total",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x540284",
+    "size": 4,
+    "target": 100000,
+    "max": 4000000000
+   }
+  },
+  {
+   "id": "stock_100",
+   "name": "Stock Trader",
+   "desc": "Fight 100 stock battles",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x54026C",
+    "size": 4,
+    "target": 100,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "stock_1000",
+   "name": "Battle Hardened",
+   "desc": "Fight 1,000 stock battles",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x54026C",
+    "size": 4,
+    "target": 1000,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "eight_player",
+   "name": "Eight-Player Smash",
+   "desc": "Fight a battle with 8 players",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x540278",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "classic_1",
+   "name": "Classic Clear",
+   "desc": "Clear Classic Mode",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402E8",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "classic_10",
+   "name": "Classic Collector",
+   "desc": "Clear Classic Mode 10 times",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402E8",
+    "size": 4,
+    "target": 10,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "classic_50",
+   "name": "Classic Legend",
+   "desc": "Clear Classic Mode 50 times",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402E8",
+    "size": 4,
+    "target": 50,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "wol_wins_100",
+   "name": "Spirit Liberator",
+   "desc": "Win 100 battles in World of Light",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402D4",
+    "size": 4,
+    "target": 100,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "wol_clear",
+   "name": "World of Light",
+   "desc": "Complete World of Light",
+   "points": 100,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402D8",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   },
+   "hidden": true
+  },
+  {
+   "id": "spirit_summon",
+   "name": "Summoner",
+   "desc": "Summon a spirit",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402C0",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "spirit_lv99",
+   "name": "Maxed Out",
+   "desc": "Raise a spirit to level 99",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402CC",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "spirit_board_50",
+   "name": "Spirit Board Regular",
+   "desc": "Win 50 Spirit Board battles",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402D0",
+    "size": 4,
+    "target": 50,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "online_1",
+   "name": "Going Online",
+   "desc": "Fight a solo Quickplay battle online",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x540324",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "online_wins_100",
+   "name": "Quickplay Champion",
+   "desc": "Win 100 solo Quickplay battles",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offset": "0x540328",
+    "size": 4,
+    "target": 100,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "elite",
+   "name": "Elite Smash",
+   "desc": "Fight an Elite Smash battle",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offset": "0x54033C",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "mii",
+   "name": "Mii Maker",
+   "desc": "Create a Mii Fighter",
+   "points": 5,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5402FC",
+    "size": 4,
+    "target": 1,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "gold_10000",
+   "name": "Gold Hoarder",
+   "desc": "Hold 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offset": "0x5506DC",
+    "size": 4,
+    "target": 10000,
+    "max": 100000000
+   }
+  },
+  {
+   "id": "t_launch",
+   "name": "Challenger Approaching",
+   "desc": "Launch Super Smash Bros. Ultimate 15 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_2",
+   "name": "Fighter",
+   "desc": "Play Super Smash Bros. Ultimate for 2 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 2
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "World of Light",
+   "desc": "Play Super Smash Bros. Ultimate for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Smash Legend",
+   "desc": "Play Super Smash Bros. Ultimate for 30 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  }
+ ]
+}

@@ -1,0 +1,276 @@
+{
+ "appid": 774361,
+ "name": "Blasphemous",
+ "achievements": [
+  {
+   "name": "AC01",
+   "displayName": "A Long Path Ahead",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC02",
+   "displayName": "No Mercy",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC03",
+   "displayName": "Look Her In The Eye",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC04",
+   "displayName": "Danse Macabre",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC05",
+   "displayName": "The Brother",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC06",
+   "displayName": "The Bejeweled Saint",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC07",
+   "displayName": "Blind Innocence",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC08",
+   "displayName": "Ashes to Ashes",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC09",
+   "displayName": "Duel of Faith",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC10",
+   "displayName": "Summa Blasphemia",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC11",
+   "displayName": "The Path of the Believer",
+   "description": "Unlock ending A.",
+   "hidden": 0
+  },
+  {
+   "name": "AC12",
+   "displayName": "The Path of the Unworthy",
+   "description": "Unlock ending B.",
+   "hidden": 0
+  },
+  {
+   "name": "AC13",
+   "displayName": "The Bull and the Moon",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC14",
+   "displayName": "Last Words",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC15",
+   "displayName": "Detestatio Sacrorum",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC16",
+   "displayName": "Unwavering Devotion",
+   "description": "Get the 13 original prayers.",
+   "hidden": 0
+  },
+  {
+   "name": "AC17",
+   "displayName": "Skin and Bones",
+   "description": "Get the 7 original relics.",
+   "hidden": 0
+  },
+  {
+   "name": "AC18",
+   "displayName": "Mysteria Lucis",
+   "description": "Get the 30 original rosary beads.",
+   "hidden": 0
+  },
+  {
+   "name": "AC19",
+   "displayName": "Warden of the Ossuary",
+   "description": "Get the 44 original collectibles.",
+   "hidden": 0
+  },
+  {
+   "name": "AC20",
+   "displayName": "Heartbreaker",
+   "description": "Get the 9 original sword hearts.",
+   "hidden": 0
+  },
+  {
+   "name": "AC21",
+   "displayName": "Cvstodia's Pilgrim",
+   "description": "Discover the main areas of Cvstodia.",
+   "hidden": 0
+  },
+  {
+   "name": "AC22",
+   "displayName": "Six Stinging Pains",
+   "description": "Achieve maximum health.",
+   "hidden": 0
+  },
+  {
+   "name": "AC23",
+   "displayName": "Baptism of Faith",
+   "description": "Achieve maximum fervor.",
+   "hidden": 0
+  },
+  {
+   "name": "AC24",
+   "displayName": "Mea Culpa",
+   "description": "Achieve the maximum level of the sword Mea Culpa.",
+   "hidden": 0
+  },
+  {
+   "name": "AC25",
+   "displayName": "The Fountain of Life",
+   "description": "Achieve maximum flask capacity.",
+   "hidden": 0
+  },
+  {
+   "name": "AC26",
+   "displayName": "Engracia",
+   "description": "Achieve the maximum number of rosary bead slots.",
+   "hidden": 0
+  },
+  {
+   "name": "AC27",
+   "displayName": "Inquisition",
+   "description": "Execute 5 different enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "AC28",
+   "displayName": "Power Unleashed",
+   "description": "Use a Righteous Riposte 5 times.",
+   "hidden": 0
+  },
+  {
+   "name": "AC29",
+   "displayName": "The Desire of the Corrupted",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC30",
+   "displayName": "True Shrine",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC31",
+   "displayName": "Dying Breath",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC32",
+   "displayName": "Rebirth",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC33",
+   "displayName": "Ultreia Et Suseia",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC34",
+   "displayName": "In the name of the High Wills",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC35",
+   "displayName": "Mediterranean Diet",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC36",
+   "displayName": "Flea Market",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC37",
+   "displayName": "Warm and Soft",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC38",
+   "displayName": "The Sister",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AC39",
+   "displayName": "Bestiary",
+   "description": "Defeat the 51 original types of enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "AC40",
+   "displayName": "Blood and Tears",
+   "description": "Unlock all the abilities on the Mea Culpa altars.",
+   "hidden": 0
+  },
+  {
+   "name": "AC41",
+   "displayName": "The Number of the Beasts",
+   "description": "Kill 666 enemies.",
+   "hidden": 0
+  },
+  {
+   "name": "AC42",
+   "displayName": "Crossing Souls",
+   "description": "Provoke the meeting between Redento and Cleofás.",
+   "hidden": 0
+  },
+  {
+   "name": "AC43",
+   "displayName": "Requiem Aeternam",
+   "description": "Defeat the original bosses without consuming any bile flasks.",
+   "hidden": 0
+  },
+  {
+   "name": "AC44",
+   "displayName": "Bronze Medal",
+   "description": "Pass through the bronze door on the Bridge of Calvary in less than 3 hours.",
+   "hidden": 0
+  },
+  {
+   "name": "AC46",
+   "displayName": "Witness of The Miracle",
+   "description": "Beat 100% of the game.",
+   "hidden": 0
+  }
+ ]
+}

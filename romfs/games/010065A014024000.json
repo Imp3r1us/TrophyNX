@@ -1,0 +1,48 @@
+{
+ "title_id": "010065A014024000",
+ "name": "GTA: San Andreas – The Definitive Edition",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Grove Street, Home",
+   "desc": "Launch GTA: San Andreas – The Definitive Edition 20 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 20
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Ah Shit, Here We Go Again",
+   "desc": "Play GTA: San Andreas – The Definitive Edition for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Los Santos Local",
+   "desc": "Play GTA: San Andreas – The Definitive Edition for 30 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  },
+  {
+   "id": "t_hours_75",
+   "name": "San Andreas Legend",
+   "desc": "Play GTA: San Andreas – The Definitive Edition for 75 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 75
+   }
+  }
+ ]
+}

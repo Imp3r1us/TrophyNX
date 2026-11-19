@@ -1,0 +1,48 @@
+{
+ "title_id": "01004D501F078000",
+ "name": "The Lord of the Rings: War in the North",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Fellowship of the North",
+   "desc": "Launch The Lord of the Rings: War in the North 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Ranger of the North",
+   "desc": "Play The Lord of the Rings: War in the North for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Orc Slayer",
+   "desc": "Play The Lord of the Rings: War in the North for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Hero of the North",
+   "desc": "Play The Lord of the Rings: War in the North for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}

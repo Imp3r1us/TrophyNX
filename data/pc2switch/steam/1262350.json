@@ -1,0 +1,84 @@
+{
+ "appid": 1262350,
+ "name": "SIGNALIS",
+ "achievements": [
+  {
+   "name": "ACH_1",
+   "displayName": "SYNCHRONIZITÄT",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_2",
+   "displayName": "BESCHLAGNAHMT",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_3",
+   "displayName": "ABWÄRTS",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_4",
+   "displayName": "LIMINALITÄT",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_5",
+   "displayName": "DAS ENDE",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_6",
+   "displayName": "GESTALTZERFALL",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_7",
+   "displayName": "VERSPRECHEN",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_8",
+   "displayName": "SCHWERER AUSNAHMEFEHLER",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_9",
+   "displayName": "EINHORN",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_10",
+   "displayName": "NITRO",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_11",
+   "displayName": "LÖCHER",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_12",
+   "displayName": "ÜBERLEBEN",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACH_13",
+   "displayName": "ACHTUNG",
+   "description": "",
+   "hidden": 1
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+  "per_game": [
+    { "id": "u_first_launch", "name": "Press Start", "desc": "Launch the game for the first time", "points": 5,
+      "rule": { "type": "launches", "target": 1 } },
+    { "id": "u_regular", "name": "Regular", "desc": "Launch the game 25 times", "points": 10,
+      "rule": { "type": "launches", "target": 25 } },
+    { "id": "u_hours_10", "name": "Getting Into It", "desc": "Play for 10 hours", "points": 10,
+      "rule": { "type": "playtime_hours", "target": 10 } },
+    { "id": "u_hours_50", "name": "Dedicated", "desc": "Play for 50 hours", "points": 25,
+      "rule": { "type": "playtime_hours", "target": 50 } },
+    { "id": "u_hours_100", "name": "Centurion", "desc": "Play for 100 hours", "points": 50,
+      "rule": { "type": "playtime_hours", "target": 100 } }
+  ],
+  "global": [
+    { "id": "g_games_5", "name": "Collector", "desc": "Play 5 different games", "points": 10,
+      "rule": { "type": "games_played", "target": 5 } },
+    { "id": "g_games_20", "name": "Curator", "desc": "Play 20 different games", "points": 25,
+      "rule": { "type": "games_played", "target": 20 } },
+    { "id": "g_games_50", "name": "Archivist", "desc": "Play 50 different games", "points": 50,
+      "rule": { "type": "games_played", "target": 50 } },
+    { "id": "g_hours_100", "name": "Hundred Hours Club", "desc": "Play 100 hours in total", "points": 10,
+      "rule": { "type": "total_hours", "target": 100 } },
+    { "id": "g_hours_500", "name": "Living on the Switch", "desc": "Play 500 hours in total", "points": 25,
+      "rule": { "type": "total_hours", "target": 500 } },
+    { "id": "g_hours_1000", "name": "Thousand Hours", "desc": "Play 1,000 hours in total", "points": 50,
+      "rule": { "type": "total_hours", "target": 1000 } },
+    { "id": "g_unlock_25", "name": "Hunter", "desc": "Unlock 25 achievements in your games", "points": 10,
+      "rule": { "type": "unlocked_total", "target": 25 } },
+    { "id": "g_unlock_100", "name": "Completionist", "desc": "Unlock 100 achievements in your games", "points": 50,
+      "rule": { "type": "unlocked_total", "target": 100 } }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+ "title_id": "0100307018934000",
+ "name": "SIGNALIS",
+ "reader": "json",
+ "save_files": [
+  "Save/01/cargo1.manifest",
+  "Save/01/cargo0.manifest",
+  "Save/01/cargo2.manifest",
+  "Save/01/cargo3.manifest",
+  "Save/01/cargo4.manifest"
+ ],
+ "_steam_appid": 1262350,
+ "_generated": "pc2switch (review before use)",
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Replika Reactivated",
+   "desc": "Launch SIGNALIS 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Lost Signal",
+   "desc": "Play SIGNALIS for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_4",
+   "name": "Sierpinski Survivor",
+   "desc": "Play SIGNALIS for 4 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 4
+   }
+  },
+  {
+   "id": "t_hours_8",
+   "name": "Promise Kept",
+   "desc": "Play SIGNALIS for 8 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 8
+   }
+  }
+ ]
+}

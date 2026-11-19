@@ -1,0 +1,126 @@
+{
+ "appid": 1426210,
+ "name": "It Takes Two",
+ "achievements": [
+  {
+   "name": "Achievement_GOSCC_1",
+   "displayName": "It Took Two",
+   "description": "You did it! CO-LLA-BO-RATION!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_2",
+   "displayName": "Minigame Megalomania",
+   "description": "All minigames found!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_3",
+   "displayName": "Fried Friendship",
+   "description": "It takes two to… torture.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_4",
+   "displayName": "Struck A Pose",
+   "description": "Self-inflicted paparazzi.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_5",
+   "displayName": "Plastic Prison Breakers",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Achievement_GOSCC_6",
+   "displayName": "Faraway Frequencies",
+   "description": "The truth was out there all along!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_7",
+   "displayName": "Look At Him Go",
+   "description": "Shoot for the stars, literally.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_8",
+   "displayName": "Break the Bank",
+   "description": "Guess it was time to cash out.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_9",
+   "displayName": "A Daring Devil",
+   "description": "Put on a show and die trying.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_10",
+   "displayName": "Snackosaurus",
+   "description": "Now look who's extinct!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_11",
+   "displayName": "Realize Your Art",
+   "description": "Isn't it pretty? That's going on the fridge.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_12",
+   "displayName": "On Rails Experience",
+   "description": "Choo Choo!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_13",
+   "displayName": "Platforming Prodigy",
+   "description": "Helltower? More like hello-from-up-here-tower!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_14",
+   "displayName": "Force Triangulated",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "Achievement_GOSCC_15",
+   "displayName": "Lost And Found",
+   "description": "Again? Keep track of your kids!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_16",
+   "displayName": "Mood Swing",
+   "description": "Took things a bit too far, didn't you?",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_17",
+   "displayName": "Something Fishy",
+   "description": "Don't feed the animals! Or do, they're adorable.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_18",
+   "displayName": "Terror Of The Seven Seas",
+   "description": "Scurvy! Ye look smashing, captain!",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_19",
+   "displayName": "Bug Sized Relaxation",
+   "description": "Release that tension at the root level.",
+   "hidden": 0
+  },
+  {
+   "name": "Achievement_GOSCC_20",
+   "displayName": "Meditation Maestro",
+   "description": "You reached a higher state of mind. Or at least some peace and quiet.",
+   "hidden": 0
+  }
+ ]
+}

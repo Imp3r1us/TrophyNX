@@ -1,0 +1,324 @@
+{
+ "appid": 409720,
+ "name": "BioShock™ 2 Remastered",
+ "achievements": [
+  {
+   "name": "ACHIEVEMENT_141",
+   "displayName": "Daddy's Home",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_142",
+   "displayName": "Protector",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_143",
+   "displayName": "Sinclair's Solution",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_144",
+   "displayName": "Confronted Grace",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_145",
+   "displayName": "Defeated the Preacher",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_146",
+   "displayName": "Nose for News",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_147",
+   "displayName": "Found Lamb's Hideout",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_148",
+   "displayName": "Reunion",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_149",
+   "displayName": "Heading to the Surface",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_150",
+   "displayName": "Escape",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_151",
+   "displayName": "Bought a Slot",
+   "description": "Bought one Plasmid Slot or Tonic Slot at a Gatherer's Garden.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_152",
+   "displayName": "Max Plasmid Slots",
+   "description": "Fully upgraded to the maximum number of Plasmid Slots.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_154",
+   "displayName": "Upgraded a Weapon",
+   "description": "Upgraded a weapon at a Power to the People Station.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_155",
+   "displayName": "Fully Upgraded a Weapon",
+   "description": "Installed the third upgrade to a weapon.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_157",
+   "displayName": "Distance Hacker",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_158",
+   "displayName": "Prolific Hacker",
+   "description": "Hacked one of each kind of machine.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_159",
+   "displayName": "Master Hacker",
+   "description": "Hacked 30 machines at a distance with the Hack Tool.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_156",
+   "displayName": "All Weapon Upgrades",
+   "description": "Found every Power to the People weapon upgrades in the game.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_160",
+   "displayName": "First Research",
+   "description": "Researched a Splicer with the Research Camera.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_161",
+   "displayName": "One Research Track",
+   "description": "Maxed out one Research Track.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_162",
+   "displayName": "Research Master",
+   "description": "Completed all research on every subject in Rapture.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_163",
+   "displayName": "Grand Daddy",
+   "description": "Defeated 3 Big Daddies without dying during a fight.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_164",
+   "displayName": "Adopted a Little Sister",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_165",
+   "displayName": "Master Gatherer",
+   "description": "Gather 600 ADAM with Little Sisters.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_166",
+   "displayName": "Fully Upgraded a Plasmid",
+   "description": "Fully upgraded one Plasmid to the Level 3 version.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_167",
+   "displayName": "All Plasmids",
+   "description": "Found or purchased all 11 basic Plasmid types.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_168",
+   "displayName": "Unbreakable",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_170",
+   "displayName": "Look at You, Hacker",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_171",
+   "displayName": "Trap Master",
+   "description": "Killed 30 enemies using only Traps.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_172",
+   "displayName": "Counterattack",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_173",
+   "displayName": "Master Protector",
+   "description": "Got through a Gather with no damage and no one getting to the Little Sister.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_174",
+   "displayName": "Big Spender",
+   "description": "Spent 2000 Dollars at Vending Machines.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_175",
+   "displayName": "Dealt with Every Little Sister",
+   "description": "Dealt with every Little Sister.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_176",
+   "displayName": "Against All Odds",
+   "description": "Finished the game on the hardest difficulty level.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_177",
+   "displayName": "Savior",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_178",
+   "displayName": "Big Brass Balls",
+   "description": "Finished the game without using Vita-Chambers.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_181",
+   "displayName": "Rapture Historian",
+   "description": "Find 100 Audio Diaries.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_193",
+   "displayName": "9-Irony",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_203",
+   "displayName": "Litmus Test",
+   "description": "Earned 6 stars in the Protector Trials",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_204",
+   "displayName": "Acid Test",
+   "description": "Earned 18 stars in the Protector Trials",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_205",
+   "displayName": "Trial by Fire",
+   "description": "Earned 36 stars in the Protector Trials",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_206",
+   "displayName": "Enemy of the Familiy",
+   "description": "Earned an A rank in all Protector Trials",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_207",
+   "displayName": "Guardian Angel",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_208",
+   "displayName": "Perfect Protector",
+   "description": "Collected 100% of the ADAM in a single Protector Trial.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_209",
+   "displayName": "Get a Bigger Bucket",
+   "description": "Collected 50% of the ADAM available in all Protector Trials.",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_210",
+   "displayName": "ADAM Addict",
+   "description": "Resolved all the Little Sisters in Minerva's Den",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_211",
+   "displayName": "Lancer Killer",
+   "description": "Kill a Lancer Big Daddy",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_213",
+   "displayName": "Garbage Collection",
+   "description": "Destroyed all 10 Vacuum Bots in Minerva's Den",
+   "hidden": 0
+  },
+  {
+   "name": "ACHIEVEMENT_214",
+   "displayName": "Login",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_215",
+   "displayName": "Root Access Granted",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_212",
+   "displayName": "SUDO",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_217",
+   "displayName": "High Score",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ACHIEVEMENT_216",
+   "displayName": "Logout",
+   "description": "",
+   "hidden": 1
+  }
+ ]
+}

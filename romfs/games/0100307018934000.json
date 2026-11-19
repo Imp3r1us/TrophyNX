@@ -1,0 +1,201 @@
+{
+ "title_id": "0100307018934000",
+ "name": "SIGNALIS",
+ "reader": "json",
+ "xor_key": "ALL WATCHED OVER BY MACHINES OF LOVING GRACE",
+ "save_files": [
+  "Save/01/lstr.replika",
+  "Save/02/lstr.replika",
+  "Save/03/lstr.replika",
+  "Save/04/lstr.replika",
+  "Save/05/lstr.replika"
+ ],
+ "achievements": [
+  {
+   "id": "ach_pen",
+   "name": "SYNCHRONIZITÄT",
+   "desc": "Receive an important message.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_pen]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_det",
+   "name": "BESCHLAGNAHMT",
+   "desc": "Lose something of no value.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_det]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_med",
+   "name": "ABWÄRTS",
+   "desc": "Lose something of value.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_med]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_res",
+   "name": "LIMINALITÄT",
+   "desc": "Perhaps, this is hell.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_res]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_lab",
+   "name": "DAS ENDE",
+   "desc": "Fail.",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_lab]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_mem",
+   "name": "GESTALTZERFALL",
+   "desc": "Return.",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_mem]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_end",
+   "name": "VERSPRECHEN",
+   "desc": "Remember our Promise.",
+   "points": 50,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_end]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_die",
+   "name": "SCHWERER AUSNAHMEFEHLER",
+   "desc": "***STOP: 0X001E97FF",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_die]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_gun",
+   "name": "EINHORN",
+   "desc": "Rule of Six.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_gun]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_rfl",
+   "name": "NITRO",
+   "desc": "A Gift.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_rfl]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_bad",
+   "name": "LÖCHER",
+   "desc": "Ship of Theseus.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_bad]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_hrd",
+   "name": "ÜBERLEBEN",
+   "desc": "Exit the Survival Horror.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_hrd]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "ach_all",
+   "name": "ACHTUNG",
+   "desc": "Complete the Ritual.",
+   "points": 100,
+   "rule": {
+    "type": "flag",
+    "path": "BoolData[Key=ach_all]/Value",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_launch",
+   "name": "Replika Reactivated",
+   "desc": "Launch SIGNALIS 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Lost Signal",
+   "desc": "Play SIGNALIS for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_4",
+   "name": "Sierpinski Survivor",
+   "desc": "Play SIGNALIS for 4 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 4
+   }
+  },
+  {
+   "id": "t_hours_8",
+   "name": "Promise Kept",
+   "desc": "Play SIGNALIS for 8 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 8
+   }
+  }
+ ]
+}

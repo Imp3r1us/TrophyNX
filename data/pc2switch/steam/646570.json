@@ -1,0 +1,282 @@
+{
+ "appid": 646570,
+ "name": "Slay the Spire",
+ "achievements": [
+  {
+   "name": "SHRUG_IT_OFF",
+   "displayName": "Shrug It Off",
+   "description": "Win a battle with 1 HP remaining.",
+   "hidden": 0
+  },
+  {
+   "name": "PURITY",
+   "displayName": "Purity",
+   "description": "Have 3 or fewer cards in hand, draw, and discard pile combined.",
+   "hidden": 0
+  },
+  {
+   "name": "COME_AT_ME",
+   "displayName": "Come At Me",
+   "description": "Win a combat without playing an Attack.",
+   "hidden": 0
+  },
+  {
+   "name": "THE_PACT",
+   "displayName": "The Pact",
+   "description": "Exhaust 20 cards in a single combat.",
+   "hidden": 0
+  },
+  {
+   "name": "ADRENALINE",
+   "displayName": "Adrenaline",
+   "description": "Have 9 Energy during a single turn of combat.",
+   "hidden": 0
+  },
+  {
+   "name": "POWERFUL",
+   "displayName": "Powerful",
+   "description": "Have 10 or more buffs during combat.",
+   "hidden": 0
+  },
+  {
+   "name": "JAXXED",
+   "displayName": "Jaxxed",
+   "description": "Have 50 or more Strength during combat.",
+   "hidden": 0
+  },
+  {
+   "name": "IMPERVIOUS",
+   "displayName": "Impervious",
+   "description": "Have 99 or more Block during combat.",
+   "hidden": 0
+  },
+  {
+   "name": "BARRICADED",
+   "displayName": "Barricaded",
+   "description": "Have 999 Block during combat.",
+   "hidden": 0
+  },
+  {
+   "name": "CATALYST",
+   "displayName": "Catalyst",
+   "description": "Apply 99 or more Poison on a single enemy.",
+   "hidden": 0
+  },
+  {
+   "name": "PLAGUE",
+   "displayName": "Plague",
+   "description": "Defeat 3 enemies with Poison in a single combat.",
+   "hidden": 0
+  },
+  {
+   "name": "NINJA",
+   "displayName": "Ninja",
+   "description": "Play 10 Shivs in a single turn.",
+   "hidden": 0
+  },
+  {
+   "name": "INFINITY",
+   "displayName": "Infinity",
+   "description": "Play 25 cards in a single turn.",
+   "hidden": 0
+  },
+  {
+   "name": "YOU_ARE_NOTHING",
+   "displayName": "You Are Nothing",
+   "description": "Defeat a boss on turn 1.",
+   "hidden": 0
+  },
+  {
+   "name": "PERFECT",
+   "displayName": "Perfect",
+   "description": "Defeat a boss without taking any damage.",
+   "hidden": 0
+  },
+  {
+   "name": "GUARDIAN",
+   "displayName": "The Guardian",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "GHOST_GUARDIAN",
+   "displayName": "The Ghost",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "SLIME_BOSS",
+   "displayName": "The Boss",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "AUTOMATON",
+   "displayName": "The Automaton",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "COLLECTOR",
+   "displayName": "The Collector",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CHAMP",
+   "displayName": "The Champion",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "CROW",
+   "displayName": "The Crow",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "SHAPES",
+   "displayName": "The Shapes",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TIME_EATER",
+   "displayName": "The Time Eater",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "RUBY",
+   "displayName": "Ruby",
+   "description": "Beat the game with the Ironclad.",
+   "hidden": 0
+  },
+  {
+   "name": "EMERALD",
+   "displayName": "Emerald",
+   "description": "Beat the game with the Silent.",
+   "hidden": 0
+  },
+  {
+   "name": "ONE_RELIC",
+   "displayName": "Who Needs Relics?",
+   "description": "Beat the game with a single relic.",
+   "hidden": 0
+  },
+  {
+   "name": "SPEED_CLIMBER",
+   "displayName": "Speed Climber",
+   "description": "Beat the game in under 20 minutes.",
+   "hidden": 0
+  },
+  {
+   "name": "MINIMALIST",
+   "displayName": "Minimalist",
+   "description": "Beat the game with a 5 card deck or smaller.",
+   "hidden": 0
+  },
+  {
+   "name": "DONUT",
+   "displayName": "Ooh Donut!",
+   "description": "Finish Donu with a Feed.",
+   "hidden": 0
+  },
+  {
+   "name": "ASCEND_0",
+   "displayName": "Ascend 0",
+   "description": "Unlock Ascension mode.",
+   "hidden": 0
+  },
+  {
+   "name": "ASCEND_10",
+   "displayName": "Ascend 10",
+   "description": "Complete Ascension Level 10.",
+   "hidden": 0
+  },
+  {
+   "name": "SAPPHIRE",
+   "displayName": "Sapphire",
+   "description": "Beat the game with the Defect.",
+   "hidden": 0
+  },
+  {
+   "name": "COMMON_SENSE",
+   "displayName": "Common Sense",
+   "description": "Beat the game with a deck containing no uncommons or rares.",
+   "hidden": 0
+  },
+  {
+   "name": "FOCUSED",
+   "displayName": "Focused",
+   "description": "Have 25 or more Focus during combat.",
+   "hidden": 0
+  },
+  {
+   "name": "NEON",
+   "displayName": "Neon",
+   "description": "Channel 9 Plasma in a single turn.",
+   "hidden": 0
+  },
+  {
+   "name": "LUCKY_DAY",
+   "displayName": "My Lucky Day",
+   "description": "Win a Daily Climb.",
+   "hidden": 0
+  },
+  {
+   "name": "TRANSIENT",
+   "displayName": "The Transient",
+   "description": "Defeat the Transient before it fades away.",
+   "hidden": 0
+  },
+  {
+   "name": "ASCEND_20",
+   "displayName": "Ascend 20",
+   "description": "Complete Ascension Level 20.",
+   "hidden": 0
+  },
+  {
+   "name": "RUBY_PLUS",
+   "displayName": "Ruby+",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "EMERALD_PLUS",
+   "displayName": "Emerald+",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "SAPPHIRE_PLUS",
+   "displayName": "Sapphire+",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "THE_ENDING",
+   "displayName": "The End?",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "ETERNAL_ONE",
+   "displayName": "Eternal One",
+   "description": "Obtain all other Achievements.",
+   "hidden": 0
+  },
+  {
+   "name": "AMETHYST",
+   "displayName": "Amethyst",
+   "description": "Beat the game with the Watcher.",
+   "hidden": 0
+  },
+  {
+   "name": "AMETHYST_PLUS",
+   "displayName": "Amethyst+",
+   "description": "Complete the Ending with the Watcher.",
+   "hidden": 0
+  }
+ ]
+}

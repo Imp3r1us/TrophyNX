@@ -1,0 +1,48 @@
+{
+ "title_id": "010093801237C000",
+ "name": "Metroid Dread",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Wake Up, Samus",
+   "desc": "Launch Metroid Dread 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "E.M.M.I. Escapee",
+   "desc": "Play Metroid Dread for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_4",
+   "name": "ZDR Explorer",
+   "desc": "Play Metroid Dread for 4 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 4
+   }
+  },
+  {
+   "id": "t_hours_8",
+   "name": "Speedrun Material",
+   "desc": "Play Metroid Dread for 8 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 8
+   }
+  }
+ ]
+}

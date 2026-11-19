@@ -1,0 +1,282 @@
+{
+ "appid": 2523770,
+ "name": "The Lord of the Rings: War in the North™ - Legacy Edition",
+ "achievements": [
+  {
+   "name": "1",
+   "displayName": "Where there's life, there's hope",
+   "description": "Revive a fallen ally.",
+   "hidden": 0
+  },
+  {
+   "name": "2",
+   "displayName": "Foe-hammer",
+   "description": "Kill 200 enemies in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "3",
+   "displayName": "Sudden Fury",
+   "description": "Perform 3 critical hits within 10 seconds.",
+   "hidden": 0
+  },
+  {
+   "name": "4",
+   "displayName": "Strength of Our Alliance",
+   "description": "Slay one enemy together with 2 other players.",
+   "hidden": 0
+  },
+  {
+   "name": "5",
+   "displayName": "Seeker",
+   "description": "Discover 25 secrets in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "6",
+   "displayName": "Gem-studded",
+   "description": "Slot an elfstone into an item.",
+   "hidden": 0
+  },
+  {
+   "name": "7",
+   "displayName": "Relentless",
+   "description": "While in Hero Mode, perform a streak of 50 hits.",
+   "hidden": 0
+  },
+  {
+   "name": "8",
+   "displayName": "Now for wrath, now for ruin!",
+   "description": "Kill 4 enemies simultaneously.",
+   "hidden": 0
+  },
+  {
+   "name": "9",
+   "displayName": "Troll's Bane",
+   "description": "Slay the wild snow trolls.",
+   "hidden": 0
+  },
+  {
+   "name": "10",
+   "displayName": "Battle-master",
+   "description": "Unlock every active-cast ability in one character’s skill tree.",
+   "hidden": 0
+  },
+  {
+   "name": "11",
+   "displayName": "War-hardened",
+   "description": "Achieve at least 1 rank in a tier 3 skill.",
+   "hidden": 0
+  },
+  {
+   "name": "12",
+   "displayName": "Like a Thunderbolt",
+   "description": "Deal 3000 damage with a single ranged strike.",
+   "hidden": 0
+  },
+  {
+   "name": "13",
+   "displayName": "Fell-handed",
+   "description": "Deal 1500 damage in a single melee strike.",
+   "hidden": 0
+  },
+  {
+   "name": "14",
+   "displayName": "Living Shield",
+   "description": "Absorb 25,000 total damage during the course of 1 level.",
+   "hidden": 0
+  },
+  {
+   "name": "15",
+   "displayName": "Many deeds, great and small",
+   "description": "Complete 15 quests in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "16",
+   "displayName": "War-machinist",
+   "description": "Kill 150 enemies with war machines in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "17",
+   "displayName": "Well-arrayed",
+   "description": "Equip all parts of an armor set.",
+   "hidden": 0
+  },
+  {
+   "name": "18",
+   "displayName": "Keen-eyed Marksman",
+   "description": "Kill 50 enemies with headshots in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "19",
+   "displayName": "Swift-winged Warrior",
+   "description": "Summon Beleram 10 times in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "20",
+   "displayName": "Warrior Exemplar",
+   "description": "For one character unlock every skill that provides a modification to War Cry, Sanctuary or Evasion.",
+   "hidden": 0
+  },
+  {
+   "name": "21",
+   "displayName": "Defender of the North",
+   "description": "Achieve level 10.",
+   "hidden": 0
+  },
+  {
+   "name": "22",
+   "displayName": "Champion of the North",
+   "description": "Achieve level 20.",
+   "hidden": 0
+  },
+  {
+   "name": "23",
+   "displayName": "Herb-master",
+   "description": "Create 15 potions in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "24",
+   "displayName": "Eagle Savior",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "25",
+   "displayName": "Bane of Mordor",
+   "description": "Kill 600 enemies in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "26",
+   "displayName": "Dragon-hoard",
+   "description": "Amass 25,000 coins.",
+   "hidden": 0
+  },
+  {
+   "name": "27",
+   "displayName": "Expert Treasure-hunter.",
+   "description": "Locate 5 gilded treasure chests in a single playthrough.",
+   "hidden": 0
+  },
+  {
+   "name": "28",
+   "displayName": "Victorious in Battle",
+   "description": "Complete a playthrough on at least Normal difficulty.",
+   "hidden": 0
+  },
+  {
+   "name": "29",
+   "displayName": "Against All Odds",
+   "description": "Complete a playthrough on Legendary difficulty.",
+   "hidden": 0
+  },
+  {
+   "name": "30",
+   "displayName": "The Lidless Eye",
+   "description": "Complete the investigation of the Cult of the Lidless Eye.",
+   "hidden": 0
+  },
+  {
+   "name": "31",
+   "displayName": "Hero of Legend",
+   "description": "Complete a playthrough on Heroic difficulty.",
+   "hidden": 0
+  },
+  {
+   "name": "32",
+   "displayName": "Friend to the Eagles",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "33",
+   "displayName": "Elf-friend",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "34",
+   "displayName": "Tharzog's Bane",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "35",
+   "displayName": "Tracker",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "36",
+   "displayName": "Begone, lord of carrion!",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "37",
+   "displayName": "Trusted with the Secret",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "38",
+   "displayName": "Giant-slayer",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "39",
+   "displayName": "Mountain-breaker",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "40",
+   "displayName": "Wulfrun's Bane",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "41",
+   "displayName": "Friend of the Woodland Realm",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "42",
+   "displayName": "Spider-slayer",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "43",
+   "displayName": "Friend to the Ring-bearer",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "44",
+   "displayName": "In the Dragon's Den",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "45",
+   "displayName": "Siege-breaker",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "46",
+   "displayName": "Hero of the North",
+   "description": "",
+   "hidden": 1
+  }
+ ]
+}

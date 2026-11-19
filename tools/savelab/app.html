@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Save Lab — Switch Achievements</title>
+<style>
+:root{
+  --bg:#0f1115;--panel:#171a21;--panel2:#1e222b;--line:#2a2f3a;--text:#e7e9ee;--mute:#9aa1ae;--dim:#6b7280;
+  --acc:#2dd4bf;--acc2:#0f766e;--warn:#f59e0b;--bad:#f87171;--good:#4ade80;
+  --flag:#60a5fa;--counter:#2dd4bf;--bits:#c084fc;--float:#f59e0b;--other:#9aa1ae;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:14px 16px 8px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+header h1{font-size:18px;margin:0;letter-spacing:.2px}
+header h1 span{color:var(--acc)}
+header .game{color:var(--mute);font-size:13px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 8px}
+nav button{flex:0 0 auto;background:none;border:0;color:var(--mute);padding:11px 12px;font:inherit;font-size:14px;border-bottom:2px solid transparent;cursor:pointer}
+nav button.on{color:var(--text);border-bottom-color:var(--acc)}
+nav button b{display:inline-block;min-width:18px;height:18px;line-height:18px;border-radius:9px;background:var(--panel2);font-size:11px;margin-right:6px;text-align:center;color:var(--mute)}
+nav button.on b{background:var(--acc2);color:#fff}
+main{max-width:860px;margin:0 auto;padding:12px 12px 120px}
+section{display:none}section.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:0 0 12px}
+.card h2{font-size:15px;margin:0 0 10px}
+.card h3{font-size:13px;margin:14px 0 6px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+p{margin:6px 0}.mute{color:var(--mute)}.small{font-size:13px}.mono{font-family:var(--mono);font-size:13px}
+label{display:block;font-size:13px;color:var(--mute);margin:8px 0 3px}
+input,select,textarea{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit;font-size:15px}
+textarea{font-family:var(--mono);font-size:13px;min-height:70px}
+input[type=checkbox]{width:auto;margin-right:6px;accent-color:var(--acc)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1 1 140px}.row>.fix{flex:0 0 auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px 13px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
+.btn.pri{background:var(--acc2);border-color:var(--acc2);color:#fff}
+.btn.sm{padding:5px 9px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:none}
+.file{position:relative;overflow:hidden}.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.cap{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.cap:first-child{border-top:0}
+.cap .n{flex:0 0 26px;height:26px;border-radius:13px;background:var(--panel2);display:grid;place-items:center;font-size:12px;color:var(--mute);margin-top:6px}
+.cap .body{flex:1;min-width:0}
+.cap input[type=text]{padding:7px 9px}
+.badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:10px;border:1px solid currentColor;white-space:nowrap}
+.k-flag{color:var(--flag)}.k-counter{color:var(--counter)}.k-bits{color:var(--bits)}.k-float{color:var(--float)}.k-new{color:var(--good)}
+.k-decreasing,.k-variable,.k-noise,.k-timestamp{color:var(--other)}
+.res{border-top:1px solid var(--line);padding:9px 0;display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center}
+.res .where{font-family:var(--mono);font-size:13px}
+.res .vals{grid-column:1/-1;font-family:var(--mono);font-size:12.5px;color:var(--mute);overflow-wrap:anywhere}
+.res .vals b{color:var(--text);font-weight:500}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{background:var(--panel2);border:1px solid var(--line);color:var(--mute);border-radius:16px;padding:5px 11px;font-size:13px;cursor:pointer}
+.chip.on{color:var(--text);border-color:var(--acc)}
+.note{border-left:3px solid var(--warn);background:#f59e0b14;padding:8px 10px;border-radius:0 8px 8px 0;margin:8px 0;font-size:14px}
+.note.ok{border-color:var(--good);background:#4ade8012}.note.bad{border-color:var(--bad);background:#f8717114}
+.heat{display:flex;height:22px;border-radius:5px;overflow:hidden;margin:6px 0}
+.heat i{flex:1}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}.kv dt{color:var(--mute)}.kv dd{margin:0;overflow-wrap:anywhere}
+.ach{border:1px solid var(--line);border-radius:10px;padding:10px;margin:10px 0;background:var(--panel2)}
+.ach .top{display:flex;gap:8px;align-items:center}
+.ach .top input{font-weight:600}
+.ach textarea{min-height:56px}
+.test{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.test span{font-family:var(--mono);font-size:12px;padding:2px 6px;border-radius:6px;background:var(--panel)}
+.test .met{color:var(--good)}.test .no{color:var(--dim)}.test .err{color:var(--bad)}
+pre{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;max-height:340px;font-size:12px;margin:8px 0}
+details summary{cursor:pointer;color:var(--acc);font-size:14px}
+details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
+.selbar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:none;z-index:6}
+.selbar.on{display:block}
+.selbar .in{max-width:860px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#000c;color:#fff;padding:9px 14px;border-radius:20px;font-size:14px;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+.toast.on{opacity:1}
+.empty{color:var(--dim);text-align:center;padding:24px 8px}
+.dlg{position:fixed;inset:0;background:#0009;z-index:10;display:none;align-items:flex-end;justify-content:center}
+.dlg.on{display:flex}
+.dlg .box{background:var(--panel);border:1px solid var(--line);border-radius:14px 14px 0 0;width:100%;max-width:640px;max-height:88vh;overflow:auto;padding:16px}
+.cf{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:700;margin-right:6px}.cf-sure{background:#1f6f43;color:#fff}.cf-maybe{background:#8a6d1a;color:#fff}.cf-unmatched{background:#555;color:#fff}.cf-skip{background:transparent;color:inherit;border:1px solid currentColor;opacity:.6}
+.pcrow{padding:7px 0;border-top:1px solid var(--line)}
+@media(min-width:700px){.dlg{align-items:center}.dlg .box{border-radius:14px}}
+</style>
+</head>
+<body>
+<header><h1>Save <span>Lab</span></h1><div class="game" id="hdrGame">aucun jeu choisi</div></header>
+<nav id="tabs">
+  <button data-t="caps" class="on"><b>1</b>Captures</button>
+  <button data-t="struct"><b>2</b>Structure</button>
+  <button data-t="diff"><b>3</b>Différences</button>
+  <button data-t="value"><b>4</b>Valeur connue</button>
+  <button data-t="ach"><b>5</b>Succès</button>
+  <button data-t="pc"><b>6</b>PC → Switch</button>
+</nav>
+<main>
+
+<!-- 1. CAPTURES -->
+<section id="s-caps" class="on">
+  <div class="card">
+    <h2>Jeu</h2>
+    <select id="gameSel"></select>
+    <div class="row" id="gameCustom" style="display:none">
+      <div><label>Title ID (16 caractères)</label><input id="tid" placeholder="0100XXXXXXXXX000" maxlength="16" autocapitalize="characters"></div>
+      <div><label>Nom</label><input id="gname" placeholder="Nom du jeu"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Captures de sauvegarde</h2>
+    <p class="mute small">Une capture = la sauvegarde du jeu à un instant donné. Faites-en une, jouez et accomplissez quelque chose de précis (gagner des pièces, finir un niveau…), puis refaites-en une. Au moins 2 captures, idéalement 3–5.</p>
+    <div class="row" style="margin:10px 0">
+      <span class="btn pri file fix">＋ Ajouter une capture<input type="file" id="addCap" multiple></span>
+      <span class="mute small">fichiers de la save ou .zip (JKSV)</span>
+      <button class="btn sm ghost fix" id="clearAll">Tout effacer</button>
+    </div>
+    <div id="capList"></div>
+    <div id="targetBox" style="display:none">
+      <label>Fichier à analyser</label>
+      <select id="targetSel"></select>
+    </div>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary>Comment récupérer les captures sans PC</summary>
+      <ol class="small">
+        <li><b>Sur la Switch</b> : ouvrez <b>JKSV</b>, choisissez le jeu → votre profil → <i>Nouvelle sauvegarde</i>. Donnez un nom parlant (ex. <code>avant-boss</code>). JKSV l'écrit dans <code>sdmc:/JKSV/&lt;jeu&gt;/</code>.</li>
+        <li><b>Vers le téléphone</b>, au choix :
+          <ul>
+            <li><b>ftpd</b> (homebrew) sur la Switch + une appli FTP sur le téléphone (ex. une appli de gestion de fichiers qui gère le FTP) : copiez le dossier de la capture.</li>
+            <li>Le <b>téléversement Google Drive / WebDAV</b> de JKSV, si vous l'avez configuré.</li>
+            <li>La carte SD dans un lecteur USB‑C branché au téléphone.</li>
+          </ul></li>
+        <li>Ici : <i>Ajouter une capture</i> et sélectionnez <b>tous les fichiers</b> du dossier (ou le .zip JKSV). Répétez pour chaque capture, dans l'ordre chronologique.</li>
+        <li><b>Le plus rapide</b> : une capture d'une <b>partie neuve</b> + une <b>save 100 %</b> téléchargée (fil « Switch Save site / 100% Completed Saves » de GBAtemp, etc.), puis « ⚡ Générer les succès » dans l'onglet 3 : toutes les collections et compteurs ressortent d'un coup. Ajoutez une ou deux captures intermédiaires de votre propre partie pour confirmer.</li>
+        <li>Astuce : faites deux captures <b>sans rien faire</b> entre les deux et cochez « contrôle » sur la seconde. Tout ce qui change quand même (horloge, position…) sera écarté comme bruit.</li>
+      </ol>
+      <p class="small mute">Rien n'est envoyé sur Internet : les fichiers restent dans votre navigateur.</p>
+    </details>
+  </div>
+</section>
+
+<!-- 2. STRUCTURE -->
+<section id="s-struct"><div id="structOut"><div class="card empty">Ajoutez une capture pour voir sa structure.</div></div></section>
+
+<!-- 3. DIFF -->
+<section id="s-diff">
+  <div class="card">
+    <h2>Ce qui a changé entre les captures</h2>
+    <p class="mute small">Classe automatiquement chaque valeur : drapeau qui passe de 0 à 1, compteur qui ne fait que monter, champ de bits qui se remplit… Les meilleurs candidats pour des succès sont en haut.</p>
+    <div class="row"><button class="btn pri fix" id="runDiff">Comparer</button><button class="btn fix" id="autoGen">⚡ Générer les succès</button><label class="fix" style="margin:0"><input type="checkbox" id="showNoise">montrer le bruit</label></div>
+    <div class="chips" id="diffFilter">
+      <span class="chip on" data-f="all">Tout</span><span class="chip" data-f="flag">Drapeaux</span><span class="chip" data-f="counter">Compteurs</span>
+      <span class="chip" data-f="bits">Bits</span><span class="chip" data-f="float">Flottants</span><span class="chip" data-f="new">Nouveaux</span><span class="chip" data-f="other">Autres</span>
+    </div>
+    <div id="diffSummary"></div>
+  </div>
+  <div class="card" id="diffList" style="display:none"></div>
+</section>
+
+<!-- 4. VALUE -->
+<section id="s-value">
+  <div class="card">
+    <h2>Chercher une valeur connue</h2>
+    <p class="mute small">Vous connaissez un chiffre affiché dans le jeu (pièces, rubis, victoires…) ? Notez-le pour chaque capture : l'outil trouve où il est stocké. Laissez vide si vous ne le connaissez pas.</p>
+    <div id="valInputs"></div>
+    <div class="row">
+      <div><label>Type</label><select id="valType"><option value="auto">Automatique</option><option value="u8">Entier 1 octet</option><option value="u16">Entier 2 octets</option><option value="u32">Entier 4 octets</option><option value="f32">Flottant</option></select></div>
+      <label class="fix" style="margin-top:24px"><input type="checkbox" id="valUnaligned">offsets non alignés</label>
+    </div>
+    <p><button class="btn pri" id="runVal">Chercher</button></p>
+    <div id="valSummary"></div>
+  </div>
+  <div class="card" id="valList" style="display:none"></div>
+</section>
+
+<!-- 5. ACHIEVEMENTS -->
+<section id="s-ach">
+  <div class="card">
+    <h2>Définition du jeu</h2>
+    <div class="row">
+      <div><label>Lecteur (format lu par l'app)</label><select id="dReader">
+        <option value="">aucun (statistiques de jeu seulement)</option><option value="binary_le">binary_le — offsets fixes</option>
+        <option value="byml">byml — arbre BYML par chemins (Mario Odyssey…)</option><option value="json">json — texte JSON par chemins (Hollow Knight, jeux Unity…)</option><option value="gvas">gvas — sauvegarde Unreal Engine par chemins (.sav « GVAS »)</option><option value="nrbf">nrbf — BinaryFormatter .NET par chemins (jeux Unity)</option><option value="gamedata_hash">gamedata_hash — table CRC32 (BotW)</option><option value="totk_progress">totk_progress — table Murmur3 (TotK)</option></select></div>
+      <div><label>En-tête attendu (magic)</label><input id="dMagic" placeholder="ex. SUTC"></div>
+    </div>
+    <label><input type="checkbox" id="dSizeOn">Exiger la taille exacte du fichier (<span id="dSizeVal" class="mono">—</span> octets)</label>
+    <label>Fichiers de sauvegarde à lire (un par ligne, chemin dans la save)</label>
+    <textarea id="dFiles" placeholder="userdata.dat"></textarea>
+    <div id="fileWarn"></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn fix" id="loadBuiltin">Repartir des succès intégrés</button>
+      <span class="btn file fix">Importer un JSON<input type="file" id="importJson" accept=".json,application/json"></span>
+      <button class="btn fix" id="addEmpty">＋ Succès vide</button>
+      <button class="btn fix" id="askClaude" style="display:none">✦ Suggestions de Claude</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Succès <span class="mute small" id="achCount"></span></h2>
+    <p class="mute small">Sous chaque succès : sa valeur dans chaque capture, calculée exactement comme sur la console (✓ = débloqué).</p>
+    <div id="achList"></div>
+  </div>
+  <div class="card">
+    <h2>Exporter</h2>
+    <div id="valid"></div>
+    <div class="row"><button class="btn pri fix" id="copyJson">Copier le JSON</button><button class="btn fix" id="dlJson" style="display:none">Télécharger <span id="dlName"></span></button></div>
+    <p class="small mute">Placez le fichier dans <code>sdmc:/switch/SwitchAchievements/games/</code> sous le nom <code id="fname">TITLEID.json</code>, puis relancez l'app et appuyez sur Y. Il remplace la définition intégrée du même jeu : partez des succès intégrés pour ne pas les perdre.</p>
+    <pre id="jsonOut"></pre>
+  </div>
+</section>
+
+<!-- 6. PC -> SWITCH -->
+<section id="s-pc">
+  <div class="card">
+    <h2>Scan de la console</h2>
+    <p class="small mute">Dans l'app Switch, sur l'Aperçu, appuyez sur <b>ZR</b> : le fichier <code>switch/SwitchAchievements/scan_bundle.json</code> contient le verdict de chaque jeu et une copie des sauvegardes lisibles. Importez-le ici (ou déposez-le dans <code>samples/</code> du dépôt pour les brouillons automatiques).</p>
+    <span class="btn file fix">Importer scan_bundle.json<input type="file" id="pcBundle" accept=".json,application/json"></span>
+    <div id="pcBundleOut"></div>
+  </div>
+  <div class="card">
+    <h2>Succès Steam → règles</h2>
+    <p class="small mute">Rapproche les noms des succès Steam des champs de la sauvegarde (dernière capture ; la première sert de « partie neuve » s'il y en a plusieurs). Aucun appel réseau, aucune IA. <b>Sûr</b> = noms concordants et valeur atteinte dans la capture ; <b>à vérifier</b> = regardez les candidats.</p>
+    <div class="row"><div><label>Liste Steam</label><select id="pcSteam"></select></div></div>
+    <div class="row"><span class="btn file fix">Importer une liste Steam (.json)<input type="file" id="pcSteamFile" accept=".json,application/json"></span><button class="btn pri fix" id="pcRun">Générer les brouillons</button></div>
+    <div id="pcOut"></div>
+  </div>
+  <div class="card">
+    <h2>Catalogue PC → Switch</h2>
+    <p class="small mute" id="pcCatInfo"></p>
+    <input id="pcCatQ" placeholder="Rechercher un jeu…">
+    <div id="pcCat"></div>
+  </div>
+</section>
+</main>
+
+<div class="selbar" id="selbar"><div class="in">
+  <b id="selN">0</b><span class="mute">sélectionné(s)</span>
+  <button class="btn sm pri" id="selCount">Succès « compter »</button>
+  <button class="btn sm" id="selSum">« somme »</button>
+  <button class="btn sm" id="selExtend">Étendre la série</button>
+  <button class="btn sm ghost" id="selClear">✕</button>
+</div></div>
+<div class="dlg" id="dlg"><div class="box" id="dlgBox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/*FORMATS*/
+</script>
+<script>
+/*ENGINE*/
+</script>
+<script>
+const BUILTIN = /*BUILTINS*/;
+const PCDATA = /*PCDATA*/;
+</script>
+<script>
+/*PC2SWITCH*/
+</script>
+<script>
+(() => {
+'use strict';
+const E = SaveLab;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = (v) => v === undefined || v === null ? '∅' : typeof v === 'number' && !Number.isInteger(v) ? String(+v.toFixed(3)) : String(v);
+const fmtBytes = (n) => n < 1024 ? n + ' o' : n < 1048576 ? (n / 1024).toFixed(1) + ' Ko' : (n / 1048576).toFixed(2) + ' Mo';
+let toastT;
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
+
+// ---------------------------------------------------------------- state
+const S = {
+  game: { title_id: '', name: '' },
+  caps: [],          // {id, label, control, files:[{path,data}]}
+  target: '',
+  def: null,         // game definition being edited
+  dict: new Map(),   // hash -> {name, algo}
+  diff: null, diffFilter: 'all', diffShown: 150,
+  val: null,
+  sel: new Map(),    // key -> candidate
+};
+let nextId = 1;
+
+// ---------------------------------------------------------------- persistence (IndexedDB, best effort)
+const DB = {
+  db: null,
+  async open() {
+    try {
+      this.db = await new Promise((res, rej) => { const r = indexedDB.open('savelab', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+    } catch (e) { this.db = null; }
+  },
+  async get(k) { if (!this.db) return null; try { return await new Promise((res, rej) => { const r = this.db.transaction('kv').objectStore('kv').get(k); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); } catch (e) { return null; } },
+  async put(k, v) { if (!this.db) return; try { await new Promise((res, rej) => { const t = this.db.transaction('kv', 'readwrite'); t.objectStore('kv').put(v, k); t.oncomplete = res; t.onerror = () => rej(t.error); }); } catch (e) { } },
+};
+let saveT;
+function persist() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => DB.put('session', { game: S.game, caps: S.caps, target: S.target, def: S.def, dict: [...S.dict] }), 500);
+}
+
+// ---------------------------------------------------------------- tabs
+$('#tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  showTab(b.dataset.t);
+});
+function showTab(t) {
+  $$('#tabs button').forEach(x => x.classList.toggle('on', x.dataset.t === t));
+  $$('main section').forEach(x => x.classList.toggle('on', x.id === 's-' + t));
+  if (t === 'struct') renderStruct();
+  if (t === 'value') renderValInputs();
+  if (t === 'ach') renderAch();
+  if (t === 'pc') renderPc();
+  updateSelbar();
+  window.scrollTo(0, 0);
+}
+
+// ---------------------------------------------------------------- game
+const GAMES = Object.values(BUILTIN).sort((a, b) => a.name.localeCompare(b.name));
+function renderGameSel() {
+  const sel = $('#gameSel');
+  sel.innerHTML = '<option value="">— Choisir un jeu —</option>' + GAMES.map(g => `<option value="${g.title_id}">${esc(g.name)}${g.reader ? ' · save lue' : ''}</option>`).join('') + '<option value="other">Autre jeu (Title ID)…</option>';
+  const known = BUILTIN[S.game.title_id];
+  sel.value = known ? S.game.title_id : (S.game.title_id || S.game.custom ? 'other' : '');
+  $('#gameCustom').style.display = sel.value === 'other' ? '' : 'none';
+  $('#tid').value = S.game.title_id; $('#gname').value = S.game.name;
+  $('#hdrGame').textContent = S.game.name ? S.game.name + ' · ' + S.game.title_id : 'aucun jeu choisi';
+}
+$('#gameSel').addEventListener('change', (e) => {
+  const v = e.target.value;
+  if (v === 'other') { S.game = { title_id: '', name: '', custom: true }; }
+  else if (v) { S.game = { title_id: v, name: BUILTIN[v].name }; }
+  else S.game = { title_id: '', name: '' };
+  S.def = null;
+  renderGameSel(); persist();
+});
+['#tid', '#gname'].forEach(s => $(s).addEventListener('input', () => {
+  S.game = { title_id: $('#tid').value.toUpperCase().replace(/[^0-9A-F]/g, ''), name: $('#gname').value, custom: true };
+  if (S.def) { S.def.title_id = S.game.title_id; S.def.name = S.game.name; }
+  $('#hdrGame').textContent = S.game.name ? S.game.name + ' · ' + S.game.title_id : 'aucun jeu choisi';
+  persist();
+}));
+
+// ---------------------------------------------------------------- captures
+$('#addCap').addEventListener('change', async (e) => {
+  const list = [...e.target.files];
+  e.target.value = '';
+  if (!list.length) return;
+  try {
+    let files = [];
+    for (const f of list) {
+      const data = new Uint8Array(await f.arrayBuffer());
+      if (/\.zip$/i.test(f.name) && data[0] === 0x50 && data[1] === 0x4b) files.push(...E.stripCommonPrefix(await E.unzip(data)));
+      else files.push({ path: f.webkitRelativePath || f.name, data });
+    }
+    if (list.length > 1 || files.some(f => f.path.includes('/'))) files = files.length > 1 ? E.stripCommonPrefix(files) : files;
+    files = files.filter(f => !/(^|\/)\.|\.DS_Store$/.test(f.path));
+    if (!files.length) { toast('Aucun fichier dans cette sélection'); return; }
+    S.caps.push({ id: nextId++, label: 'Capture ' + (S.caps.length + 1), control: false, files });
+    autoTarget();
+    S.diff = null; S.val = null;
+    renderCaps(); persist();
+    toast(files.length + ' fichier(s) ajouté(s)');
+  } catch (err) { toast('Erreur : ' + err.message); }
+});
+function commonPaths() {
+  if (!S.caps.length) return [];
+  let paths = S.caps[0].files.map(f => f.path);
+  for (const c of S.caps.slice(1)) { const s = new Set(c.files.map(f => f.path)); paths = paths.filter(p => s.has(p)); }
+  return paths;
+}
+function autoTarget() {
+  const paths = commonPaths();
+  if (paths.includes(S.target)) return;
+  const last = S.caps[S.caps.length - 1];
+  let best = null, bestScore = -1;
+  for (const p of paths.length ? paths : last.files.map(f => f.path)) {
+    const f = last.files.find(x => x.path === p); if (!f) continue;
+    const id = E.identify(f.data.subarray(0, Math.min(f.data.length, 65536)));
+    const score = (id.known ? 1e12 : 0) + f.data.length;
+    if (score > bestScore) { bestScore = score; best = p; }
+  }
+  S.target = best || '';
+}
+// The analysed file of a capture: same path as S.target; a capture made of a single file always
+// counts (captures are often renamed, e.g. "Cascade_5_moons.bin"); else same base name.
+function targetFile(cap) {
+  if (!cap) return null;
+  let f = cap.files.find(x => x.path === S.target);
+  if (!f && cap.files.length === 1) f = cap.files[0];
+  if (!f && S.target) { const base = S.target.split('/').pop(); f = cap.files.find(x => x.path.split('/').pop() === base); }
+  return f || null;
+}
+function targetData(cap) { const f = targetFile(cap); return f ? f.data : null; }
+function renderCaps() {
+  const box = $('#capList');
+  if (!S.caps.length) { box.innerHTML = '<div class="empty">Aucune capture pour l\'instant.</div>'; $('#targetBox').style.display = 'none'; return; }
+  box.innerHTML = S.caps.map((c, i) => {
+    const d = targetData(c);
+    return `<div class="cap" data-id="${c.id}">
+      <div class="n">${i + 1}</div>
+      <div class="body">
+        <input type="text" class="capLabel" value="${esc(c.label)}" aria-label="Nom de la capture">
+        <div class="small mute" style="margin-top:4px">${c.files.length} fichier(s)${d ? ' · ' + esc(targetFile(c).path) + ' ' + fmtBytes(d.length) : ' · <span style="color:var(--bad)">fichier analysé absent</span>'}</div>
+        ${i ? `<label style="margin:6px 0 0"><input type="checkbox" class="capCtl" ${c.control ? 'checked' : ''}>contrôle (rien fait en jeu depuis la précédente)</label>` : ''}
+      </div>
+      <div class="fix" style="display:flex;flex-direction:column;gap:4px">
+        <button class="btn sm capUp" ${i ? '' : 'disabled'} aria-label="Monter">↑</button>
+        <button class="btn sm capDel" aria-label="Supprimer">✕</button>
+      </div></div>`;
+  }).join('');
+  const paths = commonPaths();
+  const all = [...new Set(S.caps.flatMap(c => c.files.map(f => f.path)))];
+  $('#targetBox').style.display = S.caps.some(c => c.files.length > 1) ? '' : 'none';
+  $('#targetSel').innerHTML = all.map(p => `<option value="${esc(p)}" ${p === S.target ? 'selected' : ''}>${esc(p)}${paths.includes(p) ? '' : ' (pas dans toutes les captures)'}</option>`).join('');
+}
+$('#capList').addEventListener('input', (e) => {
+  const c = capOf(e.target); if (!c) return;
+  if (e.target.classList.contains('capLabel')) { c.label = e.target.value; persist(); }
+});
+$('#capList').addEventListener('change', (e) => {
+  const c = capOf(e.target); if (!c) return;
+  if (e.target.classList.contains('capCtl')) { c.control = e.target.checked; S.diff = null; persist(); }
+});
+$('#capList').addEventListener('click', (e) => {
+  const c = capOf(e.target); if (!c) return;
+  const i = S.caps.indexOf(c);
+  if (e.target.closest('.capDel')) { S.caps.splice(i, 1); }
+  else if (e.target.closest('.capUp') && i > 0) { [S.caps[i - 1], S.caps[i]] = [S.caps[i], S.caps[i - 1]]; }
+  else return;
+  S.diff = null; S.val = null; autoTargetSafe(); renderCaps(); persist();
+});
+function autoTargetSafe() { if (S.caps.length) autoTarget(); else S.target = ''; }
+function capOf(el) { const d = el.closest('.cap'); return d && S.caps.find(c => c.id === +d.dataset.id); }
+$('#clearAll').addEventListener('click', () => {
+  if ($('#clearAll').dataset.arm !== '1') { $('#clearAll').dataset.arm = '1'; $('#clearAll').textContent = 'Confirmer ?'; setTimeout(() => { $('#clearAll').dataset.arm = ''; $('#clearAll').textContent = 'Tout effacer'; }, 3000); return; }
+  S.caps = []; S.target = ''; S.def = null; S.diff = null; S.val = null; S.sel.clear(); S.dict.clear();
+  $('#clearAll').dataset.arm = ''; $('#clearAll').textContent = 'Tout effacer';
+  renderCaps(); persist(); toast('Session effacée');
+});
+$('#targetSel').addEventListener('change', (e) => { S.target = e.target.value; S.diff = null; S.val = null; renderCaps(); persist(); });
+
+// ---------------------------------------------------------------- structure
+function heatColor(e) { const t = Math.min(1, e / 8); const h = 200 - t * 200; return `hsl(${h} 70% ${18 + t * 32}%)`; }
+let identCache = null;
+function currentIdent() {
+  const last = S.caps[S.caps.length - 1]; const d = last && targetData(last);
+  if (!d) return null;
+  if (identCache && identCache.data === d) return identCache.id;
+  identCache = { data: d, id: E.identify(d, S.target) };
+  return identCache.id;
+}
+function hashTables() {
+  const id = currentIdent(); if (!id) return null;
+  if (!(id.reader === 'gamedata_hash' || id.reader === 'totk_progress' || id.hashTable)) return null;
+  const tabs = S.caps.map(c => { const d = targetData(c); return d ? E.parseHashTable(d, id.reader || 'generic', id.hashTable && id.hashTable.start) : null; });
+  return tabs.every(Boolean) ? tabs : null;
+}
+const bymlCache = new WeakMap();
+function bymlOf(data) {
+  if (!data) return null;
+  if (!bymlCache.has(data)) { let r = null; try { const d = E.parseTree(data); if (d) r = { tree: d.tree, flat: E.flattenByml(d.tree) }; } catch (e) { r = { error: e.message }; } bymlCache.set(data, r); }
+  return bymlCache.get(data);
+}
+function isByml() { const id = currentIdent(); return !!(id && E.TREE_READERS.includes(id.reader)); }
+function treeReader() { const id = currentIdent(); return id && E.TREE_READERS.includes(id.reader) ? id.reader : 'byml'; }
+function bymlAll() { const r = S.caps.map(c => bymlOf(targetData(c))); return r.every(x => x && x.tree) ? r : null; }
+function describeNode(v) {
+  if (Array.isArray(v)) {
+    const filled = v.filter(x => x !== '' && x !== null && x !== false && x !== 0).length;
+    const first = v.find(x => x !== '' && x !== null) ?? v[0];
+    return 'liste de ' + v.length + (filled !== v.length ? ' (' + filled + ' remplis)' : '') + (first !== undefined ? ' · ex. ' + JSON.stringify(first).slice(0, 90) : '');
+  }
+  if (v && typeof v === 'object') return Object.keys(v).length + ' clés : ' + Object.keys(v).slice(0, 6).join(', ') + (Object.keys(v).length > 6 ? '…' : '');
+  return JSON.stringify(v);
+}
+function renderStruct() {
+  const out = $('#structOut');
+  const id = currentIdent();
+  if (!id) { out.innerHTML = '<div class="card empty">Ajoutez une capture pour voir sa structure.</div>'; return; }
+  const tabs = hashTables();
+  const sizes = S.caps.map(c => targetData(c)).filter(Boolean).map(d => d.length);
+  const sameSize = sizes.every(s => s === sizes[0]);
+  let h = `<div class="card"><h2>${esc(S.target)}</h2><dl class="kv">
+    <dt>Format</dt><dd>${esc(id.format)}</dd>
+    <dt>Taille</dt><dd>${id.size.toLocaleString('fr-FR')} octets (${fmtBytes(id.size)})${S.caps.length > 1 ? (sameSize ? ' · identique dans toutes les captures' : ' · <span style="color:var(--warn)">varie selon les captures</span>') : ''}</dd>
+    ${id.magicText ? `<dt>En-tête</dt><dd class="mono">« ${esc(id.magicText)} »</dd>` : ''}
+    ${id.container ? `<dt>Conteneur</dt><dd>${esc(id.container)}</dd>` : ''}
+    <dt>Entropie</dt><dd>${id.entropy.toFixed(2)} bits/octet · ${Math.round(id.zeroRatio * 100)} % de zéros</dd>
+    <dt>Lecteur conseillé</dt><dd class="mono">${esc(id.reader || '—')}</dd>
+  </dl>
+  <h3>Carte d'entropie (bleu = vide/structuré, rouge = aléatoire)</h3>
+  <div class="heat">${id.blocks.map(e => `<i style="background:${heatColor(e)}"></i>`).join('')}</div>
+  ${id.notes.map(n => `<div class="note">${esc(n)}</div>`).join('')}
+  ${!sameSize && id.reader === 'binary_le' ? '<div class="note">La taille change d\'une capture à l\'autre : les données se décalent peut-être (listes de longueur variable). Les offsets fixes risquent d\'être fragiles.</div>' : ''}
+  </div>`;
+  if (tabs) {
+    const keys = [...tabs[tabs.length - 1].keys()];
+    const named = keys.filter(k => S.dict.has(k)).length;
+    h += `<div class="card"><h2>Table hash → valeur</h2>
+      <p>${tabs[tabs.length - 1].size.toLocaleString('fr-FR')} entrées${tabs[0].le ? '' : ' (big-endian)'} · ${named} nommée(s) par le dictionnaire.</p>
+      <h3>Dictionnaire de noms</h3>
+      <p class="small mute">Collez des noms de drapeaux possibles (un par ligne : wikis, datamines, fichiers du jeu…). L'outil teste CRC32, Murmur3 et FNV‑1a et nomme les entrées qui correspondent.</p>
+      <textarea id="dictIn" placeholder="IsGet_Obj_DRStone_Get&#10;Clear_Dungeon000&#10;…"></textarea>
+      <p><button class="btn" id="dictRun">Tester les noms</button> <span id="dictRes" class="small mute"></span></p></div>`;
+  }
+  if (E.TREE_READERS.includes(id.reader)) {
+    const b = bymlOf(targetData(S.caps[S.caps.length - 1]));
+    if (b && b.tree) {
+      const keys = Object.keys(b.tree);
+      h += `<div class="card"><h2>Arbre de données (${keys.length} entrées, ${b.flat.size.toLocaleString('fr-FR')} valeurs)</h2>
+        <p class="small mute">Chaque valeur a un chemin. Dans une règle : <span class="mono">CoinNum</span>, <span class="mono">ShineData[*]/IsGet</span> (tous les éléments), <span class="mono">ShineData[UniqueId=205]/IsGet</span> (un élément précis), <span class="mono">HackDictionary[=Wanwan]</span> (liste qui contient).</p>
+        <div class="mono small">${keys.map(k => `<div style="padding:3px 0;border-top:1px solid var(--line)"><b>${esc(k)}</b> <span class="mute">${esc(describeNode(b.tree[k]))}</span></div>`).join('')}</div></div>`;
+    } else if (b && b.error) h += `<div class="card"><div class="note bad">${esc(E.treeFormat(id.reader).label)} illisible : ${esc(b.error)}</div></div>`;
+  }
+  if (id.strings.length && !E.TREE_READERS.includes(id.reader)) {
+    h += `<div class="card"><h2>Textes trouvés</h2><p class="small mute">Noms de joueur, identifiants internes, versions… utiles pour comprendre le format.</p>
+      <div class="mono small">${id.strings.slice(0, 60).map(s => `<div><span class="mute">${E.hexOff(s.off)}</span> ${esc(s.s.slice(0, 70))}${s.enc === 'UTF-16' ? ' <span class="mute">(UTF‑16)</span>' : ''}</div>`).join('')}</div></div>`;
+  }
+  out.innerHTML = h;
+  const run = $('#dictRun');
+  if (run) run.addEventListener('click', () => {
+    const names = $('#dictIn').value.split(/[\n,;]+/);
+    const keys = [...tabs[tabs.length - 1].keys()];
+    const r = E.matchDictionary(names, keys);
+    for (const [k, v] of r.found) S.dict.set(k, v);
+    $('#dictRes').textContent = r.found.size + ' correspondance(s) — ' + Object.entries(r.stats).filter(([, n]) => n).map(([a, n]) => a + ' : ' + n).join(', ');
+    persist();
+  });
+}
+
+// ---------------------------------------------------------------- candidate rendering (diff + value search)
+function candKey(c) { return c.path !== undefined ? 'p' + c.path : c.hash !== undefined ? 'h' + c.hash : 'o' + c.off + ':' + c.size; }
+function where(c) {
+  if (c.path !== undefined) return esc(c.path).replace(/\//g, '/<wbr>');
+  if (c.hash !== undefined) { const n = S.dict.get(c.hash); return n ? `${esc(n.name)} <span class="mute">${E.hex(c.hash)}</span>` : E.hex(c.hash); }
+  return `${E.hexOff(c.off)} <span class="mute">${c.float ? 'f32' : 'u' + c.size * 8}</span>`;
+}
+function candRow(c) {
+  const k = candKey(c);
+  const kind = c.kind || (c.float ? 'float' : 'counter');
+  const vals = c.vals.map((v, i) => `<b title="${esc(S.caps[i] && S.caps[i].label)}">${fmt(v)}</b>`).join(' → ');
+  return `<div class="res" data-k="${esc(k)}">
+    <input type="checkbox" class="pick" ${S.sel.has(k) ? 'checked' : ''} aria-label="Sélectionner">
+    <div class="where">${where(c)}</div>
+    <div><span class="badge k-${kind}">${esc(E.KIND_LABEL[kind] || (kind === 'new' ? 'Nouvelle entrée' : kind))}</span> <button class="btn sm mk">＋ Succès</button></div>
+    <div class="vals">${vals}</div></div>`;
+}
+function bindCandList(box, list) {
+  const byKey = new Map(list.map(c => [candKey(c), c]));
+  box.onclick = (e) => {
+    const row = e.target.closest('.res'); if (!row) { if (e.target.id === 'more') { S.diffShown += 150; renderDiff(); } return; }
+    const c = byKey.get(row.dataset.k); if (!c) return;
+    if (e.target.classList.contains('mk')) { addAchievementFrom([c]); }
+  };
+  box.onchange = (e) => {
+    if (!e.target.classList.contains('pick')) return;
+    const k = e.target.closest('.res').dataset.k, c = byKey.get(k);
+    if (e.target.checked) S.sel.set(k, c); else S.sel.delete(k);
+    updateSelbar();
+  };
+}
+
+// ---------------------------------------------------------------- diff
+$('#runDiff').addEventListener('click', () => runDiff());
+$('#showNoise').addEventListener('change', () => { S.diff = null; runDiff(); });
+$('#diffFilter').addEventListener('click', (e) => {
+  const c = e.target.closest('.chip'); if (!c) return;
+  S.diffFilter = c.dataset.f; S.diffShown = 150;
+  $$('#diffFilter .chip').forEach(x => x.classList.toggle('on', x === c));
+  renderDiff();
+});
+function controls() { return S.caps.map((c, i) => c.control ? i : -1).filter(i => i > 0); }
+function runDiff() {
+  if (S.caps.length < 2) { $('#diffSummary').innerHTML = '<div class="note">Il faut au moins 2 captures.</div>'; return; }
+  const datas = S.caps.map(targetData);
+  if (datas.some(d => !d)) { $('#diffSummary').innerHTML = '<div class="note bad">Le fichier analysé manque dans au moins une capture.</div>'; return; }
+  const id = currentIdent();
+  if (!id.analyzable) { $('#diffSummary').innerHTML = '<div class="note bad">Ce fichier semble chiffré ou compressé : la comparaison ne donnera que du bruit.</div>'; }
+  const t0 = performance.now();
+  const tabs = hashTables();
+  const opts = { controls: controls(), showNoise: $('#showNoise').checked };
+  if (isByml()) {
+    const all = bymlAll();
+    if (!all) { $('#diffSummary').innerHTML = '<div class="note bad">BYML illisible dans au moins une capture.</div>'; return; }
+    S.diff = E.diffByml(all.map(x => x.flat), opts);
+    S.diff.ms = Math.round(performance.now() - t0); S.diffShown = 150; renderDiff(); return;
+  }
+  S.diff = tabs ? Object.assign(E.diffHash(tabs, opts), { mode: 'hash' }) : Object.assign(E.diffBinary(datas, opts), { mode: 'binary' });
+  S.diff.ms = Math.round(performance.now() - t0);
+  S.diffShown = 150;
+  renderDiff();
+}
+function renderDiff() {
+  const d = S.diff, box = $('#diffList');
+  if (!d) { box.style.display = 'none'; return; }
+  const counts = {};
+  for (const c of d.candidates) counts[c.kind] = (counts[c.kind] || 0) + 1;
+  const other = (counts.decreasing || 0) + (counts.variable || 0) + (counts.noise || 0) + (counts.timestamp || 0);
+  const parts = [['flag', 'drapeau(x)'], ['counter', 'compteur(s)'], ['bits', 'champ(s) de bits'], ['float', 'flottant(s)'], ['new', 'nouvelle(s) entrée(s)']].filter(([k]) => counts[k]).map(([k, l]) => `<span class="k-${k}">${counts[k]} ${l}</span>`);
+  if (other) parts.push(`<span class="mute">${other} autre(s)</span>`);
+  $('#diffSummary').innerHTML = (d.candidates.length ? `<p class="small">${parts.join(' · ')}</p>` : '<div class="note">Aucune différence exploitable entre les captures.</div>') +
+    `<p class="small mute">${d.mode === 'byml' ? 'Comparaison par chemin (' + treeReader().toUpperCase() + ')' : d.mode === 'hash' ? 'Comparaison par clé (hash)' : 'Comparaison octet par octet'} en ${d.ms} ms${d.noiseCount ? ' · ' + d.noiseCount + ' valeur(s) écartée(s) comme bruit grâce aux captures de contrôle' : controls().length ? '' : ' · astuce : une capture « contrôle » élimine le bruit'}${d.total > d.candidates.length ? ' · ' + d.total + ' au total, les ' + d.candidates.length + ' meilleures affichées' : ''}.</p>`;
+  const f = S.diffFilter;
+  const list = d.candidates.filter(c => f === 'all' || c.kind === f || (f === 'other' && ['decreasing', 'variable', 'noise', 'timestamp'].includes(c.kind)));
+  box.style.display = list.length ? '' : 'none';
+  box.innerHTML = list.slice(0, S.diffShown).map(candRow).join('') + (list.length > S.diffShown ? `<p style="text-align:center"><button class="btn" id="more">Afficher plus (${list.length - S.diffShown})</button></p>` : '');
+  bindCandList(box, list);
+}
+
+// ---------------------------------------------------------------- automatic generation
+$('#autoGen').addEventListener('click', () => {
+  if (!S.diff) runDiff();
+  if (!S.diff) return;
+  const snaps = S.diff.mode === 'byml' ? bymlAll().map(x => x.tree) : S.caps.map(targetData);
+  const list = E.autoAchievements(snaps, S.diff, { dict: S.dict });
+  const groups = [];
+  for (const a of list) { let g = groups.find(x => x.name === a.group); if (!g) groups.push(g = { name: a.group, achs: [] }); g.achs.push(a); }
+  const hasCtl = controls().length > 0;
+  openDialog(`<h2>Succès générés automatiquement</h2>
+    <p class="small mute">Collections = drapeaux 0→1 rangés à intervalle régulier (avec leurs voisins pas encore obtenus) ; compteurs = valeurs qui montent. Paliers calés sur la dernière capture : idéal avec une save 100 %.${hasCtl ? '' : ' Sans capture « contrôle », une horloge de jeu peut passer pour un compteur : vérifiez.'}</p>
+    ${groups.length ? groups.map((g, gi) => `<div class="ach"><label style="margin:0;color:var(--text)"><input type="checkbox" class="agPick" data-g="${gi}" checked><b>${esc(g.name)}</b> <span class="mute small">· ${g.achs.length} succès</span></label>
+      <div class="small mute" style="margin-top:4px">${esc(g.achs[g.achs.length - 1].desc)}</div>
+      <div class="small mono" style="margin-top:4px">${g.achs.map(a => esc(a.name.split(' : ')[1] || a.name)).join(' · ')}</div></div>`).join('')
+      : '<div class="empty">Rien de généralisable trouvé. Essayez avec une capture de début de partie et une capture bien plus avancée.</div>'}
+    <div class="row" style="margin-top:10px">${groups.length ? '<button class="btn pri fix" id="agAdd">Ajouter la sélection</button>' : ''}<button class="btn fix" id="agClose">Fermer</button></div>
+    <p class="small mute">Ensuite, onglet 5 : renommez-les, ou « ✦ Suggestions de Claude » pour des noms parlants.</p>`);
+  $('#agClose').onclick = closeDialog;
+  const add = $('#agAdd');
+  if (add) add.onclick = () => {
+    const d = ensureDef();
+    if (S.diff.mode === 'binary') { d.reader = 'binary_le'; } else if (S.diff.mode === 'byml') { d.reader = treeReader(); keepXor(d); } else if (!d.reader) d.reader = currentIdent().reader;
+    if (!d.save_files || !d.save_files.length) d.save_files = [S.target];
+    let n = 0;
+    $$('.agPick').forEach(cb => { if (!cb.checked) return; for (const a of groups[+cb.dataset.g].achs) { const { group, auto, ...rest } = a; d.achievements.push(Object.assign({ id: uniqueId(slug(a.name)) }, rest)); n++; } });
+    persist(); closeDialog(); toast(n + ' succès ajoutés'); showTab('ach');
+  };
+});
+
+// ---------------------------------------------------------------- value search
+function renderValInputs() {
+  const box = $('#valInputs');
+  const prev = $$('#valInputs input').map(i => i.value);
+  box.innerHTML = S.caps.length ? S.caps.map((c, i) => `<div class="row"><label class="fix" style="width:40%;margin:6px 0">${esc(c.label)}</label><input type="text" inputmode="decimal" class="valIn" value="${esc(prev[i] || '')}" placeholder="inconnue"></div>`).join('') : '<div class="empty">Ajoutez des captures d\'abord.</div>';
+}
+$('#runVal').addEventListener('click', () => {
+  const known = $$('.valIn').map(i => i.value.trim() === '' ? null : +i.value.replace(',', '.').replace(/\s/g, ''));
+  if (!known.some(v => v !== null && !isNaN(v))) { $('#valSummary').innerHTML = '<div class="note">Entrez au moins une valeur.</div>'; return; }
+  const datas = S.caps.map(targetData);
+  if (datas.some(d => !d)) { $('#valSummary').innerHTML = '<div class="note bad">Le fichier analysé manque dans au moins une capture.</div>'; return; }
+  const tabs = hashTables();
+  const bAll = isByml() ? bymlAll() : null;
+  const res = bAll ? E.searchValueByml(bAll.map(x => x.flat), known) : tabs ? E.searchValueHash(tabs, known) : E.searchValue(datas, known, $('#valType').value, { unaligned: $('#valUnaligned').checked });
+  const given = known.filter(v => v !== null).length;
+  $('#valSummary').innerHTML = `<p class="small">${res.length >= 500 ? '500+' : res.length} emplacement(s) trouvé(s).</p>` +
+    (res.length > 20 && given < 3 ? '<div class="note">Beaucoup de résultats : faites une capture de plus avec une valeur différente et ajoutez-la pour affiner.</div>' : '') +
+    (!res.length ? '<div class="note">Rien trouvé. Essayez « offsets non alignés », un autre type, ou la valeur peut être stockée différemment (×10, en centièmes, chiffrée…).</div>' : '');
+  const box = $('#valList');
+  box.style.display = res.length ? '' : 'none';
+  res.forEach(r => { r.kind = r.float ? 'float' : (E.classify(r.vals, []) || { kind: 'counter' }).kind; if (r.kind === 'variable' || r.kind === 'decreasing') r.kind = 'counter'; });
+  box.innerHTML = res.slice(0, 200).map(candRow).join('');
+  bindCandList(box, res);
+});
+
+// ---------------------------------------------------------------- selection bar
+function updateSelbar() {
+  const n = S.sel.size;
+  const vis = n > 0 && ($('#s-diff').classList.contains('on') || $('#s-value').classList.contains('on'));
+  $('#selbar').classList.toggle('on', vis);
+  $('#selN').textContent = n;
+  const arr = [...S.sel.values()];
+  $('#selExtend').disabled = !(arr.length >= 1 && (arr.every(c => c.path !== undefined) || arr.every(c => c.off !== undefined && c.size === arr[0].size)));
+}
+$('#selClear').addEventListener('click', () => { S.sel.clear(); $$('.pick').forEach(p => p.checked = false); updateSelbar(); });
+$('#selCount').addEventListener('click', () => { addAchievementFrom([...S.sel.values()], 'count'); });
+$('#selSum').addEventListener('click', () => { addAchievementFrom([...S.sel.values()], 'sum'); });
+$('#selExtend').addEventListener('click', () => {
+  const arr = [...S.sel.values()];
+  if (arr[0].path !== undefined) {
+    const all = bymlAll(); const lastTree = all[all.length - 1].tree;
+    const g = E.bymlGroupRule(lastTree, arr.map(c => c.path));
+    const have = S.caps.map((c, i) => esc(c.label) + ' ' + g.paths.reduce((n, p) => n + (E.queryByml(all[i].tree, p) || []).filter(v => v !== '' && v !== false && v !== 0 && v !== null).length, 0));
+    openDialog(`<h2>Généraliser en collection</h2>
+      <p class="small mute">Les éléments choisis appartiennent à ${g.paths.length > 1 ? 'ces listes' : 'cette liste'} ; la règle comptera tous les éléments « obtenus ».</p>
+      <p class="mono small">${g.paths.map(esc).join('<br>')}</p>
+      <p><b>${g.total}</b> élément(s) au total · obtenus : ${have.join(' · ')}</p>
+      <div class="row"><div><label>Objectif</label><input id="gxT" inputmode="numeric" value="${g.total}"></div></div>
+      <div class="row" style="margin-top:12px"><button class="btn pri fix" id="gxOk">Créer un succès « compter »</button><button class="btn fix" id="gxNo">Fermer</button></div>`);
+    $('#gxNo').onclick = closeDialog;
+    $('#gxOk').onclick = () => { closeDialog(); addBymlRule({ type: 'count', ...(g.paths.length === 1 ? { path: g.paths[0] } : { paths: g.paths }), target: +$('#gxT').value || g.total }, 'Collection', 'Obtenir ' + (+$('#gxT').value || g.total) + ' élément(s)'); };
+    return;
+  }
+  const size = arr[0].size;
+  const offs = arr.map(c => c.off);
+  const guess = E.extendSeries(S.caps.map(targetData), offs, size);
+  openDialog(`<h2>Étendre une série de drapeaux</h2>
+    <p class="small mute">Les collections (sanctuaires, personnages, niveaux…) sont souvent rangées à intervalle régulier. À partir de vos ${offs.length} drapeau(x), l'outil cherche les voisins qui valent 0 ou 1 dans toutes les captures — y compris ceux pas encore débloqués.</p>
+    <div class="row"><div><label>Pas (octets)</label><input id="exStride" inputmode="numeric" value="${guess.stride || size}"></div><div><label>Nombre max</label><input id="exMax" inputmode="numeric" value="256"></div><div><label>Zéros tolérés aux bords</label><input id="exZero" inputmode="numeric" value="8"></div></div>
+    <p><button class="btn" id="exRun">Recalculer</button></p>
+    <div id="exOut"></div>
+    <div class="row" style="margin-top:12px"><button class="btn pri fix" id="exCount">Créer un succès « compter »</button><button class="btn fix" id="exClose">Fermer</button></div>`);
+  let cur = guess;
+  const show = () => { $('#exOut').innerHTML = `<p><b>${cur.offsets.length}</b> offsets, de <span class="mono">${E.hexOff(cur.offsets[0])}</span> à <span class="mono">${E.hexOff(cur.offsets[cur.offsets.length - 1])}</span>, pas ${cur.stride}.</p><p class="small mute">Actuellement à 1 : ${S.caps.map((c, i) => esc(c.label) + ' ' + cur.offsets.filter(o => E.rd(targetData(c), o, size) === 1).length).join(' · ')}</p>`; };
+  show();
+  $('#exRun').onclick = () => { cur = E.extendSeries(S.caps.map(targetData), offs, size, { stride: +$('#exStride').value || 0, maxCount: +$('#exMax').value || 256, maxZeroRun: +$('#exZero').value }); show(); };
+  $('#exClose').onclick = closeDialog;
+  $('#exCount').onclick = () => { closeDialog(); addAchievementFrom(cur.offsets.map(o => ({ off: o, size, vals: S.caps.map(c => E.rd(targetData(c), o, size)), kind: 'flag' })), 'count', { target: cur.offsets.length }); };
+});
+function openDialog(html) { $('#dlgBox').innerHTML = html; $('#dlg').classList.add('on'); }
+function closeDialog() { $('#dlg').classList.remove('on'); }
+$('#dlg').addEventListener('click', (e) => { if (e.target.id === 'dlg') closeDialog(); });
+
+// ---------------------------------------------------------------- definitions
+function ensureDef() {
+  if (S.def) return S.def;
+  const id = currentIdent();
+  const b = BUILTIN[S.game.title_id];
+  const files = b && b.save_files && b.save_files.length && b.reader === (id && id.reader) ? b.save_files.slice() : (S.target ? [S.target] : []);
+  const base = { title_id: S.game.title_id, name: S.game.name, reader: id ? id.reader : '', save_files: files, achievements: [] };
+  if (id && id.magic) base.magic = id.magic;
+  if (id && id.xorKey) base.xor_key = id.xorKey;
+  S.def = base;
+  return base;
+}
+function slug(s) { return (s || 'ach').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 28) || 'ach'; }
+function uniqueId(base) { const d = ensureDef(); let id = base, n = 2; while (d.achievements.some(a => a.id === id)) id = base + '_' + n++; return id; }
+function nice(v) { if (v <= 1) return 1; const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= v) return m * p; return 10 * p; }
+// XOR-obfuscated saves: the definition keeps the key so that the app can read the file.
+function keepXor(d) { const id = currentIdent(); if (id && id.xorKey) d.xor_key = id.xorKey; }
+function addBymlRule(rule, name, desc) {
+  const d = ensureDef();
+  d.reader = treeReader();
+  keepXor(d);
+  if (!d.save_files || !d.save_files.length) d.save_files = [S.target];
+  d.achievements.push({ id: uniqueId(slug(name)), name, desc, points: 10, rule });
+  S.sel.clear(); $$('.pick').forEach(p => p.checked = false); updateSelbar();
+  persist(); toast('Succès ajouté — onglet 5 pour le nommer');
+}
+function addAchievementFrom(cands, mode, extra = {}) {
+  if (cands[0].path !== undefined) {
+    const last = (c) => c.vals[c.vals.length - 1];
+    const leafName = (p) => p.replace(/\[[^\]]*\]/g, '').split('/').filter(Boolean).pop() || p;
+    if (cands.length === 1 && !mode) {
+      const c = cands[0];
+      if (c.kind === 'flag' || c.kind === 'new') return addBymlRule({ type: 'flag', path: c.path, target: 1 }, leafName(c.path), c.path + ' obtenu');
+      const t = nice(Math.max(1, Math.abs(+last(c) || 1) * 1.5));
+      return addBymlRule({ type: 'flag', path: c.path, target: t }, leafName(c.path) + ' ' + t, 'Atteindre ' + t + ' (' + c.path + ')');
+    }
+    const type = mode || 'count';
+    const paths = cands.map(c => c.path);
+    const target = extra.target || (type === 'count' ? paths.length : nice(Math.max(1, cands.reduce((n, c) => n + (+last(c) || 0), 0) * 1.5)));
+    return addBymlRule({ type, paths, target }, type === 'count' ? 'Collection ' + target : 'Total ' + target, type === 'count' ? 'Obtenir ' + target + ' sur ' + paths.length : 'Atteindre un total de ' + target);
+  }
+  const d = ensureDef();
+  const isHash = cands[0].hash !== undefined;
+  if (isHash && d.reader === 'binary_le') d.reader = currentIdent().reader || 'gamedata_hash';
+  if (!isHash && !d.reader) d.reader = 'binary_le';
+  const last = (c) => c.vals[c.vals.length - 1];
+  const ref = (c) => isHash ? (S.dict.get(c.hash) ? S.dict.get(c.hash).name : E.hex(c.hash)) : E.hexOff(c.off);
+  let rule, name, desc;
+  if (cands.length === 1 && !mode) {
+    const c = cands[0];
+    if (c.kind === 'flag') { rule = { type: 'flag', target: 1 }; name = 'Nouveau drapeau'; desc = 'Débloqué quand ' + ref(c) + ' passe à 1'; }
+    else { const tgt = nice(Math.max(1, Math.abs(last(c)) * 1.5)); rule = { type: 'flag', target: tgt }; name = 'Compteur ' + tgt; desc = 'Atteindre ' + tgt + ' (' + ref(c) + ')'; }
+    if (isHash) { rule[S.dict.get(c.hash) ? 'name' : 'hash'] = ref(c); if (c.float) rule.float = true; }
+    else { rule.offset = E.hexOff(c.off); rule.size = c.size; rule.max = c.kind === 'flag' ? 1 : Math.min(4294967295, Math.max(1000, nice(Math.abs(last(c)) * 1000))); }
+  } else {
+    const type = mode || 'count';
+    const total = type === 'count' ? cands.length : cands.reduce((s, c) => s + last(c), 0);
+    rule = { type, target: extra.target || (type === 'count' ? cands.length : nice(Math.max(1, total * 1.5))) };
+    if (isHash) rule.names = cands.map(ref);
+    else { rule.offsets = cands.map(c => E.hexOff(c.off)); rule.size = cands[0].size; rule.max = type === 'count' ? 1 : Math.min(4294967295, Math.max(1000, nice(Math.max(...cands.map(c => Math.abs(last(c)))) * 1000))); }
+    name = type === 'count' ? 'Collection (' + rule.target + ')' : 'Total ' + rule.target;
+    desc = type === 'count' ? 'Obtenir ' + rule.target + ' élément(s) sur ' + cands.length : 'Atteindre un total de ' + rule.target;
+  }
+  if (cands.some(c => c.float) && !isHash) toast('Attention : le lecteur binary_le ne lit pas les flottants');
+  if (cands.some(c => c.kind === 'bits')) toast('Champ de bits : l\'app compare la valeur entière, vérifiez le test');
+  d.achievements.push({ id: uniqueId(slug(name)), name, desc, points: 10, rule });
+  S.sel.clear(); $$('.pick').forEach(p => p.checked = false); updateSelbar();
+  persist();
+  toast('Succès ajouté — onglet 5 pour le nommer');
+}
+
+// ---------------------------------------------------------------- achievements editor
+function syncHeader() {
+  const d = S.def; if (!d) return;
+  d.reader = $('#dReader').value;
+  d.magic = $('#dMagic').value.trim(); if (!d.magic) delete d.magic;
+  d.save_files = $('#dFiles').value.split('\n').map(s => s.trim()).filter(Boolean);
+  const tsize = (() => { const c = S.caps[S.caps.length - 1]; const x = c && targetData(c); return x ? x.length : 0; })();
+  if ($('#dSizeOn').checked && (d.file_size || tsize)) d.file_size = d.file_size || tsize; else delete d.file_size;
+  d.title_id = S.game.title_id || d.title_id; d.name = S.game.name || d.name;
+}
+['#dReader', '#dMagic', '#dFiles', '#dSizeOn'].forEach(s => $(s).addEventListener('change', () => { ensureDef(); syncHeader(); renderAch(); persist(); }));
+function renderAch() {
+  const d = ensureDef();
+  if (S.game.title_id) { d.title_id = S.game.title_id; d.name = S.game.name; }
+  $('#dReader').value = d.reader || '';
+  $('#dMagic').value = d.magic || '';
+  $('#dFiles').value = (d.save_files || []).join('\n');
+  const c = S.caps[S.caps.length - 1], x = c && targetData(c);
+  $('#dSizeVal').textContent = d.file_size || (x ? x.length : '—');
+  $('#dSizeOn').checked = !!d.file_size;
+  $('#loadBuiltin').style.display = BUILTIN[d.title_id] ? '' : 'none';
+  const evals = S.caps.map(cap => E.evaluate(d, cap.files, { fallback: targetFile(cap) }).results);
+  const named = S.caps.every(c => { const f = targetFile(c); return !f || (d.save_files || []).some(p => f.path === p || f.path.endsWith('/' + p)); });
+  $('#fileWarn').innerHTML = d.reader && S.target && !named && (d.save_files || []).length
+    ? `<div class="note">Vos captures ont été renommées (ex. « ${esc(S.target)} ») mais l'app lira ${d.save_files.map(esc).join(', ')}. Pour les tests ici, le fichier de chaque capture est utilisé à la place. Gardez les vrais noms de la sauvegarde dans la liste.</div>` : '';
+  $('#achCount').textContent = '(' + d.achievements.length + ')';
+  $('#achList').innerHTML = d.achievements.length ? d.achievements.map((a, i) => {
+    const test = evals.map((r, ci) => {
+      const e = r[i]; if (!e || e.skip) return '';
+      return `<span class="${e.note ? 'err' : e.met ? 'met' : 'no'}" title="${esc(S.caps[ci].label + (e.note ? ' — ' + e.note : ''))}">${ci + 1}: ${fmt(e.value)}${e.met ? ' ✓' : ''}</span>`;
+    }).join('');
+    const note = evals.length && evals[0][i] && evals[0][i].note ? `<div class="small" style="color:var(--bad)">${esc(evals[evals.length - 1][i].note || evals[0][i].note)}</div>` : '';
+    const isSave = ['flag', 'value', 'count', 'sum'].includes(a.rule && a.rule.type);
+    return `<div class="ach" data-i="${i}">
+      <div class="top"><input class="aName" value="${esc(a.name)}" placeholder="Nom"><select class="aPts fix" style="width:auto">${[5, 10, 25, 50, 100].map(p => `<option ${p === a.points ? 'selected' : ''}>${p}</option>`).join('')}</select><button class="btn sm aDel fix" aria-label="Supprimer">✕</button></div>
+      <input class="aDesc" value="${esc(a.desc)}" placeholder="Description" style="margin-top:6px">
+      <div class="row" style="margin-top:6px"><div><label style="margin:0">Objectif</label><input class="aTarget" inputmode="decimal" value="${esc(a.rule && a.rule.target !== undefined ? a.rule.target : 1)}"></div><label class="fix" style="margin-top:18px"><input type="checkbox" class="aHidden" ${a.hidden ? 'checked' : ''}>caché</label><div class="fix mono small mute" style="margin-top:18px">${esc(a.id)}</div></div>
+      <details style="margin-top:6px"><summary>Règle (JSON)</summary><textarea class="aRule">${esc(JSON.stringify(a.rule, null, 1))}</textarea></details>
+      ${isSave && S.caps.length ? `<div class="test">${test}</div>${note}` : (!isSave ? '<div class="small mute" style="margin-top:6px">Règle basée sur les statistiques de jeu (temps / lancements).</div>' : '')}
+    </div>`;
+  }).join('') : '<div class="empty">Aucun succès. Ajoutez-en depuis « Différences » ou « Valeur connue ».</div>';
+  renderExport();
+}
+$('#achList').addEventListener('change', (e) => {
+  const box = e.target.closest('.ach'); if (!box) return;
+  const a = S.def.achievements[+box.dataset.i];
+  const cl = e.target.classList;
+  if (cl.contains('aName')) { a.name = e.target.value; if (/^(nouveau_drapeau|compteur_|collection_|total_|ach)/.test(a.id)) a.id = uniqueIdExcept(slug(a.name), a); }
+  else if (cl.contains('aDesc')) a.desc = e.target.value;
+  else if (cl.contains('aPts')) a.points = +e.target.value;
+  else if (cl.contains('aHidden')) { if (e.target.checked) a.hidden = true; else delete a.hidden; }
+  else if (cl.contains('aTarget')) { const v = +e.target.value.replace(',', '.'); if (!isNaN(v)) a.rule.target = v; }
+  else if (cl.contains('aRule')) { try { a.rule = JSON.parse(e.target.value); } catch (err) { toast('JSON de règle invalide : ' + err.message); return; } }
+  persist(); renderAch();
+});
+function uniqueIdExcept(base, self) { let id = base, n = 2; while (S.def.achievements.some(a => a !== self && a.id === id)) id = base + '_' + n++; return id; }
+$('#achList').addEventListener('click', (e) => {
+  if (!e.target.closest('.aDel')) return;
+  const i = +e.target.closest('.ach').dataset.i;
+  S.def.achievements.splice(i, 1); persist(); renderAch();
+});
+$('#addEmpty').addEventListener('click', () => {
+  const d = ensureDef();
+  const rule = d.reader === 'binary_le' ? { type: 'flag', offset: '0x0', size: 4, target: 1, max: 1000000 } : E.TREE_READERS.includes(d.reader) ? { type: 'flag', path: d.reader === 'json' ? 'playerData/geo' : d.reader === 'byml' ? 'CoinNum' : 'NomDeLaPropriete', target: 100 } : d.reader ? { type: 'flag', name: 'NomDuDrapeau' } : { type: 'playtime_hours', target: 10 };
+  d.achievements.push({ id: uniqueId('nouveau'), name: 'Nouveau succès', desc: '', points: 10, rule });
+  persist(); renderAch();
+});
+$('#loadBuiltin').addEventListener('click', () => {
+  const b = BUILTIN[ensureDef().title_id]; if (!b) return;
+  const mine = S.def.achievements.filter(a => !b.achievements.some(x => x.id === a.id));
+  const keepReader = S.def.reader && !b.reader;
+  S.def = JSON.parse(JSON.stringify(b));
+  if (keepReader) { const id = currentIdent(); S.def.reader = id ? id.reader : 'binary_le'; S.def.save_files = S.target ? [S.target] : []; if (id && id.magic) S.def.magic = id.magic; }
+  S.def.achievements.push(...mine);
+  persist(); renderAch(); toast(b.achievements.length + ' succès intégrés chargés' + (mine.length ? ' + ' + mine.length + ' à vous' : ''));
+});
+$('#importJson').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text());
+    if (!j.achievements) throw new Error('pas de liste « achievements »');
+    S.def = j;
+    if (j.title_id) { S.game = { title_id: j.title_id.toUpperCase(), name: j.name || '' }; renderGameSel(); }
+    persist(); renderAch(); toast('Définition importée : ' + j.achievements.length + ' succès');
+  } catch (err) { toast('JSON invalide : ' + err.message); }
+});
+
+// ---------------------------------------------------------------- export
+function defJson() {
+  const d = ensureDef();
+  const o = { title_id: d.title_id, name: d.name, reader: d.reader || '' };
+  if (d.magic) o.magic = d.magic;
+  if (d.file_size) o.file_size = d.file_size;
+  o.save_files = d.save_files || [];
+  for (const k of Object.keys(d)) if (!(k in o) && k !== 'achievements') o[k] = d[k];
+  o.achievements = d.achievements;
+  return JSON.stringify(o, null, 1);
+}
+
+// ---------------------------------------------------------------- 6. PC -> Switch (tools/pc2switch/match.js)
+const P = PC2Switch;
+const pc = { bundle: null, steam: null, steamName: '', drafts: null };
+function steamChoices() {
+  const out = [];
+  for (const [appid, l] of Object.entries(PCDATA.steam || {})) out.push({ appid, name: l.name || ('app ' + appid), achievements: l.achievements });
+  return out.sort((a, b) => a.name.localeCompare(b.name));
+}
+function catRow(tid) { return (PCDATA.catalog || []).find(r => r[0] === tid); }
+function renderPc() {
+  const ch = steamChoices();
+  const row = catRow(S.game.title_id);
+  const sel = $('#pcSteam');
+  const cur = pc.steam ? 'file' : (row && PCDATA.steam && PCDATA.steam[row[2]] ? String(row[2]) : '');
+  sel.innerHTML = (pc.steam ? `<option value="file">${esc(pc.steamName)} (importée)</option>` : '') + '<option value="">— Choisir —</option>' +
+    ch.map(c => `<option value="${c.appid}">${esc(c.name)} · ${c.achievements.length} succès</option>`).join('');
+  sel.value = cur;
+  const cat = PCDATA.catalog || [];
+  $('#pcCatInfo').textContent = cat.length ? `${cat.length} jeux Switch aussi sur Steam (${PCDATA.generated || '?'}), dont ${cat.filter(r => r[3] > 0).length} avec des succès. Généré par tools/pc2switch/catalog.js.` :
+    'Catalogue pas encore généré : lancez le workflow « PC → Switch » sur GitHub (clé Steam requise), puis reconstruisez Save Lab.';
+  renderCat();
+  renderBundle();
+  renderDrafts();
+}
+function renderCat() {
+  const q = ($('#pcCatQ').value || '').toLowerCase();
+  const cat = (PCDATA.catalog || []).filter(r => !q || r[1].toLowerCase().includes(q) || String(r[0]).toLowerCase().includes(q));
+  const mine = r => /^(supported|scanned|playtime)/.test(r[5] || '');
+  cat.sort((a, b) => mine(b) - mine(a) || (b[3] || 0) - (a[3] || 0));
+  $('#pcCat').innerHTML = cat.slice(0, 200).map(r => `<div class="pcrow small"><b>${esc(r[1])}</b> <span class="mono mute">${r[0]}</span><br>Steam ${r[2]}${r[4] !== 'exact' ? ' (' + esc(r[4]) + ')' : ''} · ${r[3] == null ? '?' : r[3]} succès · <span class="mute">${esc(r[5] || '')}</span></div>`).join('') +
+    (cat.length > 200 ? `<p class="small mute">… ${cat.length - 200} autres, affinez la recherche.</p>` : '');
+}
+$('#pcCatQ').addEventListener('input', renderCat);
+$('#pcBundle').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try {
+    const b = JSON.parse(await f.text());
+    if (b.format !== 'switch-achievements-scan') throw new Error('ce n\'est pas un scan_bundle.json');
+    pc.bundle = b; renderBundle(); toast(b.games.length + ' jeux dans le scan');
+  } catch (err) { toast('Erreur : ' + err.message); }
+});
+const VERD = { supported: 'succès de sauvegarde déjà pris en charge', draftable: 'lisible (JSON/BYML) : brouillons possibles', text: 'texte (XML…) : lecteur à écrire', binary: 'binaire : captures + différences', encrypted: 'chiffré ou compressé', 'no-save': 'pas de sauvegarde' };
+function renderBundle() {
+  const b = pc.bundle;
+  if (!b) { $('#pcBundleOut').innerHTML = ''; return; }
+  const order = { draftable: 0, text: 1, binary: 2, supported: 3, encrypted: 4, 'no-save': 5 };
+  const games = b.games.slice().sort((x, y) => (order[x.verdict] ?? 9) - (order[y.verdict] ?? 9) || x.name.localeCompare(y.name));
+  $('#pcBundleOut').innerHTML = `<p class="small mute">Scan du ${new Date(b.generated * 1000).toLocaleDateString('fr-FR')} · app ${esc(b.app_version)}</p>` + games.map((g, i) => {
+    const has = (g.files || []).some(x => x.data_b64);
+    const row = catRow(g.title_id);
+    return `<div class="pcrow"><b>${esc(g.name)}</b> <span class="badge">${esc(g.verdict)}</span><br><span class="small mute">${esc(VERD[g.verdict] || '')}${row ? ' · Steam ' + row[2] + ' (' + (row[3] ?? '?') + ' succès)' : ''}<br>` +
+      (g.files || []).map(x => esc(x.path) + ' — ' + esc(x.format) + ', ' + fmtBytes(x.size)).join('<br>') + (g.error ? esc(g.error) : '') + '</span>' +
+      (has ? `<br><button class="btn sm" data-load="${esc(g.title_id)}">Charger comme capture</button>` : '') + '</div>';
+  }).join('');
+}
+$('#pcBundleOut').addEventListener('click', (e) => {
+  const tid = e.target.dataset && e.target.dataset.load; if (!tid) return;
+  const g = pc.bundle.games.find(x => x.title_id === tid);
+  const files = g.files.filter(x => x.data_b64).map(x => { const bin = atob(x.data_b64); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return { path: x.path, data: u }; });
+  if (S.game.title_id !== tid) { S.game = { title_id: tid, name: g.name, custom: !BUILTIN[tid] }; S.def = null; renderGameSel(); }
+  S.caps.push({ id: nextId++, label: 'Scan console', control: false, files });
+  autoTarget(); S.diff = null; S.val = null; renderCaps(); persist();
+  toast(files.length + ' fichier(s) chargé(s) — choisissez la liste Steam puis « Générer »');
+  renderPc();
+});
+$('#pcSteamFile').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try {
+    const j = JSON.parse(await f.text());
+    const list = j.achievements || (j.game && j.game.availableGameStats && j.game.availableGameStats.achievements);
+    if (!Array.isArray(list) || !list.length) throw new Error('aucune liste de succès dans ce fichier');
+    pc.steam = list; pc.steamName = j.name || (j.game && j.game.gameName) || f.name;
+    renderPc(); toast(list.length + ' succès Steam chargés');
+  } catch (err) { toast('Erreur : ' + err.message); }
+});
+$('#pcRun').addEventListener('click', () => {
+  const v = $('#pcSteam').value;
+  const list = v === 'file' ? pc.steam : v && PCDATA.steam[v] ? PCDATA.steam[v].achievements : null;
+  if (!list) { toast('Choisissez ou importez une liste Steam'); return; }
+  const trees = S.caps.map(c => bymlOf(targetData(c))).filter(x => x && x.flat);
+  // every readable file of the last capture: some games keep their own achievement list in a separate file
+  const last = S.caps[S.caps.length - 1];
+  const files = last ? last.files.map(f => { let d = null; try { d = E.parseTree(f.data); } catch (e) { } return d ? { path: f.path, flat: E.flattenByml(d.tree), reader: d.reader } : null; }).filter(Boolean) : [];
+  const st = files.length ? P.selfTracked(list, files) : null;
+  if (!trees.length && !st) { toast('Ajoutez une capture lisible (JSON/BYML) dans l\'onglet 1 ou depuis le scan'); return; }
+  pc.self = st ? { file: st.file, found: st.found, reader: files.find(f => f.path === st.file).reader } : null;
+  if (st) pc.drafts = st.drafts;
+  else { const adv = trees[trees.length - 1].flat, fresh = trees.length > 1 ? trees[0].flat : null; pc.drafts = P.draftRules(list, adv, fresh); }
+  pc.appid = v === 'file' ? null : +v;
+  renderDrafts();
+});
+function renderDrafts() {
+  const d = pc.drafts;
+  if (!d) { $('#pcOut').innerHTML = ''; return; }
+  const sum = P.summary(d);
+  const order = { sure: 0, maybe: 1, unmatched: 2, skip: 3 };
+  const lab = { sure: 'sûr', maybe: 'à vérifier', unmatched: 'non trouvé', skip: 'hors save' };
+  const ruleTxt = r => !r ? '' : r.paths ? r.paths.length + ' drapeaux (' + r.paths[0] + '…) ≥ ' + r.target : r.path + ' ≥ ' + r.target;
+  $('#pcOut').innerHTML = (pc.self ? `<div class="note ok">Ce jeu enregistre lui-même ses succès dans <b>${esc(pc.self.file)}</b> (${pc.self.found} trouvés sous leur nom Steam) : chaque succès a une règle exacte sur ce fichier.</div>` : '') + `<div class="note">${sum.sure} sûr(s) · ${sum.maybe} à vérifier · ${sum.unmatched} non trouvé(s) · ${sum.skip} hors sauvegarde</div>
+    <div class="row"><button class="btn pri fix" id="pcAddSure">Ajouter les sûrs à la définition</button><button class="btn fix" id="pcAddAll">Ajouter sûrs + à vérifier</button></div>` +
+    d.slice().sort((a, b) => order[a.confidence] - order[b.confidence]).map(x => `<div class="pcrow small"><span class="cf cf-${x.confidence}">${lab[x.confidence]}</span><b>${esc(x.title)}</b> — ${esc(x.desc)}` +
+      (x.rule ? `<br><span class="mono">${esc(ruleTxt(x.rule))}</span>` : '') + (x.note ? `<br><span class="mute">${esc(x.note)}</span>` : '') + (x.why ? `<br><span class="mute">${esc(x.why)}</span>` : '') +
+      ((x.candidates || []).length && x.confidence !== 'sure' ? '<br><span class="mute">candidats : ' + x.candidates.map(c => esc(c.path) + ' (' + c.score + ', valeur ' + fmt(c.value) + ')').join(' · ') + '</span>' : '') + '</div>').join('');
+  $('#pcAddSure').onclick = () => addDrafts(false);
+  $('#pcAddAll').onclick = () => addDrafts(true);
+}
+function addDrafts(includeMaybe) {
+  const d = ensureDef();
+  d.reader = pc.self ? pc.self.reader : treeReader();
+  keepXor(d);
+  if (pc.self) d.save_files = [pc.self.file];
+  else if (!d.save_files || !d.save_files.length) d.save_files = [S.target];
+  const gen = P.buildDefinition({ title_id: S.game.title_id, name: S.game.name, reader: d.reader, save_files: d.save_files, appid: pc.appid }, pc.drafts, { includeMaybe });
+  let n = 0;
+  for (const a of gen.achievements) {
+    if (d.achievements.some(x => x._api === a._api || JSON.stringify(x.rule) === JSON.stringify(a.rule))) continue;
+    a.id = uniqueId(a.id); d.achievements.push(a); n++;
+  }
+  persist(); toast(n + ' succès ajouté(s) — onglet 5 pour vérifier et exporter');
+}
+
+function renderExport() {
+  const d = ensureDef();
+  const errs = E.validate(d);
+  $('#valid').innerHTML = errs.length ? `<div class="note bad">${errs.map(esc).join('<br>')}</div>` : (d.achievements.length ? '<div class="note ok">Définition valide pour l\'app.</div>' : '');
+  $('#jsonOut').textContent = defJson();
+  $('#fname').textContent = (d.title_id || 'TITLEID') + '.json';
+  $('#dlName').textContent = (d.title_id || 'TITLEID') + '.json';
+}
+$('#copyJson').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(defJson()); toast('JSON copié'); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($('#jsonOut')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Sélectionné : utilisez Copier'); }
+});
+let downloads = null, sample = null;
+$('#dlJson').addEventListener('click', async () => {
+  if (!downloads) return;
+  try { await downloads.save({ filename: (S.def.title_id || 'game') + '.json', data: defJson() }); }
+  catch (e) { toast('Téléchargement annulé'); }
+});
+
+// ---------------------------------------------------------------- Claude suggestions
+$('#askClaude').addEventListener('click', async () => {
+  if (!sample) return;
+  const d = ensureDef();
+  const cands = (S.diff ? S.diff.candidates : []).filter(c => c.kind !== 'noise' && c.kind !== 'variable').slice(0, 80);
+  if (!cands.length) { toast('Lancez d\'abord une comparaison (onglet 3)'); return; }
+  const btn = $('#askClaude'); btn.disabled = true; btn.textContent = '✦ Claude réfléchit…';
+  const lines = cands.map(c => c.path !== undefined ? `path ${c.path} [${c.kind}] ${c.vals.map(fmt).join(' -> ')}` : `${c.hash !== undefined ? 'hash ' + E.hex(c.hash) + (S.dict.get(c.hash) ? ' (' + S.dict.get(c.hash).name + ')' : '') : 'offset ' + E.hexOff(c.off) + ' u' + c.size * 8}${c.float ? ' float' : ''} [${c.kind}] ${c.vals.map(fmt).join(' -> ')}`).join('\n');
+  const prompt = `Tu aides à créer des succès (achievements) pour le jeu Nintendo Switch « ${d.name || S.game.name || 'inconnu'} » (${d.title_id}) à partir de valeurs trouvées dans sa sauvegarde.
+Captures dans l'ordre, avec ce que le joueur a fait avant chacune : ${S.caps.map((c, i) => (i + 1) + '. ' + c.label + (c.control ? ' (contrôle)' : '')).join(' ; ')}.
+Valeurs qui ont changé (emplacement [type] valeurs par capture) :
+${lines}
+
+Propose au plus 8 succès plausibles, en t'appuyant sur les noms des captures et la forme des valeurs. Pour chacun : une interprétation de la valeur, un nom accrocheur en français, une description, des points (5, 10, 25, 50 ou 100), et la règle. Pour un chemin BYML, recopie-le à l'identique dans refs ; préfère les collections (plusieurs éléments d'une même liste) en type count. Règles possibles : {"type":"flag","target":N} sur un emplacement (valeur >= N), {"type":"count","target":N} sur plusieurs drapeaux (nombre non nuls >= N), {"type":"sum","target":N}. N'invente pas d'emplacements absents de la liste. Si une interprétation est incertaine, dis-le dans "why".
+Réponds UNIQUEMENT en JSON : {"suggestions":[{"refs":["0x1A0", "0xHASH" ou le chemin exact],"type":"flag|count|sum","target":N,"name":"...","desc":"...","points":10,"why":"..."}]}`;
+  try {
+    const r = await sample.json(prompt, { modelTier: 'default' });
+    const list = (r && r.suggestions) || [];
+    const byRef = new Map(cands.map(c => [(c.path !== undefined ? c.path : c.hash !== undefined ? E.hex(c.hash) : E.hexOff(c.off)).toUpperCase(), c]));
+    const usable = list.map(s => ({ s, cs: (s.refs || []).map(x => byRef.get(String(x).toUpperCase().replace(/^0X0*/, '0X').replace(/^0X/, '0x').toUpperCase()) || byRef.get(String(x).toUpperCase())).filter(Boolean) })).filter(x => x.cs.length);
+    openDialog(`<h2>Suggestions de Claude</h2><p class="small mute">À vérifier : Claude devine le sens des valeurs d'après les noms de vos captures.</p>` +
+      (usable.length ? usable.map((x, i) => `<div class="ach"><div class="top"><b style="flex:1">${esc(x.s.name)}</b><span class="mute small">${esc(x.s.points)} pts</span></div><div class="small">${esc(x.s.desc)}</div><div class="small mute" style="margin-top:4px">${esc(x.s.why || '')}</div><div class="small mono mute">${esc(x.s.type)} ≥ ${esc(x.s.target)} · ${x.cs.length} emplacement(s)</div><p><button class="btn sm pri sgAdd" data-i="${i}">Ajouter</button></p></div>`).join('') : '<div class="empty">Aucune suggestion exploitable.</div>') +
+      '<p><button class="btn" id="sgClose">Fermer</button></p>');
+    $('#sgClose').onclick = closeDialog;
+    $$('.sgAdd').forEach(b => b.onclick = () => {
+      const x = usable[+b.dataset.i];
+      const n = S.def.achievements.length;
+      addAchievementFrom(x.cs, x.cs.length > 1 || x.s.type !== 'flag' ? (x.s.type === 'flag' ? 'count' : x.s.type) : undefined);
+      const a = S.def.achievements[n];
+      if (a) { a.name = x.s.name; a.desc = x.s.desc; a.points = [5, 10, 25, 50, 100].includes(+x.s.points) ? +x.s.points : 10; if (+x.s.target > 0) a.rule.target = +x.s.target; a.id = uniqueIdExcept(slug(a.name), a); }
+      b.disabled = true; b.textContent = 'Ajouté'; persist(); renderAch();
+    });
+  } catch (e) {
+    if (e && e.code === 'not_granted') btn.style.display = 'none';
+    toast(e && e.code === 'rate_limited' ? 'Trop de demandes, réessayez plus tard' : 'Claude n\'a pas pu répondre');
+  } finally { btn.disabled = false; btn.textContent = '✦ Suggestions de Claude'; }
+});
+
+// ---------------------------------------------------------------- boot
+(async () => {
+  renderGameSel(); renderCaps();
+  await DB.open();
+  const s = await DB.get('session');
+  if (s && s.caps) {
+    S.game = s.game || S.game; S.caps = s.caps; S.target = s.target || ''; S.def = s.def || null; S.dict = new Map(s.dict || []);
+    nextId = Math.max(0, ...S.caps.map(c => c.id)) + 1;
+    renderGameSel(); renderCaps();
+    if (S.caps.length) toast('Session précédente restaurée');
+  }
+  if (window.claude && claude.use) {
+    claude.use('downloads').then(d => { downloads = d; if (d) $('#dlJson').style.display = ''; }).catch(() => {});
+    claude.use('sample').then(sm => { sample = sm; if (sm) $('#askClaude').style.display = ''; }).catch(() => {});
+  }
+})();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,498 @@
+{
+ "appid": 2062430,
+ "name": "BALL x PIT",
+ "achievements": [
+  {
+   "name": "complete_graveyards",
+   "displayName": "BONExYARD",
+   "description": "Complete the BONExYARD",
+   "hidden": 0
+  },
+  {
+   "name": "complete_snowy",
+   "displayName": "SNOWYxSHORES",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_desert",
+   "displayName": "LIMINALxDESERT",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_savanna",
+   "displayName": "GORYxGRASSLANDS",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_shroom",
+   "displayName": "FUNGALxFOREST",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_fiery",
+   "displayName": "SMOLDERINGxDEPTHS",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_heaven",
+   "displayName": "HEAVENLYxGATES",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_void",
+   "displayName": "VASTxVOID",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_graveyards10",
+   "displayName": "BONExYARD Conquered",
+   "description": "Complete the BONExYARD with 10 different characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_snowy10",
+   "displayName": "SNOWYxSHORES Conquered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_desert10",
+   "displayName": "LIMINALxDESERT Conquered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_savanna10",
+   "displayName": "GORYxGRASSLANDS Conquered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_shroom10",
+   "displayName": "FUNGALxFOREST Conquered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_fiery10",
+   "displayName": "SMOLDERINGxDEPTHS Conquered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_heaven10",
+   "displayName": "HEAVENLYxGATES Conquered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_void10",
+   "displayName": "VASTxVOID Conquered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "warrior_all_levels",
+   "displayName": "True Warrior",
+   "description": "Complete every level with The Warrior",
+   "hidden": 0
+  },
+  {
+   "name": "recaller_all_levels",
+   "displayName": "Repentance",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "itchyfinger_all_levels",
+   "displayName": "Itch Scratched",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "cogitator_all_levels",
+   "displayName": "Cogitated",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "tactician_all_levels",
+   "displayName": "Master General",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "spendthrift_all_levels",
+   "displayName": "All Spent",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "embedded_all_levels",
+   "displayName": "Embedder",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "radicalai_all_levels",
+   "displayName": "Radicalized",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "emptynester_all_levels",
+   "displayName": "Golden Years",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "shade_all_levels",
+   "displayName": "Long Shadow",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "cohabitants_all_levels",
+   "displayName": "Unpacked",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "physicist_all_levels",
+   "displayName": "Gravity's Rainbow",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "brickhead_all_levels",
+   "displayName": "Brick Breaker",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "sisyphus_all_levels",
+   "displayName": "Herculean",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "flagellant_all_levels",
+   "displayName": "Masochist",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "wimp_all_levels",
+   "displayName": "Entertainer",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "first_evo",
+   "displayName": "Evolution",
+   "description": "Create your first evolution",
+   "hidden": 0
+  },
+  {
+   "name": "first_fusion",
+   "displayName": "Fusion",
+   "description": "Fuse two balls for the first time",
+   "hidden": 0
+  },
+  {
+   "name": "create_nosferatu",
+   "displayName": "Nosferatu",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "create_nuclearbomb",
+   "displayName": "Nuclear Bomb",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "create_satan",
+   "displayName": "Satan",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "create_soulreaver",
+   "displayName": "Soul Reaver",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "create_deadeyescross",
+   "displayName": "Deadeye's Cross",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "100000_kills",
+   "displayName": "Legion Slayer",
+   "description": "Kill 100,000 enemies",
+   "hidden": 0
+  },
+  {
+   "name": "5000_gold",
+   "displayName": "Riches",
+   "description": "Collect 5000 gold in total",
+   "hidden": 0
+  },
+  {
+   "name": "1000_wheat",
+   "displayName": "Wheat Farmer",
+   "description": "Collect 1000 wheat in total",
+   "hidden": 0
+  },
+  {
+   "name": "1000_wood",
+   "displayName": "Woodcutter",
+   "description": "Collect 1000 wood in total",
+   "hidden": 0
+  },
+  {
+   "name": "1000_stone",
+   "displayName": "Stone Miner",
+   "description": "Collect 1000 stone in total",
+   "hidden": 0
+  },
+  {
+   "name": "1000_gold_harvest",
+   "displayName": "Gold Miner",
+   "description": "Mine 1000 gold in a single harvest",
+   "hidden": 0
+  },
+  {
+   "name": "100_wheat_harvest",
+   "displayName": "Bountiful Harvest",
+   "description": "Collect 100 wheat in a single harvest",
+   "hidden": 0
+  },
+  {
+   "name": "100_wood_harvest",
+   "displayName": "Deforestation",
+   "description": "Collect 100 wood in a single harvest",
+   "hidden": 0
+  },
+  {
+   "name": "100_stone_harvest",
+   "displayName": "Boulder Breaker",
+   "description": "Collect 100 stone in a single harvest",
+   "hidden": 0
+  },
+  {
+   "name": "collect_all_blueprints",
+   "displayName": "City Planner",
+   "description": "Collect 50 blueprints",
+   "hidden": 0
+  },
+  {
+   "name": "construct_trophy",
+   "displayName": "Trophy",
+   "description": "Construct a trophy",
+   "hidden": 0
+  },
+  {
+   "name": "construct_monument",
+   "displayName": "Monument",
+   "description": "Construct an infinitely upgradeable building",
+   "hidden": 0
+  },
+  {
+   "name": "construct_workersguild",
+   "displayName": "Worker's Guild",
+   "description": "Construct the Worker's Guild",
+   "hidden": 0
+  },
+  {
+   "name": "construct_evochamber",
+   "displayName": "Evolution Chamber",
+   "description": "Construct the Evolution Chamber",
+   "hidden": 0
+  },
+  {
+   "name": "construct_reliccollector",
+   "displayName": "Relic Collector",
+   "description": "Construct the Relic Collector",
+   "hidden": 0
+  },
+  {
+   "name": "construct_bagmaker",
+   "displayName": "Bag Maker",
+   "description": "Construct the Bag Maker",
+   "hidden": 0
+  },
+  {
+   "name": "construct_carpenter",
+   "displayName": "Carpenter",
+   "description": "Construct the Carpenter",
+   "hidden": 0
+  },
+  {
+   "name": "expand5",
+   "displayName": "Land Grabber",
+   "description": "Expand your base 5 times",
+   "hidden": 0
+  },
+  {
+   "name": "stat_building_full_upgrade",
+   "displayName": "Structural Power",
+   "description": "Reach +5 bonus in any attribute from a building",
+   "hidden": 0
+  },
+  {
+   "name": "stat_scaling_full_upgrade",
+   "displayName": "S Rank",
+   "description": "Reach S stat scaling in any attribute",
+   "hidden": 0
+  },
+  {
+   "name": "place_15_houses",
+   "displayName": "Neighborhood",
+   "description": "Build 15 housing structures",
+   "hidden": 0
+  },
+  {
+   "name": "fuse_evolved_balls",
+   "displayName": "Fusion Evolution",
+   "description": "Fuse two evolved balls",
+   "hidden": 0
+  },
+  {
+   "name": "complete_encyclopedia",
+   "displayName": "Scholar",
+   "description": "Unlock every entry in the Encyclopedia",
+   "hidden": 0
+  },
+  {
+   "name": "complete_game",
+   "displayName": "Ballbylon Has Risen",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "complete_sewers",
+   "displayName": "FLOODEDxSEWERS",
+   "description": "Complete the FLOODEDxSEWERS",
+   "hidden": 0
+  },
+  {
+   "name": "complete_sewers30",
+   "displayName": "FLOODEDxSEWERS Dominated",
+   "description": "Complete the FLOODEDxSEWERS with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_alleys",
+   "displayName": "SHADOWEDxALLEYS",
+   "description": "Complete the SHADOWEDxALLEYS",
+   "hidden": 0
+  },
+  {
+   "name": "complete_alleys30",
+   "displayName": "SHADOWEDxALLEYS Dominated",
+   "description": "Complete the SHADOWEDxALLEYS with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_castle",
+   "displayName": "CASTLExRAMPARTS",
+   "description": "Complete the CASTLExRAMPARTS",
+   "hidden": 0
+  },
+  {
+   "name": "complete_castle30",
+   "displayName": "CASTLExRAMPARTS Dominated",
+   "description": "Complete the CASTLExRAMPARTS with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_spire",
+   "displayName": "OUTSTRETCHEDxSPIRE",
+   "description": "Complete the OUTSTRETCHEDxSPIRE",
+   "hidden": 0
+  },
+  {
+   "name": "complete_spire30",
+   "displayName": "OUTSTRETCHEDxSPIRE Dominated",
+   "description": "Complete the OUTSTRETCHEDxSPIRE with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_graveyard30",
+   "displayName": "BONExYARD Dominated",
+   "description": "Complete the BONExYARD with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_snowy30",
+   "displayName": "SNOWYxSHORES Dominated",
+   "description": "Complete the SNOWYxSHORES with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_desert30",
+   "displayName": "LIMINALxDESERT Dominated",
+   "description": "Complete the LIMINALxDESERT with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_shroom30",
+   "displayName": "FUNGALxFOREST Dominated",
+   "description": "Complete the FUNGALxFOREST with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_savanna30",
+   "displayName": "GORYxGRASSLANDS Dominated",
+   "description": "Complete the GORYxGRASSLANDS with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_fiery30",
+   "displayName": "SMOLDERINGxDEPTHS Dominated",
+   "description": "Complete the SMOLDERINGxDEPTHS with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_heaven30",
+   "displayName": "HEAVENLYxGATES Dominated",
+   "description": "Complete the HEAVENLYxGATES with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "complete_void30",
+   "displayName": "VASTxVOID Dominated",
+   "description": "Complete the VASTxVOID with 30 characters",
+   "hidden": 0
+  },
+  {
+   "name": "1000_crystals",
+   "displayName": "Crystalline",
+   "description": "Collect 1000 Crystals in total",
+   "hidden": 0
+  },
+  {
+   "name": "complete_dlc_encyclopedia",
+   "displayName": "Risen Scholar",
+   "description": "Unlock every Risen Ballbylon entry in the Encyclopedia",
+   "hidden": 0
+  },
+  {
+   "name": "complete_dlc",
+   "displayName": "Ballbylon Falls Again",
+   "description": "Complete the Risen Ballbylon DLC",
+   "hidden": 0
+  }
+ ]
+}

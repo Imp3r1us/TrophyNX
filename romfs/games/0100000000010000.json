@@ -1,0 +1,740 @@
+{
+ "title_id": "0100000000010000",
+ "name": "Super Mario Odyssey",
+ "reader": "byml",
+ "save_files": [
+  "File0.bin",
+  "File1.bin",
+  "File2.bin",
+  "File3.bin",
+  "File4.bin",
+  "File5.bin"
+ ],
+ "achievements": [
+  {
+   "id": "moon_1",
+   "name": "First Moon",
+   "desc": "Collect a Power Moon",
+   "points": 5,
+   "rule": {
+    "type": "count",
+    "path": "ShineData[*]/IsGet",
+    "target": 1
+   }
+  },
+  {
+   "id": "moon_50",
+   "name": "Moon Hunter",
+   "desc": "Collect 50 different Power Moons (a Multi Moon counts once)",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "ShineData[*]/IsGet",
+    "target": 50
+   }
+  },
+  {
+   "id": "moon_100",
+   "name": "Moon Gatherer",
+   "desc": "Collect 100 different Power Moons",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "ShineData[*]/IsGet",
+    "target": 100
+   }
+  },
+  {
+   "id": "moon_250",
+   "name": "Lunar Expert",
+   "desc": "Collect 250 different Power Moons",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "ShineData[*]/IsGet",
+    "target": 250
+   }
+  },
+  {
+   "id": "moon_500",
+   "name": "Moon Master",
+   "desc": "Collect 500 different Power Moons",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "ShineData[*]/IsGet",
+    "target": 500
+   }
+  },
+  {
+   "id": "moon_700",
+   "name": "Over the Moon",
+   "desc": "Collect 700 different Power Moons",
+   "points": 100,
+   "rule": {
+    "type": "count",
+    "path": "ShineData[*]/IsGet",
+    "target": 700
+   },
+   "hidden": true
+  },
+  {
+   "id": "kingdom_5",
+   "name": "Globetrotter",
+   "desc": "Visit 5 kingdoms",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[*]",
+    "equals": false,
+    "target": 5
+   }
+  },
+  {
+   "id": "kingdom_10",
+   "name": "World Traveler",
+   "desc": "Visit 10 kingdoms",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[*]",
+    "equals": false,
+    "target": 10
+   }
+  },
+  {
+   "id": "kingdom_all",
+   "name": "To the Darker Side",
+   "desc": "Visit all 17 kingdoms",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[*]",
+    "equals": false,
+    "target": 17
+   },
+   "hidden": true
+  },
+  {
+   "id": "visit_sand",
+   "name": "Tostarena Tourist",
+   "desc": "Reach the Sand Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[2]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_wooded",
+   "name": "Into the Woods",
+   "desc": "Reach the Wooded Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[3]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_lake",
+   "name": "Lake Lamode Visitor",
+   "desc": "Reach the Lake Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[4]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_cloud",
+   "name": "Above the Clouds",
+   "desc": "Reach the Cloud Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[5]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_lost",
+   "name": "Lost and Found",
+   "desc": "Reach the Lost Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[6]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_metro",
+   "name": "New Donk Arrival",
+   "desc": "Reach the Metro Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[7]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_seaside",
+   "name": "Bubblaine Beachgoer",
+   "desc": "Reach the Seaside Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[8]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_snow",
+   "name": "Shiveria Bound",
+   "desc": "Reach the Snow Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[9]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_luncheon",
+   "name": "Mount Volbono Guest",
+   "desc": "Reach the Luncheon Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[10]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_ruined",
+   "name": "Among the Ruins",
+   "desc": "Reach the Ruined Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[11]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_bowser",
+   "name": "Storming the Castle",
+   "desc": "Reach the Bowser's Kingdom",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[12]",
+    "equals": false,
+    "target": 1
+   }
+  },
+  {
+   "id": "visit_moon",
+   "name": "One Small Step",
+   "desc": "Reach the Moon Kingdom",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[13]",
+    "equals": false,
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "visit_mushroom",
+   "name": "Home Sweet Home",
+   "desc": "Reach the Mushroom Kingdom",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[14]",
+    "equals": false,
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "visit_darkside",
+   "name": "Rabbit Hole",
+   "desc": "Reach the Dark Side of the Moon",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[15]",
+    "equals": false,
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "visit_darkerside",
+   "name": "Deeper Still",
+   "desc": "Reach the Darker Side of the Moon",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "GameProgressData/IsFirstTimeWorld[16]",
+    "equals": false,
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "story_cascade",
+   "name": "Broodal Buster",
+   "desc": "Clear the main story of the Cascade Kingdom",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "WorldInfo[1]/ScenarioNo",
+    "target": 2
+   }
+  },
+  {
+   "id": "story_cloud",
+   "name": "Storm Chaser",
+   "desc": "Clear the main story of the Cloud Kingdom",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "WorldInfo[5]/ScenarioNo",
+    "target": 2
+   }
+  },
+  {
+   "id": "story_lost",
+   "name": "Repair Crew",
+   "desc": "Clear the main story of the Lost Kingdom",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "WorldInfo[6]/ScenarioNo",
+    "target": 2
+   }
+  },
+  {
+   "id": "story_metro",
+   "name": "Power to New Donk",
+   "desc": "Clear the main story of the Metro Kingdom",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "WorldInfo[7]/ScenarioNo",
+    "target": 2
+   }
+  },
+  {
+   "id": "story_luncheon",
+   "name": "Soup's On",
+   "desc": "Clear the main story of the Luncheon Kingdom",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "WorldInfo[10]/ScenarioNo",
+    "target": 2
+   }
+  },
+  {
+   "id": "story_ruined",
+   "name": "Dragon Slayer",
+   "desc": "Clear the main story of the Ruined Kingdom",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "WorldInfo[11]/ScenarioNo",
+    "target": 2
+   },
+   "hidden": true
+  },
+  {
+   "id": "story_bowser",
+   "name": "Castle Crasher",
+   "desc": "Clear the main story of the Bowser's Kingdom",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "WorldInfo[12]/ScenarioNo",
+    "target": 2
+   },
+   "hidden": true
+  },
+  {
+   "id": "capture_10",
+   "name": "Cappy's Apprentice",
+   "desc": "Capture 10 different creatures or objects",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "HackDictionary[*]",
+    "target": 10
+   }
+  },
+  {
+   "id": "capture_25",
+   "name": "Shape Shifter",
+   "desc": "Capture 25 different creatures or objects",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "HackDictionary[*]",
+    "target": 25
+   }
+  },
+  {
+   "id": "capture_50",
+   "name": "Capture Collector",
+   "desc": "Capture 50 different creatures or objects",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "HackDictionary[*]",
+    "target": 50
+   }
+  },
+  {
+   "id": "purple_50",
+   "name": "Regional Tourist",
+   "desc": "Collect 50 regional coins",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "GetCoinCollectData[*]/IsGet",
+    "target": 50
+   }
+  },
+  {
+   "id": "purple_250",
+   "name": "Souvenir Hunter",
+   "desc": "Collect 250 regional coins",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "GetCoinCollectData[*]/IsGet",
+    "target": 250
+   }
+  },
+  {
+   "id": "purple_500",
+   "name": "Regional Hoarder",
+   "desc": "Collect 500 regional coins",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "GetCoinCollectData[*]/IsGet",
+    "target": 500
+   }
+  },
+  {
+   "id": "coins_1000",
+   "name": "Pocket Money",
+   "desc": "Collect 1,000 gold coins in total",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TotalCoinNum",
+    "target": 1000
+   }
+  },
+  {
+   "id": "coins_10000",
+   "name": "Rolling in Coins",
+   "desc": "Collect 10,000 gold coins in total",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "TotalCoinNum",
+    "target": 10000
+   }
+  },
+  {
+   "id": "outfit_10",
+   "name": "Dress-Up",
+   "desc": "Own 10 outfits",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "ItemCloth[*]",
+    "target": 10
+   }
+  },
+  {
+   "id": "outfit_30",
+   "name": "Fashionista",
+   "desc": "Own 30 outfits",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "ItemCloth[*]",
+    "target": 30
+   }
+  },
+  {
+   "id": "hat_10",
+   "name": "Hat Rack",
+   "desc": "Own 10 hats",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "ItemCap[*]",
+    "target": 10
+   }
+  },
+  {
+   "id": "hat_30",
+   "name": "Mad Hatter",
+   "desc": "Own 30 hats",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "ItemCap[*]",
+    "target": 30
+   }
+  },
+  {
+   "id": "souvenir_10",
+   "name": "Souvenir Shopper",
+   "desc": "Own 10 souvenirs or stickers",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "ItemGift[*]",
+     "ItemSticker[*]"
+    ],
+    "target": 10
+   }
+  },
+  {
+   "id": "souvenir_all",
+   "name": "Memory Lane",
+   "desc": "Own all 43 souvenirs and stickers",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "ItemGift[*]",
+     "ItemSticker[*]"
+    ],
+    "target": 43
+   },
+   "hidden": true
+  },
+  {
+   "id": "checkpoint_25",
+   "name": "Flag Planter",
+   "desc": "Activate 25 checkpoint flags",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "Checkpoint[*]/ObjId",
+    "target": 25
+   }
+  },
+  {
+   "id": "checkpoint_100",
+   "name": "Fast Traveler",
+   "desc": "Activate 100 checkpoint flags",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "Checkpoint[*]/ObjId",
+    "target": 100
+   }
+  },
+  {
+   "id": "music_10",
+   "name": "Music Lover",
+   "desc": "Collect 10 music tracks",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "CollectBgmList[*]/IsCollected",
+    "target": 10
+   }
+  },
+  {
+   "id": "music_50",
+   "name": "Jukebox Hero",
+   "desc": "Collect 50 music tracks",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "CollectBgmList[*]/IsCollected",
+    "target": 50
+   }
+  },
+  {
+   "id": "jump_1000",
+   "name": "Springy",
+   "desc": "Jump 1,000 times",
+   "points": 5,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerJumpCount",
+    "target": 1000
+   }
+  },
+  {
+   "id": "jump_10000",
+   "name": "Jumpman",
+   "desc": "Jump 10,000 times",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerJumpCount",
+    "target": 10000
+   }
+  },
+  {
+   "id": "throw_1000",
+   "name": "Cap Thrower",
+   "desc": "Throw Cappy 1,000 times",
+   "points": 5,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerThrowCapCount",
+    "target": 1000
+   }
+  },
+  {
+   "id": "throw_10000",
+   "name": "Cappy's Best Friend",
+   "desc": "Throw Cappy 10,000 times",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerThrowCapCount",
+    "target": 10000
+   }
+  },
+  {
+   "id": "ride_jaxi",
+   "name": "Stone Steed",
+   "desc": "Ride Jaxi",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "IsRideSphinx",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "ride_scooter",
+   "name": "Easy Rider",
+   "desc": "Ride the scooter",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "IsRideMotorcycle",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "rope_100",
+   "name": "Rope Skipper",
+   "desc": "Reach 100 in the jump-rope challenge",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "JumpingRopeBestCount",
+    "target": 100
+   }
+  },
+  {
+   "id": "volley_100",
+   "name": "Beach Champion",
+   "desc": "Reach 100 in the beach volleyball challenge",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "VolleyballBestCount",
+    "target": 100
+   }
+  },
+  {
+   "id": "toadette_10",
+   "name": "Toadette's Fan",
+   "desc": "Earn 10 of Toadette's in-game achievements",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "AchievementSaveData[*]/IsGet",
+    "target": 10
+   }
+  },
+  {
+   "id": "toadette_all",
+   "name": "Toadette's Pride",
+   "desc": "Earn all 61 of Toadette's in-game achievements",
+   "points": 100,
+   "rule": {
+    "type": "count",
+    "path": "AchievementSaveData[*]/IsGet",
+    "target": 61
+   },
+   "hidden": true
+  },
+  {
+   "id": "t_launch",
+   "name": "Cappy's Companion",
+   "desc": "Launch Super Mario Odyssey 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Bonjour, Bonneton",
+   "desc": "Play Super Mario Odyssey for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Kingdom Hopper",
+   "desc": "Play Super Mario Odyssey for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Moon Collector",
+   "desc": "Play Super Mario Odyssey for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}

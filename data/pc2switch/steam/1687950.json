@@ -1,0 +1,324 @@
+{
+ "appid": 1687950,
+ "name": "Persona 5 Royal",
+ "achievements": [
+  {
+   "name": "TrophyTitle_00_fiber_Steam",
+   "displayName": "The Phenomenal Phantom Thief",
+   "description": "Unlocked all achievements.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_01_fiber_Steam",
+   "displayName": "Castle of Lust: Seized",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_02_fiber_Steam",
+   "displayName": "Museum of Vanity: Repossessed",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_03_fiber_Steam",
+   "displayName": "Bank of Gluttony: Cleaned Out",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_04_fiber_Steam",
+   "displayName": "Pyramid of Wrath: Plundered",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_05_fiber_Steam",
+   "displayName": "Spaceport of Greed: Obliterated",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_06_fiber_Steam",
+   "displayName": "Casino of Jealousy: Bankrupted",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_07_fiber_Steam",
+   "displayName": "Cruiser of Pride: Capsized",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_08_fiber_Steam",
+   "displayName": "The Thorough Trickster",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_09_fiber_Steam",
+   "displayName": "Take Back the Future",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_10_fiber_Steam",
+   "displayName": "The Path Chosen",
+   "description": "",
+   "hidden": 1
+  },
+  {
+   "name": "TrophyTitle_11_fiber_Steam",
+   "displayName": "Spirit of Rebellion",
+   "description": "Obtained Arsène.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_12_fiber_Steam",
+   "displayName": "Phantom Thieves: Assemble!",
+   "description": "Established your own squad of thieves.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_13_fiber_Steam",
+   "displayName": "One Step at a Time",
+   "description": "Completed a Mementos request.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_14_fiber_Steam",
+   "displayName": "A Most Studious Disguise",
+   "description": "Scored the highest on your exams.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_15_fiber_Steam",
+   "displayName": "Pure Perfection",
+   "description": "Maxed out all social stats.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_16_fiber_Steam",
+   "displayName": "Tokyo Tourist",
+   "description": "Went to a hangout spot with someone.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_17_fiber_Steam",
+   "displayName": "My Closest Partner",
+   "description": "Entered a special relationship.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_18_fiber_Steam",
+   "displayName": "True Confidence",
+   "description": "Maxed out one of your Confidants.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_19_fiber_Steam",
+   "displayName": "Awakening the Phantom Thieves",
+   "description": "Evolved a party member's Persona.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_20_fiber_Steam",
+   "displayName": "I am Thou...",
+   "description": "Obtained a Persona through negotiation.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_21_fiber_Steam",
+   "displayName": "Tactical Teamwork",
+   "description": "Performed a Baton Pass.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_22_fiber_Steam",
+   "displayName": "Let's Blow It Up",
+   "description": "Defeated enemies via Disaster Shadow explosion.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_23_fiber_Steam",
+   "displayName": "You'd Better Hang On!",
+   "description": "Used the grappling hook.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_24_fiber_Steam",
+   "displayName": "Technician",
+   "description": "Triggered a Technical.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_25_fiber_Steam",
+   "displayName": "Talent Thief",
+   "description": "Obtained a Skill Accessory from a Palace ruler.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_26_fiber_Steam",
+   "displayName": "The Purpose of a Thief",
+   "description": "Obtained a Treasure Demon.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_27_fiber_Steam",
+   "displayName": "It's Showtime!",
+   "description": "Performed a Showtime attack.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_28_fiber_Steam",
+   "displayName": "Jose's Favorite Customer",
+   "description": "Traded in flowers while in Mementos.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_29_fiber_Steam",
+   "displayName": "The Phantom Philatelist",
+   "description": "Traded in stamps while in Mementos.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_30_fiber_Steam",
+   "displayName": "The Search for Power",
+   "description": "Completely changed the cognition of Mementos.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_31_fiber_Steam",
+   "displayName": "The Deviated Cognition",
+   "description": "Encountered a deviation in Mementos.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_32_fiber_Steam",
+   "displayName": "Unsurpassed Rebel",
+   "description": "Conquered the Reaper.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_33_fiber_Steam",
+   "displayName": "A Deadly Debut",
+   "description": "Performed a Guillotine execution.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_34_fiber_Steam",
+   "displayName": "Efficient Executioner",
+   "description": "Performed a Group Guillotine execution.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_35_fiber_Steam",
+   "displayName": "Intensive Training",
+   "description": "Used Incense on a Persona in Lockdown.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_36_fiber_Steam",
+   "displayName": "Success Built on Sacrifice",
+   "description": "Performed a Gallows execution.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_37_fiber_Steam",
+   "displayName": "Accident-Prone",
+   "description": "Performed an execution during a Fusion Alarm.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_38_fiber_Steam",
+   "displayName": "A Grand Experiment",
+   "description": "Performed an Electric Chair execution.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_39_fiber_Steam",
+   "displayName": "Leblanc Buffer",
+   "description": "Cleaned up in Leblanc.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_40_fiber_Steam",
+   "displayName": "Punch That Clock!",
+   "description": "Worked a part-time job.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_41_fiber_Steam",
+   "displayName": "Batter Up!",
+   "description": "Scored a hit at the batting cages.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_42_fiber_Steam",
+   "displayName": "Getting the Vapors",
+   "description": "Couldn't take the heat in the bathhouse.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_43_fiber_Steam",
+   "displayName": "Easy Money",
+   "description": "Won the lottery.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_44_fiber_Steam",
+   "displayName": "Going Against the Crane",
+   "description": "Scored a prize in the crane game.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_45_fiber_Steam",
+   "displayName": "Trash Into Treasure",
+   "description": "Sold old clothing at Furugi no Neuchi.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_46_fiber_Steam",
+   "displayName": "Dartslinger",
+   "description": "Played a game of darts.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_47_fiber_Steam",
+   "displayName": "A Hustler's Journey",
+   "description": "Played a game of billiards.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_48_fiber_Steam",
+   "displayName": "A Night in Kichijoji",
+   "description": "Attended the jazz club.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_49_fiber_Steam",
+   "displayName": "A Serene Experience",
+   "description": "Visited a temple.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_50_fiber_Steam",
+   "displayName": "Professional Modification",
+   "description": "Customized a gun.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_51_fiber_Steam",
+   "displayName": "Angler's Debut",
+   "description": "Passed time at the fishing pond.",
+   "hidden": 0
+  },
+  {
+   "name": "TrophyTitle_52_fiber_Steam",
+   "displayName": "Master of Akihabara",
+   "description": "Ordered from the special menu at the maid café.",
+   "hidden": 0
+  }
+ ]
+}

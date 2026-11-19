@@ -1,0 +1,192 @@
+{
+ "appid": 386940,
+ "name": "Ultimate Chicken Horse",
+ "achievements": [
+  {
+   "name": "Gettin_the_Hang_of_It",
+   "displayName": "Gettin' the Hang of It",
+   "description": "Play 10 games",
+   "hidden": 0
+  },
+  {
+   "name": "Seasoned_Vet",
+   "displayName": "Seasoned Vet",
+   "description": "Play 30 games",
+   "hidden": 0
+  },
+  {
+   "name": "Ultimate_Expert",
+   "displayName": "Ultimate Expert",
+   "description": "Play 100 games",
+   "hidden": 0
+  },
+  {
+   "name": "Techie",
+   "displayName": "Techie",
+   "description": "Play 10 games online",
+   "hidden": 0
+  },
+  {
+   "name": "Showoff",
+   "displayName": "Showoff",
+   "description": "Play 50 games online",
+   "hidden": 0
+  },
+  {
+   "name": "Takin_On_the_World",
+   "displayName": "Takin' On the World!",
+   "description": "Play online with a local friend",
+   "hidden": 0
+  },
+  {
+   "name": "Trappist",
+   "displayName": "Trappist",
+   "description": "Place 200 traps",
+   "hidden": 0
+  },
+  {
+   "name": "Threat_to_Public_Security",
+   "displayName": "Threat to Public Security",
+   "description": "Place 1000 traps",
+   "hidden": 0
+  },
+  {
+   "name": "Young_Explorer",
+   "displayName": "Young Explorer",
+   "description": "Unlock a level",
+   "hidden": 0
+  },
+  {
+   "name": "Magellan",
+   "displayName": "Magellan",
+   "description": "Unlock all levels",
+   "hidden": 0
+  },
+  {
+   "name": "A_New_Friend_Appears",
+   "displayName": "A New Friend Appears",
+   "description": "Unlock a character",
+   "hidden": 0
+  },
+  {
+   "name": "Building_A_Community",
+   "displayName": "Building A Community",
+   "description": "Unlock all characters",
+   "hidden": 0
+  },
+  {
+   "name": "Gettin_Fancy",
+   "displayName": "Gettin' Fancy",
+   "description": "Unlock an outfit",
+   "hidden": 0
+  },
+  {
+   "name": "Full_Wardrobe",
+   "displayName": "Full Wardrobe",
+   "description": "Unlock all outfits",
+   "hidden": 0
+  },
+  {
+   "name": "Wilhelm_Audition",
+   "displayName": "Wilhelm Audition",
+   "description": "Fall into the void 100 times",
+   "hidden": 0
+  },
+  {
+   "name": "Animal_Cruelty",
+   "displayName": "Animal Cruelty",
+   "description": "Kill people with traps 100 times",
+   "hidden": 0
+  },
+  {
+   "name": "Archer",
+   "displayName": "Archer",
+   "description": "Kill someone with an arrow 100 times",
+   "hidden": 0
+  },
+  {
+   "name": "Goon",
+   "displayName": "Goon",
+   "description": "Kill someone with a hockey puck shooter 100 times",
+   "hidden": 0
+  },
+  {
+   "name": "Not_So_Sharp",
+   "displayName": "Not So Sharp",
+   "description": "Die on barbed wire 10 times",
+   "hidden": 0
+  },
+  {
+   "name": "Neat_and_Nimble",
+   "displayName": "Neat and Nimble",
+   "description": "Wall jump 1000 times",
+   "hidden": 0
+  },
+  {
+   "name": "Craftsperson",
+   "displayName": "Craftsperson",
+   "description": "Attach two blocks together with glue",
+   "hidden": 0
+  },
+  {
+   "name": "Engineer",
+   "displayName": "Engineer",
+   "description": "Glue four blocks together",
+   "hidden": 0
+  },
+  {
+   "name": "Necromancer_Dancer",
+   "displayName": "Necromancer Dancer",
+   "description": "Get 10 post-mortem points",
+   "hidden": 0
+  },
+  {
+   "name": "Space_Time_Cadet",
+   "displayName": "Space-Time Cadet",
+   "description": "Teleport 50 times",
+   "hidden": 0
+  },
+  {
+   "name": "Clutch_Performer",
+   "displayName": "Clutch Performer",
+   "description": "Enter sudden death 20 times",
+   "hidden": 0
+  },
+  {
+   "name": "Greedy_McGreedster",
+   "displayName": "Greedy McGreedster",
+   "description": "Get 50 coins",
+   "hidden": 0
+  },
+  {
+   "name": "Droppin_Bills",
+   "displayName": "Droppin' Bills",
+   "description": "Die with the coin 10 times",
+   "hidden": 0
+  },
+  {
+   "name": "Comeback_Kid",
+   "displayName": "Comeback Kid",
+   "description": "Score 50 comeback points",
+   "hidden": 0
+  },
+  {
+   "name": "Solo_Master",
+   "displayName": "Solo Master",
+   "description": "Score 100 solo points",
+   "hidden": 0
+  },
+  {
+   "name": "Spaghetti_Award",
+   "displayName": "Spaghetti Award",
+   "description": "Die 50 times in a black hole",
+   "hidden": 0
+  },
+  {
+   "name": "Back_to_the_Basics",
+   "displayName": "Back to the Basics",
+   "description": "Win without any special points",
+   "hidden": 0
+  }
+ ]
+}
