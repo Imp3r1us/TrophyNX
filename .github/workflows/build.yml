@@ -1,11 +1,11 @@
 # Builds the homebrew app and the live module with devkitPro, so no local toolchain is needed.
 # - every push / manual run: downloadable "TrophyNX" artifact (zip with the SD card layout)
-# - tags v*: GitHub release with the .nro and the SD card zip attached
+# - push to main with a new version (include/version.h): GitHub release vX.Y.Z (what the in-app updater installs)
+# - push to main: test build on the "builds" branch (updater channel "builds")
 name: Build
 on:
   push:
     branches: [main]
-    tags: ['v*']
   workflow_dispatch:
 permissions:
   contents: write
@@ -69,13 +69,36 @@ jobs:
         with:
           name: TrophyNX
           path: sd/
+      - name: New version?
+        id: ver
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          v=$(sed -n 's/^#define APP_VERSION "\(.*\)"/\1/p' include/version.h)
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$v" >/dev/null; then
+            echo "v$v already released: test build only"; echo "new=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "new=true" >> "$GITHUB_OUTPUT"
+            # assets: each SD file under its own name + version.json (in-app updater), the .nro and the SD zip
+            python3 tools/release/make_version.py sd /tmp/version.json "$GITHUB_SHA" "$(git log -1 --format=%s)" /tmp/rel
+            cp TrophyNX-sd.zip /tmp/rel/
+            module=$(sed -n 's/^#define MODULE_VERSION "\(.*\)"/\1/p' sysmodule/source/main.cpp)
+            printf 'App %s · live module %s\n\n**Install:** unzip `TrophyNX-sd.zip` at the root of the SD card (app + live module), or copy `TrophyNX.nro` to `sdmc:/switch/`.\n**Update:** press ZL in the app.\n' "$v" "$module" > /tmp/notes.md
+          fi
       - name: Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: steps.ver.outputs.new == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            TrophyNX.nro
-            TrophyNX-sd.zip
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: TrophyNX ${{ steps.ver.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          body_path: /tmp/notes.md
+          generate_release_notes: true
+          make_latest: true
+          fail_on_unmatched_files: true
+          files: /tmp/rel/*
       - name: Publish to the "builds" branch
         # direct downloads from a phone: https://github.com/<owner>/<repo>/tree/builds
         if: github.ref == 'refs/heads/main'

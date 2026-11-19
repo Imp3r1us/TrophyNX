@@ -3,13 +3,14 @@
 #include "sha256.h"
 #include <cstdio>
 #include <cstring>
+#include <map>
 
 static const char* DEFAULT_REPO = "Imp3r1us/TrophyNX";
 static const char* DEFAULT_BRANCH = "builds";
 static const char* MODULE_FILE = "atmosphere/contents/420000000000AC01/exefs.nsp";
 static const char* APP_FILE = "switch/TrophyNX.nro";
 
-struct UpdateConfig { std::string token, repo, branch; };
+struct UpdateConfig { std::string token, repo, branch, channel; };
 
 static std::string jstr(cJSON* o, const char* k) {
     cJSON* v = cJSON_GetObjectItemCaseSensitive(o, k);
@@ -39,6 +40,7 @@ static bool loadConfig(UpdateConfig& c, std::string& err, std::string& path) {
         c.token = trim(jstr(root, "token"));
         c.repo = trim(jstr(root, "repo"));
         c.branch = trim(jstr(root, "branch"));
+        c.channel = trim(jstr(root, "channel"));
         cJSON_Delete(root);
     }
     if (c.repo.empty()) c.repo = DEFAULT_REPO;
@@ -46,8 +48,9 @@ static bool loadConfig(UpdateConfig& c, std::string& err, std::string& path) {
     return true;
 }
 
-static std::vector<std::string> headers(const UpdateConfig& c) {
-    std::vector<std::string> h = {"Accept: application/vnd.github.raw", "X-GitHub-Api-Version: 2022-11-28", "User-Agent: TrophyNX-updater"};
+// accept: raw file of a branch, release JSON, or release asset bytes
+static std::vector<std::string> headers(const UpdateConfig& c, const char* accept = "application/vnd.github.raw") {
+    std::vector<std::string> h = {std::string("Accept: ") + accept, "X-GitHub-Api-Version: 2022-11-28", "User-Agent: TrophyNX-updater"};
     if (!c.token.empty()) h.push_back("Authorization: Bearer " + c.token);
     return h;
 }
@@ -60,7 +63,8 @@ static std::string httpError(int status, const std::string& err, const UpdateCon
     if (status == 0) return "No connection to GitHub (is the Switch online?)\n" + err;
     if (status == 401) return "GitHub refused the token in update.json (HTTP 401): it is wrong or expired.";
     if (status == 403 || status == 429) return "GitHub refused the request (HTTP " + std::to_string(status) + "): too many checks in the last hour\n(60 per hour without a token), try again later.";
-    if (status == 404) return "Not found (HTTP 404): " + c.repo + " has no \"" + c.branch + "\" branch with version.json yet\n(it appears after the first CI build)" + (c.token.empty() ? "." : ", or the token can't read it.");
+    if (status == 404) return "Not found (HTTP 404): " + c.repo + " has no " + (c.channel == "builds" ? "\"" + c.branch + "\" branch with version.json" : std::string("release")) +
+                              " yet\n(it appears after the next CI build)" + (c.token.empty() ? "." : ", or the token can't read it.");
     return "GitHub answered HTTP " + std::to_string(status) + (err.empty() ? "" : ": " + err);
 }
 
@@ -79,17 +83,51 @@ static bool safePath(const std::string& p) {
     return p.rfind("switch/", 0) == 0 || p.rfind("atmosphere/contents/420000000000AC01/", 0) == 0;
 }
 
+// Latest release: its version.json asset, and the API URL of every asset by name.
+static bool fetchRelease(const UpdateConfig& cfg, UpdateInfo& info, std::vector<uint8_t>& manifest, std::map<std::string, std::string>& assets,
+                         int& status, std::string& err) {
+    std::vector<uint8_t> body;
+    status = plat::httpGet("https://api.github.com/repos/" + cfg.repo + "/releases/latest", headers(cfg, "application/vnd.github+json"), body, nullptr, nullptr, err);
+    if (status != 200) return false;
+    body.push_back(0);
+    cJSON* root = cJSON_Parse((const char*)body.data());
+    if (!root) { err = "invalid answer from GitHub (release)"; status = -1; return false; }
+    info.source = "release " + jstr(root, "tag_name");
+    cJSON* list = cJSON_GetObjectItemCaseSensitive(root, "assets");
+    cJSON* a;
+    if (cJSON_IsArray(list)) cJSON_ArrayForEach(a, list) {
+        std::string name = jstr(a, "name"), url = jstr(a, "url");
+        if (!name.empty() && url.rfind("https://api.github.com/", 0) == 0) assets[name] = url;
+    }
+    cJSON_Delete(root);
+    auto it = assets.find("version.json");
+    if (it == assets.end()) { err = "the latest release has no version.json"; status = -1; return false; }
+    status = plat::httpGet(it->second, headers(cfg, "application/octet-stream"), manifest, nullptr, nullptr, err);
+    return status == 200;
+}
+
 UpdateInfo checkForUpdate() {
     UpdateInfo info;
     UpdateConfig cfg;
     std::string err;
     if (!loadConfig(cfg, err, info.configPath)) { info.error = err; return info; }
     std::vector<uint8_t> body;
-    int st = plat::httpGet(contentsUrl(cfg, "version.json"), headers(cfg), body, nullptr, nullptr, err);
-    if (st != 200) { info.error = httpError(st, err, cfg); return info; }
+    std::map<std::string, std::string> assets;
+    int st = 0;
+    if (cfg.channel != "builds") {
+        info.fromRelease = true;
+        if (!fetchRelease(cfg, info, body, assets, st, err)) {
+            info.error = st == -1 ? err : httpError(st, err, cfg);
+            return info;
+        }
+    } else {
+        info.source = cfg.branch + " branch";
+        st = plat::httpGet(contentsUrl(cfg, "version.json"), headers(cfg), body, nullptr, nullptr, err);
+        if (st != 200) { info.error = httpError(st, err, cfg); return info; }
+    }
     body.push_back(0);
     cJSON* root = cJSON_Parse((const char*)body.data());
-    if (!root) { info.error = "version.json on the builds branch is not valid JSON"; return info; }
+    if (!root) { info.error = "version.json (" + info.source + ") is not valid JSON"; return info; }
     info.commit = jstr(root, "commit");
     info.date = jstr(root, "date");
     info.message = jstr(root, "message");
@@ -97,6 +135,7 @@ UpdateInfo checkForUpdate() {
     info.moduleVersion = jstr(root, "module_version");
     cJSON* files = cJSON_GetObjectItemCaseSensitive(root, "files");
     cJSON* f;
+    std::string missing;
     if (cJSON_IsArray(files)) cJSON_ArrayForEach(f, files) {
         UpdateFile u;
         u.path = jstr(f, "path");
@@ -104,6 +143,12 @@ UpdateInfo checkForUpdate() {
         cJSON* sz = cJSON_GetObjectItemCaseSensitive(f, "size");
         u.size = cJSON_IsNumber(sz) ? (uint64_t)sz->valuedouble : 0;
         if (!safePath(u.path) || u.sha256.size() != 64) continue;   // never write outside our folders
+        if (info.fromRelease) {
+            std::string asset = jstr(f, "asset");
+            auto it = assets.find(asset);
+            if (it != assets.end()) u.url = it->second;
+            else if (u.size > 0) missing += (missing.empty() ? "" : ", ") + u.path;   // empty files have no asset
+        } else u.url = contentsUrl(cfg, "sd/" + u.path);
         u.local = localPath(u.path);
         uint64_t have = 0;
         u.changed = sha256File(u.local, &have) != u.sha256 || have != u.size;
@@ -115,6 +160,7 @@ UpdateInfo checkForUpdate() {
         info.files.push_back(u);
     }
     cJSON_Delete(root);
+    if (!missing.empty()) { info.error = "The " + info.source + " is incomplete (no asset for " + missing + ")."; return info; }
     if (info.files.empty()) { info.error = "version.json lists no files"; return info; }
     bool any = false;
     for (const UpdateFile& u : info.files) any |= u.changed;
@@ -147,7 +193,9 @@ bool applyUpdate(const UpdateInfo& info, plat::ProgressFn progress, void* ctx, s
     // 1. download everything next to its destination
     for (const UpdateFile* u : todo) {
         std::vector<uint8_t> body;
-        int st = plat::httpGet(contentsUrl(cfg, "sd/" + u->path), headers(cfg), body, dlProgress, &dp, err);
+        int st = 200;
+        if (u->size > 0)   // empty files (boot2.flag) are not downloaded
+            st = plat::httpGet(u->url, info.fromRelease ? headers(cfg, "application/octet-stream") : headers(cfg), body, dlProgress, &dp, err);
         bool ok = st == 200 && body.size() == u->size && sha256Hex(body.data(), body.size()) == u->sha256;
         if (ok) {
             makeDirs(dirOf(u->local));

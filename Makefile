@@ -45,7 +45,7 @@ INCLUDES	:=	include
 ROMFS	:=	romfs
 APP_TITLE	:=	TrophyNX
 APP_AUTHOR	:=	Imp3r1us
-APP_VERSION	:=	0.9.0
+APP_VERSION	:=	0.9.1
 
 #---------------------------------------------------------------------------------
 # options for code generation

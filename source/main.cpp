@@ -442,7 +442,8 @@ static void drawUpdate(UI& ui) {
     uint32_t accent = C_GOLD;
     std::vector<std::pair<std::string, uint32_t>> lines;   // text, colour ('\n' splits)
     std::vector<std::pair<const char*, const char*>> btns;
-    std::string build = u.commit.empty() ? "" : "Build " + u.commit.substr(0, 7) + (u.date.empty() ? "" : "  ·  " + u.date);
+    std::string build = (u.fromRelease ? "Release " + u.source.substr(u.source.find(' ') + 1) : (u.commit.empty() ? std::string("") : "Test build " + u.commit.substr(0, 7))) +
+                        (u.date.empty() ? "" : "  ·  " + u.date);
     if (ui.upd == 2) {
         title = ui.updOk ? "Update installed" : "Update failed";
         accent = ui.updOk ? C_GREEN : C_RED;

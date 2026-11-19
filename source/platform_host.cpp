@@ -105,6 +105,17 @@ int plat::httpGet(const std::string& url, const std::vector<std::string>& header
     const char* dir = getenv("ACH_UPDATE_DIR");
     if (!dir) { err = "Could not resolve host (no ACH_UPDATE_DIR on PC)"; return 0; }
     for (const std::string& h : headers) if (h == "Authorization: Bearer bad") return 401;
+    // releases: $ACH_UPDATE_DIR/release/latest.json (assets[].url = .../releases/assets/<name>) + release/<name>
+    size_t ra = url.find("/releases/assets/");
+    if (url.size() > 16 && url.compare(url.size() - 16, 16, "/releases/latest") == 0) {
+        if (!readFile(std::string(dir) + "/release/latest.json", out)) return 404;
+        return 200;
+    }
+    if (ra != std::string::npos) {
+        if (!readFile(std::string(dir) + "/release/" + url.substr(ra + 17), out)) return 404;
+        if (progress) progress((int)(out.size() >> 10), (int)(out.size() >> 10), ctx);
+        return 200;
+    }
     size_t c = url.find("/contents/"), q = url.find('?');
     if (c == std::string::npos) return 404;
     std::string rel = url.substr(c + 10, q == std::string::npos ? std::string::npos : q - c - 10);

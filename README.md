@@ -51,18 +51,23 @@ It can be toggled with ovl-sysmodules (`toolbox.json` included).
 
 ### Updating from the app (ZL)
 
-Press **ZL** on the main screen: the app asks GitHub for the latest build of the `builds` branch
-(`version.json`, written by CI), compares every file with what is installed (SHA-256) and offers to download
-the changed ones: the app itself and/or the live module (restarted right away). Downloads go to `<file>.new`
-and are checked against `version.json`; nothing is replaced unless every file arrived intact. Then A restarts
-the app.
+Press **ZL** on the main screen: the app asks GitHub for the **latest release** (one per version, `vX.Y.Z`,
+created by CI when `include/version.h` changes), compares every file with what is installed (SHA-256) and offers
+to download the changed ones: the app itself and/or the live module (restarted right away). Downloads go to
+`<file>.new` and are checked against the release's `version.json`; nothing is replaced unless every file arrived
+intact. Then A restarts the app.
 
-No setup is needed. Optional `sdmc:/switch/TrophyNX/update.json` for a fork, another branch or a
-private copy: `{ "repo": "owner/name", "branch": "builds", "token": "github_pat_..." }` (all fields optional;
-token = fine-grained, Contents: read-only). Without a token GitHub allows 60 checks per hour.
+No setup is needed. Optional `sdmc:/switch/TrophyNX/update.json`:
+`{ "channel": "builds" }` to get every build of `main` (test builds, from the `builds` branch) instead of
+releases; `"repo"` for a fork; `"token"` (fine-grained, Contents: read-only) for a private copy. Without a token
+GitHub allows 60 checks per hour.
+
+Releases: https://github.com/Imp3r1us/TrophyNX/releases — `TrophyNX-sd.zip` (SD card layout), `TrophyNX.nro`,
+and the files used by the updater (`sys-trophynx.nsp`, `version.json`...). To publish a version, bump
+`APP_VERSION` in `include/version.h` and the `Makefile`.
 
 Network calls use libcurl from devkitPro (`switch-curl`, TLS through the system). On PC (`platform_host.cpp`)
-`ACH_UPDATE_DIR=<copy of the builds branch>` replaces GitHub, e.g. `ACH_SCRIPT="B,ZL,A"`.
+`ACH_UPDATE_DIR=<dir>` replaces GitHub (`<dir>/release/latest.json` + assets, or a copy of the builds branch), e.g. `ACH_SCRIPT="B,ZL,A"`.
 
 ### Scan on close (every game with a save reader)
 
