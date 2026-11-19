@@ -1,0 +1,27 @@
+name: Achievement idea
+description: Suggest achievements for a game
+title: "[Idea] <game name>"
+labels: ["idea"]
+body:
+  - type: input
+    id: game
+    attributes:
+      label: Game
+    validations:
+      required: true
+  - type: textarea
+    id: ideas
+    attributes:
+      label: Achievements
+      description: One per line. Things the save remembers work best (items, bosses, collectibles, counters, endings).
+      placeholder: |
+        Collect all 50 stars
+        Beat the final boss
+        Catch 100 fish
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything known about the save? (optional)
+      description: Save editor, cheat table, wiki page... anything that says where the game keeps this information.

@@ -1,0 +1,27 @@
+name: Bug report
+description: An achievement unlocks too early, too late or never, or something doesn't work
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: TrophyNX version, firmware and Atmosphère version
+      placeholder: "TrophyNX 0.9.1, firmware 21.0.0, Atmosphère 1.10.0"
+    validations:
+      required: true
+  - type: input
+    id: game
+    attributes:
+      label: Game and game version (if it's about a game)
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Attach sdmc:/switch/TrophyNX/log.txt (and live_log.txt / close_log.txt for popups or the background module).

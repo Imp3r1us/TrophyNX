@@ -1,0 +1,46 @@
+name: Save batch (help add a game)
+description: Share saves of one game at different moments so achievements can be made from them
+title: "[Saves] <game name>"
+labels: ["saves", "new game"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! Saves of **the same game version** at different moments are what makes new achievements possible.
+        Saves can contain your in-game name or console nickname: only share what you're fine with making public.
+  - type: input
+    id: game
+    attributes:
+      label: Game
+      placeholder: "Hollow Knight"
+    validations:
+      required: true
+  - type: input
+    id: titleid
+    attributes:
+      label: Title ID (if you know it)
+      placeholder: "0100633007D48000"
+  - type: input
+    id: version
+    attributes:
+      label: Game version
+      description: HOME menu > game > Options (+) > the version number. All saves below must come from this version.
+      placeholder: "1.5.78"
+    validations:
+      required: true
+  - type: textarea
+    id: saves
+    attributes:
+      label: Saves and what happened between them
+      description: Attach the zip files (JKSV backups) and describe each one in order.
+      placeholder: |
+        1. fresh.zip - just after the intro
+        2. boss1.zip - beat the first boss, nothing else
+        3. control.zip - loaded and saved again, did nothing (control)
+        4. full.zip - 100% save
+    validations:
+      required: true
+  - type: textarea
+    id: ideas
+    attributes:
+      label: Achievements you'd like (optional)

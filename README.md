@@ -14,6 +14,9 @@ and remembers them on the SD card. A background module shows a popup when you un
 **Download:** [latest release](https://github.com/Imp3r1us/TrophyNX/releases/latest) — unzip `TrophyNX-sd.zip`
 at the root of the SD card. Then update from the app with ZL.
 
+> **Help wanted!** TrophyNX is a one-person project and needs players to grow: save files, achievement
+> ideas, and testing on more games. See [How you can help](#how-you-can-help).
+
 ## What you get
 
 | Source | Works for | Examples |
@@ -298,6 +301,49 @@ make -f Makefile.host && ACH_HOST_ROOT=host ACH_SCRIPT="A,DOWN" ./host/achieveme
 `tools/make_totk_json.py` regenerates the TotK set from the save editor's completion lists.
 `tools/make_binary_sets.py "<Ultimate Smasher.py>" romfs/games` regenerates the Smash Ultimate and MK8D sets.
 `tools/make_playtime_sets.py romfs/games` regenerates the themed play-log sets (edit the table to rename or retune them).
+
+## How you can help
+
+Every game needs someone to work out *where* its progress is stored and *which* achievements make sense.
+That is where help is needed most, and you don't need to know how to code.
+
+### 1. Share batches of saves (most useful)
+
+Achievements are made by comparing saves of the same game at different moments. For a game you'd like supported:
+
+1. Back up your save with [JKSV](https://github.com/J-D-K/JKSV) (or another save manager) at a few points:
+   - a **fresh** save (just after the intro),
+   - saves right **after specific events** (first boss beaten, an item collected, a new area reached…),
+   - an **advanced or 100 %** save if you have one.
+2. Write down what you did between two saves. "Beat the first boss, nothing else" is perfect.
+   A "control" pair (two saves with nothing done in between) is very useful too: it shows what changes on its own.
+3. Open a [Save batch issue](https://github.com/Imp3r1us/TrophyNX/issues/new?template=save-batch.yml) with the
+   zip files, the game version (shown in the HOME menu under *Options*), and your notes.
+
+All saves of one batch must come from **the same game version**: offsets and formats can move between updates.
+Saves can contain your in-game name or your console nickname. Only share what you're fine with making public.
+
+### 2. Suggest achievements
+
+What would be fun to unlock in a game you love? Open an
+[Achievement idea issue](https://github.com/Imp3r1us/TrophyNX/issues/new?template=achievement-idea.yml).
+Good ideas are things the save actually remembers: items owned, bosses beaten, collectibles, counters, endings.
+Things like "beat the game without taking damage" or speedruns usually can't be read from a save.
+
+### 3. Test and report
+
+- Games already supported but not confirmed on every version: **Mario Kart 8 Deluxe** (offsets probably wrong
+  on the current version), **Smash Ultimate**, **Super Mario Odyssey**, **Tears of the Kingdom**.
+- If an achievement unlocks too early, too late or never, open a
+  [Bug report](https://github.com/Imp3r1us/TrophyNX/issues/new?template=bug.yml) with
+  `sdmc:/switch/TrophyNX/log.txt` (press X in the app to see the values read for each game).
+
+### 4. Know a save format? Write a definition
+
+If you already know how a game stores its data (from an editor, a decompilation or a cheat table), you can write
+its definition yourself: see [Adding a game (JSON)](#adding-a-game-json). The **Save Lab**
+(`tools/savelab/index.html`, a single page that runs in any browser, phones included) compares saves, finds what
+changed and drafts the achievements for you. Pull requests are welcome.
 
 ## Roadmap
 
