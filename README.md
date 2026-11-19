@@ -1,4 +1,9 @@
-# Switch Achievements
+# TrophyNX
+
+> Formerly "Switch Achievements". Since 0.9.0 the app is `sdmc:/switch/TrophyNX.nro` and its data folder is
+> `sdmc:/switch/TrophyNX/`. On first launch the app moves the old `sdmc:/switch/SwitchAchievements/` folder there
+> (unlocks, settings, definitions) and deletes the old `SwitchAchievements.nro`; the live module (`sys-trophynx`,
+> same program id 420000000000AC01) keeps using the old folder until then.
 
 A homebrew app for a modded Nintendo Switch that adds achievements to your games.
 It reads your play statistics and save files **read-only**, unlocks achievements,
@@ -23,7 +28,7 @@ When a game has several save slots, the best slot counts.
 
 ## Live achievements while playing (BotW, experimental)
 
-`sys-achievements` is a background module that does what RetroAchievements does on emulators:
+`sys-trophynx` is a background module that does what RetroAchievements does on emulators:
 it watches the game's memory while you play and unlocks Breath of the Wild achievements the moment
 they happen, with an in-game popup: a card in the top-left corner with the achievement's name, its
 description, the game icon and a bronze/silver/gold/platinum medal, sliding in for 4 seconds.
@@ -52,7 +57,7 @@ the changed ones: the app itself and/or the live module (restarted right away). 
 and are checked against `version.json`; nothing is replaced unless every file arrived intact. Then A restarts
 the app.
 
-No setup is needed. Optional `sdmc:/switch/SwitchAchievements/update.json` for a fork, another branch or a
+No setup is needed. Optional `sdmc:/switch/TrophyNX/update.json` for a fork, another branch or a
 private copy: `{ "repo": "owner/name", "branch": "builds", "token": "github_pat_..." }` (all fields optional;
 token = fine-grained, Contents: read-only). Without a token GitHub allows 60 checks per hour.
 
@@ -67,7 +72,7 @@ menu or over the next game). This covers every game whose definition has a `read
 Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come from the app.
 
 - Definitions: the ones built into the module (copied from `romfs/games` at build time), then
-  `sdmc:/switch/SwitchAchievements/games/*.json`, like the app.
+  `sdmc:/switch/TrophyNX/games/*.json`, like the app.
 - The module has a 4 MB heap, so it reads saves in a low-memory mode: hash/value saves (BotW, TotK) are read in
   64 KB chunks keeping only the needed values, fixed-offset saves (Smash, MK8D) only the bytes the rules use.
   Tree saves (BYML, JSON, GVAS, NRBF) are read whole, one file at a time; a file too big for the heap is skipped
@@ -76,7 +81,7 @@ Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come fro
 - More than 4 new unlocks at once (first scan of an advanced save): 3 cards, then a "+N more achievements" card.
 - `"close_scan": false` in a definition turns it off for that game (set for Mario Kart 8 Deluxe until its
   offsets are fixed).
-- Report of the last scan on close: `sdmc:/switch/SwitchAchievements/close_log.txt`; one summary line per scan in
+- Report of the last scan on close: `sdmc:/switch/TrophyNX/close_log.txt`; one summary line per scan in
   `live_log.txt` (`close scan: <game> - save read in 120 ms, 12/37 met, 2 new`).
 
 ### Popups
@@ -85,7 +90,7 @@ The module draws the popup itself, on its own small display layer above the game
 overlays do; it also shows in screenshots and recordings). If that layer can't be created, it falls back
 to an **Ultrahand Overlay 2.1+** toast (notifications enabled); without Ultrahand it unlocks silently.
 
-Optional settings in `sdmc:/switch/SwitchAchievements/popup.json`:
+Optional settings in `sdmc:/switch/TrophyNX/popup.json`:
 
 ```json
 { "style": "custom", "theme": "dark", "icon": "right", "duration_ms": 4000 }
@@ -97,7 +102,7 @@ Optional settings in `sdmc:/switch/SwitchAchievements/popup.json`:
 - `duration_ms`: 1500 to 15000.
 
 Medal tier: an achievement's optional `"tier"` (`bronze`, `silver`, `gold`, `platinum`), otherwise from its
-points (under 25 bronze, under 50 silver, 50+ gold). Icon: `sdmc:/switch/SwitchAchievements/art/<TITLEID>/<id>.png`
+points (under 25 bronze, under 50 silver, 50+ gold). Icon: `sdmc:/switch/TrophyNX/art/<TITLEID>/<id>.png`
 (or `.jpg`) if present, otherwise the game's own icon.
 
 Known limit: if a Tesla/Ultrahand menu is open at the same moment, the two layers compete for the top;
@@ -120,10 +125,10 @@ takes the cheat service's single slot while BotW runs (cheats still work through
 
 ## Install
 
-Builds are made by GitHub Actions: download `SwitchAchievements.nro` from the latest
+Builds are made by GitHub Actions: download `TrophyNX.nro` from the latest
 [release](../../releases) (or from the artifacts of the latest *Build* run).
 
-1. Copy `SwitchAchievements.nro` to `sdmc:/switch/` on the SD card.
+1. Copy `TrophyNX.nro` to `sdmc:/switch/` on the SD card.
 2. Launch it from the Homebrew Menu (album or title override both work).
 3. Pick your user when the selector appears.
 
@@ -149,7 +154,7 @@ they are mounted with the system's read-only save API.
 ## Files on the SD card
 
 ```
-sdmc:/switch/SwitchAchievements/
+sdmc:/switch/TrophyNX/
   unlocks/<user-id>.json        your unlocked achievements (with unlock dates)
   games/<TITLEID>.json          optional: your own achievement sets (override the built-in ones)
   universal.json                optional: replace the play-time achievements
@@ -166,7 +171,7 @@ sdmc:/switch/SwitchAchievements/
 2. **Save**: open the menu (+) → System → Save. (Autosaves also work, but a manual save is certain.)
    The new game goes into its own slot; the app checks every slot and uses the best one.
 3. **Close the game** completely: HOME → X on the game → Close. A suspended game keeps its save locked.
-4. Open Switch Achievements. Expected: a pop-up with **Rise and Shine**, **Sheikah Slate** and **Out of the Cave**.
+4. Open TrophyNX. Expected: a pop-up with **Rise and Shine**, **Sheikah Slate** and **Out of the Cave**.
 5. If something is missing, select BotW and press **X**. The debug view tells you which step failed:
 
 | Debug line | Meaning |
@@ -186,7 +191,7 @@ for unlocks again with the pop-up.
 ## Adding a game (JSON)
 
 Achievement sets are plain JSON, so you can add or tweak them without recompiling.
-Drop a file in `sdmc:/switch/SwitchAchievements/games/` named after the title ID:
+Drop a file in `sdmc:/switch/TrophyNX/games/` named after the title ID:
 
 ```json
 {
@@ -261,7 +266,7 @@ with a confidence for each one — no AI involved:
 
 ## Building
 
-The background module lives in `sysmodule/` (`sh make_data.sh` then `make` there produces `sys-achievements.nsp` -> `exefs.nsp`;
+The background module lives in `sysmodule/` (`sh make_data.sh` then `make` there produces `sys-trophynx.nsp` -> `exefs.nsp`;
 `make_data.sh` embeds the definitions). `host/test/test_stream.cpp` (with `host/test/gen_saves.py` for synthetic saves)
 checks that the module's low-memory save reading gives the app's values.
 `host/test/test_byml.cpp`, `host/test/test_json.cpp` and `host/test/test_formats.cpp` test the tree readers (build lines
@@ -274,7 +279,7 @@ the app and the Save Lab decode GVAS / NRBF saves into exactly the same tree.
 You need devkitPro with libnx:
 
 ```
-make            # -> SwitchAchievements.nro
+make            # -> TrophyNX.nro
 make -f Makefile.host && ACH_HOST_ROOT=host ACH_SCRIPT="A,DOWN" ./host/achievements_host
                 # PC test build: mock console, frames saved to host/out/*.png
 ```

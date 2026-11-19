@@ -79,7 +79,7 @@ fs.writeFileSync(path.join(root, 'data', 'pc2switch', 'catalog.json'), JSON.stri
 fs.writeFileSync(path.join(root, 'data', 'pc2switch', 'steam', '367520.json'), JSON.stringify({ appid: 367520, achievements: schema }));
 const b64 = buf => Buffer.from(buf).toString('base64');
 const hkSave = fs.readFileSync(path.join(FX, 'hk_112_playerdata.json'));
-const bundle = { format: 'switch-achievements-scan', version: 1, games: [
+const bundle = { format: 'trophynx-scan', version: 1, games: [
   { title_id: TID, name: 'Test Knight', verdict: 'draftable', files: [{ path: 'user1.dat', size: hkSave.length, format: 'json', data_b64: b64(hkSave) }] },
   { title_id: TB, name: 'Binary Game', verdict: 'binary', files: [{ path: 'save.bin', size: 4096, format: 'binary' }] },
   { title_id: TC, name: 'Locked Game', verdict: 'encrypted', files: [{ path: 'data.sav', size: 4096, format: 'encrypted' }] }] };
@@ -144,7 +144,7 @@ fs.rmSync(root, { recursive: true, force: true });
   fs.writeFileSync(path.join(r3, 'data/pc2switch/catalog.json'), JSON.stringify({ games }));
   for (const a of [111, 222, 333, 444]) fs.writeFileSync(path.join(r3, 'data/pc2switch/steam', a + '.json'), JSON.stringify({ appid: a, achievements: ach }));
   const b64s = s => Buffer.from(s).toString('base64');
-  fs.writeFileSync(path.join(r3, 'samples/scan_bundle.json'), JSON.stringify({ format: 'switch-achievements-scan', games: [
+  fs.writeFileSync(path.join(r3, 'samples/scan_bundle.json'), JSON.stringify({ format: 'trophynx-scan', games: [
     { title_id: '0100AAAA00000000', name: 'Same Game', verdict: 'draftable', files: [{ path: 'SaveData', format: 'json', data_b64: b64s(save(['WIN_1', 'WIN_2', 'WIN_3', 'WIN_4', 'WIN_5'])) }] }] }));
   fs.writeFileSync(path.join(r3, 'samples/pc/111/SaveData'), save(['WIN_1']));
   fs.mkdirSync(path.join(r3, 'samples/pc/222/76561198000000000'));

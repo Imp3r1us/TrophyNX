@@ -21,7 +21,7 @@ Steam (app list, achievements) ┴─> catalog.js ──> data/pc2switch/ ──
 ## Using it
 
 1. On the Switch, open the app, stay on **Overview**, press **ZR**. It mounts every save read-only and writes
-   `switch/SwitchAchievements/scan_bundle.json` (verdicts + copies of readable saves, up to 4 MB each and 17 MB in all) and
+   `switch/TrophyNX/scan_bundle.json` (verdicts + copies of readable saves, up to 4 MB each and 17 MB in all) and
    `scan_report.txt`.
 2. Either
    - upload `scan_bundle.json` to the repo's `samples/` folder (GitHub → Add file → Upload). The workflow runs

@@ -7,7 +7,7 @@
 static const char* DEFAULT_REPO = "Imp3r1us/TrophyNX";
 static const char* DEFAULT_BRANCH = "builds";
 static const char* MODULE_FILE = "atmosphere/contents/420000000000AC01/exefs.nsp";
-static const char* APP_FILE = "switch/SwitchAchievements.nro";
+static const char* APP_FILE = "switch/TrophyNX.nro";
 
 struct UpdateConfig { std::string token, repo, branch; };
 
@@ -47,7 +47,7 @@ static bool loadConfig(UpdateConfig& c, std::string& err, std::string& path) {
 }
 
 static std::vector<std::string> headers(const UpdateConfig& c) {
-    std::vector<std::string> h = {"Accept: application/vnd.github.raw", "X-GitHub-Api-Version: 2022-11-28", "User-Agent: SwitchAchievements-updater"};
+    std::vector<std::string> h = {"Accept: application/vnd.github.raw", "X-GitHub-Api-Version: 2022-11-28", "User-Agent: TrophyNX-updater"};
     if (!c.token.empty()) h.push_back("Authorization: Bearer " + c.token);
     return h;
 }

@@ -1,5 +1,5 @@
 # Builds the homebrew app and the live module with devkitPro, so no local toolchain is needed.
-# - every push / manual run: downloadable "SwitchAchievements" artifact (zip with the SD card layout)
+# - every push / manual run: downloadable "TrophyNX" artifact (zip with the SD card layout)
 # - tags v*: GitHub release with the .nro and the SD card zip attached
 name: Build
 on:
@@ -58,33 +58,33 @@ jobs:
       - name: Package SD card layout
         run: |
           mkdir -p sd/switch sd/atmosphere/contents/420000000000AC01/flags
-          cp SwitchAchievements.nro sd/switch/
-          cp sysmodule/sys-achievements.nsp sd/atmosphere/contents/420000000000AC01/exefs.nsp
+          cp TrophyNX.nro sd/switch/
+          cp sysmodule/sys-trophynx.nsp sd/atmosphere/contents/420000000000AC01/exefs.nsp
           cp sysmodule/toolbox.json sd/atmosphere/contents/420000000000AC01/
           touch sd/atmosphere/contents/420000000000AC01/flags/boot2.flag
-          (cd sd && zip -qr ../SwitchAchievements-sd.zip .)
+          (cd sd && zip -qr ../TrophyNX-sd.zip .)
       - uses: actions/upload-artifact@v4
         with:
-          name: SwitchAchievements
+          name: TrophyNX
           path: sd/
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            SwitchAchievements.nro
-            SwitchAchievements-sd.zip
+            TrophyNX.nro
+            TrophyNX-sd.zip
       - name: Publish to the "builds" branch
         # direct downloads from a phone: https://github.com/<owner>/<repo>/tree/builds
         if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          rm -rf /tmp/pub && mkdir /tmp/pub && cp SwitchAchievements.nro SwitchAchievements-sd.zip /tmp/pub/
+          rm -rf /tmp/pub && mkdir /tmp/pub && cp TrophyNX.nro TrophyNX-sd.zip /tmp/pub/
           # in-app updater (ZL): version.json + the SD layout, file by file (source/update.cpp)
           cp -r sd /tmp/pub/sd
           python3 tools/release/make_version.py sd /tmp/pub/version.json "$GITHUB_SHA" "$(git log -1 --format=%s)"
-          printf 'Built from %s on %s\n\n- SwitchAchievements.nro -> sdmc:/switch/\n- SwitchAchievements-sd.zip -> unzip at the root of the SD card (app + live module)\n- version.json + sd/: used by the in-app updater (ZL)\n' "$GITHUB_SHA" "$(date -u +%F)" > /tmp/pub/README.md
+          printf 'Built from %s on %s\n\n- TrophyNX.nro -> sdmc:/switch/\n- TrophyNX-sd.zip -> unzip at the root of the SD card (app + live module)\n- version.json + sd/: used by the in-app updater (ZL)\n' "$GITHUB_SHA" "$(date -u +%F)" > /tmp/pub/README.md
           cd /tmp/pub && git init -q -b builds && git add -A
           git -c user.name="github-actions" -c user.email="actions@github.com" commit -qm "Build ${GITHUB_SHA::7}"
           git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" builds

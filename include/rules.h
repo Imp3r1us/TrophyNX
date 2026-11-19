@@ -1,4 +1,4 @@
-// Rule engine shared by the app and the background module (sys-achievements): definition
+// Rule engine shared by the app and the background module (sys-trophynx): definition
 // parsing and save evaluation. Nothing in here touches Switch services directly; saves are read
 // through a SaveSource.
 #pragma once

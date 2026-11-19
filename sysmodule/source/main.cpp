@@ -1,4 +1,4 @@
-// sys-achievements: background module that watches Breath of the Wild's memory while you play
+// sys-trophynx: background module that watches Breath of the Wild's memory while you play
 // (like RetroAchievements), unlocks achievements live and shows popups. For every game with a
 // save reader it also reads the save as soon as the game closes ("scan on close", closescan.cpp).
 #include <switch.h>
@@ -21,7 +21,7 @@
 #include "closescan.h"
 #include "store.h"
 
-#define MODULE_VERSION "0.5.0"
+#define MODULE_VERSION "0.6.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -63,7 +63,7 @@ void __appExit(void) {
 // ---------------------------------------------------------------- log
 static void logf(const char* fmt, ...) {
     char path[128];
-    snprintf(path, sizeof(path), "%s/live_log.txt", DATA_DIR);
+    snprintf(path, sizeof(path), "%s/live_log.txt", dataDir().c_str());
     struct stat st;
     if (stat(path, &st) == 0 && st.st_size > 256 * 1024) {   // keep it small: rotate once
         char old[140];
@@ -248,8 +248,8 @@ static bool collectHeap(std::vector<MemRegion>& regions, uint64_t& total) {
 
 // ---------------------------------------------------------------- main loop
 int main(int, char**) {
-    mkdir(DATA_DIR, 0777);
-    logf("sys-achievements " MODULE_VERSION " started");
+    mkdir(dataDir().c_str(), 0777);
+    logf("sys-trophynx " MODULE_VERSION " started");
     popupStart(logf);
     Result rc;
     if (R_FAILED(rc = pmdmntInitialize())) logf("ERROR pmdmnt init 0x%X", rc);

@@ -114,12 +114,12 @@ int plat::httpGet(const std::string& url, const std::vector<std::string>& header
 }
 static std::string g_self;
 void plat::setSelfPath(const std::string& p) { g_self = p; }
-std::string plat::selfPath() { return g_self.empty() ? g_root + "/sd/switch/SwitchAchievements.nro" : g_self; }
+std::string plat::selfPath() { return g_self.empty() ? g_root + "/sd/switch/TrophyNX.nro" : g_self; }
 std::string plat::sdRoot() { return g_root + "/sd/"; }
 bool plat::restartLiveModule(std::string& msg) { msg = "live module restarted (PC: nothing to do)"; return true; }
 void plat::relaunchSelf() {}
 
-std::string plat::dataDir() { return g_root + "/sd/switch/SwitchAchievements"; }
+std::string plat::dataDir() { return g_root + "/sd/switch/TrophyNX"; }
 std::string plat::romfsDir() { return "romfs"; }
 bool plat::fontData(int which, const uint8_t** data, size_t* size) {
     if (which != 0) return false;

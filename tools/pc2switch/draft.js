@@ -46,7 +46,7 @@ function collect() {
     const p = path.join(SAMPLES, f);
     if (/^scan_bundle.*\.json$/i.test(f)) {
       const b = readJson(p, {});
-      if (b.format !== 'switch-achievements-scan') { console.log(f + ': not a scan bundle, skipped'); continue; }
+      if (b.format !== 'trophynx-scan' && b.format !== 'switch-achievements-scan') { console.log(f + ': not a scan bundle, skipped'); continue; }
       for (const g of b.games || []) {
         const tid = String(g.title_id).toUpperCase();
         const files = (g.files || []).map(x => ({ path: x.path, format: x.format, size: x.size, data: x.data_b64 ? new Uint8Array(Buffer.from(x.data_b64, 'base64')) : null }));

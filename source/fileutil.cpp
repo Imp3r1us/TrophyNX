@@ -84,3 +84,25 @@ void listFilesRecursive(const std::string& root, const std::string& rel, std::ve
         else if (out.size() < 2000) out.emplace_back(r, (uint64_t)st.st_size);
     }
 }
+
+bool pathExists(const std::string& path) {
+    struct stat st;
+    return stat(path.c_str(), &st) == 0;
+}
+
+std::string migrateLegacyDir(const std::string& oldDir, const std::string& newDir) {
+    if (pathExists(newDir) || !pathExists(oldDir)) return "";
+    if (rename(oldDir.c_str(), newDir.c_str()) == 0) return "Moved " + oldDir + " to " + newDir + ".";
+    std::vector<std::pair<std::string, uint64_t>> files;
+    listFilesRecursive(oldDir + "/", "", files);
+    size_t ok = 0;
+    for (auto& f : files) {
+        std::vector<uint8_t> buf;
+        std::string dst = newDir + "/" + f.first;
+        size_t s = dst.find_last_of('/');
+        makeDirs(dst.substr(0, s));
+        if (readFile(oldDir + "/" + f.first, buf) && writeFile(dst, std::string((const char*)buf.data(), buf.size()))) ok++;
+    }
+    makeDirs(newDir);
+    return "Copied " + std::to_string(ok) + "/" + std::to_string(files.size()) + " files from " + oldDir + " to " + newDir + " (old folder kept).";
+}

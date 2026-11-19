@@ -101,7 +101,7 @@ async function fetchEngines(appids) {
     const url = 'https://www.pcgamingwiki.com/w/api.php?action=cargoquery&format=json&limit=500&tables=Infobox_game' +
       '&fields=' + encodeURIComponent('Infobox_game.Steam_AppID=Appid,Infobox_game.Engines=Engines') + '&where=' + encodeURIComponent(where);
     try {
-      const r = await fetch(url, { headers: { 'User-Agent': 'switch-achievements pc2switch (github.com/Imp3r1us/TrophyNX)' }, signal: AbortSignal.timeout(20000) });
+      const r = await fetch(url, { headers: { 'User-Agent': 'TrophyNX pc2switch (github.com/Imp3r1us/TrophyNX)' }, signal: AbortSignal.timeout(20000) });
       const j = await r.json();
       for (const a of batch) cache[a] = [];
       for (const row of j.cargoquery || []) {

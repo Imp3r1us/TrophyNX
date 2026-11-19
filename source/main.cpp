@@ -129,7 +129,7 @@ static void drawHeader(UI& ui) {
     c.gradientV(0, 0, 1280, 84, 0xFF1F2330, C_BG);
     c.fillCircle(52, 42, 26, 0xFF2A2F3D);
     drawTrophy(c, 52, 44, 30, C_GOLD);
-    ui.font.draw(c, 92, 22, 30, "Switch Achievements", C_TEXT);
+    ui.font.draw(c, 92, 22, 30, "TrophyNX", C_TEXT);
     std::string user = ui.font.ellipsize(22, plat::userName(), 300);
     int uw = ui.font.measure(22, user);
     ui.font.draw(c, 1256 - uw, 16, 22, user, C_TEXT);
@@ -367,7 +367,7 @@ static void drawDebug(UI& ui) {
     c.fillRound(x, y, w, h, 16, C_PANEL);
     c.fillRound(x, y, w, 5, 2, 0xFF8FE3F5);
     ui.font.draw(c, x + 24, y + 18, 24, "Debug - " + (ui.sel == 0 ? std::string("Overview") : g.name), C_TEXT, w - 260);
-    std::string hint = "also in /switch/SwitchAchievements/log.txt";
+    std::string hint = "also in /switch/TrophyNX/log.txt";
     ui.font.draw(c, x + w - 24 - ui.font.measure(15, hint), y + 26, 15, hint, C_SUB);
     c.fillRect(x + 16, y + 60, w - 32, 1, C_LINE);
     int n = (int)g.debug.size();
@@ -426,7 +426,7 @@ static std::string fmtSize(uint64_t b) {
 }
 
 static std::string fileLabel(const std::string& path) {
-    if (path == "switch/SwitchAchievements.nro") return "app";
+    if (path == "switch/TrophyNX.nro") return "app";
     if (path.find("/exefs.nsp") != std::string::npos) return "live module";
     size_t s = path.find_last_of('/');
     return s == std::string::npos ? path : path.substr(s + 1);
@@ -529,7 +529,7 @@ static void drawLoading(UI& ui, int done, int total) {
     c.clear(C_BG);
     c.fillCircle(640, 280, 56, 0xFF232733);
     drawTrophy(c, 640, 286, 68, C_GOLD);
-    std::string t = "Switch Achievements";
+    std::string t = "TrophyNX";
     ui.font.draw(c, 640 - ui.font.measure(34, t) / 2, 360, 34, t, C_TEXT);
     std::string s = std::string(ui.loadingLabel) + (total > 0 ? "  " + std::to_string(done) + " / " + std::to_string(total) : "");
     ui.font.draw(c, 640 - ui.font.measure(19, s) / 2, 412, 19, s, C_SUB);
@@ -553,7 +553,7 @@ static void showFatal(UI& ui, const std::string& msg) {
         ui.cv.stride = stride;
         ui.cv.resetClip();
         ui.cv.clear(C_BG);
-        ui.font.draw(ui.cv, 80, 300, 28, "Switch Achievements could not start", C_TEXT);
+        ui.font.draw(ui.cv, 80, 300, 28, "TrophyNX could not start", C_TEXT);
         ui.font.draw(ui.cv, 80, 350, 20, msg, C_RED);
         ui.font.draw(ui.cv, 80, 400, 18, "Press + to exit", C_SUB);
         plat::endDraw();
@@ -591,8 +591,14 @@ int main(int argc, char** argv) {
         return 0;
     }
 
+    // The app was called "Switch Achievements" before 0.9.0: keep the unlocks, settings and token
+    std::string moved = migrateLegacyDir(plat::sdRoot() + "switch/SwitchAchievements", plat::dataDir());
+    std::string self = plat::selfPath(), oldNro = plat::sdRoot() + "switch/SwitchAchievements.nro";
+    if (self.size() >= 12 && self.compare(self.size() - 12, 12, "TrophyNX.nro") == 0 && self != oldNro && pathExists(oldNro))
+        remove(oldNro.c_str());   // installed by the old updater next to the old name: one app entry only
     drawLoading(ui, 0, 0);
     buildLibrary(ui.lib, onProgress, &ui);
+    if (!moved.empty()) ui.toast = "Renamed to TrophyNX: your achievements were kept.";
     ui.popup = !ui.lib.newlyUnlocked.empty();
     if (!ui.lib.loadErrors.empty()) {
         makeDirs(plat::dataDir());

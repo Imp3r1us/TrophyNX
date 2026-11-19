@@ -33,7 +33,7 @@ const DAY = 86400e3;
 const T0 = Date.now();
 const outOfTime = () => Date.now() - T0 > +opt('max-minutes', 50) * 60e3;
 const TOKEN = process.env.SEARCH_TOKEN || process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
-const UA = 'switch-achievements pc2switch harvest (github.com/Imp3r1us/TrophyNX)';
+const UA = 'TrophyNX pc2switch harvest (github.com/Imp3r1us/TrophyNX)';
 const BAD_EXT = /\.(exe|dll|bat|cmd|ps1|vbs|scr|msi|com|jar|apk|sh|zip|rar|7z|gz|tar|cs|js|ts|py|java|cpp|c|h|lua|md|txt|log|png|jpe?g|gif|webp|bmp|mp3|ogg|wav|mp4|vdf|lnk|url|html?)$/i;
 const MAX_FILE = 2 * 1024 * 1024, MAX_FILES = 30;
 const GENERIC = new Set(['save', 'saves', 'savedata', 'savegame', 'savegames', 'saved', 'data', 'profiles', 'profile', 'user', 'users', 'config', 'settings', 'game', 'games', 'storage', 'local', 'locallow', 'roaming', 'appdata', 'documents', 'my games', 'remote', 'userdata', 'steam', 'default', 'slot', 'slots', 'backup', 'backups']);

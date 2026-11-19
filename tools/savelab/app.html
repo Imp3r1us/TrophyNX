@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Save Lab — Switch Achievements</title>
+<title>Save Lab — TrophyNX</title>
 <style>
 :root{
   --bg:#0f1115;--panel:#171a21;--panel2:#1e222b;--line:#2a2f3a;--text:#e7e9ee;--mute:#9aa1ae;--dim:#6b7280;
@@ -205,7 +205,7 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
     <h2>Exporter</h2>
     <div id="valid"></div>
     <div class="row"><button class="btn pri fix" id="copyJson">Copier le JSON</button><button class="btn fix" id="dlJson" style="display:none">Télécharger <span id="dlName"></span></button></div>
-    <p class="small mute">Placez le fichier dans <code>sdmc:/switch/SwitchAchievements/games/</code> sous le nom <code id="fname">TITLEID.json</code>, puis relancez l'app et appuyez sur Y. Il remplace la définition intégrée du même jeu : partez des succès intégrés pour ne pas les perdre.</p>
+    <p class="small mute">Placez le fichier dans <code>sdmc:/switch/TrophyNX/games/</code> sous le nom <code id="fname">TITLEID.json</code>, puis relancez l'app et appuyez sur Y. Il remplace la définition intégrée du même jeu : partez des succès intégrés pour ne pas les perdre.</p>
     <pre id="jsonOut"></pre>
   </div>
 </section>
@@ -214,7 +214,7 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 <section id="s-pc">
   <div class="card">
     <h2>Scan de la console</h2>
-    <p class="small mute">Dans l'app Switch, sur l'Aperçu, appuyez sur <b>ZR</b> : le fichier <code>switch/SwitchAchievements/scan_bundle.json</code> contient le verdict de chaque jeu et une copie des sauvegardes lisibles. Importez-le ici (ou déposez-le dans <code>samples/</code> du dépôt pour les brouillons automatiques).</p>
+    <p class="small mute">Dans l'app Switch, sur l'Aperçu, appuyez sur <b>ZR</b> : le fichier <code>switch/TrophyNX/scan_bundle.json</code> contient le verdict de chaque jeu et une copie des sauvegardes lisibles. Importez-le ici (ou déposez-le dans <code>samples/</code> du dépôt pour les brouillons automatiques).</p>
     <span class="btn file fix">Importer scan_bundle.json<input type="file" id="pcBundle" accept=".json,application/json"></span>
     <div id="pcBundleOut"></div>
   </div>
@@ -918,7 +918,7 @@ $('#pcBundle').addEventListener('change', async (e) => {
   if (!f) return;
   try {
     const b = JSON.parse(await f.text());
-    if (b.format !== 'switch-achievements-scan') throw new Error('ce n\'est pas un scan_bundle.json');
+    if (b.format !== 'trophynx-scan' && b.format !== 'switch-achievements-scan') throw new Error('ce n\'est pas un scan_bundle.json');
     pc.bundle = b; renderBundle(); toast(b.games.length + ' jeux dans le scan');
   } catch (err) { toast('Erreur : ' + err.message); }
 });

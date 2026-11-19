@@ -1,4 +1,4 @@
-// Unlock store shared with the app: sdmc:/switch/SwitchAchievements/unlocks/<user>.json,
+// Unlock store shared with the app: sdmc:/switch/TrophyNX/unlocks/<user>.json,
 // key "TITLEID/achId" -> unix time of the unlock.
 #pragma once
 #include <switch.h>
@@ -6,7 +6,9 @@
 #include <map>
 #include <string>
 
-extern const char* const DATA_DIR;   // sdmc:/switch/SwitchAchievements
+// sdmc:/switch/TrophyNX, or the folder of the app's old name (sdmc:/switch/SwitchAchievements) until the
+// app has moved it: checked on each call, so the module never creates the new folder before the move.
+std::string dataDir();
 
 // Hex key of a user, same format as the app's unlock files.
 std::string userKeyOf(const AccountUid& uid);

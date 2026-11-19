@@ -2,12 +2,13 @@
 // (same technique as Tesla/Ultrahand overlays), slides the card in, holds it, slides it out and closes
 // the layer again. If the layer can't be created, the popup falls back to an Ultrahand toast.
 //
-// Config (optional): sdmc:/switch/SwitchAchievements/popup.json
+// Config (optional): sdmc:/switch/TrophyNX/popup.json
 //   {"style": "custom" | "both" | "ultrahand" | "off", "theme": "dark" | "light",
 //    "icon": "right" | "left", "duration_ms": 4000}
-// Per-achievement art (optional): sdmc:/switch/SwitchAchievements/art/<TITLEID>/<achId>.png (or .jpg),
+// Per-achievement art (optional): sdmc:/switch/TrophyNX/art/<TITLEID>/<achId>.png (or .jpg),
 // otherwise the game's own icon, otherwise the app's trophy icon.
 #include "popup.h"
+#include "store.h"
 #include "popup_draw.h"
 #include <switch.h>
 #include <cstdio>
@@ -26,7 +27,6 @@
 
 extern "C" u64 __nx_vi_layer_id;
 
-static const char* DATA_DIR = "sdmc:/switch/SwitchAchievements";
 static const char* NOTIFY_DIR = "sdmc:/config/ultrahand/notifications";
 
 static void (*g_log)(const char*, ...) = nullptr;
@@ -54,7 +54,7 @@ struct PopupConfig {
 static PopupConfig loadConfig() {
     PopupConfig c;
     char path[128];
-    snprintf(path, sizeof(path), "%s/popup.json", DATA_DIR);
+    snprintf(path, sizeof(path), "%s/popup.json", dataDir().c_str());
     FILE* f = fopen(path, "rb");
     if (!f) return c;
     char buf[1024];
@@ -89,7 +89,7 @@ static void ultrahandToast(const PopupRequest& r) {
     if (stat("sdmc:/config/ultrahand", &st) != 0) { PLOG("popup: Ultrahand not installed, no toast"); return; }
     mkdir(NOTIFY_DIR, 0777);
     char path[160];
-    snprintf(path, sizeof(path), "%s/SwitchAchievements-%llu.notify", NOTIFY_DIR, (unsigned long long)armGetSystemTick());
+    snprintf(path, sizeof(path), "%s/TrophyNX-%llu.notify", NOTIFY_DIR, (unsigned long long)armGetSystemTick());
     std::string body = "{\"title\":\"Achievement unlocked!\",\"text\":\"" + jsonEscape(r.title) + "  (+" +
                        std::to_string(r.points) + " pts)  " + jsonEscape(r.game) + "\",\"duration\":6000,\"priority\":30}";
     FILE* f = fopen(path, "wb");
@@ -151,7 +151,7 @@ static bool achievementArt(const PopupRequest& r, PopupImage& out) {
     static const char* exts[2] = {"png", "jpg"};
     for (const char* e : exts) {
         char path[256];
-        snprintf(path, sizeof(path), "%s/art/%016llX/%s.%s", DATA_DIR, (unsigned long long)r.titleId, r.achId.c_str(), e);
+        snprintf(path, sizeof(path), "%s/art/%016llX/%s.%s", dataDir().c_str(), (unsigned long long)r.titleId, r.achId.c_str(), e);
         FILE* f = fopen(path, "rb");
         if (!f) continue;
         fseek(f, 0, SEEK_END);

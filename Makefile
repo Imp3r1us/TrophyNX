@@ -37,15 +37,15 @@ include $(DEVKITPRO)/libnx/switch_rules
 #   of a homebrew executable (.nro). This is intended to be used for sysmodules.
 #   NACP building is skipped as well.
 #---------------------------------------------------------------------------------
-TARGET		:=	SwitchAchievements
+TARGET		:=	TrophyNX
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
 ROMFS	:=	romfs
-APP_TITLE	:=	Switch Achievements
+APP_TITLE	:=	TrophyNX
 APP_AUTHOR	:=	Imp3r1us
-APP_VERSION	:=	0.8.0
+APP_VERSION	:=	0.9.0
 
 #---------------------------------------------------------------------------------
 # options for code generation
