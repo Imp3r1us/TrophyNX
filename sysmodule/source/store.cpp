@@ -4,7 +4,14 @@
 #include <sys/stat.h>
 #include <vector>
 
-const char* const DATA_DIR = "sdmc:/switch/SwitchAchievements";
+std::string dataDir() {
+    static const char* NEW_DIR = "sdmc:/switch/TrophyNX";
+    static const char* OLD_DIR = "sdmc:/switch/SwitchAchievements";
+    struct stat st;
+    if (stat(NEW_DIR, &st) == 0) return NEW_DIR;
+    if (stat(OLD_DIR, &st) == 0) return OLD_DIR;
+    return NEW_DIR;
+}
 
 std::string userKeyOf(const AccountUid& uid) {
     char b[40];
@@ -19,7 +26,7 @@ std::string lastUser(AccountUid* uidOut) {
     return userKeyOf(uid);
 }
 
-static std::string storePath(const std::string& user) { return std::string(DATA_DIR) + "/unlocks/" + user + ".json"; }
+static std::string storePath(const std::string& user) { return dataDir() + "/unlocks/" + user + ".json"; }
 
 std::map<std::string, uint64_t> loadStore(const std::string& user) {
     std::map<std::string, uint64_t> m;
@@ -41,8 +48,9 @@ std::map<std::string, uint64_t> loadStore(const std::string& user) {
 }
 
 void saveStore(const std::string& user, const std::map<std::string, uint64_t>& m) {
-    mkdir(DATA_DIR, 0777);
-    mkdir((std::string(DATA_DIR) + "/unlocks").c_str(), 0777);
+    std::string dir = dataDir();
+    mkdir(dir.c_str(), 0777);
+    mkdir((dir + "/unlocks").c_str(), 0777);
     std::string out = "{\n";
     size_t i = 0;
     for (auto& kv : m) {

@@ -81,12 +81,12 @@ static void applyUnlocksGame(Game& g, bool global, std::map<std::string, uint64_
     }
 }
 
-// Tail of the background module's log (sys-achievements), so it can be read on the console.
+// Tail of the background module's log (sys-trophynx), so it can be read on the console.
 static void appendLiveLog(std::vector<std::string>& out) {
     std::vector<uint8_t> buf;
     out.push_back("");
     if (!readFile(plat::dataDir() + "/live_log.txt", buf)) {
-        out.push_back("Live module: no log yet (sys-achievements not installed, or not started since boot).");
+        out.push_back("Live module: no log yet (sys-trophynx not installed, or not started since boot).");
         return;
     }
     std::string txt(buf.begin(), buf.end());
@@ -98,13 +98,13 @@ static void appendLiveLog(std::vector<std::string>& out) {
     for (size_t i = from; i < lines.size(); i++) out.push_back("  " + lines[i]);
 }
 
-// Full scan report, overwritten each scan: sdmc:/switch/SwitchAchievements/log.txt
+// Full scan report, overwritten each scan: sdmc:/switch/TrophyNX/log.txt
 static void writeLog(const Library& lib) {
     std::string out;
     time_t t = (time_t)plat::now();
     char tb[64];
     strftime(tb, sizeof(tb), "%Y-%m-%d %H:%M:%S UTC", gmtime(&t));
-    out += std::string("Switch Achievements scan log - ") + tb + "\n\n";
+    out += std::string("TrophyNX scan log - ") + tb + "\n\n";
     for (size_t gi = 0; gi < lib.games.size(); gi++) {
         const Game& g = lib.games[gi];
         if (gi > 0 && !g.hasDefinition && g.stats.launches == 0) continue;   // keep the log short
@@ -175,11 +175,11 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
     if (changed) saveStore(store);
     ov.debug.push_back(changed ? "Unlock file updated." : "No new unlocks this scan.");
     ov.debug.push_back("");
-    ov.debug.push_back("Live module (sys-achievements): " + lib.liveStatus);
+    ov.debug.push_back("Live module (sys-trophynx): " + lib.liveStatus);
     appendLiveLog(ov.debug);
     for (Game& g : lib.games) if (g.id == 0x01007EF00011E000ULL) {
         g.debug.push_back("");
-        g.debug.push_back("Live module (sys-achievements): " + lib.liveStatus);
+        g.debug.push_back("Live module (sys-trophynx): " + lib.liveStatus);
         appendLiveLog(g.debug);
     }
 

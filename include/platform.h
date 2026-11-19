@@ -39,7 +39,7 @@ namespace plat {
     void listSaveFiles(std::vector<std::pair<std::string, uint64_t>>& out);
     void closeSave();
     std::string lastError();
-    // Checks the background module (sys-achievements); starts it if it isn't running.
+    // Checks the background module (sys-trophynx); starts it if it isn't running.
     std::string liveModuleStatus();   // human-readable reason for the last failed openSave
 
     // Updates (update.cpp)
@@ -49,7 +49,7 @@ namespace plat {
     void setSelfPath(const std::string& path);   // argv[0] of the running .nro
     std::string selfPath();
     std::string sdRoot();                          // "sdmc:/" (host: <root>/sd/)
-    bool restartLiveModule(std::string& msg);      // stops and starts sys-achievements (new exefs.nsp)
+    bool restartLiveModule(std::string& msg);      // stops and starts sys-trophynx (new exefs.nsp)
     void relaunchSelf();                           // reload this .nro when the app exits
 
     std::string dataDir();   // writable folder for unlocks/custom definitions
@@ -76,3 +76,7 @@ bool isCleanText(const std::string& s);   // valid UTF-8, no control characters
 bool writeFile(const std::string& path, const std::string& data);
 void makeDirs(const std::string& path);
 std::vector<std::string> listDir(const std::string& path);
+bool pathExists(const std::string& path);
+// Renamed app (Switch Achievements -> TrophyNX): moves the old data folder to the new one if the new one
+// doesn't exist yet (rename, or copy when the rename fails). Returns a line for the log ("" = nothing done).
+std::string migrateLegacyDir(const std::string& oldDir, const std::string& newDir);

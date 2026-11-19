@@ -125,10 +125,10 @@ bool runCompatibilityScan(Library& lib, plat::ProgressFn progress, void* ctx, Sc
     std::string tmp = out.bundlePath + ".tmp";
     FILE* f = fopen(tmp.c_str(), "wb");
     if (!f) { out.error = "cannot write " + tmp; return false; }
-    std::string report = "Compatibility scan (Switch Achievements " APP_VERSION ")\n"
+    std::string report = "Compatibility scan (TrophyNX " APP_VERSION ")\n"
                          "supported = save-based set exists | draftable = JSON (also XORed)/BYML/GVAS/NRBF, drafts can be generated | text = XML/text, reader needed\n"
                          "binary = needs captures in Save Lab | encrypted = compressed or encrypted, not readable | no-save = nothing to read\n\n";
-    fprintf(f, "{\"format\":\"switch-achievements-scan\",\"version\":1,\"app_version\":\"%s\",\"generated\":%llu,\"user\":",
+    fprintf(f, "{\"format\":\"trophynx-scan\",\"version\":1,\"app_version\":\"%s\",\"generated\":%llu,\"user\":",
             APP_VERSION, (unsigned long long)plat::now());
     jstr(f, plat::userKey());
     fputs(",\"games\":[\n", f);

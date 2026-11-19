@@ -113,7 +113,7 @@ static bool findDef(uint64_t tid, GameDef& out, std::string& source, void (*logf
     if (found) source = "built-in";
     char hex[17];
     snprintf(hex, sizeof(hex), "%016llX", (unsigned long long)tid);
-    std::string dir = std::string(DATA_DIR) + "/games";
+    std::string dir = dataDir() + "/games";
     for (const std::string& f : listDir(dir)) {   // SD overrides, like the app (later files win)
         if (f.size() < 6 || f.substr(f.size() - 5) != ".json") continue;
         std::vector<uint8_t> buf;
@@ -175,7 +175,7 @@ CloseScanResult closeScan(uint64_t tid, const AccountUid& uid, void (*logf)(cons
     std::string rep = "Scan on close: " + def.name + " (definition: " + defSource + ", user " + user + ")\n";
     for (const std::string& l : g.debug) rep += l + "\n";
     for (const Achievement* a : fresh) rep += "NEW UNLOCK: " + a->id + " (" + a->name + ")\n";
-    writeFile(std::string(DATA_DIR) + "/close_log.txt", rep);
+    writeFile(dataDir() + "/close_log.txt", rep);
 
     const char* status = g.saveStatus == SaveStatus::Ok ? "save read" : g.saveStatus == SaveStatus::NoSave ? "no save" : "save NOT recognised";
     logf("close scan: %s - %s in %llu ms, %d/%d met, %u new", def.name.c_str(), status, (unsigned long long)ms, met, saveAchs,
@@ -198,7 +198,7 @@ CloseScanResult closeScan(uint64_t tid, const AccountUid& uid, void (*logf)(cons
         for (size_t i = SHOW; i < fresh.size(); i++) pts += fresh[i]->points;
         char t[64];
         snprintf(t, sizeof(t), "+%u more achievements", (unsigned)(fresh.size() - SHOW));
-        pr.titleId = tid; pr.achId = "_summary"; pr.title = t; pr.desc = "Open Switch Achievements to see them all";
+        pr.titleId = tid; pr.achId = "_summary"; pr.title = t; pr.desc = "Open TrophyNX to see them all";
         pr.game = def.name; pr.points = pts; pr.tier = popupTierFor(nullptr, 0);
         popupEnqueue(pr);
     }

@@ -313,7 +313,7 @@ void plat::closeSave() {
     g_saveMounted = false;
 }
 
-std::string plat::dataDir() { return "sdmc:/switch/SwitchAchievements"; }
+std::string plat::dataDir() { return "sdmc:/switch/TrophyNX"; }
 std::string plat::romfsDir() { return "romfs:"; }
 
 bool plat::fontData(int which, const uint8_t** data, size_t* size) {

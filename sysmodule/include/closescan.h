@@ -9,6 +9,6 @@
 enum CloseScanResult { CS_SKIPPED, CS_DONE, CS_LOCKED };
 
 // Definitions: built into the module (romfs/games, see make_data.sh), then
-// sdmc:/switch/SwitchAchievements/games/*.json overrides, like the app.
+// sdmc:/switch/TrophyNX/games/*.json overrides, like the app.
 // CS_LOCKED: the save couldn't be mounted (game started again?) - the caller may retry.
 CloseScanResult closeScan(uint64_t titleId, const AccountUid& uid, void (*logf)(const char* fmt, ...));
