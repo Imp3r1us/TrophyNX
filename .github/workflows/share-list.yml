@@ -79,10 +79,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$branch"
           git add "drafts/community/$tid.json"
-          git commit -q -m "Community list: $name ($tid), $count achievements" -m "Shared in #$N by @$AUTHOR."
+          git commit -q -m "Community list: $name ($tid), $count achievement(s)" -m "Shared in #$N by @$AUTHOR."
           git push -f origin "$branch"
           {
-            echo "Adds \`drafts/community/$tid.json\`: **$name**, $count achievements, shared in #$N by @$AUTHOR."
+            echo "Adds \`drafts/community/$tid.json\`: **$name**, $count achievement(s), shared in #$N by @$AUTHOR."
             echo
             if [ -n "$warn" ]; then echo "$warn"; echo; fi
             echo "Checked by \`tools/community/import_issue.js\` (same checks as the Save Lab and the app). Review the rules before merging."
@@ -96,7 +96,7 @@ jobs:
             gh pr edit "$branch" --body-file /tmp/pr.md >/dev/null || true
           fi
           {
-            echo "Thanks for sharing **$name**! ✅ The list is valid: $count achievements."
+            echo "Thanks for sharing **$name**! ✅ The list is valid: $count achievement(s)."
             echo
             if [ -n "$warn" ]; then echo "$warn"; echo; fi
             if [ -n "$pr" ]; then
