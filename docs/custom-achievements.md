@@ -25,8 +25,12 @@ You don't need to compile anything: an achievement list is a JSON text file on t
 
 ## 2. Use a ready-made draft from GitHub
 
-The [`drafts/`](../drafts) folder has lists generated automatically from Steam achievements (see
-[`drafts/README.md`](../drafts/README.md) for the full table of games and verdicts).
+Two places to look:
+
+- [`drafts/community/`](../drafts/community): lists shared by players (see section 8), with the game version they were
+  made on and whether they were tested on a console.
+- [`drafts/`](../drafts): lists generated automatically from Steam achievements (see
+  [`drafts/README.md`](../drafts/README.md) for the full table of games and verdicts).
 
 1. Open the game's `drafts/<TITLEID>.json` on GitHub, press **Raw**, save the file.
 2. Copy it to `sdmc:/switch/TrophyNX/games/` (create the `games` folder if it isn't there).
@@ -210,8 +214,16 @@ To test an achievement again, select it, press **−** to re-lock it, then **Y**
 
 ## 8. Share it
 
-Got a list working? Open a pull request adding it to `romfs/games/` (or attach it to an
-[Achievement idea issue](https://github.com/Imp3r1us/TrophyNX/issues/new?template=achievement-idea.yml)) so
-everyone gets it. Stuck on a game? Open a
+Got a list working? Share it so everyone gets it:
+
+- **From the Save Lab:** tab 5 → **🌐 Share with everyone**. It opens a pre-filled page on GitHub (free account needed).
+- **By hand:** open a [Share an achievement list](https://github.com/Imp3r1us/TrophyNX/issues/new?template=achievement-list.yml)
+  issue and paste your JSON.
+
+A bot checks the list within a minute (same checks as the app) and replies on the issue: what to fix, or a link to the
+pull request that adds it to [`drafts/community/`](../drafts/community). Edit the issue to fix it, the bot checks again.
+Once the maintainer merges it, anyone can install it. Only the list is public: **your save files are never sent**.
+
+Stuck on a game? Open a
 [Save batch issue](https://github.com/Imp3r1us/TrophyNX/issues/new?template=save-batch.yml) with a few labelled
 JKSV backups from **the same game version**, and say what you did between them.

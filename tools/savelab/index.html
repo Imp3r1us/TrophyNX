@@ -80,6 +80,7 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 .dlg .box{background:var(--panel);border:1px solid var(--line);border-radius:14px 14px 0 0;width:100%;max-width:640px;max-height:88vh;overflow:auto;padding:16px}
 .cf{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:700;margin-right:6px}.cf-sure{background:#1f6f43;color:#fff}.cf-maybe{background:#8a6d1a;color:#fff}.cf-unmatched{background:#555;color:#fff}.cf-skip{background:transparent;color:inherit;border:1px solid currentColor;opacity:.6}
 .pcrow{padding:7px 0;border-top:1px solid var(--line)}
+a.btn{text-decoration:none}
 @media(min-width:700px){.dlg{align-items:center}.dlg .box{border-radius:14px}}
 html[data-lang="en"] .l-fr,html[data-lang="fr"] .l-en{display:none!important}
 .hdrLinks{margin-left:auto;display:flex;gap:6px;align-items:center}.hdrLinks a{color:var(--acc);font-size:13px;text-decoration:none}
@@ -234,7 +235,7 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
   <div class="card">
     <h2><span class="l-en">Export</span><span class="l-fr">Exporter</span></h2>
     <div id="valid"></div>
-    <div class="row"><button class="btn pri fix" id="copyJson"><span class="l-en">Copy the JSON</span><span class="l-fr">Copier le JSON</span></button><button class="btn fix" id="dlJson"><span class="l-en">Download</span><span class="l-fr">Télécharger</span> <span id="dlName"></span></button></div>
+    <div class="row"><button class="btn pri fix" id="copyJson"><span class="l-en">Copy the JSON</span><span class="l-fr">Copier le JSON</span></button><button class="btn fix" id="dlJson"><span class="l-en">Download</span><span class="l-fr">Télécharger</span> <span id="dlName"></span></button><button class="btn fix" id="shareGh"><span class="l-en">🌐 Share with everyone</span><span class="l-fr">🌐 Partager avec tout le monde</span></button></div>
     <p class="small mute l-en">Put the file in <code>sdmc:/switch/TrophyNX/games/</code> as <code class="fname">TITLEID.json</code>, then open the app and press Y. It replaces the built-in definition of the same game: start from the built-in achievements so you don't lose them.</p>
     <p class="small mute l-fr">Placez le fichier dans <code>sdmc:/switch/TrophyNX/games/</code> sous le nom <code class="fname">TITLEID.json</code>, puis relancez l'app et appuyez sur Y. Il remplace la définition intégrée du même jeu : partez des succès intégrés pour ne pas les perdre.</p>
     <pre id="jsonOut"></pre>
@@ -2971,6 +2972,34 @@ function renderExport() {
   $$('.fname').forEach(x => { x.textContent = (d.title_id || 'TITLEID') + '.json'; });
   $('#dlName').textContent = (d.title_id || 'TITLEID') + '.json';
 }
+// Share: pre-filled "Share an achievement list" issue on GitHub; a bot checks it and opens a pull request
+// adding drafts/community/<TITLEID>.json (.github/workflows/share-list.yml). Saves are never sent.
+const SHARE_URL = 'https://github.com/Imp3r1us/TrophyNX/issues/new?template=achievement-list.yml';
+$('#shareGh').addEventListener('click', () => {
+  const d = ensureDef();
+  const errs = E.validate(d);
+  if (!d.achievements.length || errs.length) { toast(T('Fix the list first (see the checks above)', 'Corrigez d\'abord la liste (voir les vérifications ci-dessus)')); return; }
+  const compact = JSON.stringify(JSON.parse(defJson()));
+  const enc = encodeURIComponent;
+  let url = SHARE_URL + '&title=' + enc('[List] ' + (d.name || d.title_id)) + '&game=' + enc(d.name || '');
+  const fits = (url + '&json=' + enc(compact)).length <= 7500;   // GitHub refuses very long links
+  if (fits) url += '&json=' + enc(compact);
+  openDialog(`<h2>${T('Share this list with everyone', 'Partager cette liste avec tout le monde')}</h2>
+    <p class="small">${T('This opens a pre-filled page on GitHub (a free account is needed). When you submit it:', 'Cela ouvre une page pré-remplie sur GitHub (il faut un compte gratuit). Quand vous l\'envoyez :')}</p>
+    <ul class="small">
+      <li>${T('the list is <b>public</b> (achievement names and rules only: <b>your save files are never sent</b>);', 'la liste est <b>publique</b> (noms des succès et règles seulement : <b>vos sauvegardes ne sont jamais envoyées</b>) ;')}</li>
+      <li>${T('a bot checks it within a minute and replies on the page;', 'un robot la vérifie en une minute et répond sur la page ;')}</li>
+      <li>${T('once approved, it is added to <code>drafts/community/</code> so that anyone can install it.', 'une fois validée, elle est ajoutée à <code>drafts/community/</code> pour que tout le monde puisse l\'installer.')}</li>
+    </ul>
+    ${fits ? '' : `<div class="note">${T('This list is too long for a link: it will be copied, then paste it into the “Achievement list (JSON)” field on GitHub.', 'Cette liste est trop longue pour un lien : elle sera copiée, collez-la ensuite dans le champ « Achievement list (JSON) » sur GitHub.')}</div>`}
+    <p class="small mute">${T('On GitHub, also fill in the game version and whether you tested it on a console.', 'Sur GitHub, indiquez aussi la version du jeu et si vous l\'avez testée sur console.')}</p>
+    <div class="row" style="margin-top:10px"><a class="btn pri fix" id="shareGo" href="${esc(url)}" target="_blank" rel="noopener">${T('Open GitHub', 'Ouvrir GitHub')}</a><button class="btn fix" id="shareNo">${T('Cancel', 'Annuler')}</button></div>`);
+  $('#shareNo').onclick = closeDialog;
+  $('#shareGo').onclick = async () => {
+    if (!fits) { try { await navigator.clipboard.writeText(defJson()); toast(T('JSON copied: paste it on GitHub', 'JSON copié : collez-le sur GitHub')); } catch (e) { toast(T('Copy the JSON from the Export box first', 'Copiez d\'abord le JSON depuis l\'encadré Exporter')); } }
+    setTimeout(closeDialog, 300);
+  };
+});
 $('#copyJson').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(defJson()); toast(T('JSON copied', 'JSON copié')); }
   catch (e) { const r = document.createRange(); r.selectNodeContents($('#jsonOut')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast(T('Selected: use Copy', 'Sélectionné : utilisez Copier')); }

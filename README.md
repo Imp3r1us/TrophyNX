@@ -349,7 +349,8 @@ Things like "beat the game without taking damage" or speedruns usually can't be 
 If you already know how a game stores its data (from an editor, a decompilation or a cheat table), you can write
 its definition yourself: see [Adding a game (JSON)](#adding-a-game-json). The **Save Lab**
 (**https://imp3r1us.github.io/TrophyNX/**, a single page that runs in any browser, phones included; your saves stay on your device) compares saves, finds what
-changed and drafts the achievements for you. Pull requests are welcome.
+changed and drafts the achievements for you. Its **🌐 Share with everyone** button (tab 5) sends your list to
+[`drafts/community/`](drafts/community) through a checked pull request, so everyone can use it (your saves are never sent).
 
 ## Roadmap
 

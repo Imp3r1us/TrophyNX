@@ -1,0 +1,110 @@
+# Shared achievement lists: when someone opens (or edits) a "Share an achievement list" issue, checks the
+# list with tools/community/import_issue.js and opens a pull request adding drafts/community/<TITLEID>.json.
+# The issue gets a comment either way (what to fix, or the link to the pull request).
+# Needs Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests"
+# (without it the branch is still pushed and the comment says so).
+name: Share a list
+on:
+  issues:
+    types: [opened, edited, reopened, labeled]
+  push:
+    branches: [main]
+    paths: ['drafts/community/*.json']
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+concurrency:
+  group: share-list-${{ github.event.issue.number }}
+  cancel-in-progress: true
+jobs:
+  index:
+    # after a merge: rebuild the table of shared lists (kept out of the pull requests so they never conflict)
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node tools/community/import_issue.js --index
+          if ! git diff --quiet -- drafts/community/README.md; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add drafts/community/README.md
+            git commit -q -m "drafts/community: update the list index"
+            git push
+          fi
+  import:
+    if: >-
+      github.event_name == 'issues' && github.event.issue.state == 'open' &&
+      (contains(github.event.issue.labels.*.name, 'achievement-list') || startsWith(github.event.issue.title, '[List]'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check the list
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: node tools/community/import_issue.js
+      - name: Pull request and reply
+        env:
+          GH_TOKEN: ${{ github.token }}
+          N: ${{ github.event.issue.number }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          gh label create achievement-list --color 2dd4bf --description "Shared achievement list" 2>/dev/null || true
+          gh issue edit "$N" --add-label achievement-list 2>/dev/null || true
+          ok=$(jq -r .ok /tmp/share/result.json)
+          tid=$(jq -r '.tid // ""' /tmp/share/result.json)
+          name=$(jq -r '.name // ""' /tmp/share/result.json)
+          count=$(jq -r '.count // 0' /tmp/share/result.json)
+          warn=$(jq -r '.warnings[]? | "- " + .' /tmp/share/result.json)
+          if [ "$ok" != "true" ]; then
+            {
+              echo "Thanks! The list can't be added yet:"
+              echo
+              jq -r '.errors[] | "- " + .' /tmp/share/result.json
+              echo
+              echo "Edit this issue (… menu → Edit) to fix it: I'll check again automatically."
+              echo "The [Save Lab](https://imp3r1us.github.io/TrophyNX/) (tab 5) shows the same checks before you share."
+            } > /tmp/comment.md
+            gh issue comment "$N" --body-file /tmp/comment.md
+            exit 0
+          fi
+          case "$tid" in *[!0-9A-F]*|"") echo "bad title id"; exit 1;; esac
+          branch="community/issue-$N"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add "drafts/community/$tid.json"
+          git commit -q -m "Community list: $name ($tid), $count achievements" -m "Shared in #$N by @$AUTHOR."
+          git push -f origin "$branch"
+          {
+            echo "Adds \`drafts/community/$tid.json\`: **$name**, $count achievements, shared in #$N by @$AUTHOR."
+            echo
+            if [ -n "$warn" ]; then echo "$warn"; echo; fi
+            echo "Checked by \`tools/community/import_issue.js\` (same checks as the Save Lab and the app). Review the rules before merging."
+            echo
+            echo "Closes #$N"
+          } > /tmp/pr.md
+          pr=$(gh pr view "$branch" --json url,state -q 'select(.state=="OPEN") | .url' 2>/dev/null || true)
+          if [ -z "$pr" ]; then
+            pr=$(gh pr create --head "$branch" --base main --title "Community list: $name ($tid)" --body-file /tmp/pr.md 2>/tmp/pr_err.txt) || pr=""
+          else
+            gh pr edit "$branch" --body-file /tmp/pr.md >/dev/null || true
+          fi
+          {
+            echo "Thanks for sharing **$name**! ✅ The list is valid: $count achievements."
+            echo
+            if [ -n "$warn" ]; then echo "$warn"; echo; fi
+            if [ -n "$pr" ]; then
+              echo "Pull request: $pr. Once it is merged, the list appears in [drafts/community](https://github.com/${{ github.repository }}/tree/main/drafts/community) for everyone."
+            else
+              echo "It is ready on the branch \`$branch\`; the maintainer will add it shortly."
+            fi
+            echo
+            echo "Until then, you can already use it: copy your JSON to \`sdmc:/switch/TrophyNX/games/$tid.json\`, open TrophyNX and press **Y**."
+          } > /tmp/comment.md
+          gh issue comment "$N" --body-file /tmp/comment.md

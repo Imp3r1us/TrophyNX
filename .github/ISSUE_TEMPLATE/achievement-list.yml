@@ -1,0 +1,52 @@
+name: Share an achievement list
+description: Share a list you made (Save Lab or by hand) so everyone can use it. A bot checks it and adds it to drafts/community.
+title: "[List] <game name>"
+labels: ["achievement-list"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! This issue is **public**: only the list below is shared, never your save files.
+        A bot checks the list within a minute and replies here. If it is valid, it opens a pull request that adds it to
+        [`drafts/community/`](https://github.com/Imp3r1us/TrophyNX/tree/main/drafts/community). You can edit this issue to fix it: the bot checks again.
+  - type: input
+    id: game
+    attributes:
+      label: Game
+      placeholder: Hades
+    validations:
+      required: true
+  - type: textarea
+    id: json
+    attributes:
+      label: Achievement list (JSON)
+      description: The whole file, as exported by the Save Lab (Copy the JSON) or as in sdmc:/switch/TrophyNX/games/<TITLEID>.json.
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Game version
+      description: HOME menu → the game → Options (the version the saves came from).
+      placeholder: "1.0.2"
+  - type: dropdown
+    id: tested
+    attributes:
+      label: Tested on a console?
+      options:
+        - "Yes, achievements unlock as expected"
+        - "Partly (some achievements not reached yet)"
+        - "No, only in the Save Lab"
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      description: Where the values come from, what is not covered yet, anything to know.
+  - type: input
+    id: credit
+    attributes:
+      label: Credit (optional)
+      description: Name to show in the list's credits. Leave empty to stay anonymous (your GitHub name still shows on this issue).
