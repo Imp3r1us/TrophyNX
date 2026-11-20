@@ -295,8 +295,17 @@ bool plat::restartLiveModule(std::string& msg) {
     const u64 LIVE_ID = 0x420000000000AC01ULL;
     Result rc = pmshellInitialize();
     if (R_FAILED(rc)) { char b[80]; snprintf(b, sizeof(b), "pm:shell unavailable (rc=0x%X)", rc); msg = b; return false; }
+    u64 oldPid = liveModulePid();
     pmshellTerminateProgram(LIVE_ID);   // fails harmlessly if it wasn't running
-    svcSleepThread(300000000ULL);
+    // termination is asynchronous: launching again while the old process still exists fails
+    for (int i = 0; i < 50 && liveModulePid() != 0; i++) svcSleepThread(100000000ULL);
+    if (liveModulePid() != 0) {
+        pmshellExit();
+        char b[120];
+        snprintf(b, sizeof(b), "the old live module (pid %llu) did not stop: reboot to use the new one", (unsigned long long)oldPid);
+        msg = b;
+        return false;
+    }
     NcmProgramLocation loc;
     memset(&loc, 0, sizeof(loc));
     loc.program_id = LIVE_ID;
@@ -309,6 +318,19 @@ bool plat::restartLiveModule(std::string& msg) {
     snprintf(b, sizeof(b), "live module not restarted (rc=0x%X): reboot to use the new one", rc);
     msg = b;
     return false;
+}
+
+void plat::releaseSelfFile() {
+    if (g_romfs) romfsExit();
+    g_romfs = false;
+}
+
+uint64_t plat::liveModulePid() {
+    u64 pid = 0;
+    if (R_FAILED(pmdmntInitialize())) return 0;
+    if (R_FAILED(pmdmntGetProcessId(&pid, 0x420000000000AC01ULL))) pid = 0;
+    pmdmntExit();
+    return pid;
 }
 
 void plat::relaunchSelf() {

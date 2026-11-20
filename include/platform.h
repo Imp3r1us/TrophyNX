@@ -55,6 +55,11 @@ namespace plat {
     std::string sdRoot();                          // "sdmc:/" (host: <root>/sd/)
     bool restartLiveModule(std::string& msg);      // stops and starts sys-trophynx (new exefs.nsp)
     void relaunchSelf();                           // reload this .nro when the app exits
+    // Closes the app's own .nro (romfs reads keep it open, and an open file can't be deleted or replaced).
+    // Call before replacing the running .nro; romfs is unavailable afterwards (the app must restart).
+    void releaseSelfFile();
+    // Live module process id, 0 if it isn't running.
+    uint64_t liveModulePid();
 
     std::string dataDir();   // writable folder for unlocks/custom definitions
     std::string romfsDir();  // bundled definitions

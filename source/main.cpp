@@ -459,10 +459,10 @@ static void drawUpdate(UI& ui) {
         title = ui.updOk ? "Update installed" : "Update failed";
         accent = ui.updOk ? C_GREEN : C_RED;
         lines.push_back({ui.updResult, C_TEXT});
-        if (ui.updOk && u.appChanged) {
-            lines.push_back({"The new app starts when you restart it.", C_SUB});
+        if (u.appChanged) {   // the app released its own file to replace it: it has to restart
+            lines.push_back({ui.updOk ? "Restart the app to use the new version." : "Restart the app (or reboot) to finish.", C_SUB});
             btns.push_back({"A", "Restart the app"});
-            btns.push_back({"B", "Later"});
+            btns.push_back({"+", "Exit"});
         } else btns.push_back({"B", "Close"});
     } else if (u.state == UpdateInfo::Error) {
         title = "Update check failed";
@@ -739,10 +739,10 @@ int main(int argc, char** argv) {
                 ui.updOk = applyUpdate(ui.updInfo, onProgress, &ui, ui.updResult);
                 ui.upd = 2;
                 dirty = true;
-            } else if (ui.upd == 2 && ui.updOk && ui.updInfo.appChanged && (down & plat::BTN_A)) {
+            } else if (ui.upd == 2 && ui.updInfo.appChanged && (down & plat::BTN_A)) {
                 plat::relaunchSelf();
                 break;
-            } else if (down & plat::BTN_B) { ui.upd = 0; dirty = true; }
+            } else if ((down & plat::BTN_B) && !(ui.upd == 2 && ui.updInfo.appChanged)) { ui.upd = 0; dirty = true; }
         } else if (ui.confirm) {
             if (down & plat::BTN_A) {
                 int n = 0;

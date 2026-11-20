@@ -22,7 +22,7 @@
 #include "capture.h"
 #include "store.h"
 
-#define MODULE_VERSION "0.7.0"
+#define MODULE_VERSION "0.7.1"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -247,10 +247,34 @@ static bool collectHeap(std::vector<MemRegion>& regions, uint64_t& total) {
     return !regions.empty();
 }
 
+// ---------------------------------------------------------------- pending app update
+// The app can't replace its own .nro while it runs (it keeps the file open). Since 0.10.1 it releases it
+// first; older versions left the new file next to it as "TrophyNX.nro.new". At boot the app isn't
+// running yet, so finish that swap here (the .new file was written only after its SHA-256 matched).
+static void finishPendingAppUpdate() {
+    static const char* const APPS[] = {"sdmc:/switch/TrophyNX.nro", "sdmc:/switch/TrophyNX/TrophyNX.nro"};
+    for (const char* app : APPS) {
+        std::string nro = app, tmp = nro + ".new", old = nro + ".old";
+        struct stat st;
+        if (stat(tmp.c_str(), &st) != 0 || st.st_size < 4096) continue;
+        remove(old.c_str());
+        bool had = stat(nro.c_str(), &st) == 0;
+        if (had && rename(nro.c_str(), old.c_str()) != 0) { logf("pending update: %s is in use, left %s", app, tmp.c_str()); continue; }
+        if (rename(tmp.c_str(), nro.c_str()) != 0) {
+            if (had) rename(old.c_str(), nro.c_str());
+            logf("pending update: could not install %s", tmp.c_str());
+            continue;
+        }
+        remove(old.c_str());
+        logf("pending update: installed %s", app);
+    }
+}
+
 // ---------------------------------------------------------------- main loop
 int main(int, char**) {
     mkdir(dataDir().c_str(), 0777);
     logf("sys-trophynx " MODULE_VERSION " started");
+    finishPendingAppUpdate();
     popupStart(logf);
     Result rc;
     if (R_FAILED(rc = pmdmntInitialize())) logf("ERROR pmdmnt init 0x%X", rc);
