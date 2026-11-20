@@ -107,6 +107,7 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
   <button data-t="pc"><b>6</b>PC → Switch</button>
 </nav>
 <main>
+<div class="card" id="nxPanel" style="display:none"></div>
 
 <!-- 0. AUTO -->
 <section id="s-auto" class="on">
@@ -170,6 +171,7 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
   <div class="card">
     <details class="l-en">
       <summary>How to get captures (no PC needed)</summary>
+      <p class="small"><b>Easiest (TrophyNX 0.10+)</b>: in TrophyNX, select the game, <b>ZR</b> then <b>A</b> to record it. Each time you close the game (HOME, X) its save is copied. Then <b>ZR → Y</b> (<i>Share over Wi-Fi</i>) and open the address shown on the Switch: this page opens with a “From your Switch” panel. Otherwise, with JKSV:</p>
       <ol class="small">
         <li><b>On the Switch</b>: open <b>JKSV</b>, pick the game → your profile → <i>New backup</i>. Give it a meaningful name (e.g. <code>before-boss</code>). JKSV writes it to <code>sdmc:/JKSV/&lt;game&gt;/</code>.</li>
         <li><b>To your phone or PC</b>, any of:
@@ -186,6 +188,7 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
     </details>
     <details class="l-fr">
       <summary>Comment récupérer les captures sans PC</summary>
+      <p class="small"><b>Le plus simple (TrophyNX 0.10+)</b> : dans TrophyNX, choisissez le jeu, <b>ZR</b> puis <b>A</b> pour l'enregistrer. À chaque fermeture du jeu (HOME, X), sa save est copiée. Ensuite <b>ZR → Y</b> (<i>Share over Wi-Fi</i>) et ouvrez l'adresse affichée sur la Switch : cette page s'ouvre avec un panneau « Depuis votre Switch ». Sinon, avec JKSV :</p>
       <ol class="small">
         <li><b>Sur la Switch</b> : ouvrez <b>JKSV</b>, choisissez le jeu → votre profil → <i>Nouvelle sauvegarde</i>. Donnez un nom parlant (ex. <code>avant-boss</code>). JKSV l'écrit dans <code>sdmc:/JKSV/&lt;jeu&gt;/</code>.</li>
         <li><b>Vers le téléphone</b>, au choix :
@@ -913,6 +916,28 @@ async function unzip(buf) {
     files.push({ path: name, data });
   }
   return files;
+}
+// Stored (uncompressed) ZIP writer: captures from the Switch, to share them (GitHub issue, chat...).
+// files: [{path, data:Uint8Array}] -> Uint8Array. UTF-8 names (flag bit 11), fixed DOS date.
+function zipStore(files) {
+  const parts = [], central = [];
+  let off = 0;
+  const u16 = (v) => [v & 0xFF, (v >>> 8) & 0xFF], u32 = (v) => [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF];
+  const DOS_TIME = 0, DOS_DATE = ((2026 - 1980) << 9) | (1 << 5) | 1;
+  for (const f of files) {
+    const name = enc.encode(f.path), crc = crc32(f.data), n = f.data.length;
+    const head = [0x50, 0x4b, 3, 4, ...u16(20), ...u16(0x800), ...u16(0), ...u16(DOS_TIME), ...u16(DOS_DATE), ...u32(crc), ...u32(n), ...u32(n), ...u16(name.length), ...u16(0)];
+    parts.push(new Uint8Array(head), name, f.data);
+    central.push(new Uint8Array([0x50, 0x4b, 1, 2, ...u16(20), ...u16(20), ...u16(0x800), ...u16(0), ...u16(DOS_TIME), ...u16(DOS_DATE), ...u32(crc), ...u32(n), ...u32(n),
+      ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), name);
+    off += head.length + name.length + n;
+  }
+  const cdSize = central.reduce((a, b) => a + b.length, 0);
+  const end = new Uint8Array([0x50, 0x4b, 5, 6, ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(off), ...u16(0)]);
+  const all = [...parts, ...central, end], out = new Uint8Array(all.reduce((a, b) => a + b.length, 0));
+  let p = 0;
+  for (const a of all) { out.set(a, p); p += a.length; }
+  return out;
 }
 // Strip the common leading folder ("JKSV/Game/2026-11-18/...") so paths match the app's save_files.
 function stripCommonPrefix(files) {
@@ -1903,7 +1928,7 @@ function validate(def) {
   return errs;
 }
 
-const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, stripCommonPrefix, identify,
+const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, zipStore, stripCommonPrefix, identify,
   parseHashTable, classify, KIND_LABEL, diffBinary, diffHash, searchValue, searchValueHash, extendSeries,
   matchDictionary, evaluate, validate, autoAchievements, findByml, parseByml, parseJson, parseTree, TREE_READERS, TREE_FORMATS, treeFormat, parseGvas: F.parseGvas, parseNrbf: F.parseNrbf, flattenByml, queryByml, diffByml, searchValueByml, bymlGroupRule, bymlRuleValue, patternOf, findFlagGroups, findHashGroups, niceNum, niceBelow, compileRule, cFormat, extractStrings, detectHashTable };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -3134,7 +3159,7 @@ Réponds UNIQUEMENT en JSON : {"suggestions":[{"refs":["0x1A0", "0xHASH" ou le c
 
 // ---------------------------------------------------------------- 0. automatic list (no AI: the same tools as the other
 // tabs, chained): two saves -> format -> differences -> collections/counters -> Steam list match -> names -> checks.
-const AU = { game: null, early: null, late: null };
+const AU = { game: null, early: null, late: null, all: null };   // all: captures loaded from the Switch
 function auGames(q) {
   q = q.trim().toLowerCase(); if (q.length < 2) return [];
   const seen = new Set(), out = [];
@@ -3177,6 +3202,7 @@ async function auReadFiles(list) {
   const list = [...e.target.files]; e.target.value = ''; if (!list.length) return;
   try {
     AU[key] = await auReadFiles(list);
+    AU.all = null;   // picked by hand: back to the two saves
     $(info).textContent = '✓ ' + AU[key].length + T(' file(s): ', ' fichier(s) : ') + AU[key].slice(0, 3).map(f => f.path).join(', ') + (AU[key].length > 3 ? '…' : '');
   } catch (err) { $(info).textContent = T('Error: ', 'Erreur : ') + err.message; }
 }));
@@ -3209,13 +3235,16 @@ $('#auRun').addEventListener('click', async () => {
   const say = (h) => { out.innerHTML = h; };
   if (!AU.game || !/^[0-9A-F]{16}$/.test(AU.game.tid)) { say(`<div class="note">${T('Choose the game first (step 1).', 'Choisissez d\'abord le jeu (étape 1).')}</div>`); return; }
   if (!AU.late && !AU.early) { say(`<div class="note">${T('Add at least the advanced save (step 2).', 'Ajoutez au moins la save avancée (étape 2).')}</div>`); return; }
-  if (S.caps.length && !confirm(T('This replaces the captures and the achievement list of your current session. Continue?', 'Cela remplace les captures et la liste de succès de votre session actuelle. Continuer ?'))) return;
+  if (S.caps.length && !AU.all && !confirm(T('This replaces the captures and the achievement list of your current session. Continue?', 'Cela remplace les captures et la liste de succès de votre session actuelle. Continuer ?'))) return;
   const g = AU.game, log = [];
   // session = these captures + an empty definition for this game
   S.game = { title_id: g.tid, name: g.name, custom: !BUILTIN[g.tid] };
   S.caps = []; S.def = null; S.diff = null; S.val = null; S.sel.clear(); S.target = '';
-  if (AU.early) S.caps.push({ id: nextId++, label: T('Early save', 'Save du début'), control: false, files: AU.early });
-  if (AU.late) S.caps.push({ id: nextId++, label: T('Advanced save', 'Save avancée'), control: false, files: AU.late });
+  if (AU.all && AU.all.length) AU.all.forEach(c => S.caps.push({ id: nextId++, label: c.label, control: false, files: c.files }));
+  else {
+    if (AU.early) S.caps.push({ id: nextId++, label: T('Early save', 'Save du début'), control: false, files: AU.early });
+    if (AU.late) S.caps.push({ id: nextId++, label: T('Advanced save', 'Save avancée'), control: false, files: AU.late });
+  }
   identCache = null; autoTarget(); renderGameSel(); renderCaps();
   const id = currentIdent();
   const d = ensureDef();
@@ -3301,6 +3330,128 @@ $('#auRun').addEventListener('click', async () => {
   $('#auShare').onclick = () => $('#shareGh').click();
 });
 
+// ---------------------------------------------------------------- captures from the Switch (Wi-Fi share)
+// When TrophyNX's "Share over Wi-Fi" screen serves this page, captures.json lists the saves the live
+// module copied each time a recorded game closed. Pick some, load them as captures (and into ⚡ Auto).
+const NX = { games: [], g: null, sel: new Set(), files: new Set(), paths: [] };
+const NX_IMG = /\.(jpe?g|png|bmp|dds|webp|gif)$/i;
+function nxLabel(g, c) {
+  const i = g.captures.indexOf(c);
+  const cum = g.captures.slice(0, i + 1).reduce((a, x) => a + (x.session_minutes || 0), 0);
+  const d = new Date((c.time || 0) * 1000);
+  return '#' + (i + 1) + ' · ' + d.toLocaleString(LOC, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) +
+    ' · ' + T('session ', 'session ') + (c.session_minutes || 0) + ' min · ' + T('total ', 'total ') + cum + ' min';
+}
+async function nxDetect() {
+  if (location.protocol !== 'http:') return;
+  try {
+    const r = await fetch('captures.json', { cache: 'no-store' });
+    if (!r.ok) return;
+    const j = await r.json();
+    NX.games = (j.games || []).filter(g => g.captures && g.captures.length);
+  } catch (e) { return; }
+  $('#nxPanel').style.display = '';
+  if (!NX.games.length) {
+    $('#nxPanel').innerHTML = `<h2>📡 ${T('From your Switch', 'Depuis votre Switch')}</h2><div class="note">${T('No capture on the console yet. In TrophyNX: select a game, ZR, A (start recording). Play, then close the game (HOME, X): each close adds a capture. Reload this page afterwards.', 'Aucune capture sur la console pour l\'instant. Dans TrophyNX : choisissez un jeu, ZR, A (activer l\'enregistrement). Jouez puis fermez le jeu (HOME, X) : chaque fermeture ajoute une capture. Rechargez ensuite cette page.')}</div>`;
+    return;
+  }
+  nxPick(NX.games[0].title_id);
+}
+function nxPick(tid) {
+  const g = NX.g = NX.games.find(x => x.title_id === tid);
+  const caps = g.captures, n = caps.length, k = Math.min(6, n);
+  NX.sel = new Set();
+  for (let i = 0; i < k; i++) NX.sel.add(caps[Math.round(i * (n - 1) / Math.max(1, k - 1))].stamp);   // first, last, evenly spaced
+  const sizes = new Map();
+  caps.forEach(c => c.files.forEach(f => sizes.set(f.path, Math.max(sizes.get(f.path) || 0, f.size))));
+  NX.paths = [...sizes].sort((a, b) => a[0].localeCompare(b[0]));
+  const plain = NX.paths.filter(([p]) => !NX_IMG.test(p));
+  NX.files = new Set((plain.length ? plain : NX.paths).map(x => x[0]));
+  nxRender();
+}
+function nxSelBytes() {
+  return NX.g.captures.filter(c => NX.sel.has(c.stamp)).reduce((a, c) => a + c.files.filter(f => NX.files.has(f.path)).reduce((b, f) => b + f.size, 0), 0);
+}
+function nxRender(status) {
+  const g = NX.g, bytes = nxSelBytes();
+  $('#nxPanel').innerHTML = `<h2>📡 ${T('From your Switch', 'Depuis votre Switch')}</h2>
+    ${NX.games.length > 1 ? `<select id="nxGame">${NX.games.map(x => `<option value="${esc(x.title_id)}"${x === g ? ' selected' : ''}>${esc(x.name)} (${x.captures.length})</option>`).join('')}</select>` : `<p><b>${esc(g.name)}</b> <span class="mono mute">${esc(g.title_id)}</span></p>`}
+    <p class="small mute">${T('One capture per closed play session. Pick the ones to compare (first and last at least):', 'Une capture par session de jeu fermée. Choisissez celles à comparer (au moins la première et la dernière) :')}</p>
+    <div id="nxCaps">${g.captures.map(c => `<label class="small" style="display:flex;gap:6px;align-items:center;color:var(--text)"><input type="checkbox" data-stamp="${esc(c.stamp)}"${NX.sel.has(c.stamp) ? ' checked' : ''}>${esc(nxLabel(g, c))} <span class="mute">· ${fmtBytes(c.bytes || 0)}</span></label>`).join('')}</div>
+    <div class="chips"><span class="chip" id="nxAll">${T('All', 'Toutes')}</span><span class="chip" id="nxNone">${T('None', 'Aucune')}</span></div>
+    <details><summary>${T('Files', 'Fichiers')} (${NX.files.size}/${NX.paths.length})</summary><div id="nxFiles">${NX.paths.map(([p, sz]) => `<label class="small mono" style="display:flex;gap:6px;align-items:center;color:var(--text)"><input type="checkbox" data-path="${esc(p)}"${NX.files.has(p) ? ' checked' : ''}>${esc(p)} <span class="mute">${fmtBytes(sz)}</span></label>`).join('')}</div>
+      <p class="small mute">${T('Pictures are left out by default: they are rarely progress.', 'Les images sont exclues par défaut : elles reflètent rarement la progression.')}</p></details>
+    <div class="row" style="margin-top:10px"><button class="btn pri fix" id="nxLoad">${T('Load', 'Charger')} ${NX.sel.size} ${T('capture(s)', 'capture(s)')} · ${fmtBytes(bytes)}</button>
+      <button class="btn fix" id="nxZip">${T('Download .zip', 'Télécharger le .zip')}</button></div>
+    ${bytes > 150 * 1048576 ? `<div class="note">${T('That is a lot of data for a phone: select fewer captures or files.', 'Beaucoup de données pour un téléphone : sélectionnez moins de captures ou de fichiers.')}</div>` : ''}
+    <div class="small mute" id="nxStatus">${status || T('The .zip is for sharing the saves (e.g. on a GitHub issue).', 'Le .zip sert à partager les saves (ex. sur une issue GitHub).')}</div>`;
+}
+$('#nxPanel').addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.id === 'nxGame') return nxPick(t.value);
+  if (t.dataset.stamp) { t.checked ? NX.sel.add(t.dataset.stamp) : NX.sel.delete(t.dataset.stamp); }
+  if (t.dataset.path) { t.checked ? NX.files.add(t.dataset.path) : NX.files.delete(t.dataset.path); }
+  const open = $('#nxPanel details') && $('#nxPanel details').open;
+  nxRender();
+  if (open) $('#nxPanel details').open = true;
+});
+async function nxFetch() {
+  const g = NX.g, caps = g.captures.filter(c => NX.sel.has(c.stamp));
+  const total = caps.reduce((a, c) => a + c.files.filter(f => NX.files.has(f.path)).length, 0);
+  let done = 0;
+  const out = [];
+  for (const c of caps) {
+    const files = [];
+    for (const f of c.files) {
+      if (!NX.files.has(f.path)) continue;
+      const url = 'c/' + g.title_id + '/' + encodeURIComponent(c.stamp) + '/' + f.path.split('/').map(encodeURIComponent).join('/');
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error(f.path + ': HTTP ' + r.status);
+      files.push({ path: f.path, data: new Uint8Array(await r.arrayBuffer()) });
+      $('#nxStatus').textContent = T('Downloading from the Switch… ', 'Téléchargement depuis la Switch… ') + (++done) + ' / ' + total;
+    }
+    out.push({ c, label: nxLabel(g, c), files });
+  }
+  return out;
+}
+$('#nxPanel').addEventListener('click', async (e) => {
+  const id = e.target.closest('button,.chip') && e.target.closest('button,.chip').id;
+  if (id === 'nxAll') { NX.sel = new Set(NX.g.captures.map(c => c.stamp)); return nxRender(); }
+  if (id === 'nxNone') { NX.sel.clear(); return nxRender(); }
+  if (id !== 'nxLoad' && id !== 'nxZip') return;
+  if (!NX.sel.size || !NX.files.size) { toast(T('Select at least one capture and one file', 'Sélectionnez au moins une capture et un fichier')); return; }
+  const g = NX.g;
+  let got;
+  try { got = await nxFetch(); } catch (err) { nxRender('<span style="color:var(--bad)">' + esc(T('Error: ', 'Erreur : ') + err.message) + '</span> ' + T('Is the share screen still open on the Switch?', 'L\'écran de partage est-il toujours ouvert sur la Switch ?')); return; }
+  if (id === 'nxZip') {
+    const files = got.flatMap(x => x.files.map(f => ({ path: x.c.stamp + '/' + f.path, data: f.data })));
+    const info = { title_id: g.title_id, name: g.name, captures: got.map(x => ({ stamp: x.c.stamp, time: x.c.time, session_minutes: x.c.session_minutes, label: x.label })) };
+    files.push({ path: 'captures.json', data: new TextEncoder().encode(JSON.stringify(info, null, 1)) });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([E.zipStore(files)], { type: 'application/zip' }));
+    a.download = (g.name || g.title_id).replace(/[^\w\- ]+/g, '').trim() + ' captures.zip';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    nxRender(T('Zip ready: ', 'Zip prêt : ') + got.length + T(' capture(s).', ' capture(s).'));
+    return;
+  }
+  if (S.caps.length && !confirm(T('This replaces the captures of your current session. Continue?', 'Cela remplace les captures de votre session actuelle. Continuer ?'))) { nxRender(); return; }
+  S.game = { title_id: g.title_id, name: g.name, custom: !BUILTIN[g.title_id] };
+  S.caps = got.map(x => ({ id: nextId++, label: x.label, control: false, files: x.files }));
+  S.def = null; S.diff = null; S.val = null; S.sel.clear(); S.target = '';
+  identCache = null; autoTarget(); renderGameSel(); renderCaps(); persist();
+  // ⚡ Auto: same game, every loaded capture
+  const r = catRow(g.title_id);
+  AU.game = { tid: g.title_id, name: g.name, appid: r ? r[2] : null, ach: r ? r[3] : null };
+  $('#auQ').value = g.name; auShowGame();
+  AU.all = got.map(x => ({ label: x.label, files: x.files }));
+  AU.early = got[0].files; AU.late = got[got.length - 1].files;
+  $('#auEarlyInfo').textContent = '✓ ' + T('from the Switch: ', 'depuis la Switch : ') + got[0].label;
+  $('#auLateInfo').textContent = '✓ ' + T('from the Switch: ', 'depuis la Switch : ') + got[got.length - 1].label + (got.length > 2 ? ' (+' + (got.length - 2) + T(' in between)', ' entre les deux)') : '');
+  nxRender(T('Loaded ', 'Chargé : ') + got.length + T(' capture(s). Next: ⚡ Auto, or 3. Differences.', ' capture(s). Ensuite : ⚡ Auto, ou 3. Différences.'));
+  toast(got.length + T(' capture(s) loaded', ' capture(s) chargée(s)'));
+});
+
 // ---------------------------------------------------------------- boot
 (async () => {
   renderGameSel(); renderCaps();
@@ -3312,6 +3463,7 @@ $('#auRun').addEventListener('click', async () => {
     renderGameSel(); renderCaps();
     if (S.caps.length) toast(T('Previous session restored', 'Session précédente restaurée'));
   }
+  nxDetect();
   if (window.claude && claude.use) {
     claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
     claude.use('sample').then(sm => { sample = sm; if (sm) $('#askClaude').style.display = ''; }).catch(() => {});

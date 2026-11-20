@@ -1,3 +1,3 @@
 #pragma once
 // Keep in sync with APP_VERSION in the Makefile (.nacp).
-#define APP_VERSION "0.9.1"
+#define APP_VERSION "0.10.0"

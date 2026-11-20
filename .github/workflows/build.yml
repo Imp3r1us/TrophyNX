@@ -30,6 +30,11 @@ jobs:
           g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_stream.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_stream
           python3 host/test/gen_saves.py /tmp/streamroot romfs/games
           /tmp/test_stream romfs/games /tmp/streamroot/saves
+      - name: Host test (save captures + Wi-Fi share server)
+        run: |
+          apt-get install -y -qq curl >/dev/null || true
+          g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_captures.cpp source/captures.cpp source/share_server.cpp source/fileutil.cpp -x c source/cJSON.c -o /tmp/test_captures -lpthread
+          /tmp/test_captures
       - name: Host test (updater SHA-256)
         run: |
           g++ -std=gnu++17 -Iinclude host/test/test_sha256.cpp source/sha256.cpp -o /tmp/test_sha256

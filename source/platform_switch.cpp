@@ -234,15 +234,32 @@ static int httpProgress(void* user, curl_off_t total, curl_off_t now, curl_off_t
     return 0;
 }
 
+bool plat::netInit(std::string& err) {
+    if (g_net) return true;
+    Result rc = socketInitializeDefault();
+    if (R_FAILED(rc)) { char b[64]; snprintf(b, sizeof(b), "network unavailable (rc=0x%X)", rc); err = b; return false; }
+    if (curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK) { socketExit(); err = "curl init failed"; return false; }
+    g_net = true;
+    return true;
+}
+
+void plat::keepAwake(bool on) { appletSetMediaPlaybackState(on); }
+
+std::string plat::localIp() {
+    if (R_FAILED(nifmInitialize(NifmServiceType_User))) return "";
+    u32 ip = 0;
+    Result rc = nifmGetCurrentIpAddress(&ip);
+    nifmExit();
+    if (R_FAILED(rc) || ip == 0) return "";
+    char b[20];
+    snprintf(b, sizeof(b), "%u.%u.%u.%u", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
+    return b;
+}
+
 int plat::httpGet(const std::string& url, const std::vector<std::string>& headers, std::vector<uint8_t>& out,
                   ProgressFn progress, void* ctx, std::string& err) {
     out.clear();
-    if (!g_net) {
-        Result rc = socketInitializeDefault();
-        if (R_FAILED(rc)) { char b[64]; snprintf(b, sizeof(b), "network unavailable (rc=0x%X)", rc); err = b; return 0; }
-        if (curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK) { socketExit(); err = "curl init failed"; return 0; }
-        g_net = true;
-    }
+    if (!netInit(err)) return 0;
     CURL* c = curl_easy_init();
     if (!c) { err = "curl init failed"; return 0; }
     struct curl_slist* hl = nullptr;

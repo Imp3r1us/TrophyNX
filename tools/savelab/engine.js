@@ -124,6 +124,28 @@ async function unzip(buf) {
   }
   return files;
 }
+// Stored (uncompressed) ZIP writer: captures from the Switch, to share them (GitHub issue, chat...).
+// files: [{path, data:Uint8Array}] -> Uint8Array. UTF-8 names (flag bit 11), fixed DOS date.
+function zipStore(files) {
+  const parts = [], central = [];
+  let off = 0;
+  const u16 = (v) => [v & 0xFF, (v >>> 8) & 0xFF], u32 = (v) => [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF];
+  const DOS_TIME = 0, DOS_DATE = ((2026 - 1980) << 9) | (1 << 5) | 1;
+  for (const f of files) {
+    const name = enc.encode(f.path), crc = crc32(f.data), n = f.data.length;
+    const head = [0x50, 0x4b, 3, 4, ...u16(20), ...u16(0x800), ...u16(0), ...u16(DOS_TIME), ...u16(DOS_DATE), ...u32(crc), ...u32(n), ...u32(n), ...u16(name.length), ...u16(0)];
+    parts.push(new Uint8Array(head), name, f.data);
+    central.push(new Uint8Array([0x50, 0x4b, 1, 2, ...u16(20), ...u16(20), ...u16(0x800), ...u16(0), ...u16(DOS_TIME), ...u16(DOS_DATE), ...u32(crc), ...u32(n), ...u32(n),
+      ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), name);
+    off += head.length + name.length + n;
+  }
+  const cdSize = central.reduce((a, b) => a + b.length, 0);
+  const end = new Uint8Array([0x50, 0x4b, 5, 6, ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(off), ...u16(0)]);
+  const all = [...parts, ...central, end], out = new Uint8Array(all.reduce((a, b) => a + b.length, 0));
+  let p = 0;
+  for (const a of all) { out.set(a, p); p += a.length; }
+  return out;
+}
 // Strip the common leading folder ("JKSV/Game/2026-11-18/...") so paths match the app's save_files.
 function stripCommonPrefix(files) {
   if (files.length < 1) return files;
@@ -1113,7 +1135,7 @@ function validate(def) {
   return errs;
 }
 
-const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, stripCommonPrefix, identify,
+const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, zipStore, stripCommonPrefix, identify,
   parseHashTable, classify, KIND_LABEL, diffBinary, diffHash, searchValue, searchValueHash, extendSeries,
   matchDictionary, evaluate, validate, autoAchievements, findByml, parseByml, parseJson, parseTree, TREE_READERS, TREE_FORMATS, treeFormat, parseGvas: F.parseGvas, parseNrbf: F.parseNrbf, flattenByml, queryByml, diffByml, searchValueByml, bymlGroupRule, bymlRuleValue, patternOf, findFlagGroups, findHashGroups, niceNum, niceBelow, compileRule, cFormat, extractStrings, detectHashTable };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;

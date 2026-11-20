@@ -101,6 +101,25 @@ Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come fro
 - Report of the last scan on close: `sdmc:/switch/TrophyNX/close_log.txt`; one summary line per scan in
   `live_log.txt` (`close scan: <game> - save read in 120 ms, 12/37 met, 2 new`).
 
+### Save captures (record a game, share over Wi-Fi)
+
+To make achievements for a game, the Save Lab compares saves taken at different moments. TrophyNX can take them for you:
+
+1. In the app, select the game and press **ZR**, then **A**: recording is on for that game.
+2. Play. Each time you **close** the game (HOME, then X), the live module copies its whole save to
+   `sdmc:/switch/TrophyNX/captures/<TITLEID>/<date-time>/` (with the length of the session that just ended).
+   A running game keeps its save locked, so closing it is the moment a copy can be taken: close it after each step
+   worth comparing (a boss, a new item, a chapter). A save that didn't change since the last capture is not kept twice;
+   the last 20 captures per game are kept (`"keep"` in `captures/settings.json`, up to 200); saves above 128 MB are skipped.
+3. Back in the app, **ZR** on the game, then **Y** (*Share over Wi-Fi*): the screen shows an address such as
+   `http://192.168.1.20:8080`. Open it on your phone or computer, on the same Wi-Fi: the Switch serves the Save Lab
+   itself, with a **From your Switch** panel listing the captures. Pick some, **Load**, then ⚡ Auto or Differences.
+   **Download .zip** packs the selected captures, to attach them to a [Save batch issue](https://github.com/Imp3r1us/TrophyNX/issues/new?template=save-batch.yml).
+
+The share server is read-only, only serves the capture folders, and runs only while that screen is open
+(the console doesn't go to sleep meanwhile). B stops it. In the panel, − twice deletes the game's captures.
+Log lines: `capture: ...` in `live_log.txt`.
+
 ### Popups
 
 The module draws the popup itself, on its own small display layer above the game (like Tesla/Ultrahand
@@ -160,6 +179,7 @@ they are mounted with the system's read-only save API.
 | A or Right | Open a game's achievements |
 | B or Left | Back to the game list |
 | L / R | Page up / down |
+| ZR (on a game) | Save captures: record the game's save each time it closes, share captures over Wi-Fi |
 | ZR (on Overview) | Compatibility scan: checks every game's save format and writes `scan_bundle.json` (see PC → Switch) |
 | Y | Rescan saves (after playing) |
 | X | Debug view for the selected game (what was read, values, errors) |
@@ -179,6 +199,8 @@ sdmc:/switch/TrophyNX/
   log.txt                       full report of the last scan (same content as the X debug view)
   scan_bundle.json              written by ZR: save formats + copies of readable saves (upload for drafts)
   scan_report.txt               written by ZR: the same verdicts in plain text
+  captures/settings.json        games recorded on close (ZR on a game, then A) and how many captures to keep
+  captures/<TITLEID>/<stamp>/   one save capture (the save's files) + <stamp>.json (time, session length, CRC32s)
 ```
 
 ## Testing it (5 minutes with BotW)
@@ -317,7 +339,10 @@ That is where help is needed most, and you don't need to know how to code.
 
 Achievements are made by comparing saves of the same game at different moments. For a game you'd like supported:
 
-1. Back up your save with [JKSV](https://github.com/J-D-K/JKSV) (or another save manager) at a few points:
+1. Easiest: turn on **save captures** for the game (ZR on the game in TrophyNX, then A, see
+   [Save captures](#save-captures-record-a-game-share-over-wi-fi)), play, close the game after each step, then
+   share them over Wi-Fi and press **Download .zip** in the Save Lab. Or back up your save with
+   [JKSV](https://github.com/J-D-K/JKSV) (or another save manager) at a few points:
    - a **fresh** save (just after the intro),
    - saves right **after specific events** (first boss beaten, an item collected, a new area reached…),
    - an **advanced or 100 %** save if you have one.
