@@ -11,6 +11,8 @@ and remembers them on the SD card. A background module shows a popup when you un
 
 ![Achievement popup in Breath of the Wild](docs/popup-botw.jpg)
 
+**Want achievements for a game that isn't supported?** See [Making your own achievement list](docs/custom-achievements.md).
+
 **Download:** [latest release](https://github.com/Imp3r1us/TrophyNX/releases/latest) — unzip `TrophyNX-sd.zip`
 at the root of the SD card. Then update from the app with ZL.
 
@@ -203,6 +205,9 @@ Already-unlocked achievements never re-lock on their own. To replay a test, pres
 for unlocks again with the pop-up.
 
 ## Adding a game (JSON)
+
+> **Step-by-step guide:** [Making your own achievement list](docs/custom-achievements.md) — using a draft from
+> GitHub, finding a game's title ID and save files, play-time lists for any game, save-based rules, testing.
 
 Achievement sets are plain JSON, so you can add or tweak them without recompiling.
 Drop a file in `sdmc:/switch/TrophyNX/games/` named after the title ID:
