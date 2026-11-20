@@ -1,7 +1,7 @@
 # PC -> Switch: matches every Switch game with its Steam version, fetches achievement lists, drafts
 # definitions from console scans in samples/, and opens a pull request with the results. No AI involved.
-# Needs the repository secret STEAM_API_KEY (free key: https://steamcommunity.com/dev/apikey) and
-# Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
+# Needs Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
+# The secret STEAM_API_KEY is optional: without it, catalog.js uses Steam's public endpoints.
 name: PC to Switch
 on:
   workflow_dispatch:

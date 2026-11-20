@@ -31,7 +31,7 @@ if (fs.existsSync(dir)) {
     let s; try { s = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); } catch (e) { continue; }
     if (s && Array.isArray(s.achievements) && s.achievements.length) write(m[1], names.get(m[1]), s.achievements);
   }
-} else console.log('no cache at ' + dir + ' (run the "PC to Switch" workflow once with the STEAM_API_KEY secret)');
+} else console.log('no cache at ' + dir + ' (run the "PC to Switch" workflow once)');
 // 2. the lists kept in the repository (data/pc2switch/steam) always win: they are the reviewed ones
 const repo = path.join(ROOT, 'data', 'pc2switch', 'steam');
 if (fs.existsSync(repo)) for (const f of fs.readdirSync(repo)) {

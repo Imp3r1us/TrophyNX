@@ -12,8 +12,11 @@ Steam (app list, achievements) ┴─> catalog.js ──> data/pc2switch/ ──
 
 ## One-time setup
 
-1. Get a free Steam Web API key: <https://steamcommunity.com/dev/apikey> (any domain name works).
-2. GitHub repo → Settings → Secrets and variables → Actions → New repository secret: `STEAM_API_KEY`.
+1. *(Optional)* A Steam Web API key (<https://steamcommunity.com/dev/apikey>) as the repository secret `STEAM_API_KEY`.
+   **Not needed**: without it, achievement lists come from Steam's public `IPlayerService/GetGameAchievements`
+   endpoint (same idea as the Achievements app / Achievement Watcher) and the Steam app list from the public
+   `ISteamApps/GetAppList`, or the matches already in `catalog.json`. The key only speeds up the popularity step of `harvest.js`.
+2. *(skip)*
 3. Settings → Actions → General → tick **Allow GitHub Actions to create and approve pull requests**.
 4. Actions → **PC to Switch** → Run workflow. The first run fetches the Steam app list and up to 3,000
    achievement lists (raise `max_schemas` or let the weekly runs fill the rest; everything is cached).

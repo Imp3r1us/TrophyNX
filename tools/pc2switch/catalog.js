@@ -2,7 +2,11 @@
 // Builds the PC -> Switch catalogue: every Switch game (titledb) matched to its Steam version, with the
 // number of Steam achievements. No AI involved; Steam calls are cached so weekly runs only fetch what is new.
 //
-//   STEAM_API_KEY=... node tools/pc2switch/catalog.js [--max-schemas 3000] [--cache .pc2switch-cache]
+//   [STEAM_API_KEY=...] node tools/pc2switch/catalog.js [--max-schemas 3000] [--cache .pc2switch-cache]
+//
+// The Steam key is optional. Without it (same idea as the Achievements app by PSerban93 / Achievement Watcher):
+//   achievement lists  IPlayerService/GetGameAchievements, a public endpoint (names, descriptions, hidden flag)
+//   Steam app list     the legacy public ISteamApps/GetAppList, else the matches already in catalog.json
 //
 // Writes  data/pc2switch/catalog.json   compact list used by Save Lab and draft.js
 //         data/pc2switch/catalog.md     readable summary (opens nicely on GitHub mobile)
@@ -67,7 +71,15 @@ async function switchTitles() {
 async function steamApps() {
   const file = path.join(CACHE, 'steam_apps.json');
   if (fresh(file, 7 * DAY)) return readJson(file, []);
-  if (!KEY) { console.log('no STEAM_API_KEY: using cached Steam app list only'); return readJson(file, []); }
+  if (!KEY) {
+    try {
+      const r = await get('https://api.steampowered.com/ISteamApps/GetAppList/v2/', { tries: 2 });
+      const list = (r.body && r.body.applist && r.body.applist.apps) || [];
+      if (list.length) { const apps = list.filter(a => a.name).map(a => ({ appid: a.appid, name: a.name })); writeJson(file, apps); return apps; }
+    } catch (e) { console.log('public Steam app list unavailable: ' + e.message); }
+    console.log('no STEAM_API_KEY: using the cached Steam app list / the matches of catalog.json');
+    return readJson(file, []);
+  }
   const apps = [];
   let last = 0;
   for (;;) {
@@ -84,9 +96,10 @@ async function steamApps() {
 // Returns {n, achievements} from cache or Steam; null when it could not be fetched this run.
 async function schema(appid, budget) {
   const file = path.join(CACHE, 'schema', appid + '.json');
-  if (fresh(file, 90 * DAY)) return readJson(file, null);
-  if (budget.left <= 0) return readJson(file, null);
-  let achievements = null;
+  const cached = readJson(file, null);
+  if (cached && !cached.keyless && fresh(file, 90 * DAY)) return cached;   // names-only lists of old keyless runs are fetched again
+  if (budget.left <= 0) return cached;
+  let achievements = null, keyless = false;
   if (KEY) {
     const r = await get(`https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=${KEY}&appid=${appid}&l=english`);
     const g = r.body && r.body.game;
@@ -94,15 +107,28 @@ async function schema(appid, budget) {
       achievements = ((g && g.availableGameStats && g.availableGameStats.achievements) || [])
         .map(a => ({ name: a.name, displayName: a.displayName || '', description: a.description || '', hidden: a.hidden ? 1 : 0 }));
     }
-  } else {
-    // fallback without a key: API names only (no titles or descriptions), still enough to know a game has achievements
-    const r = await get(`https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}`);
-    const list = r.body && r.body.achievementpercentages && r.body.achievementpercentages.achievements;
-    achievements = (list || []).map(a => ({ name: a.name, displayName: '', description: '', hidden: 0 }));
+  }
+  if (!achievements) {
+    // no key (or the keyed call failed): public endpoint used by Steam's own pages, full names and descriptions
+    try {
+      const r = await get(`https://api.steampowered.com/IPlayerService/GetGameAchievements/v1/?appid=${appid}&language=english`, { tries: 2 });
+      const resp = r.body && r.body.response;
+      if (r.status === 200 && resp) achievements = (resp.achievements || [])
+        .map(a => ({ name: a.internal_name, displayName: a.localized_name || '', description: a.localized_desc || '', hidden: a.hidden ? 1 : 0 }))
+        .filter(a => a.name);
+    } catch (e) { }
+  }
+  if (!achievements && !KEY) {
+    // last resort: API names only (no titles or descriptions), still enough to know a game has achievements
+    try {
+      const r = await get(`https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}`, { tries: 2 });
+      const list = r.body && r.body.achievementpercentages && r.body.achievementpercentages.achievements;
+      if (list) { achievements = list.map(a => ({ name: a.name, displayName: '', description: '', hidden: 0 })); keyless = true; }
+    } catch (e) { }
   }
   budget.left--;
-  if (!achievements) return readJson(file, null);
-  const v = { appid, n: achievements.length, keyless: !KEY, achievements };
+  if (!achievements) return cached;
+  const v = { appid, n: achievements.length, keyless, achievements };
   writeJson(file, v);
   await sleep(60);
   return v;
@@ -140,7 +166,14 @@ async function main() {
   console.log('switch base titles: ' + titles.length);
   const apps = await steamApps();
   console.log('steam apps: ' + apps.length);
-  const matches = M.matchTitles(titles, apps);
+  let matches = M.matchTitles(titles, apps);
+  if (!apps.length) {
+    // no Steam app list this run (no key, public list unavailable): keep the matches of the last catalogue
+    const prev = readJson(path.join(OUT, 'catalog.json'), { games: [] }).games || [];
+    const known = new Set(titles.map(t => t.id));
+    matches = new Map(prev.filter(g => g.appid && known.has(g.id)).map(g => [g.id, { appid: g.appid, name: g.steam, how: g.how }]));
+    console.log('reusing ' + matches.size + ' matches from catalog.json');
+  }
   const titleById = new Map(titles.map(t => [t.id, t]));
   console.log('name matches: ' + matches.size);
   const { defs, scanned, pcKeys } = localState();

@@ -281,7 +281,7 @@ with a confidence for each one — no AI involved:
 
 1. **ZR** on the Overview writes `scan_bundle.json`: each game's save format and verdict (supported, draftable,
    text, binary, encrypted) plus copies of the readable saves.
-2. Upload it to `samples/` → the **PC to Switch** workflow (Steam key in the repo secrets) opens a pull request
+2. Upload it to `samples/` → the **PC to Switch** workflow (no Steam key needed) opens a pull request
    with drafts to review. Or do the same on the phone in Save Lab, tab 6.
 
 ## Building
