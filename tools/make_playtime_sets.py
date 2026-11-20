@@ -51,6 +51,9 @@ GAMES = [
     ("0100D870045B6000", "NES – Nintendo Switch Online", "party", "Press Start, 1985", ["8-Bit Session", "Retro Regular", "NES Archivist"]),
     ("0100DCA0064A6000", "Luigi's Mansion 3", "medium", "Last Resort Check-In", ["Bellhop", "Floor Clearer", "Hotel Manager"]),
     ("0100F43008C44000", "Pokémon Legends: Z-A", "long", "Lumiose Arrival", ["Wild Zone Rookie", "Mega Evolution", "Lumiose Legend"]),
+    ("0100535012974000", "Hades", "party", "Blood and Darkness", ["Escape Attempt", "Regular of the Lounge", "Godslayer"]),
+    ("0100A0D022A68000", "DELTARUNE", "medium", "Back to Hometown", ["Lightner", "Dark Fountain Sealer", "Prophecy Keeper"]),
+    ("010023800D64A000", "DELTARUNE Chapter 1&2", "short", "Into the Dark World", ["Field of Hopes and Dreams", "Card Kingdom Guest", "Cyber City Explorer"]),
     ("0100FCF002A58000", "Ultimate Chicken Horse", "party", "Party Box Opened", ["Platform Builder", "Trap Master", "Ultimate Chicken"]),
 ]
 

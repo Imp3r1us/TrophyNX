@@ -1,0 +1,48 @@
+{
+ "title_id": "010023800D64A000",
+ "name": "DELTARUNE Chapter 1&2",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Into the Dark World",
+   "desc": "Launch DELTARUNE Chapter 1&2 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Field of Hopes and Dreams",
+   "desc": "Play DELTARUNE Chapter 1&2 for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_4",
+   "name": "Card Kingdom Guest",
+   "desc": "Play DELTARUNE Chapter 1&2 for 4 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 4
+   }
+  },
+  {
+   "id": "t_hours_8",
+   "name": "Cyber City Explorer",
+   "desc": "Play DELTARUNE Chapter 1&2 for 8 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 8
+   }
+  }
+ ]
+}
