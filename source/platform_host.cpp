@@ -162,4 +162,6 @@ void plat::sleepMs(int) {}
 bool plat::netInit(std::string&) { return true; }
 std::string plat::localIp() { return "127.0.0.1"; }
 void plat::keepAwake(bool) {}
+void plat::releaseSelfFile() {}
+uint64_t plat::liveModulePid() { return 0; }
 #endif

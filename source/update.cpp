@@ -211,20 +211,45 @@ bool applyUpdate(const UpdateInfo& info, plat::ProgressFn progress, void* ctx, s
         }
         dp.doneKb += u->size >> 10;
     }
-    // 2. swap them in (the running .nro is already in memory: replacing the file is safe)
-    std::string failed;
+    // 2. swap them in. The running .nro stays open while romfs is mounted (and an open file can't be
+    //    deleted on the Switch): release it first. The app has to restart afterwards anyway.
+    if (info.appChanged) plat::releaseSelfFile();
+    std::string failed, log;
     for (const UpdateFile* u : todo) {
-        std::string tmp = u->local + ".new";
-        remove(u->local.c_str());
-        if (rename(tmp.c_str(), u->local.c_str()) != 0) failed += (failed.empty() ? "" : ", ") + u->path;
+        std::string tmp = u->local + ".new", old = u->local + ".old";
+        remove(old.c_str());
+        bool had = pathExists(u->local);
+        if (had && rename(u->local.c_str(), old.c_str()) != 0 && remove(u->local.c_str()) != 0) {
+            failed += (failed.empty() ? "" : ", ") + u->path;
+            log += "  " + u->local + ": in use, could not be replaced\n";
+            continue;
+        }
+        if (rename(tmp.c_str(), u->local.c_str()) != 0) {
+            if (had) rename(old.c_str(), u->local.c_str());   // put the old one back
+            failed += (failed.empty() ? "" : ", ") + u->path;
+            log += "  " + u->local + ": rename failed\n";
+            continue;
+        }
+        remove(old.c_str());
+        uint64_t have = 0;
+        bool good = sha256File(u->local, &have) == u->sha256 && have == u->size;
+        log += "  " + u->local + (good ? ": updated\n" : ": CHECK FAILED after the swap\n");
+        if (!good) failed += (failed.empty() ? "" : ", ") + u->path;
     }
-    if (!failed.empty()) { summary = "Could not replace " + failed + "\n(the new version was left next to it as .new)."; return false; }
+    // the live module is restarted even if another file failed: its new file may already be in place
+    std::string modMsg;
+    if (info.moduleChanged && failed.find("exefs.nsp") == std::string::npos) {
+        plat::restartLiveModule(modMsg);
+        log += "  live module: " + modMsg + "\n";
+    }
+    writeFile(plat::dataDir() + "/update_log.txt", "Update from " + info.source + " (app " + info.appVersion + ", module " + info.moduleVersion + ")\n" + log);
+    if (!failed.empty()) {
+        summary = "Could not replace " + failed + "\n(a new version left as .new is installed by the live module at the next reboot)." +
+                  (modMsg.empty() ? "" : "\n" + modMsg);
+        return false;
+    }
     summary = std::to_string(todo.size()) + (todo.size() == 1 ? " file" : " files") + " updated";
-    if (info.moduleChanged) {
-        std::string msg;
-        plat::restartLiveModule(msg);
-        summary += "; " + msg;
-    }
+    if (!modMsg.empty()) summary += "; " + modMsg;
     summary += ".";
     return true;
 }

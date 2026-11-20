@@ -203,6 +203,7 @@ sdmc:/switch/TrophyNX/
   universal.json                optional: replace the play-time achievements
   definition_errors.txt         written only if one of your JSON files has a problem
   log.txt                       full report of the last scan (same content as the X debug view)
+  update_log.txt                last in-app update: each file replaced (or why not) and the live module restart
   scan_bundle.json              written by ZR: save formats + copies of readable saves (upload for drafts)
   scan_report.txt               written by ZR: the same verdicts in plain text
   captures/settings.json        games recorded on close (ZR on a game, then A) and how many captures to keep
