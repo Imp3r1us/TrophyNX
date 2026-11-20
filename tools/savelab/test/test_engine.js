@@ -203,6 +203,12 @@ ok(!E.identify(rnd).analyzable, 'random data flagged as encrypted/compressed');
     ok(['g', 'm', 'd', 'maps'].every(id => r2.find(x => x.id === id).met) && !r2.find(x => x.id === 'miss').met, 'best slot wins, missing path not met');
     ok(r2.find(x => x.id === 'miss').note.includes('not found'), 'missing JSON path reported');
   }
+  // ZIP writer (captures from the Switch) round-trips through the reader
+  {
+    const files = [{ path: '20261120-170000/slot_00/progress.sav', data: new Uint8Array([1, 2, 3, 250]) }, { path: 'café/é.txt', data: new Uint8Array(70000).fill(7) }];
+    const back = await E.unzip(E.zipStore(files));
+    ok(back.length === 2 && back[0].path === files[0].path && back[0].data.join() === '1,2,3,250' && back[1].path === 'café/é.txt' && back[1].data.length === 70000, 'zipStore -> unzip');
+  }
   // perf: Smash-sized diff
   const big = [0, 1, 2].map(i => { const b = new Uint8Array(5982968); b[0x53FF40 + i * 8] = 1; b[1000] = i; return b; });
   const t = Date.now(); const bd = E.diffBinary(big); ok(bd.total >= 2 && Date.now() - t < 3000, 'diff 6 MB x3 in ' + (Date.now() - t) + ' ms');

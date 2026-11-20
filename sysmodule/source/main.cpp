@@ -19,9 +19,10 @@
 #include "botw_json.h"
 #include "saveprobe.h"
 #include "closescan.h"
+#include "capture.h"
 #include "store.h"
 
-#define MODULE_VERSION "0.6.0"
+#define MODULE_VERSION "0.7.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -268,7 +269,7 @@ int main(int, char**) {
     scanner.setWanted(wanted);
     DmntReader mem;
 
-    u64 curPid = 0, curTid = 0, startedAt = 0;
+    u64 curPid = 0, curTid = 0;
     bool watching = false, ready = false;
     u64 seenAt = 0, lastScan = 0, lastEval = 0;
     int attempts = 0, probes = 0;
@@ -276,13 +277,17 @@ int main(int, char**) {
     std::string user;
     // scan on close: the save of the game that just closed is read a few seconds later
     u64 closedTid = 0, closedAt = 0;
-    int closedTries = 0;
+    int closedTries = 0, closedMinutes = 0;
+    bool closedCaptured = false;
     AccountUid closedUid = {};
+    u64 startedAt = 0;
     auto gameEnded = [&](u64 tid, u64 when) {
         if (!tid) return;
         AccountUid uid = {};
         if (lastUser(&uid).empty()) { logf("close scan: no user"); return; }
         closedTid = tid; closedUid = uid; closedAt = when + 3; closedTries = 0;
+        closedMinutes = startedAt && when > startedAt ? (int)((when - startedAt + 30) / 60) : 0;
+        closedCaptured = false;
     };
     char prefix[24];
     snprintf(prefix, sizeof(prefix), "%016llX/", (unsigned long long)BOTW_ID);
@@ -294,8 +299,14 @@ int main(int, char**) {
         u64 pid = 0;
         bool running = R_SUCCEEDED(pmdmntGetApplicationProcessId(&pid)) && pid != 0;
         if (closedTid && now >= closedAt && popupIdle()) {   // after any popup: its buffers share the heap
-            CloseScanResult r = closeScan(closedTid, closedUid, logf);
-            if (r == CS_LOCKED && ++closedTries < 4) closedAt = now + 5;   // save still in use: try again
+            // 1) save capture (games the player records, see captures.h), 2) scan on close
+            bool locked = false;
+            if (!closedCaptured) {
+                if (captureOnClose(closedTid, closedUid, closedMinutes, logf) == CAPSTEP_LOCKED) locked = true;
+                else closedCaptured = true;
+            }
+            if (!locked) locked = closeScan(closedTid, closedUid, logf) == CS_LOCKED;
+            if (locked && ++closedTries < 4) closedAt = now + 5;   // save still in use: try again
             else closedTid = 0;
         }
         if (!running) {

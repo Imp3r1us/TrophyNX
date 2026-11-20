@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
         evaluateSave(st, b);
         evaluateSave(tiny, c);
         games++;
-        bool tree = kv.second.reader == "json" || kv.second.reader == "byml" || kv.second.reader == "gvas" || kv.second.reader == "nrbf";
+        bool tree = kv.second.reader == "json" || kv.second.reader == "byml" || kv.second.reader == "gvas" || kv.second.reader == "nrbf" || kv.second.reader == "sgb";
         for (size_t i = 0; i < full.achs.size(); i++) {
             if (!isSaveRule(full.achs[i].rule.type)) continue;
             compared++;

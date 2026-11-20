@@ -124,6 +124,28 @@ async function unzip(buf) {
   }
   return files;
 }
+// Stored (uncompressed) ZIP writer: captures from the Switch, to share them (GitHub issue, chat...).
+// files: [{path, data:Uint8Array}] -> Uint8Array. UTF-8 names (flag bit 11), fixed DOS date.
+function zipStore(files) {
+  const parts = [], central = [];
+  let off = 0;
+  const u16 = (v) => [v & 0xFF, (v >>> 8) & 0xFF], u32 = (v) => [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF];
+  const DOS_TIME = 0, DOS_DATE = ((2026 - 1980) << 9) | (1 << 5) | 1;
+  for (const f of files) {
+    const name = enc.encode(f.path), crc = crc32(f.data), n = f.data.length;
+    const head = [0x50, 0x4b, 3, 4, ...u16(20), ...u16(0x800), ...u16(0), ...u16(DOS_TIME), ...u16(DOS_DATE), ...u32(crc), ...u32(n), ...u32(n), ...u16(name.length), ...u16(0)];
+    parts.push(new Uint8Array(head), name, f.data);
+    central.push(new Uint8Array([0x50, 0x4b, 1, 2, ...u16(20), ...u16(20), ...u16(0x800), ...u16(0), ...u16(DOS_TIME), ...u16(DOS_DATE), ...u32(crc), ...u32(n), ...u32(n),
+      ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), name);
+    off += head.length + name.length + n;
+  }
+  const cdSize = central.reduce((a, b) => a + b.length, 0);
+  const end = new Uint8Array([0x50, 0x4b, 5, 6, ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(off), ...u16(0)]);
+  const all = [...parts, ...central, end], out = new Uint8Array(all.reduce((a, b) => a + b.length, 0));
+  let p = 0;
+  for (const a of all) { out.set(a, p); p += a.length; }
+  return out;
+}
 // Strip the common leading folder ("JKSV/Game/2026-11-18/...") so paths match the app's save_files.
 function stripCommonPrefix(files) {
   if (files.length < 1) return files;
@@ -218,6 +240,15 @@ function identify(buf, path = '') {
       r.known = 'json'; r.reader = 'json'; r.format = T('JSON document (text)', 'Document JSON (texte)');
       notes.push(T('Plain-text JSON save (Unity games, e.g. Hollow Knight): values are identified by their path (e.g. playerData/grubsCollected). App reader “json”.', 'Sauvegarde en texte JSON (jeux Unity, ex. Hollow Knight) : les valeurs sont identifiées par leur chemin (ex. playerData/grubsCollected). Lecteur « json » de l\'app.'));
     }
+  }
+  if (!bh && !r.known && F.isSgb(buf)) {
+    r.known = r.reader = 'sgb';
+    try {
+      const d = F.parseSgb(buf);
+      r.meta = d.meta;
+      r.format = T('Supergiant save (SGB1 v', 'Sauvegarde Supergiant (SGB1 v') + d.meta.version + ', ' + d.meta.runs + T(' runs)', ' parties)');
+      notes.push(T('Hades save: the game\'s Lua state (LZ4 + luabins), values identified by path (e.g. GameState/QuestStatus/WeaponClears). App reader “sgb”.', 'Sauvegarde Hades : l\'état Lua du jeu (LZ4 + luabins), valeurs identifiées par chemin (ex. GameState/QuestStatus/WeaponClears). Lecteur « sgb » de l\'app.'));
+    } catch (e) { r.treeError = e.message; r.format = T('Supergiant save (SGB1) unreadable: ', 'Sauvegarde Supergiant (SGB1) illisible : ') + e.message; }
   }
   if (!bh && !r.known && (F.isGvas(buf) || F.isNrbf(buf))) {
     const gv = F.isGvas(buf);
@@ -424,6 +455,7 @@ const TREE_FORMATS = [
   { reader: 'byml', label: 'BYML', parse: parseByml },
   { reader: 'gvas', label: 'GVAS (Unreal)', parse: (b) => F.parseGvas(b) },
   { reader: 'nrbf', label: 'NRBF (.NET / Unity)', parse: (b) => F.parseNrbf(b) },
+  { reader: 'sgb', label: 'Supergiant SGB1 (Hades)', parse: (b) => F.parseSgb(b) },
   { reader: 'json', label: 'JSON', parse: parseJson },
 ];
 const TREE_READERS = TREE_FORMATS.map(f => f.reader);
@@ -485,8 +517,9 @@ function queryByml(tree, path) {
     if (i === atoms.length) { out.push(n); return; }
     const a = atoms[i];
     if (a[0] !== '[') { if (isObj(n) && a in n) walk(n[a], i + 1); return; }
-    if (!Array.isArray(n)) return;
     const sel = a.slice(1, -1);
+    if (sel === '*' && isObj(n)) { Object.values(n).forEach(c => walk(c, i + 1)); return; }   // every value of an object (Lua tables, dictionaries)
+    if (!Array.isArray(n)) return;
     if (sel === '*') { n.forEach(c => walk(c, i + 1)); return; }
     const eq = sel.indexOf('=');
     if (eq < 0) { if (/^\d+$/.test(sel) && +sel < n.length) walk(n[+sel], i + 1); return; }
@@ -1103,7 +1136,7 @@ function validate(def) {
       const tree = TREE_READERS.includes(def.reader);
       if (tree && !hasPath) errs.push(a.id + T(': the ', ' : le lecteur ') + def.reader + T(' reader uses paths (path / paths)', ' utilise des chemins (path / paths)'));
       if (!tree && hasPath) errs.push(a.id + T(': path/paths only work with the readers ', ' : path/paths ne servent qu\'aux lecteurs ') + TREE_READERS.join(', '));
-      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^[^[\]/]+(\[[^\]]*\])*(\/[^[\]/]*(\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + T(': malformed path “', ' : chemin mal formé « ') + pp + T('”', ' »'));
+      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^(?:[^[\]/]+(?:\[[^\]]*\])*|(?:\[[^\]]*\])+)(?:\/[^[\]/]*(?:\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + T(': malformed path “', ' : chemin mal formé « ') + pp + T('”', ' »'));
       if (def.reader === 'binary_le' && (r.name || r.hash || r.names || r.pattern)) errs.push(a.id + T(': the binary_le reader only uses offsets', ' : le lecteur binary_le n\'utilise que des offsets'));
       if (def.reader !== 'binary_le' && !TREE_READERS.includes(def.reader) && (r.offset !== undefined || r.offsets)) errs.push(a.id + T(': this reader only uses hashes/names', ' : ce lecteur n\'utilise que des hashes/noms'));
       if (!def.reader) errs.push(a.id + T(': save rule but no reader chosen', ' : règle de sauvegarde mais aucun lecteur (reader) choisi'));
@@ -1113,7 +1146,7 @@ function validate(def) {
   return errs;
 }
 
-const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, stripCommonPrefix, identify,
+const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, zipStore, stripCommonPrefix, identify,
   parseHashTable, classify, KIND_LABEL, diffBinary, diffHash, searchValue, searchValueHash, extendSeries,
   matchDictionary, evaluate, validate, autoAchievements, findByml, parseByml, parseJson, parseTree, TREE_READERS, TREE_FORMATS, treeFormat, parseGvas: F.parseGvas, parseNrbf: F.parseNrbf, flattenByml, queryByml, diffByml, searchValueByml, bymlGroupRule, bymlRuleValue, patternOf, findFlagGroups, findHashGroups, niceNum, niceBelow, compileRule, cFormat, extractStrings, detectHashTable };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;

@@ -1,9 +1,768 @@
 {
  "title_id": "010097F018538000",
  "name": "DAVE THE DIVER",
- "reader": "",
- "save_files": [],
+ "reader": "json",
+ "xor_key": "GameData",
+ "save_files": [
+  "GameSave_00_GD",
+  "GameSave_01_GD",
+  "GameSave_02_GD"
+ ],
+ "_note": "Steam achievements. Most are read from the game's own record of cleared achievements (AchieveUserData/CleaedAchieveTIDs, ids = Steam API names); on Switch it does not hold every story achievement, so some may only unlock if the game records them. Counters (AchieveKeyToCount) used where they exist.",
  "achievements": [
+  {
+   "id": "achievement_14130001",
+   "name": "Bancho Sushi is Back!",
+   "desc": "Fixed the Sushi Restaurant.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130001"
+   }
+  },
+  {
+   "id": "achievement_14130002",
+   "name": "Undersea Gunslinger",
+   "desc": "Completed the gun tutorial.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130002"
+   }
+  },
+  {
+   "id": "achievement_14130003",
+   "name": "New Undersea Friend",
+   "desc": "Completed the Dolphin's request.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130003"
+   }
+  },
+  {
+   "id": "achievement_14130004",
+   "name": "Better Equipment",
+   "desc": "Made first equipment upgrade.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130004"
+   }
+  },
+  {
+   "id": "achievement_14130005",
+   "name": "Undersea Civilization!",
+   "desc": "Discovered the under-sea village.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130005"
+   }
+  },
+  {
+   "id": "achievement_14130006",
+   "name": "Deep-sea Diver",
+   "desc": "Entered the Deep Sea for the first time.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130006"
+   }
+  },
+  {
+   "id": "achievement_14130009",
+   "name": "Culinary Researcher",
+   "desc": "Researched 5 new dishes at Bancho Sushi.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/AchieveKeyToCount/Timeline_RecipeResearch_Anim",
+    "target": 5
+   }
+  },
+  {
+   "id": "achievement_14130010",
+   "name": "Culinary Master",
+   "desc": "Enhanced 5 dishes at Bancho Sushi.",
+   "points": 25,
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "AchieveUserData/AchieveKeyToCount/Timeline_RecipeEnhanced_Anim",
+     "AchieveUserData/AchieveKeyToCount/Timeline_RecipeEnhanced_Anim01",
+     "AchieveUserData/AchieveKeyToCount/Timeline_RecipeEnhanced_Anim02",
+     "AchieveUserData/AchieveKeyToCount/Timeline_RecipeEnhanced_Anim03",
+     "AchieveUserData/AchieveKeyToCount/Timeline_RecipeEnhanced_Anim04"
+    ],
+    "target": 5
+   }
+  },
+  {
+   "id": "achievement_14130011",
+   "name": "Shop's Lookin' Good!",
+   "desc": "Bought First Interior Item.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130011"
+   }
+  },
+  {
+   "id": "achievement_14130012",
+   "name": "Influencer",
+   "desc": "Reached Bronze Level in Cooksta.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130012"
+   }
+  },
+  {
+   "id": "rootingitems_gtid_1",
+   "name": "Scrap Metal Collector",
+   "desc": "Picked up 100 items at the Blue Hole.",
+   "points": 25,
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011006",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011010",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011023",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011018",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014018",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1017102",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016007",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1017103",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1015002",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014014",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011022",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018002",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011007",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011002",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014006",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011019",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011017",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011031",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016001",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1015005",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014009",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1017104",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011029",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016002",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014007",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014020",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018001",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011020",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011016",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011114",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018011",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014005",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016003",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014001",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010001",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1013004",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014002",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011115",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014011",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014010",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011015",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011027",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018005",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014013",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011013",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018521",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014015",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011012",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1017101",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011129",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1012025",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018523",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018004",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011110",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010004",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010005",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010003",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018535",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018531",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011109",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011121",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014901",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011111",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011113",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011008",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011004",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011105",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014903",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011108",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011102",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011103",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011118",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016008",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014004",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011116",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011003",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011123",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014003",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018020",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010007",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011202",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1015001",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011214",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016951",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016010",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014016",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011219",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018013",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014017",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011217",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016009",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011038",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1015004",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011112",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018537",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014902",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010008",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011218",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018541",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018553",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018554",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018555",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1015006",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010009",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011222",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011220",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011205",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011107",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018007",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010010",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010011",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011211",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011005",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011106",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014021",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018017",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1016952",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1014905",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011208",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018901",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018012",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011215",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1017106",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011037",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018545",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011039",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011028",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011101",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011131",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011709",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011720",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018003",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011712",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011032",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011714",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011212",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011201",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011708",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011713",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011722",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011724",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011723",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1019003",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011721",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011710",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010013",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011060",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018904",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018022",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011711",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018533",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010012",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018539",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010014",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011717",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018903",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018023",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011706",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018902",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018021",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010015",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011138",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010016",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1010017",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011715",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018575",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1018527",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011014",
+     "AchieveUserData/AchieveKeyToCount/RootingItem_1011718"
+    ],
+    "target": 100
+   }
+  },
+  {
+   "id": "killfishes_gtid_2",
+   "name": "Angry Shark!",
+   "desc": "Caught first shark.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130014"
+   }
+  },
+  {
+   "id": "killingcount_bygtidweapons_3",
+   "name": "Dave the Sniper",
+   "desc": "Caught 10 fish with a Sniper Rifle.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130015"
+   }
+  },
+  {
+   "id": "closecombatexpert_0",
+   "name": "Mister Melee",
+   "desc": "Caught 20 fish with melee weapons.",
+   "points": 10,
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "AchieveUserData/AchieveKeyToCount/CloseCombatExpert_3014001",
+     "AchieveUserData/AchieveKeyToCount/CloseCombatExpert_3014031",
+     "AchieveUserData/AchieveKeyToCount/CloseCombatExpert_3014061",
+     "AchieveUserData/AchieveKeyToCount/CloseCombatExpert_3014071",
+     "AchieveUserData/AchieveKeyToCount/CloseCombatExpert_3014003",
+     "AchieveUserData/AchieveKeyToCount/CloseCombatExpert_3014051"
+    ],
+    "target": 20
+   }
+  },
+  {
+   "id": "playerdeadcnt_0",
+   "name": "Saved Dave!",
+   "desc": "First time bringing Dave back from the brink of death.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/AchieveKeyToCount/PlayerDeadCnt",
+    "target": 1
+   }
+  },
+  {
+   "id": "achievement_14130018",
+   "name": "A Dark and Cold Place",
+   "desc": "Discovered the Glacial Passage.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130018"
+   }
+  },
+  {
+   "id": "achievement_14130019",
+   "name": "Momo's Secret",
+   "desc": "Got to know Momo a little better.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130019"
+   }
+  },
+  {
+   "id": "achievement_14130020",
+   "name": "Achoo!",
+   "desc": "Entered the Glacial Area for the first time.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130020"
+   }
+  },
+  {
+   "id": "achievement_14130021",
+   "name": "A Peaceful Blue Hole",
+   "desc": "Watched the ending credits.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130021"
+   }
+  },
+  {
+   "id": "achievement_14130022",
+   "name": "Dumplings in the Water",
+   "desc": "Mima's restaurant opened.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130022"
+   }
+  },
+  {
+   "id": "achievement_14130023",
+   "name": "The Seaweed is Growing!",
+   "desc": "Gumo's seaweed farm opened.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130023"
+   }
+  },
+  {
+   "id": "achievement_14130024",
+   "name": "Feeble Blacksmith",
+   "desc": "Duwa's workshop opened.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130024"
+   }
+  },
+  {
+   "id": "achievement_14130025",
+   "name": "Weapon Collector",
+   "desc": "Collected all the blueprints.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130025"
+   }
+  },
+  {
+   "id": "achievement_14130026",
+   "name": "Arms Craftsman",
+   "desc": "Enhanced gun 3 times.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/AchieveKeyToCount/EnhancedWeapons",
+    "target": 3
+   }
+  },
+  {
+   "id": "achievement_14130027",
+   "name": "Sea People Historian",
+   "desc": "Captured all of the Sea People murals.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130027"
+   }
+  },
+  {
+   "id": "achievement_14130028",
+   "name": "Predator of the Blue Hole",
+   "desc": "Caught 300 fish at the Blue Hole.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130028"
+   }
+  },
+  {
+   "id": "achievement_14130029",
+   "name": "Ration Eater",
+   "desc": "Ration Eater",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130029"
+   },
+   "hidden": true
+  },
+  {
+   "id": "achievement_14130030",
+   "name": "Catman",
+   "desc": "Fed cat 20 times.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130030"
+   }
+  },
+  {
+   "id": "achievement_14130031",
+   "name": "Blacksmith Helper",
+   "desc": "Sold 200 items at workshop.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130031"
+   }
+  },
+  {
+   "id": "achievement_14130032",
+   "name": "Professional Farmer",
+   "desc": "Installed sprinklers in the garden.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130032"
+   }
+  },
+  {
+   "id": "achievement_14130034",
+   "name": "GYAO! Master",
+   "desc": "Raised 5 GYAO!s.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130034"
+   }
+  },
+  {
+   "id": "achievement_14130035",
+   "name": "Photographer",
+   "desc": "Took 10 photos at Photo Spots in the Blue Hole.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130035"
+   }
+  },
+  {
+   "id": "achievement_14130036",
+   "name": "Strange Fish",
+   "desc": "Captured 5 FishMon.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130036"
+   }
+  },
+  {
+   "id": "achievement_14130037",
+   "name": "Dev Killer",
+   "desc": "Dev Killer",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130037"
+   },
+   "hidden": true
+  },
+  {
+   "id": "achievement_14130038",
+   "name": "Creature Hunter",
+   "desc": "Creature Hunter",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130038"
+   },
+   "hidden": true
+  },
+  {
+   "id": "achievement_14130039",
+   "name": "My Wonderful Rice Field!",
+   "desc": "Rice field expanded to maximum.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130039"
+   }
+  },
+  {
+   "id": "achievement_14130040",
+   "name": "My Wonderful Field!",
+   "desc": "Vegetable farm expanded to maximum.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130040"
+   }
+  },
+  {
+   "id": "achievement_14130041",
+   "name": "God of Lightning",
+   "desc": "God of Lightning",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130041"
+   },
+   "hidden": true
+  },
+  {
+   "id": "achievement_14130042",
+   "name": "A Bancho Sushi Regular",
+   "desc": "Achieved Platinum rank in Cooksta.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130042"
+   }
+  },
+  {
+   "id": "achievement_14130043",
+   "name": "Leadership",
+   "desc": "Trained an employee to level 20.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130043"
+   }
+  },
+  {
+   "id": "achievement_14130044",
+   "name": "Cooksta Influencer",
+   "desc": "Achieved Diamond rank in Cooksta.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130044"
+   }
+  },
+  {
+   "id": "achievement_14130045",
+   "name": "Artisan's Flame",
+   "desc": "Researched 30 new dishes at Bancho Sushi.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130045"
+   }
+  },
+  {
+   "id": "achievement_14130046",
+   "name": "Manager",
+   "desc": "Bancho Sushi formed a branch restaurant.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14130046"
+   }
+  },
+  {
+   "id": "achievement_14230001",
+   "name": "Welcome to the Jungle",
+   "desc": "Arrived at Utara Village.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230001"
+   }
+  },
+  {
+   "id": "achievement_14230003",
+   "name": "Guardian of the Jungle",
+   "desc": "Watched the In The Jungle DLC ending.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230003"
+   }
+  },
+  {
+   "id": "achievement_14230004",
+   "name": "Beetle Battler",
+   "desc": "Won 3 Beetle Battles.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230004"
+   }
+  },
+  {
+   "id": "achievement_14230005",
+   "name": "King of Beetles",
+   "desc": "Caught two giant insects.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230005"
+   }
+  },
+  {
+   "id": "achievement_14230006",
+   "name": "Sharpshooter",
+   "desc": "Achieved S rank in all shooting range tiers.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230006"
+   }
+  },
+  {
+   "id": "achievement_14230007",
+   "name": "Jungle Hotspot",
+   "desc": "Reached the top rank at Bancho Grill.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230007"
+   }
+  },
+  {
+   "id": "achievement_14230008",
+   "name": "Friend of the Village",
+   "desc": "Became close with 5 Utara villagers.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230008"
+   }
+  },
+  {
+   "id": "achievement_14230009",
+   "name": "Environmental Protection",
+   "desc": "Purified Utara Lake.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230009"
+   }
+  },
+  {
+   "id": "achievement_14230010",
+   "name": "Foraging Master",
+   "desc": "Foraged land ingredients 100 times.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230010"
+   }
+  },
+  {
+   "id": "achievement_14230011",
+   "name": "Dave the Archaeologist",
+   "desc": "Perfectly restored the Unihornus fossil.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230011"
+   }
+  },
+  {
+   "id": "achievement_14230012",
+   "name": "Rafflesia",
+   "desc": "Bloomed a flower at Marinca Bloom.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230012"
+   }
+  },
+  {
+   "id": "achievement_14230013",
+   "name": "Power of the Jungle Gun",
+   "desc": "Fully upgraded one Jungle Gun type.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230013"
+   }
+  },
+  {
+   "id": "achievement_14230014",
+   "name": "Tyrant of the Lake",
+   "desc": "Defeated Sulong, the giant crocodile.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "AchieveUserData/CleaedAchieveTIDs/14230014"
+   }
+  },
   {
    "id": "t_launch",
    "name": "Dive Shift",

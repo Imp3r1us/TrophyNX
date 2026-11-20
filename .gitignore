@@ -29,3 +29,6 @@ sysmodule/data/games.bin
 
 # your console scan (ZR): personal (user id, copies of your saves) - keep it out of a public repo
 samples/scan_bundle.json
+
+# copied from tools/savelab/index.html at build time (Wi-Fi share screen)
+romfs/savelab.html

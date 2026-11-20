@@ -27,13 +27,19 @@ at the root of the SD card. Then update from the app with ZL.
 | Play statistics (system play log) | **every installed game** | first launch, 10/50/100 hours, 25 launches |
 | Global | your whole library | play 5/20/50 games, 100/500/1000 hours, unlock 25/100 achievements |
 | Save file | **Zelda: Breath of the Wild** (33) | first minutes (Old Shirt, Sheikah Slate, leaving the cave), shrines, Divine Beasts, Master Sword, Ganon, Koroks, hearts, stamina, Lynels... |
-| Play log, themed | **36 more games** (Persona 5 Royal, Hades, DELTARUNE, Metroid Dread...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
+| Play log, themed | **29 more games** (Persona 5 Royal, DELTARUNE, Metroid Dread...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
 | Save file | **Super Smash Bros. Ultimate** (23 + 4 play-time) | fighters unlocked, KOs, Classic Mode, World of Light, spirits, online, Elite Smash... |
 | Save file | **Mario Kart 8 Deluxe** (17 + 4 play-time) | coins, drifts, mini-turbos, online races/wins, VR, battles (offsets not yet confirmed on a current save) |
 | Save file | **Zelda: Tears of the Kingdom** (37) | shrines, Skyview Towers, Lightroots, Koroks, caves, wells, Bubbulfrogs, Gleeoks... |
 | Save file | **Super Mario Odyssey** (59 + 4 play-time) | Power Moons, captures, each kingdom visited, kingdom stories cleared, regional coins, outfits/hats, souvenirs, checkpoints, music, jump/cap-throw counts, Jaxi, Toadette's achievements... |
 | Save file | **Hollow Knight** (56 + 4 play-time) | charms, masks, soul vessels, every boss and dream boss, Dreamers, essence, grubs, stags, maps, Hunter's Journal, Colosseum, Grimm Troupe, pantheons, 112%... |
 | Save file | **SIGNALIS** (13 + 4 play-time) | the game's own 13 achievements, with their original names (3 endings hidden) |
+| Save file | **Hades** (41 + 4 play-time) | 38 of the 49 Steam achievements, from the game's own conditions: escapes, prophecies, keepsakes, companions, aspects, Mirror, Codex, Skelly, fishing... + escape-attempt milestones |
+| Save file | **DAVE THE DIVER** (56 + 4 play-time) | the 56 Steam achievements, from the game's own record and counters |
+| Save file | **Blasphemous** (45 + 4 play-time) | the 45 Steam achievements, from the game's own achievement tracker |
+| Save file | **Slay the Spire** (46 + 4), **Vampire Survivors** (243 + 4), **Vampire Crawlers** (161 + 4) | every Steam achievement, from the game's own record |
+| Save file | **OCTOPATH TRAVELER** (22) | travelers, levels, story chapters, chests, side stories, enemy weaknesses |
+| Save file | **Paper Mario: The Origami King** (22 + 4 play-time) | coins, battles, enemies, Excellent hits, ring puzzles, museum... |
 
 Unlocks are permanent: if you later delete or overwrite a save, what you unlocked stays unlocked.
 When a game has several save slots, the best slot counts.
@@ -101,6 +107,25 @@ Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come fro
 - Report of the last scan on close: `sdmc:/switch/TrophyNX/close_log.txt`; one summary line per scan in
   `live_log.txt` (`close scan: <game> - save read in 120 ms, 12/37 met, 2 new`).
 
+### Save captures (record a game, share over Wi-Fi)
+
+To make achievements for a game, the Save Lab compares saves taken at different moments. TrophyNX can take them for you:
+
+1. In the app, select the game and press **ZR**, then **A**: recording is on for that game.
+2. Play. Each time you **close** the game (HOME, then X), the live module copies its whole save to
+   `sdmc:/switch/TrophyNX/captures/<TITLEID>/<date-time>/` (with the length of the session that just ended).
+   A running game keeps its save locked, so closing it is the moment a copy can be taken: close it after each step
+   worth comparing (a boss, a new item, a chapter). A save that didn't change since the last capture is not kept twice;
+   the last 20 captures per game are kept (`"keep"` in `captures/settings.json`, up to 200); saves above 128 MB are skipped.
+3. Back in the app, **ZR** on the game, then **Y** (*Share over Wi-Fi*): the screen shows an address such as
+   `http://192.168.1.20:8080`. Open it on your phone or computer, on the same Wi-Fi: the Switch serves the Save Lab
+   itself, with a **From your Switch** panel listing the captures. Pick some, **Load**, then ⚡ Auto or Differences.
+   **Download .zip** packs the selected captures, to attach them to a [Save batch issue](https://github.com/Imp3r1us/TrophyNX/issues/new?template=save-batch.yml).
+
+The share server is read-only, only serves the capture folders, and runs only while that screen is open
+(the console doesn't go to sleep meanwhile). B stops it. In the panel, − twice deletes the game's captures.
+Log lines: `capture: ...` in `live_log.txt`.
+
 ### Popups
 
 The module draws the popup itself, on its own small display layer above the game (like Tesla/Ultrahand
@@ -160,6 +185,7 @@ they are mounted with the system's read-only save API.
 | A or Right | Open a game's achievements |
 | B or Left | Back to the game list |
 | L / R | Page up / down |
+| ZR (on a game) | Save captures: record the game's save each time it closes, share captures over Wi-Fi |
 | ZR (on Overview) | Compatibility scan: checks every game's save format and writes `scan_bundle.json` (see PC → Switch) |
 | Y | Rescan saves (after playing) |
 | X | Debug view for the selected game (what was read, values, errors) |
@@ -179,6 +205,8 @@ sdmc:/switch/TrophyNX/
   log.txt                       full report of the last scan (same content as the X debug view)
   scan_bundle.json              written by ZR: save formats + copies of readable saves (upload for drafts)
   scan_report.txt               written by ZR: the same verdicts in plain text
+  captures/settings.json        games recorded on close (ZR on a game, then A) and how many captures to keep
+  captures/<TITLEID>/<stamp>/   one save capture (the save's files) + <stamp>.json (time, session length, CRC32s)
 ```
 
 ## Testing it (5 minutes with BotW)
@@ -238,11 +266,13 @@ Drop a file in `sdmc:/switch/TrophyNX/games/` named after the title ID:
 | `byml` | Nintendo BYML tree (`YB`/`BY`) at offset 0 or 0x10 — Super Mario Odyssey `File*.bin` | — (rules use `path`/`paths`, optional `equals`) |
 | `json` | plain-text JSON (optional BOM, trailing NULs ignored) — Unity games such as Hollow Knight `user1.dat` | — (same `path`/`paths` syntax as `byml`) |
 | `gvas` | Unreal Engine 4 / 5 (up to 5.3) SaveGame `.sav` (magic `GVAS`) — property names become keys | — (same `path`/`paths` syntax) |
-| `nrbf` | .NET BinaryFormatter stream (Unity games) — class fields become keys | — (same `path`/`paths` syntax) |
+| `nrbf` | .NET BinaryFormatter stream (Unity games) — class fields become keys; byte arrays holding JSON text are decoded (Blasphemous) | — (same `path`/`paths` syntax) |
+| `sgb` | Supergiant Games save (Hades `Profile*.sav`: `SGB1` header + LZ4 + luabins) — the saved Lua globals (`GameState`, `CurrentRun`, `TextLinesRecord`, `CodexStatus`...), number keys written `1`, `2`...; `_header/runs` etc. | — (same `path`/`paths` syntax) |
 
 **`byml` / `json` paths** select values in the tree, segments separated by `/`:
 `CoinNum`, `GameProgressData/UnlockWorldNum`, `WorldInfo[3]/ScenarioNo` (index), `ShineData[*]/IsGet` (every element),
-`ShineData[UniqueId=205]/IsGet` (elements whose field matches), `HackDictionary[=Wanwan]` (list contains), `ItemCap[*]`.
+`ShineData[UniqueId=205]/IsGet` (elements whose field matches), `HackDictionary[=Wanwan]` (list contains), `ItemCap[*]`,
+`GameState/QuestStatus[*]` (`[*]` on an object: every value of it).
 `flag` takes the largest matched value, `count` counts matched values that are true / non-zero / non-empty
 (or equal to `equals`, e.g. `"equals": false`), `sum` adds them. Strings count as 1 when non-empty.
 For `json`, `true`/`false` read as 1/0, so `{ "type": "flag", "path": "playerData/killedHollowKnight" }` works as-is.
@@ -317,7 +347,10 @@ That is where help is needed most, and you don't need to know how to code.
 
 Achievements are made by comparing saves of the same game at different moments. For a game you'd like supported:
 
-1. Back up your save with [JKSV](https://github.com/J-D-K/JKSV) (or another save manager) at a few points:
+1. Easiest: turn on **save captures** for the game (ZR on the game in TrophyNX, then A, see
+   [Save captures](#save-captures-record-a-game-share-over-wi-fi)), play, close the game after each step, then
+   share them over Wi-Fi and press **Download .zip** in the Save Lab. Or back up your save with
+   [JKSV](https://github.com/J-D-K/JKSV) (or another save manager) at a few points:
    - a **fresh** save (just after the intro),
    - saves right **after specific events** (first boss beaten, an item collected, a new area reached…),
    - an **advanced or 100 %** save if you have one.

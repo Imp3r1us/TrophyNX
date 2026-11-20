@@ -3,7 +3,7 @@
 // on Switch (Hollow Knight user1.dat...). Uses the same path language as BymlDoc (see byml.h):
 //   playerData/grubsCollected               nested keys
 //   playerData/bossDoorStateTier1/completed nested object field
-//   sceneData/persistentBoolItems[*]/activated
+//   sceneData/persistentBoolItems[*]/activated   ([*] on an object: every value of it)
 //   sceneData/persistentBoolItems[id=Battle Scene]/activated
 // Leaves are reported as BymlValue: true/false -> Bool 1/0, numbers -> Int/Float, strings -> String,
 // objects/arrays -> Container (num = number of children), null -> Null.

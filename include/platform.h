@@ -46,6 +46,10 @@ namespace plat {
     // HTTPS GET into memory. Returns the HTTP status, or 0 on a network/TLS error (err says why).
     int httpGet(const std::string& url, const std::vector<std::string>& headers, std::vector<uint8_t>& out,
                 ProgressFn progress, void* ctx, std::string& err);
+    // Sockets (shared by httpGet and the Wi-Fi share server). Starts them once; false + err if no network.
+    bool netInit(std::string& err);
+    std::string localIp();
+    void keepAwake(bool on);   // no auto-sleep / screen dimming (while sharing over Wi-Fi)   // the console's address on the local network ("" if not connected)
     void setSelfPath(const std::string& path);   // argv[0] of the running .nro
     std::string selfPath();
     std::string sdRoot();                          // "sdmc:/" (host: <root>/sd/)

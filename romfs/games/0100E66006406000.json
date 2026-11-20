@@ -1,0 +1,265 @@
+{
+ "title_id": "0100E66006406000",
+ "name": "OCTOPATH TRAVELER",
+ "reader": "gvas",
+ "save_files": [
+  "KSSaveData0",
+  "KSSaveData1",
+  "KSSaveData2",
+  "KSSaveData3"
+ ],
+ "_note": "TrophyNX originals (no Steam list). Chapter progress assumes 1000 per finished chapter (3 cleared chapters = 3 x 1000 on the sample); side stories assume MissionState 2 = cleared.",
+ "achievements": [
+  {
+   "id": "travelers_4",
+   "name": "Fellow Travelers",
+   "desc": "Have 4 travelers who have fought at your side",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "PlayerMember[*]/Exp_63_D85F37A949C1283D8A677883021D4C04",
+    "target": 4
+   }
+  },
+  {
+   "id": "travelers_8",
+   "name": "Eight Paths Converge",
+   "desc": "Have all 8 travelers fight at your side",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "PlayerMember[*]/Exp_63_D85F37A949C1283D8A677883021D4C04",
+    "target": 8
+   }
+  },
+  {
+   "id": "level_20",
+   "name": "Seasoned",
+   "desc": "Raise a traveler to level 20",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerMember[*]/Level_7_2387E0754078BE22EED8E689263C5693",
+    "target": 20
+   }
+  },
+  {
+   "id": "level_40",
+   "name": "Veteran Traveler",
+   "desc": "Raise a traveler to level 40",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerMember[*]/Level_7_2387E0754078BE22EED8E689263C5693",
+    "target": 40
+   }
+  },
+  {
+   "id": "level_60",
+   "name": "Hero of Orsterra",
+   "desc": "Raise a traveler to level 60",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerMember[*]/Level_7_2387E0754078BE22EED8E689263C5693",
+    "target": 60
+   }
+  },
+  {
+   "id": "level_80",
+   "name": "Living Legend",
+   "desc": "Raise a traveler to level 80",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "PlayerMember[*]/Level_7_2387E0754078BE22EED8E689263C5693",
+    "target": 80
+   }
+  },
+  {
+   "id": "chapters_1",
+   "name": "A Tale Begins",
+   "desc": "Complete 1 story chapter across all travelers",
+   "points": 10,
+   "rule": {
+    "type": "sum",
+    "path": "PlayerMember[*]/MainMissionProgressCnt_87_45488B234E2DDBA7673D2282F684BB37",
+    "target": 1000,
+    "divisor": 1000
+   }
+  },
+  {
+   "id": "chapters_8",
+   "name": "Chapter and Verse",
+   "desc": "Complete 8 story chapters across all travelers",
+   "points": 10,
+   "rule": {
+    "type": "sum",
+    "path": "PlayerMember[*]/MainMissionProgressCnt_87_45488B234E2DDBA7673D2282F684BB37",
+    "target": 8000,
+    "divisor": 1000
+   }
+  },
+  {
+   "id": "chapters_16",
+   "name": "Halfway There",
+   "desc": "Complete 16 story chapters across all travelers",
+   "points": 25,
+   "rule": {
+    "type": "sum",
+    "path": "PlayerMember[*]/MainMissionProgressCnt_87_45488B234E2DDBA7673D2282F684BB37",
+    "target": 16000,
+    "divisor": 1000
+   }
+  },
+  {
+   "id": "chapters_24",
+   "name": "The Long Road",
+   "desc": "Complete 24 story chapters across all travelers",
+   "points": 25,
+   "rule": {
+    "type": "sum",
+    "path": "PlayerMember[*]/MainMissionProgressCnt_87_45488B234E2DDBA7673D2282F684BB37",
+    "target": 24000,
+    "divisor": 1000
+   }
+  },
+  {
+   "id": "chapters_32",
+   "name": "Every Story Told",
+   "desc": "Complete 32 story chapters across all travelers",
+   "points": 50,
+   "rule": {
+    "type": "sum",
+    "path": "PlayerMember[*]/MainMissionProgressCnt_87_45488B234E2DDBA7673D2282F684BB37",
+    "target": 32000,
+    "divisor": 1000
+   }
+  },
+  {
+   "id": "chests_10",
+   "name": "Treasure Seeker",
+   "desc": "Open 10 treasure chests",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "MapData[*]/TreasureStateArray_7_221099F249839D1490A1659BDD62EB21[*]",
+    "target": 10
+   }
+  },
+  {
+   "id": "chests_50",
+   "name": "Chest Opener",
+   "desc": "Open 50 treasure chests",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "MapData[*]/TreasureStateArray_7_221099F249839D1490A1659BDD62EB21[*]",
+    "target": 50
+   }
+  },
+  {
+   "id": "chests_150",
+   "name": "Treasure Hunter",
+   "desc": "Open 150 treasure chests",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "MapData[*]/TreasureStateArray_7_221099F249839D1490A1659BDD62EB21[*]",
+    "target": 150
+   }
+  },
+  {
+   "id": "chests_300",
+   "name": "Orsterra Plundered",
+   "desc": "Open 300 treasure chests",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "MapData[*]/TreasureStateArray_7_221099F249839D1490A1659BDD62EB21[*]",
+    "target": 300
+   }
+  },
+  {
+   "id": "side_1",
+   "name": "Helping Hand",
+   "desc": "Complete 1 side story",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "SubMissionData[*]/MissionState_3_A51810AB458F62E1D08761AAB0C0BAD2[*]",
+    "equals": 2,
+    "target": 1
+   }
+  },
+  {
+   "id": "side_10",
+   "name": "Good Samaritan",
+   "desc": "Complete 10 side stories",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "SubMissionData[*]/MissionState_3_A51810AB458F62E1D08761AAB0C0BAD2[*]",
+    "equals": 2,
+    "target": 10
+   }
+  },
+  {
+   "id": "side_25",
+   "name": "Side Story Collector",
+   "desc": "Complete 25 side stories",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "SubMissionData[*]/MissionState_3_A51810AB458F62E1D08761AAB0C0BAD2[*]",
+    "equals": 2,
+    "target": 25
+   }
+  },
+  {
+   "id": "side_50",
+   "name": "Friend to All",
+   "desc": "Complete 50 side stories",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "SubMissionData[*]/MissionState_3_A51810AB458F62E1D08761AAB0C0BAD2[*]",
+    "equals": 2,
+    "target": 50
+   }
+  },
+  {
+   "id": "weak_25",
+   "name": "Weak Spot",
+   "desc": "Reveal a weakness of 25 kinds of enemies",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "EnemyInfoData[*]/WeaknessOpen_9_3BF03F554E7C191738D4FFA11F0DD8CF",
+    "target": 25
+   }
+  },
+  {
+   "id": "weak_100",
+   "name": "Breaker",
+   "desc": "Reveal a weakness of 100 kinds of enemies",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "EnemyInfoData[*]/WeaknessOpen_9_3BF03F554E7C191738D4FFA11F0DD8CF",
+    "target": 100
+   }
+  },
+  {
+   "id": "weak_200",
+   "name": "Master Analyst",
+   "desc": "Reveal a weakness of 200 kinds of enemies",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "EnemyInfoData[*]/WeaknessOpen_9_3BF03F554E7C191738D4FFA11F0DD8CF",
+    "target": 200
+   }
+  }
+ ]
+}

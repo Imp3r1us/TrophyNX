@@ -9,6 +9,8 @@
 #include "version.h"
 #include "scan.h"
 #include "update.h"
+#include "captures.h"
+#include "share_server.h"
 
 // ---------------------------------------------------------------- theme
 static const uint32_t C_BG = 0xFF12141A, C_PANEL = 0xFF1B1E26, C_PANEL_HI = 0xFF272B36, C_LINE = 0xFF2E3340;
@@ -42,7 +44,15 @@ struct UI {
     UpdateInfo updInfo;
     bool updOk = false;
     std::string updResult;
+    int cap = 0;              // save captures panel: 0 none, 1 panel, 2 sharing over Wi-Fi
+    int capDelete = 0;        // - pressed once: press again to delete
+    CaptureSettings capSet;
+    std::vector<CaptureInfo> capList;
+    ShareServer server;
+    std::string shareIp, shareErr;
 };
+
+static const int SHARE_PORT = 8080;
 
 static UI* g_ui = nullptr;
 
@@ -314,12 +324,13 @@ static void drawFooter(UI& ui) {
     c.fillRect(0, 668, 1280, 1, C_LINE);
     int x = 28;
     if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "+", "Exit"); return; }
-    if (ui.upd) { buttonHint(ui, x, 680, "+", "Exit"); return; }
+    if (ui.upd || ui.cap) { buttonHint(ui, x, 680, "+", "Exit"); return; }
     if (ui.popup) buttonHint(ui, x, 680, "A", "Close");
     else if (ui.focusAch) buttonHint(ui, x, 680, "B", "Back to games");
     else buttonHint(ui, x, 680, "A", "Open");
     buttonHint(ui, x, 680, "Y", "Rescan saves");
     if (ui.sel == 0 && !ui.focusAch) buttonHint(ui, x, 680, "ZR", "Compatibility scan");
+    if (ui.sel != 0) buttonHint(ui, x, 680, "ZR", "Save captures");
     buttonHint(ui, x, 680, "X", "Debug");
     buttonHint(ui, x, 680, "-", ui.focusAch ? "Re-lock" : (ui.sel == 0 ? "Re-lock all" : "Re-lock game"));
     buttonHint(ui, x, 680, "ZL", "Update");
@@ -499,6 +510,82 @@ static void drawUpdate(UI& ui) {
     for (auto& b : btns) buttonHint(ui, bx, y + h - 50, b.first, b.second);
 }
 
+static void openCaptures(UI& ui) {
+    ui.capSet = loadCaptureSettings(plat::dataDir());
+    ui.capList = listCaptures(plat::dataDir(), ui.lib.games[ui.sel].id);
+    ui.capDelete = 0;
+    ui.cap = 1;
+}
+
+static void startSharing(UI& ui) {
+    ui.shareErr.clear();
+    ui.shareIp.clear();
+    std::string err;
+    if (!plat::netInit(err)) { ui.shareErr = err; ui.cap = 2; return; }
+    ui.shareIp = plat::localIp();
+    if (ui.shareIp.empty()) { ui.shareErr = "The console is not connected to a network. Connect it to Wi-Fi first."; ui.cap = 2; return; }
+    ui.server.dataDir = plat::dataDir();
+    ui.server.pagePath = plat::romfsDir() + "/savelab.html";
+    ui.server.names.clear();
+    for (size_t i = 1; i < ui.lib.games.size(); i++) ui.server.names[ui.lib.games[i].id] = ui.lib.games[i].name;
+    ui.server.requests = 0;
+    ui.server.bytesSent = 0;
+    ui.server.lastPath.clear();
+    if (!ui.server.start(SHARE_PORT, err)) ui.shareErr = "Could not start the server: " + err;
+    else plat::keepAwake(true);
+    ui.cap = 2;
+}
+
+static void drawCaptures(UI& ui) {
+    Canvas& c = ui.cv;
+    const Game& g = ui.lib.games[ui.sel];
+    c.fillRect(0, 0, 1280, 720, 0xB0000000);
+    int w = 900, h = 440, x = (1280 - w) / 2, y = (720 - h) / 2 - 20;
+    c.fillRound(x, y, w, h, 18, C_PANEL);
+    int bx = x + 32;
+    if (ui.cap == 2) {
+        bool ok = ui.shareErr.empty();
+        c.fillRound(x, y, w, 6, 3, ok ? C_GREEN : C_RED);
+        ui.font.draw(c, x + 32, y + 30, 26, ok ? "Sharing over Wi-Fi" : "Wi-Fi sharing unavailable", C_TEXT, w - 64);
+        if (!ok) {
+            ui.font.draw(c, x + 32, y + 90, 19, ui.shareErr, C_RED, w - 64);
+        } else {
+            ui.font.draw(c, x + 32, y + 88, 19, "On your phone or computer, connected to the same Wi-Fi, open:", C_SUB, w - 64);
+            std::string url = "http://" + ui.shareIp + ":" + std::to_string(SHARE_PORT);
+            ui.font.draw(c, x + 32, y + 126, 40, url, C_GOLD, w - 64);
+            ui.font.draw(c, x + 32, y + 196, 18, "The Save Lab opens with your captures: \"From your Switch\" at the top of the page.", C_TEXT, w - 64);
+            ui.font.draw(c, x + 32, y + 226, 18, "Type the address exactly (http, not https). Keep this screen open while it loads.", C_SUB, w - 64);
+            std::string st = std::to_string(ui.server.requests) + " file(s) sent, " + fmtSize(ui.server.bytesSent);
+            ui.font.draw(c, x + 32, y + 290, 18, st, C_GREEN, w - 64);
+            if (!ui.server.lastPath.empty()) ui.font.draw(c, x + 32, y + 318, 15, "last: " + ui.server.lastPath, C_DIM, w - 64);
+        }
+        buttonHint(ui, bx, y + h - 50, "B", ok ? "Stop sharing" : "Back");
+        return;
+    }
+    bool on = captureEnabled(ui.capSet, g.id);
+    c.fillRound(x, y, w, 6, 3, on ? C_GREEN : 0xFF8FE3F5);
+    ui.font.draw(c, x + 32, y + 30, 26, "Save captures - " + g.name, C_TEXT, w - 64);
+    ui.font.draw(c, x + 32, y + 84, 21, on ? "Recording: ON" : "Recording: off", on ? C_GREEN : C_SUB);
+    uint64_t bytes = 0;
+    for (const CaptureInfo& ci : ui.capList) bytes += ci.bytes;
+    std::string n = ui.capList.empty() ? std::string("No capture yet.")
+                                        : std::to_string(ui.capList.size()) + (ui.capList.size() == 1 ? " capture, " : " captures, ") + fmtSize(bytes) +
+                                              "  ·  last: " + fmtDate(ui.capList.back().time) + "  ·  keeps the last " + std::to_string(ui.capSet.keep);
+    ui.font.draw(c, x + 32, y + 120, 18, n, C_TEXT, w - 64);
+    const char* lines[] = {
+        "When recording is on, the live module copies this game's save each time you CLOSE the game.",
+        "A game keeps its save locked while it runs, so closing it is when a copy can be taken:",
+        "close it (HOME, then X) after each step worth comparing (a boss, a new item, a chapter...).",
+        "Unchanged saves are not kept twice. Then share them over Wi-Fi to the Save Lab (Y).",
+    };
+    for (int i = 0; i < 4; i++) ui.font.draw(c, x + 32, y + 168 + i * 28, 17, lines[i], C_SUB, w - 64);
+    if (ui.capDelete) ui.font.draw(c, x + 32, y + 300, 18, "Press - again to delete every capture of this game.", C_RED, w - 64);
+    buttonHint(ui, bx, y + h - 50, "A", on ? "Stop recording" : "Start recording");
+    buttonHint(ui, bx, y + h - 50, "Y", "Share over Wi-Fi");
+    if (!ui.capList.empty()) buttonHint(ui, bx, y + h - 50, "-", "Delete captures");
+    buttonHint(ui, bx, y + h - 50, "B", "Close");
+}
+
 static void drawAll(UI& ui) {
     int stride;
     ui.cv.px = plat::beginDraw(stride);
@@ -512,6 +599,7 @@ static void drawAll(UI& ui) {
     if (ui.debug) drawDebug(ui);
     if (ui.confirm) drawConfirm(ui);
     if (ui.upd) drawUpdate(ui);
+    if (ui.cap) drawCaptures(ui);
     drawFooter(ui);
     if (!ui.toast.empty()) {
         int tw = ui.font.measure(18, ui.toast) + 40;
@@ -620,7 +708,30 @@ int main(int argc, char** argv) {
 
         if (down & plat::BTN_PLUS) break;
         if (down && !ui.toast.empty()) { ui.toast.clear(); dirty = true; }
-        if (ui.upd) {
+        if (ui.cap == 2) {
+            if (ui.server.running() && ui.server.poll() > 0) dirty = true;
+            if (down & plat::BTN_B) { ui.server.stop(); plat::keepAwake(false); ui.cap = 1; ui.capList = listCaptures(plat::dataDir(), ui.lib.games[ui.sel].id); dirty = true; }
+        } else if (ui.cap == 1) {
+            if (down) dirty = true;
+            const Game& g = ui.lib.games[ui.sel];
+            if (down & plat::BTN_MINUS) {
+                if (ui.capList.empty()) {}
+                else if (ui.capDelete) {
+                    int n = deleteCaptures(plat::dataDir(), g.id);
+                    ui.capList.clear();
+                    ui.capDelete = 0;
+                    ui.toast = std::to_string(n) + " capture(s) deleted.";
+                } else ui.capDelete = 1;
+            } else if (down) ui.capDelete = 0;
+            if (down & plat::BTN_A) {
+                bool on = !captureEnabled(ui.capSet, g.id);
+                setCaptureEnabled(ui.capSet, g.id, on);
+                if (!saveCaptureSettings(plat::dataDir(), ui.capSet)) ui.toast = "Could not write captures/settings.json";
+                else ui.toast = on ? "Recording on: close the game to take a capture." : "Recording off (captures are kept).";
+            }
+            if (down & plat::BTN_Y) startSharing(ui);
+            else if (down & plat::BTN_B) ui.cap = 0;
+        } else if (ui.upd) {
             if (ui.upd == 1 && ui.updInfo.state == UpdateInfo::Available && (down & plat::BTN_A)) {
                 ui.loadingLabel = "Downloading the update (KB)";
                 ui.lastProgress = -1;
@@ -666,6 +777,7 @@ int main(int argc, char** argv) {
                 for (size_t i = 0; i < ui.lib.games.size(); i++) if (ui.lib.games[i].id == keepId) ui.sel = (int)i;
                 ui.popup = !ui.lib.newlyUnlocked.empty();
             }
+            if ((down & plat::BTN_ZR) && ui.sel != 0) openCaptures(ui);
             if ((down & plat::BTN_ZR) && ui.sel == 0 && !ui.focusAch) {
                 ui.loadingLabel = "Checking every save";
                 ui.lastProgress = -1;

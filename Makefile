@@ -43,9 +43,14 @@ SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=	include
 ROMFS	:=	romfs
+
+# The Wi-Fi share screen serves the Save Lab from the app's romfs (source/share_server.cpp)
+ifeq ($(MAKELEVEL),0)
+$(shell cp -f tools/savelab/index.html romfs/savelab.html)
+endif
 APP_TITLE	:=	TrophyNX
 APP_AUTHOR	:=	Imp3r1us
-APP_VERSION	:=	0.9.1
+APP_VERSION	:=	0.10.0
 
 #---------------------------------------------------------------------------------
 # options for code generation

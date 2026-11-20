@@ -135,6 +135,7 @@ When several save files are listed (slots), **the best one counts**.
 | readable text starting with `{` or `[` | `json` |
 | starts with the bytes `GVAS` (Unreal Engine 4 / 5 up to 5.3) | `gvas` |
 | .NET BinaryFormatter (many Unity games; the Save Lab detects it) | `nrbf` |
+| starts with `SGB1` (Supergiant Games: Hades) | `sgb` |
 | Nintendo BYML (`YB` / `BY` at the start or at 0x10) | `byml` |
 | anything else with values at fixed positions | `binary_le` (see the main README) |
 
@@ -150,6 +151,7 @@ The save is read as a tree; a path walks it with `/`:
 | `playerData/geo` | key `geo` inside `playerData` |
 | `WorldInfo[3]/ScenarioNo` | 4th element of a list (counting from 0) |
 | `ShineData[*]/IsGet` | `IsGet` of every element of the list |
+| `GameState/QuestStatus[*]` | every value of an object (dictionaries, Lua tables) |
 | `ShineData[UniqueId=205]/IsGet` | the element whose `UniqueId` is 205 |
 | `Unlocks[Key=Ending_A]/Value` | a dictionary entry (Unity `Dictionary` / Unreal `Map` become `{Key, Value}` lists) |
 | `HackDictionary[=Wanwan]` | 1 if the list contains `Wanwan` |
@@ -169,6 +171,13 @@ and `"divisor": 4` divides the shown value (e.g. quarter hearts shown as hearts)
 
 **One rule = one condition.** There is no AND yet ("beat the game AND all charms"), and nothing that the save
 doesn't remember (no-damage runs, speedruns) can be checked.
+
+### Getting saves without JKSV: save captures
+
+TrophyNX can record the saves for you: **ZR** on the game in the app, **A** to turn recording on, then play and close
+the game (HOME, X) after each step worth comparing. Each close adds a capture. **ZR → Y** shares them over Wi-Fi:
+open the address shown on the screen on your phone, the Save Lab opens with a **From your Switch** panel. See
+[Save captures](../README.md#save-captures-record-a-game-share-over-wi-fi).
 
 ### The quick way: ⚡ Auto in the Save Lab
 

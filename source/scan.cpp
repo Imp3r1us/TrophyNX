@@ -37,6 +37,11 @@ std::string scanFormat(const std::vector<uint8_t>& data, double* entropyOut) {
             }
         }
     }
+    if (isSgb(data.data(), data.size())) {   // Supergiant (Hades)
+        std::string err;
+        cJSON* t = sgbToJson(data.data(), data.size(), err);
+        if (t) { cJSON_Delete(t); return "sgb"; }
+    }
     if (isGvas(data.data(), data.size()) || isNrbf(data.data(), data.size())) {   // Unreal / .NET (Unity) saves
         bool gv = isGvas(data.data(), data.size());
         std::string err;
@@ -83,7 +88,7 @@ std::string scanVerdict(const std::vector<std::string>& formats, bool hasReader)
     if (formats.empty()) return "no-save";
     bool tree = false, text = false, binary = false;
     for (const std::string& f : formats) {
-        if (f == "json" || f == "json-xor" || f == "byml" || f == "gvas" || f == "nrbf") tree = true;
+        if (f == "json" || f == "json-xor" || f == "byml" || f == "gvas" || f == "nrbf" || f == "sgb") tree = true;
         else if (f == "xml" || f == "text") text = true;
         else if (f == "binary") binary = true;
     }
@@ -166,7 +171,7 @@ bool runCompatibilityScan(Library& lib, plat::ProgressFn progress, void* ctx, Sc
                 firstFile = false;
                 fputs("{\"path\":", f); jstr(f, e.first);
                 fprintf(f, ",\"size\":%llu,\"format\":\"%s\",\"entropy\":%.2f", (unsigned long long)e.second, fmt.c_str(), ent);
-                bool readable = fmt == "json" || fmt == "json-xor" || fmt == "byml" || fmt == "gvas" || fmt == "nrbf" || fmt == "xml" || fmt == "text";
+                bool readable = fmt == "json" || fmt == "json-xor" || fmt == "byml" || fmt == "gvas" || fmt == "nrbf" || fmt == "sgb" || fmt == "xml" || fmt == "text";
                 if (loaded && readable && data.size() <= MAX_FILE_COPY && out.bytesCopied + data.size() <= MAX_TOTAL_COPY) {
                     fputs(",\"data_b64\":\"", f); b64(f, data); fputc('"', f);
                     out.bytesCopied += data.size();

@@ -159,4 +159,7 @@ void plat::endDraw() {
 uint32_t plat::buttonsDown() { return g_down; }
 uint32_t plat::buttonsHeld() { return 0; }
 void plat::sleepMs(int) {}
+bool plat::netInit(std::string&) { return true; }
+std::string plat::localIp() { return "127.0.0.1"; }
+void plat::keepAwake(bool) {}
 #endif
