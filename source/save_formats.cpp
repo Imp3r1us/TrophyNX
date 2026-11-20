@@ -3,6 +3,7 @@
 // compares both on the same files). Built without exceptions: errors are sticky in the Reader.
 #include "save_formats.h"
 #include "cJSON.h"
+#include <algorithm>
 #include <cctype>
 #include <cmath>
 #include <cstdio>
@@ -952,6 +953,369 @@ cJSON* sgbToJson(const uint8_t* data, size_t size, std::string& error, SaveForma
 
 bool SgbDoc::parse(std::vector<uint8_t>&& data) {
     cJSON* t = sgbToJson(data.data(), data.size(), error, &info);
+    if (!t) return false;
+    adopt(t, false);
+    return true;
+}
+
+// ================================================================== DELTARUNE (deltarune.sav)
+// Mirror of parseDeltarune in tools/savelab/formats.js. The save is a JSON object {file name: file text}; the
+// chapter files "filechN_S" are the lines written by scr_saveprocess (console branch), arrays as ds_list_write hex.
+namespace {
+
+const int DR_FLAG_BASE = 2400, DR_TROPHIES = 30;
+
+struct DsVal {
+    int kind = 0;   // 0 number, 1 string, 2 null
+    double num = 0;
+    std::string str;
+};
+
+int hexDigit(char c) {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+    return -1;
+}
+
+// GameMaker ds_list_write: hex text of u32 0x12F, u32 count, then per entry u32 type and the value
+// (0 real: f64, 1 string: u32 length + bytes, 5 undefined: nothing, 7 int32, 10 int64, 13 bool: f64).
+bool isDsListLine(const std::string& s) {
+    if (s.size() < 16 || (s.size() & 1)) return false;
+    if (s.compare(0, 8, "2F010000") != 0 && s.compare(0, 8, "2f010000") != 0) return false;
+    for (char c : s) if (hexDigit(c) < 0) return false;
+    return true;
+}
+bool dsListDecode(const std::string& s, std::vector<DsVal>& out) {
+    out.clear();
+    std::vector<uint8_t> b(s.size() / 2);
+    for (size_t i = 0; i < b.size(); i++) b[i] = (uint8_t)(hexDigit(s[2 * i]) * 16 + hexDigit(s[2 * i + 1]));
+    size_t p = 4;
+    auto u32 = [&](uint32_t& v) {
+        if (b.size() - p < 4) return false;
+        v = b[p] | b[p + 1] << 8 | b[p + 2] << 16 | (uint32_t)b[p + 3] << 24;
+        p += 4;
+        return true;
+    };
+    auto f64 = [&](double& v) { if (b.size() - p < 8) return false; memcpy(&v, b.data() + p, 8); p += 8; return true; };
+    uint32_t count;
+    if (!u32(count) || count > (b.size() - 8) / 4) return false;
+    out.reserve(count);
+    for (uint32_t i = 0; i < count; i++) {
+        uint32_t type;
+        if (!u32(type)) return false;
+        DsVal v;
+        if (type == 0 || type == 13) {
+            if (!f64(v.num)) return false;
+            if (!std::isfinite(v.num)) v.kind = 2;
+        } else if (type == 1) {
+            uint32_t len;
+            if (!u32(len) || len > b.size() - p) return false;
+            v.kind = 1;
+            v.str.assign((const char*)b.data() + p, len);
+            p += len;
+            size_t z = v.str.find('\0');
+            if (z != std::string::npos) v.str.resize(z);
+        } else if (type == 5) {
+            v.kind = 2;
+        } else if (type == 7) {
+            uint32_t x;
+            if (!u32(x)) return false;
+            v.num = (int32_t)x;
+        } else if (type == 10) {
+            uint32_t lo, hi;
+            if (!u32(lo) || !u32(hi)) return false;
+            v.num = (double)(int64_t)((uint64_t)hi << 32 | lo);
+        } else {
+            return false;
+        }
+        out.push_back(std::move(v));
+    }
+    return true;
+}
+
+// Number written by GameMaker's string(real) (or an ini value): [-+]digits[.digits][e[-+]digits], nothing else.
+bool drNumber(const std::string& s, double& v) {
+    size_t i = 0, n = s.size();
+    if (i < n && (s[i] == '-' || s[i] == '+')) i++;
+    size_t d = i;
+    while (i < n && isdigit((unsigned char)s[i])) i++;
+    if (i == d) return false;
+    if (i < n && s[i] == '.') {
+        size_t f = ++i;
+        while (i < n && isdigit((unsigned char)s[i])) i++;
+        if (i == f) return false;
+    }
+    if (i < n && (s[i] == 'e' || s[i] == 'E')) {
+        i++;
+        if (i < n && (s[i] == '-' || s[i] == '+')) i++;
+        size_t e = i;
+        while (i < n && isdigit((unsigned char)s[i])) i++;
+        if (i == e) return false;
+    }
+    if (i != n) return false;
+    v = strtod(s.c_str(), nullptr);
+    return std::isfinite(v);
+}
+
+cJSON* dsValJson(const DsVal& v) {
+    if (v.kind == 1) return cJSON_CreateString(v.str.c_str());
+    if (v.kind == 2) return cJSON_CreateNull();
+    return cJSON_CreateNumber(v.num);
+}
+
+std::vector<std::string> splitLines(const char* t) {
+    std::vector<std::string> out;
+    std::string cur;
+    for (const char* c = t; *c; c++) {
+        if (*c == '\n') {
+            if (!cur.empty() && cur.back() == '\r') cur.pop_back();
+            out.push_back(cur);
+            cur.clear();
+        } else {
+            cur += *c;
+        }
+    }
+    if (!cur.empty()) {
+        if (cur.back() == '\r') cur.pop_back();
+        out.push_back(cur);
+    }
+    return out;
+}
+
+// scr_saveprocess, console branch. Kinds: S string, N number, C character (into "char"), L list, F flag list
+// (sparse "flags"), X skipped line(s).
+struct DrField { const char* name; char kind; int count; };
+std::vector<DrField> drLayout(int chapter) {
+    bool one = chapter == 1;
+    std::vector<DrField> l = {{"truename", 'S', 1}, {"othername", 'L', 1}, {"char", 'C', 1}, {"char", 'C', 1}, {"char", 'C', 1},
+                              {"gold", 'N', 1}, {"xp", 'N', 1}, {"lv", 'N', 1}, {"inv", 'X', 1}, {"invc", 'X', 1}, {"darkzone", 'N', 1}};
+    for (const char* n : {"hp", "maxhp", "at", "df", "mag", "guts", "charweapon", "chararmor1", "chararmor2", "weaponstyle"})
+        l.push_back({n, 'L', 1});
+    l.push_back({"items", 'X', one ? 4 * (4 * 8 + 12) : 5 * (4 * 10 + 12)});   // itemat..itemspecial(/element) and spells
+    l.push_back({"bolts", 'X', 3});                                             // boltspeed, grazeamt, grazesize
+    for (const char* n : {"item", "keyitem", "weapon", "armor"}) l.push_back({n, 'L', 1});
+    if (!one) l.push_back({"pocketitem", 'L', 1});
+    for (const char* n : {"tension", "maxtension", "lweapon", "larmor", "lxp", "llv", "lgold", "lhp", "lmaxhp", "lat", "ldf", "lwstrength", "ladef"})
+        l.push_back({n, 'N', 1});
+    l.push_back({"litem", 'L', 1});
+    l.push_back({"phone", 'L', 1});
+    l.push_back({"flags", 'F', 1});
+    l.push_back({"plot", 'N', 1});
+    l.push_back({"room", 'N', 1});
+    l.push_back({"time", 'N', 1});
+    return l;
+}
+
+cJSON* drFlags(const std::vector<DsVal>& v) {
+    cJSON* o = cJSON_CreateObject();
+    for (size_t i = 0; i < v.size(); i++) {
+        if (v[i].kind == 2 || (v[i].kind == 0 && v[i].num == 0) || (v[i].kind == 1 && v[i].str.empty())) continue;
+        cJSON_AddItemToObject(o, std::to_string(i).c_str(), dsValJson(v[i]));
+    }
+    return o;
+}
+
+cJSON* drScalar(const std::string& line, char kind) {
+    double v;
+    if (kind != 'S' && drNumber(line, v)) return cJSON_CreateNumber(v);
+    return cJSON_CreateString(line.c_str());
+}
+
+// One "filechN_S" text -> object (see save_formats.h).
+cJSON* drChapterFile(const std::string& name, int chapter, int slot, const std::string& route, const char* text) {
+    cJSON* f = cJSON_CreateObject();
+    cJSON_AddStringToObject(f, "name", name.c_str());
+    cJSON_AddNumberToObject(f, "chapter", chapter);
+    cJSON_AddNumberToObject(f, "slot", slot % 3);
+    cJSON_AddNumberToObject(f, "completion", slot >= 3 ? 1 : 0);
+    cJSON_AddStringToObject(f, "route", route.c_str());
+    std::vector<std::string> lines = splitLines(text);
+    std::vector<DrField> lay = drLayout(chapter);
+    // the layout fits when list fields are on ds_list lines and number fields are not
+    size_t at = 0;
+    bool fits = true;
+    for (const DrField& d : lay) {
+        if (at + d.count > lines.size()) { fits = false; break; }
+        bool list = isDsListLine(lines[at]);
+        if ((d.kind == 'L' || d.kind == 'F') != list && d.kind != 'X' && d.kind != 'S') { fits = false; break; }
+        at += d.count;
+    }
+    std::vector<DsVal> vals;
+    if (fits) {
+        at = 0;
+        cJSON* chars = nullptr;
+        for (const DrField& d : lay) {
+            const std::string& ln = lines[at];
+            at += d.count;
+            if (d.kind == 'X') continue;
+            if (d.kind == 'C') {
+                if (!chars) chars = cJSON_AddArrayToObject(f, "char");
+                cJSON_AddItemToArray(chars, drScalar(ln, 'N'));
+                continue;
+            }
+            if (d.kind == 'S' || d.kind == 'N') { cJSON_AddItemToObject(f, d.name, drScalar(ln, d.kind)); continue; }
+            if (!dsListDecode(ln, vals)) { cJSON_AddNullToObject(f, d.name); continue; }
+            if (d.kind == 'F') { cJSON_AddItemToObject(f, d.name, drFlags(vals)); continue; }
+            cJSON* a = cJSON_AddArrayToObject(f, d.name);
+            for (const DsVal& v : vals) cJSON_AddItemToArray(a, dsValJson(v));
+        }
+        return f;
+    }
+    // Unknown layout (another game version): keep the flags (the last list of 2500+ values) and the 3 lines after.
+    cJSON_AddStringToObject(f, "error", "unknown file layout");
+    for (size_t i = lines.size(); i-- > 0;) {
+        if (!isDsListLine(lines[i]) || !dsListDecode(lines[i], vals) || vals.size() < 2500) continue;
+        cJSON_AddItemToObject(f, "flags", drFlags(vals));
+        const char* tail[] = {"plot", "room", "time"};
+        for (size_t k = 0; k < 3 && i + 1 + k < lines.size(); k++) cJSON_AddItemToObject(f, tail[k], drScalar(lines[i + 1 + k], 'N'));
+        break;
+    }
+    return f;
+}
+
+// GameMaker ini text: [Section] lines, key="value" lines (a repeated key keeps the last value).
+cJSON* drIni(const char* text) {
+    cJSON* o = cJSON_CreateObject();
+    cJSON* sec = nullptr;
+    for (std::string ln : splitLines(text)) {
+        size_t s = ln.find_first_not_of(" \t"), e = ln.find_last_not_of(" \t");
+        if (s == std::string::npos) continue;
+        ln = ln.substr(s, e - s + 1);
+        if (ln[0] == '[' && ln.back() == ']') {
+            std::string n = ln.substr(1, ln.size() - 2);
+            sec = cJSON_GetObjectItemCaseSensitive(o, n.c_str());
+            if (!sec) sec = cJSON_AddObjectToObject(o, n.c_str());
+            continue;
+        }
+        size_t eq = ln.find('=');
+        if (!sec || eq == std::string::npos || eq == 0) continue;
+        std::string k = ln.substr(0, eq), v = ln.substr(eq + 1);
+        while (!k.empty() && (k.back() == ' ' || k.back() == '\t')) k.pop_back();
+        size_t vs = v.find_first_not_of(" \t");
+        v = vs == std::string::npos ? "" : v.substr(vs);
+        if (v.size() >= 2 && v[0] == '"' && v.back() == '"') v = v.substr(1, v.size() - 2);
+        cJSON_DeleteItemFromObjectCaseSensitive(sec, k.c_str());
+        double d;
+        if (drNumber(v, d)) cJSON_AddNumberToObject(sec, k.c_str(), d);
+        else cJSON_AddStringToObject(sec, k.c_str(), v.c_str());
+    }
+    return o;
+}
+
+// "filechN_S" + optional route suffix (chapter 5: "_b")
+bool drFileName(const std::string& k, int& chapter, int& slot, std::string& route) {
+    if (k.compare(0, 6, "filech") != 0) return false;
+    size_t i = 6, d = i;
+    while (i < k.size() && isdigit((unsigned char)k[i])) i++;
+    if (i == d || i - d > 3 || i >= k.size() || k[i] != '_') return false;
+    chapter = atoi(k.substr(d, i - d).c_str());
+    size_t s = ++i;
+    while (i < k.size() && isdigit((unsigned char)k[i])) i++;
+    if (i == s || i - s > 3) return false;
+    slot = atoi(k.substr(s, i - s).c_str());
+    route = k.substr(i);
+    return true;
+}
+
+double drNum(const cJSON* o, const char* key) {
+    const cJSON* v = cJSON_GetObjectItemCaseSensitive(o, key);
+    return cJSON_IsNumber(v) ? v->valuedouble : 0;
+}
+double drFlag(const cJSON* file, int index) {
+    return drNum(cJSON_GetObjectItemCaseSensitive(file, "flags"), std::to_string(index).c_str());
+}
+// any number of the list equal to `value` (or, with anyNonZero, any non-zero number)
+bool drListHas(const cJSON* file, const char* list, double value, bool anyNonZero = false) {
+    const cJSON* a = cJSON_GetObjectItemCaseSensitive(file, list);
+    const cJSON* c;
+    cJSON_ArrayForEach(c, a) {
+        if (cJSON_IsNumber(c) && (anyNonZero ? c->valuedouble != 0 : c->valuedouble == value)) return true;
+    }
+    return false;
+}
+}  // namespace
+
+bool isDeltarune(const uint8_t* data, size_t size) {
+    size_t s = 0;
+    if (size >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF) s = 3;
+    while (s < size && (data[s] == ' ' || data[s] == '\t' || data[s] == '\r' || data[s] == '\n')) s++;
+    if (s >= size || data[s] != '{') return false;
+    static const char key[] = "\"filech";
+    for (size_t i = s; i + 7 <= size; i++)
+        if (data[i] == '"' && memcmp(data + i, key, 7) == 0) return true;
+    return false;
+}
+
+cJSON* deltaruneToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info) {
+    if (!isDeltarune(data, size)) { error = "not a DELTARUNE save (deltarune.sav)"; return nullptr; }
+    size_t s = data[0] == 0xEF ? 3 : 0, e = size;
+    while (e > s && (data[e - 1] == 0 || data[e - 1] == ' ' || data[e - 1] == '\r' || data[e - 1] == '\n' || data[e - 1] == '\t')) e--;
+    cJSON* src = cJSON_ParseWithLength(reinterpret_cast<const char*>(data + s), e - s);
+    if (!cJSON_IsObject(src)) { if (src) cJSON_Delete(src); error = "JSON syntax error"; return nullptr; }
+    struct Entry { std::string name; const char* text; };
+    std::vector<Entry> chapterFiles, inis;
+    const cJSON* c;
+    cJSON_ArrayForEach(c, src) {
+        if (!cJSON_IsString(c) || !c->string) continue;
+        std::string k = c->string, route;
+        int ch, sl;
+        if (drFileName(k, ch, sl, route)) chapterFiles.push_back({k, c->valuestring});
+        else if (k.size() > 4 && k.compare(k.size() - 4, 4, ".ini") == 0) inis.push_back({k, c->valuestring});
+    }
+    auto byName = [](const Entry& a, const Entry& b) { return a.name < b.name; };
+    std::sort(chapterFiles.begin(), chapterFiles.end(), byName);
+    std::sort(inis.begin(), inis.end(), byName);
+    cJSON* root = cJSON_CreateObject();
+    cJSON* files = cJSON_AddArrayToObject(root, "files");
+    for (const Entry& f : chapterFiles) {
+        int ch = 0, sl = 0;
+        std::string route;
+        drFileName(f.name, ch, sl, route);
+        cJSON_AddItemToArray(files, drChapterFile(f.name, ch, sl, route, f.text));
+    }
+    cJSON* ini = cJSON_AddObjectToObject(root, "ini");
+    for (const Entry& f : inis) cJSON_AddItemToObject(ini, f.name.c_str(), drIni(f.text));
+    cJSON_Delete(src);
+
+    // Derived values (same in formats.js). Fallbacks: what the save shows without the patch.
+    double completed[6] = {0, 0, 0, 0, 0, 0}, patch[DR_TROPHIES] = {0}, fb[DR_TROPHIES] = {0};
+    cJSON_ArrayForEach(c, files) {
+        int ch = (int)drNum(c, "chapter");
+        if (ch >= 1 && ch <= 5 && drNum(c, "completion") == 1) completed[ch] = 1;
+        for (int i = 0; i < DR_TROPHIES; i++) if (drFlag(c, DR_FLAG_BASE + i) >= 1) patch[i] = 1;
+        if (drFlag(c, 106) >= 1) fb[9] = 1;   // CONSUMER (Chapter 1): ate the moss
+        // ARMOR (Chapter 1): nobody wears armor when Chapter 1 starts
+        if (ch == 1 && (drListHas(c, "chararmor1", 0, true) || drListHas(c, "chararmor2", 0, true))) fb[14] = 1;
+        if (ch >= 2 && drFlag(c, 325) == 1) fb[18] = 1;     // CLOSENESS: the Chapter 2 photo
+        if (ch >= 3 && drFlag(c, 1220) >= 1) fb[22] = 1;    // BEAST: Susiezilla won (Chapter 3)
+        if (ch >= 2 && (drListHas(c, "weapon", 13) || drListHas(c, "charweapon", 13) ||   // RING: ThornRing
+                        drListHas(c, "weapon", 22) || drListHas(c, "charweapon", 22))) fb[27] = 1;   // or FreezeRing
+    }
+    for (int n = 1; n <= 4; n++) fb[n] = completed[n];   // CHAPTER n END
+    double trophy[DR_TROPHIES];
+    bool all = true;
+    for (int i = 1; i < DR_TROPHIES; i++) {
+        trophy[i] = patch[i] != 0 || fb[i] != 0 ? 1 : 0;
+        all = all && trophy[i] != 0;
+    }
+    trophy[0] = patch[0] != 0 || all ? 1 : 0;   // CONNECTION
+    cJSON_AddItemToObject(root, "completed", cJSON_CreateDoubleArray(completed, 6));
+    cJSON_AddItemToObject(root, "patch", cJSON_CreateDoubleArray(patch, DR_TROPHIES));
+    cJSON_AddItemToObject(root, "trophy", cJSON_CreateDoubleArray(trophy, DR_TROPHIES));
+    if (info) {
+        int got = 0, patched = 0;
+        for (int i = 0; i < DR_TROPHIES; i++) { got += trophy[i] != 0; patched += patch[i] != 0; }
+        std::string done;
+        for (int n = 1; n <= 5; n++) if (completed[n]) done += (done.empty() ? "" : ",") + std::to_string(n);
+        info->summary = "DELTARUNE save, " + std::to_string(chapterFiles.size()) + " chapter files, chapters completed: " +
+                        (done.empty() ? "none" : done) + ", trophies " + std::to_string(got) + "/30 (" + std::to_string(patched) + " from the patch)";
+    }
+    return root;
+}
+
+bool DeltaruneDoc::parse(std::vector<uint8_t>&& data) {
+    cJSON* t = deltaruneToJson(data.data(), data.size(), error, &info);
     if (!t) return false;
     adopt(t, false);
     return true;

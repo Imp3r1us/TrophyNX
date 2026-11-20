@@ -447,6 +447,7 @@ static std::string describeDoc(const GvasDoc& d) {
 }
 static std::string describeDoc(const NrbfDoc& d) { return "NRBF, " + d.info.summary; }
 static std::string describeDoc(const SgbDoc& d) { return d.info.summary; }
+static std::string describeDoc(const DeltaruneDoc& d) { return d.info.summary; }
 
 // Rough peak memory of a parsed document per byte of file (BymlDoc keeps the file; the others build
 // a cJSON tree, ~10 bytes of tree per byte of text, more for dense binary formats).
@@ -455,6 +456,7 @@ static size_t memoryFactor(const JsonDoc*) { return 12; }
 static size_t memoryFactor(const GvasDoc*) { return 16; }
 static size_t memoryFactor(const NrbfDoc*) { return 16; }
 static size_t memoryFactor(const SgbDoc*) { return 160; }   // LZ4 (x4..x40) then a Lua state tree
+static size_t memoryFactor(const DeltaruneDoc*) { return 3; }   // parsed JSON text (~1x) + a small tree (flags kept sparse)
 
 // Best value of each achievement over the save files (several slots), shared by every reader.
 // Files are read and evaluated one at a time, so only one document is in memory.
@@ -597,6 +599,7 @@ void evaluateSave(Game& g, SaveSource& src) {
     else if (g.reader == "gvas") evaluateTree<GvasDoc>(g, src);
     else if (g.reader == "nrbf") evaluateTree<NrbfDoc>(g, src);
     else if (g.reader == "sgb") evaluateTree<SgbDoc>(g, src);
+    else if (g.reader == "deltarune") evaluateTree<DeltaruneDoc>(g, src);
     else if (g.reader == "gamedata_hash" || g.reader == "totk_progress") evaluateHashSave(g, src);
     else {
         g.debug.push_back("ERROR: unknown reader");

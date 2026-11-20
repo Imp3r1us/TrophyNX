@@ -136,6 +136,7 @@ When several save files are listed (slots), **the best one counts**.
 | starts with the bytes `GVAS` (Unreal Engine 4 / 5 up to 5.3) | `gvas` |
 | .NET BinaryFormatter (many Unity games; the Save Lab detects it) | `nrbf` |
 | starts with `SGB1` (Supergiant Games: Hades) | `sgb` |
+| DELTARUNE `deltarune.sav` (JSON of the game's text files) | `deltarune` |
 | Nintendo BYML (`YB` / `BY` at the start or at 0x10) | `byml` |
 | anything else with values at fixed positions | `binary_le` (see the main README) |
 

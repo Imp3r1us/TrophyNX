@@ -117,5 +117,50 @@ if (process.env.CPP_DUMP) {
   for (const cut of [20, 60, sgb.length - 30]) { try { F.parseSgb(sgb.subarray(0, cut)); } catch (e) { threw++; } }
   ok(threw === 3, 'truncated SGB1 rejected');
 }
+// ---------------------------------------------------------------- DELTARUNE deltarune.sav (same checks as host/test/test_deltarune.cpp)
+// Synthetic saves from tools/deltarune/make_test_save.py (run here, or given with DELTARUNE_SAVES=dir).
+// With CPP_DUMP=dir (test_deltarune <saves> --dump dir), the trees must be identical to the app's.
+{
+  const os = require('os'), { spawnSync } = require('child_process');
+  let dir = process.env.DELTARUNE_SAVES;
+  if (!dir) {
+    dir = fs.mkdtempSync(path.join(os.tmpdir(), 'drsave-'));
+    const gen = path.join(__dirname, '..', '..', 'deltarune', 'make_test_save.py');
+    for (const py of [process.env.PYTHON, 'python3', 'python'].filter(Boolean)) {
+      const r = spawnSync(py, ['-I', gen, dir], { stdio: 'ignore', timeout: 60000 });
+      if (r.status === 0 && fs.existsSync(path.join(dir, 'deltarune.sav'))) break;
+    }
+  }
+  const file = path.join(dir, 'deltarune.sav');
+  if (!fs.existsSync(file)) ok(false, 'DELTARUNE: no python to run tools/deltarune/make_test_save.py (set PYTHON or DELTARUNE_SAVES)');
+  else {
+    const buf = new Uint8Array(fs.readFileSync(file));
+    const id = E.identify(buf, 'deltarune.sav');
+    ok(id.reader === 'deltarune' && F.isDeltarune(buf), 'identify -> deltarune (not plain json)');
+    const t = E.parseTree(buf).tree, q = (p) => E.queryByml(t, p), o = (p) => { const v = q(p); return v && v.length === 1 ? v[0] : undefined; };
+    const nz = (p) => q(p).map((v, i) => v ? i : -1).filter(i => i >= 0).join();
+    ok(q('files[*]').length === 5 && o('files[0]/name') === 'filech1_0' && o('files[name=filech1_3]/completion') === 1, 'chapter files, completion slots');
+    ok(o('files[name=filech5_0_b]/route') === '_b' && o('files[name=filech5_0_b]/chapter') === 5, 'chapter 5 route suffix');
+    ok(o('files[0]/gold') === 30 && o('files[0]/plot') === 40 && o('files[0]/time') === 9000 && o('files[0]/chararmor1[1]') === 1 && q('files[0]/weapon[*]').length === 13, 'chapter 1 layout');
+    ok(o('files[0]/flags/106') === 1 && o('files[0]/flags/2405') === 1 && q('files[0]/flags/107').length === 0, 'sparse flags');
+    ok(o('files[name=filech2_0]/time') === 50000.5 && q('files[name=filech2_0]/pocketitem[*]').length === 72 && o('files[name=filech2_0]/weapon[0]') === 13, 'chapter 2+ layout');
+    ok(o('ini/dr.ini/G0/Name') === 'Kris' && o('ini/dr.ini/G0/Time') === 9000 && o('ini/config_0.ini/LANG/LANG') === 'en', 'ini files');
+    ok(nz('completed[*]') === '1' && nz('patch[*]') === '5,23' && nz('trophy[*]') === '1,5,9,14,18,22,23,27', 'completed / patch / trophy');
+    const a = E.parseTree(new Uint8Array(fs.readFileSync(path.join(dir, 'deltarune_all.sav')))).tree;
+    ok(E.queryByml(a, 'files[1]/error')[0] === 'unknown file layout' && E.queryByml(a, 'files[1]/time')[0] === 99.5, 'unknown layout: flags + plot/room/time');
+    ok(E.queryByml(a, 'trophy[0]')[0] === 1 && E.queryByml(a, 'patch[*]').filter(Boolean).length === 29, 'every trophy -> CONNECTION');
+    let threw = 0;
+    for (const c of [10, buf.length / 2 | 0]) { try { F.parseDeltarune(buf.subarray(0, c)); } catch (e) { threw++; } }
+    ok(threw === 2, 'truncated deltarune.sav rejected');
+    if (process.env.CPP_DUMP) {
+      for (const f of ['deltarune.sav', 'deltarune_all.sav']) {
+        const dump = path.join(process.env.CPP_DUMP, f + '.json');
+        if (!fs.existsSync(dump)) { console.log('     (no C++ output for ' + f + ')'); continue; }
+        const js = E.parseTree(new Uint8Array(fs.readFileSync(path.join(dir, f)))).tree;
+        ok(JSON.stringify(js) === fs.readFileSync(dump, 'utf8'), 'app = Save Lab: ' + f);
+      }
+    }
+  }
+}
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
 process.exit(fails ? 1 : 0);
