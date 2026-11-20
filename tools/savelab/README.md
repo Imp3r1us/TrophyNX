@@ -1,28 +1,43 @@
 # Save Lab
 
-Outil web (une seule page, fonctionne sur téléphone) pour **comprendre une sauvegarde Switch et en tirer des succès**
-au format de l'app (`games/<TITLEID>.json`).
+**Open it online: https://imp3r1us.github.io/TrophyNX/** (English / French, switch with the button at the top right).
 
-1. **Captures** : importer plusieurs sauvegardes du même jeu (fichiers ou .zip JKSV), dans l'ordre, nommées d'après
-   ce qui a été fait en jeu. Une capture « contrôle » (rien fait depuis la précédente) élimine le bruit.
-2. **Structure** : format reconnu (BotW/TotK/MK8D/Smash, arbres BYML, sauvegardes texte JSON des jeux Unity comme Hollow Knight,
-   sauvegardes Unreal Engine « GVAS », données .NET BinaryFormatter « NRBF » des jeux Unity), en-tête, entropie (chiffré/compressé ?), table hash→valeur,
-   dictionnaire de noms (CRC32/Murmur3/FNV-1a), textes.
-3. **Différences** : chaque valeur qui change est classée (drapeau 0→1, compteur, champ de bits, flottant, bruit).
-   Sélection multiple → succès « compter »/« somme » ; « Étendre la série » retrouve les drapeaux voisins d'une collection.
-4. **Valeur connue** : recherche type Cheat Engine d'un chiffre vu en jeu.
-   **⚡ Générer les succès** : à partir d'une partie neuve + une save avancée/100 % (ex. téléchargée sur GBAtemp),
-   regroupe les drapeaux en collections (paliers premier / moitié / complète) et les compteurs en paliers.
-5. **Succès** : édition, test sur chaque capture avec la même logique que la console, validation, export JSON.
+A single web page (works on a phone, no PC needed) to **understand a Switch save and turn it into achievements**
+in the app's format (`games/<TITLEID>.json`). Everything runs in your browser: your save files are never uploaded.
+It also works offline: download `index.html` from this folder and open it.
 
-Fichiers : `engine.js` (moteur, testé par `node test/test_engine.js`), `formats.js` (modules de format GVAS et NRBF,
-testés par `node test/test_formats.js` sur `test/fixtures/`), `app.html` (interface),
-`build.py` → `index.html` (page autonome qui embarque aussi les définitions de `romfs/games`).
+Step-by-step guide for players: [Making your own achievement list](../../docs/custom-achievements.md).
 
-### Modules de format
+1. **Captures**: import several saves of the same game (files or JKSV .zip), in order, named after what you did
+   in the game. A “control” capture (nothing done since the previous one) removes noise.
+2. **Structure**: recognised format (BotW/TotK/MK8D/Smash, BYML trees, JSON text saves of Unity games such as
+   Hollow Knight, Unreal Engine “GVAS” saves, .NET BinaryFormatter “NRBF” data of Unity games, repeating-key XOR),
+   header, entropy (encrypted/compressed?), hash→value table, name dictionary (CRC32/Murmur3/FNV-1a), texts.
+3. **Differences**: every value that changes is classified (0→1 flag, counter, bit field, float, noise).
+   Multiple selection → “count” / “sum” achievements; “Extend the series” finds the neighbouring flags of a collection.
+   **⚡ Generate achievements**: from a new game + an advanced/100% save (e.g. downloaded from GBAtemp), groups the
+   flags into collections (first / half / complete tiers) and the counters into tiers.
+4. **Known value**: Cheat Engine-style search for a number seen in the game.
+5. **Achievements**: editing, test on every capture with the same logic as the console, validation, JSON export
+   (copy or download).
+6. **PC → Switch**: import the app's `scan_bundle.json` (ZR) and draft rules from a game's Steam achievement list.
 
-Un module transforme une sauvegarde binaire en arbre (objets, listes, nombres, textes) : tous les outils par chemin
-(différences, ⚡ Générer, règles) marchent alors sans rien changer. Chaque module a son jumeau C++ dans l'app
-(`source/save_formats.cpp`), qui doit produire **exactement** le même arbre (vérifié par `test_formats.js` avec `CPP_DUMP`).
-Pour en ajouter un : une fonction `parseXxx(buf)` dans `formats.js` qui rend `null` si ce n'est pas son format,
-une entrée dans `TREE_FORMATS` (`engine.js`), le lecteur C++ correspondant et une ligne dans `evaluateSave`.
+Files: `engine.js` (engine, tested by `node test/test_engine.js`), `formats.js` (GVAS and NRBF format modules,
+tested by `node test/test_formats.js` on `test/fixtures/`), `app.html` (interface),
+`build.py` → `index.html` (standalone page that also embeds the definitions of `romfs/games`).
+The website is rebuilt and published by `.github/workflows/pages.yml` on every change to these files.
+
+### Languages
+
+Interface texts are written as `T('English', 'French')` (global `T` defined at the top of `app.html`; `engine.js` and
+`formats.js` fall back to English under Node). Static HTML uses `<span class="l-en">…</span><span class="l-fr">…</span>`
+pairs, and `data-fr` / `data-fr-ph` for `<option>` texts and placeholders. The language comes from the saved choice,
+else the browser's language.
+
+### Format modules
+
+A module turns a binary save into a tree (objects, lists, numbers, texts): every path-based tool (differences,
+⚡ Generate, rules) then works unchanged. Each module has its C++ twin in the app (`source/save_formats.cpp`), which
+must produce **exactly** the same tree (checked by `test_formats.js` with `CPP_DUMP`).
+To add one: a `parseXxx(buf)` function in `formats.js` that returns `null` when the data isn't its format,
+an entry in `TREE_FORMATS` (`engine.js`), the matching C++ reader and a line in `evaluateSave`.

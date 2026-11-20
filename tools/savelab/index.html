@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -81,16 +81,26 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 .cf{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:700;margin-right:6px}.cf-sure{background:#1f6f43;color:#fff}.cf-maybe{background:#8a6d1a;color:#fff}.cf-unmatched{background:#555;color:#fff}.cf-skip{background:transparent;color:inherit;border:1px solid currentColor;opacity:.6}
 .pcrow{padding:7px 0;border-top:1px solid var(--line)}
 @media(min-width:700px){.dlg{align-items:center}.dlg .box{border-radius:14px}}
+html[data-lang="en"] .l-fr,html[data-lang="fr"] .l-en{display:none!important}
+.hdrLinks{margin-left:auto;display:flex;gap:6px;align-items:center}.hdrLinks a{color:var(--acc);font-size:13px;text-decoration:none}
 </style>
+<script>
+// UI language: saved choice, else the browser's language (French -> fr, anything else -> en). T(english, french).
+var SL_LANG = (function () { try { var s = localStorage.getItem('savelab-lang'); if (s === 'en' || s === 'fr') return s; } catch (e) { } return /^fr\b/i.test(navigator.language || '') ? 'fr' : 'en'; })();
+function T(en, fr) { return SL_LANG === 'fr' ? fr : en; }
+document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('data-lang', SL_LANG);
+</script>
 </head>
 <body>
-<header><h1>Save <span>Lab</span></h1><div class="game" id="hdrGame">aucun jeu choisi</div></header>
+<header><h1>Save <span>Lab</span></h1><div class="game" id="hdrGame"></div>
+  <span class="hdrLinks"><a href="https://github.com/Imp3r1us/TrophyNX/blob/main/docs/custom-achievements.md" target="_blank" rel="noopener"><span class="l-en">Guide</span><span class="l-fr">Guide</span></a>
+  <button class="btn sm ghost" id="langBtn" title="Language / Langue"></button></span></header>
 <nav id="tabs">
-  <button data-t="caps" class="on"><b>1</b>Captures</button>
-  <button data-t="struct"><b>2</b>Structure</button>
-  <button data-t="diff"><b>3</b>Différences</button>
-  <button data-t="value"><b>4</b>Valeur connue</button>
-  <button data-t="ach"><b>5</b>Succès</button>
+  <button data-t="caps" class="on"><b>1</b><span class="l-en">Captures</span><span class="l-fr">Captures</span></button>
+  <button data-t="struct"><b>2</b><span class="l-en">Structure</span><span class="l-fr">Structure</span></button>
+  <button data-t="diff"><b>3</b><span class="l-en">Differences</span><span class="l-fr">Différences</span></button>
+  <button data-t="value"><b>4</b><span class="l-en">Known value</span><span class="l-fr">Valeur connue</span></button>
+  <button data-t="ach"><b>5</b><span class="l-en">Achievements</span><span class="l-fr">Succès</span></button>
   <button data-t="pc"><b>6</b>PC → Switch</button>
 </nav>
 <main>
@@ -98,31 +108,48 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 <!-- 1. CAPTURES -->
 <section id="s-caps" class="on">
   <div class="card">
-    <h2>Jeu</h2>
+    <h2><span class="l-en">Game</span><span class="l-fr">Jeu</span></h2>
     <select id="gameSel"></select>
     <div class="row" id="gameCustom" style="display:none">
-      <div><label>Title ID (16 caractères)</label><input id="tid" placeholder="0100XXXXXXXXX000" maxlength="16" autocapitalize="characters"></div>
-      <div><label>Nom</label><input id="gname" placeholder="Nom du jeu"></div>
+      <div><label><span class="l-en">Title ID (16 characters)</span><span class="l-fr">Title ID (16 caractères)</span></label><input id="tid" placeholder="0100XXXXXXXXX000" maxlength="16" autocapitalize="characters"></div>
+      <div><label><span class="l-en">Name</span><span class="l-fr">Nom</span></label><input id="gname" placeholder="Game name" data-fr-ph="Nom du jeu"></div>
     </div>
   </div>
 
   <div class="card">
-    <h2>Captures de sauvegarde</h2>
-    <p class="mute small">Une capture = la sauvegarde du jeu à un instant donné. Faites-en une, jouez et accomplissez quelque chose de précis (gagner des pièces, finir un niveau…), puis refaites-en une. Au moins 2 captures, idéalement 3–5.</p>
+    <h2><span class="l-en">Save captures</span><span class="l-fr">Captures de sauvegarde</span></h2>
+    <p class="mute small l-en">A capture = the game's save at one moment. Take one, play and do something specific (collect coins, beat a level…), then take another one. At least 2 captures, ideally 3–5.</p>
+    <p class="mute small l-fr">Une capture = la sauvegarde du jeu à un instant donné. Faites-en une, jouez et accomplissez quelque chose de précis (gagner des pièces, finir un niveau…), puis refaites-en une. Au moins 2 captures, idéalement 3–5.</p>
     <div class="row" style="margin:10px 0">
-      <span class="btn pri file fix">＋ Ajouter une capture<input type="file" id="addCap" multiple></span>
-      <span class="mute small">fichiers de la save ou .zip (JKSV)</span>
-      <button class="btn sm ghost fix" id="clearAll">Tout effacer</button>
+      <span class="btn pri file fix"><span class="l-en">＋ Add a capture</span><span class="l-fr">＋ Ajouter une capture</span><input type="file" id="addCap" multiple></span>
+      <span class="mute small"><span class="l-en">save files or a .zip (JKSV)</span><span class="l-fr">fichiers de la save ou .zip (JKSV)</span></span>
+      <button class="btn sm ghost fix" id="clearAll"></button>
     </div>
     <div id="capList"></div>
     <div id="targetBox" style="display:none">
-      <label>Fichier à analyser</label>
+      <label><span class="l-en">File to analyse</span><span class="l-fr">Fichier à analyser</span></label>
       <select id="targetSel"></select>
     </div>
   </div>
 
   <div class="card">
-    <details>
+    <details class="l-en">
+      <summary>How to get captures (no PC needed)</summary>
+      <ol class="small">
+        <li><b>On the Switch</b>: open <b>JKSV</b>, pick the game → your profile → <i>New backup</i>. Give it a meaningful name (e.g. <code>before-boss</code>). JKSV writes it to <code>sdmc:/JKSV/&lt;game&gt;/</code>.</li>
+        <li><b>To your phone or PC</b>, any of:
+          <ul>
+            <li><b>ftpd</b> (homebrew) on the Switch + an FTP client (many file manager apps support FTP): copy the capture's folder.</li>
+            <li>JKSV's <b>Google Drive / WebDAV upload</b>, if you set it up.</li>
+            <li>The SD card in a card reader (USB‑C readers work with phones).</li>
+          </ul></li>
+        <li>Here: <i>Add a capture</i> and select <b>all the files</b> of the folder (or the JKSV .zip). Repeat for each capture, in chronological order.</li>
+        <li><b>Fastest</b>: a capture of a <b>new game</b> + a downloaded <b>100% save</b> (GBAtemp's “Switch Save site / 100% Completed Saves” thread, etc.), then “⚡ Generate achievements” in tab 3: every collection and counter comes out at once. Add one or two in-between captures of your own game to confirm.</li>
+        <li>Tip: take two captures with <b>nothing done</b> in between and tick “control” on the second one. Whatever still changes (clock, position…) is set aside as noise.</li>
+      </ol>
+      <p class="small mute">Nothing is uploaded: your files stay in your browser.</p>
+    </details>
+    <details class="l-fr">
       <summary>Comment récupérer les captures sans PC</summary>
       <ol class="small">
         <li><b>Sur la Switch</b> : ouvrez <b>JKSV</b>, choisissez le jeu → votre profil → <i>Nouvelle sauvegarde</i>. Donnez un nom parlant (ex. <code>avant-boss</code>). JKSV l'écrit dans <code>sdmc:/JKSV/&lt;jeu&gt;/</code>.</li>
@@ -142,17 +169,18 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 </section>
 
 <!-- 2. STRUCTURE -->
-<section id="s-struct"><div id="structOut"><div class="card empty">Ajoutez une capture pour voir sa structure.</div></div></section>
+<section id="s-struct"><div id="structOut"></div></section>
 
 <!-- 3. DIFF -->
 <section id="s-diff">
   <div class="card">
-    <h2>Ce qui a changé entre les captures</h2>
-    <p class="mute small">Classe automatiquement chaque valeur : drapeau qui passe de 0 à 1, compteur qui ne fait que monter, champ de bits qui se remplit… Les meilleurs candidats pour des succès sont en haut.</p>
-    <div class="row"><button class="btn pri fix" id="runDiff">Comparer</button><button class="btn fix" id="autoGen">⚡ Générer les succès</button><label class="fix" style="margin:0"><input type="checkbox" id="showNoise">montrer le bruit</label></div>
+    <h2><span class="l-en">What changed between captures</span><span class="l-fr">Ce qui a changé entre les captures</span></h2>
+    <p class="mute small l-en">Each value is classified automatically: flag going from 0 to 1, counter that only goes up, bit field filling up… The best achievement candidates are at the top.</p>
+    <p class="mute small l-fr">Classe automatiquement chaque valeur : drapeau qui passe de 0 à 1, compteur qui ne fait que monter, champ de bits qui se remplit… Les meilleurs candidats pour des succès sont en haut.</p>
+    <div class="row"><button class="btn pri fix" id="runDiff"><span class="l-en">Compare</span><span class="l-fr">Comparer</span></button><button class="btn fix" id="autoGen"><span class="l-en">⚡ Generate achievements</span><span class="l-fr">⚡ Générer les succès</span></button><label class="fix" style="margin:0"><input type="checkbox" id="showNoise"><span class="l-en">show noise</span><span class="l-fr">montrer le bruit</span></label></div>
     <div class="chips" id="diffFilter">
-      <span class="chip on" data-f="all">Tout</span><span class="chip" data-f="flag">Drapeaux</span><span class="chip" data-f="counter">Compteurs</span>
-      <span class="chip" data-f="bits">Bits</span><span class="chip" data-f="float">Flottants</span><span class="chip" data-f="new">Nouveaux</span><span class="chip" data-f="other">Autres</span>
+      <span class="chip on" data-f="all"><span class="l-en">All</span><span class="l-fr">Tout</span></span><span class="chip" data-f="flag"><span class="l-en">Flags</span><span class="l-fr">Drapeaux</span></span><span class="chip" data-f="counter"><span class="l-en">Counters</span><span class="l-fr">Compteurs</span></span>
+      <span class="chip" data-f="bits">Bits</span><span class="chip" data-f="float"><span class="l-en">Floats</span><span class="l-fr">Flottants</span></span><span class="chip" data-f="new"><span class="l-en">New</span><span class="l-fr">Nouveaux</span></span><span class="chip" data-f="other"><span class="l-en">Other</span><span class="l-fr">Autres</span></span>
     </div>
     <div id="diffSummary"></div>
   </div>
@@ -162,14 +190,15 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 <!-- 4. VALUE -->
 <section id="s-value">
   <div class="card">
-    <h2>Chercher une valeur connue</h2>
-    <p class="mute small">Vous connaissez un chiffre affiché dans le jeu (pièces, rubis, victoires…) ? Notez-le pour chaque capture : l'outil trouve où il est stocké. Laissez vide si vous ne le connaissez pas.</p>
+    <h2><span class="l-en">Find a known value</span><span class="l-fr">Chercher une valeur connue</span></h2>
+    <p class="mute small l-en">Know a number shown in the game (coins, rupees, wins…)? Write it down for each capture: the tool finds where it is stored. Leave it empty if you don't know it.</p>
+    <p class="mute small l-fr">Vous connaissez un chiffre affiché dans le jeu (pièces, rubis, victoires…) ? Notez-le pour chaque capture : l'outil trouve où il est stocké. Laissez vide si vous ne le connaissez pas.</p>
     <div id="valInputs"></div>
     <div class="row">
-      <div><label>Type</label><select id="valType"><option value="auto">Automatique</option><option value="u8">Entier 1 octet</option><option value="u16">Entier 2 octets</option><option value="u32">Entier 4 octets</option><option value="f32">Flottant</option></select></div>
-      <label class="fix" style="margin-top:24px"><input type="checkbox" id="valUnaligned">offsets non alignés</label>
+      <div><label>Type</label><select id="valType"><option value="auto" data-fr="Automatique">Automatic</option><option value="u8" data-fr="Entier 1 octet">1-byte integer</option><option value="u16" data-fr="Entier 2 octets">2-byte integer</option><option value="u32" data-fr="Entier 4 octets">4-byte integer</option><option value="f32" data-fr="Flottant">Float</option></select></div>
+      <label class="fix" style="margin-top:24px"><input type="checkbox" id="valUnaligned"><span class="l-en">unaligned offsets</span><span class="l-fr">offsets non alignés</span></label>
     </div>
-    <p><button class="btn pri" id="runVal">Chercher</button></p>
+    <p><button class="btn pri" id="runVal"><span class="l-en">Search</span><span class="l-fr">Chercher</span></button></p>
     <div id="valSummary"></div>
   </div>
   <div class="card" id="valList" style="display:none"></div>
@@ -178,34 +207,36 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 <!-- 5. ACHIEVEMENTS -->
 <section id="s-ach">
   <div class="card">
-    <h2>Définition du jeu</h2>
+    <h2><span class="l-en">Game definition</span><span class="l-fr">Définition du jeu</span></h2>
     <div class="row">
-      <div><label>Lecteur (format lu par l'app)</label><select id="dReader">
-        <option value="">aucun (statistiques de jeu seulement)</option><option value="binary_le">binary_le — offsets fixes</option>
-        <option value="byml">byml — arbre BYML par chemins (Mario Odyssey…)</option><option value="json">json — texte JSON par chemins (Hollow Knight, jeux Unity…)</option><option value="gvas">gvas — sauvegarde Unreal Engine par chemins (.sav « GVAS »)</option><option value="nrbf">nrbf — BinaryFormatter .NET par chemins (jeux Unity)</option><option value="gamedata_hash">gamedata_hash — table CRC32 (BotW)</option><option value="totk_progress">totk_progress — table Murmur3 (TotK)</option></select></div>
-      <div><label>En-tête attendu (magic)</label><input id="dMagic" placeholder="ex. SUTC"></div>
+      <div><label><span class="l-en">Reader (format read by the app)</span><span class="l-fr">Lecteur (format lu par l'app)</span></label><select id="dReader">
+        <option value="" data-fr="aucun (statistiques de jeu seulement)">none (play statistics only)</option><option value="binary_le" data-fr="binary_le — offsets fixes">binary_le — fixed offsets</option>
+        <option value="byml" data-fr="byml — arbre BYML par chemins (Mario Odyssey…)">byml — BYML tree by paths (Mario Odyssey…)</option><option value="json" data-fr="json — texte JSON par chemins (Hollow Knight, jeux Unity…)">json — JSON text by paths (Hollow Knight, Unity games…)</option><option value="gvas" data-fr="gvas — sauvegarde Unreal Engine par chemins (.sav « GVAS »)">gvas — Unreal Engine save by paths (“GVAS” .sav)</option><option value="nrbf" data-fr="nrbf — BinaryFormatter .NET par chemins (jeux Unity)">nrbf — .NET BinaryFormatter by paths (Unity games)</option><option value="gamedata_hash" data-fr="gamedata_hash — table CRC32 (BotW)">gamedata_hash — CRC32 table (BotW)</option><option value="totk_progress" data-fr="totk_progress — table Murmur3 (TotK)">totk_progress — Murmur3 table (TotK)</option></select></div>
+      <div><label><span class="l-en">Expected header (magic)</span><span class="l-fr">En-tête attendu (magic)</span></label><input id="dMagic" placeholder="e.g. SUTC" data-fr-ph="ex. SUTC"></div>
     </div>
-    <label><input type="checkbox" id="dSizeOn">Exiger la taille exacte du fichier (<span id="dSizeVal" class="mono">—</span> octets)</label>
-    <label>Fichiers de sauvegarde à lire (un par ligne, chemin dans la save)</label>
+    <label><input type="checkbox" id="dSizeOn"><span class="l-en">Require this exact file size</span><span class="l-fr">Exiger la taille exacte du fichier</span> (<span id="dSizeVal" class="mono">—</span> <span class="l-en">bytes</span><span class="l-fr">octets</span>)</label>
+    <label><span class="l-en">Save files to read (one per line, path inside the save)</span><span class="l-fr">Fichiers de sauvegarde à lire (un par ligne, chemin dans la save)</span></label>
     <textarea id="dFiles" placeholder="userdata.dat"></textarea>
     <div id="fileWarn"></div>
     <div class="row" style="margin-top:10px">
-      <button class="btn fix" id="loadBuiltin">Repartir des succès intégrés</button>
-      <span class="btn file fix">Importer un JSON<input type="file" id="importJson" accept=".json,application/json"></span>
-      <button class="btn fix" id="addEmpty">＋ Succès vide</button>
-      <button class="btn fix" id="askClaude" style="display:none">✦ Suggestions de Claude</button>
+      <button class="btn fix" id="loadBuiltin"><span class="l-en">Start from the built-in achievements</span><span class="l-fr">Repartir des succès intégrés</span></button>
+      <span class="btn file fix"><span class="l-en">Import a JSON</span><span class="l-fr">Importer un JSON</span><input type="file" id="importJson" accept=".json,application/json"></span>
+      <button class="btn fix" id="addEmpty"><span class="l-en">＋ Empty achievement</span><span class="l-fr">＋ Succès vide</span></button>
+      <button class="btn fix" id="askClaude" style="display:none"></button>
     </div>
   </div>
   <div class="card">
-    <h2>Succès <span class="mute small" id="achCount"></span></h2>
-    <p class="mute small">Sous chaque succès : sa valeur dans chaque capture, calculée exactement comme sur la console (✓ = débloqué).</p>
+    <h2><span class="l-en">Achievements</span><span class="l-fr">Succès</span> <span class="mute small" id="achCount"></span></h2>
+    <p class="mute small l-en">Under each achievement: its value in each capture, computed exactly like on the console (✓ = unlocked).</p>
+    <p class="mute small l-fr">Sous chaque succès : sa valeur dans chaque capture, calculée exactement comme sur la console (✓ = débloqué).</p>
     <div id="achList"></div>
   </div>
   <div class="card">
-    <h2>Exporter</h2>
+    <h2><span class="l-en">Export</span><span class="l-fr">Exporter</span></h2>
     <div id="valid"></div>
-    <div class="row"><button class="btn pri fix" id="copyJson">Copier le JSON</button><button class="btn fix" id="dlJson" style="display:none">Télécharger <span id="dlName"></span></button></div>
-    <p class="small mute">Placez le fichier dans <code>sdmc:/switch/TrophyNX/games/</code> sous le nom <code id="fname">TITLEID.json</code>, puis relancez l'app et appuyez sur Y. Il remplace la définition intégrée du même jeu : partez des succès intégrés pour ne pas les perdre.</p>
+    <div class="row"><button class="btn pri fix" id="copyJson"><span class="l-en">Copy the JSON</span><span class="l-fr">Copier le JSON</span></button><button class="btn fix" id="dlJson"><span class="l-en">Download</span><span class="l-fr">Télécharger</span> <span id="dlName"></span></button></div>
+    <p class="small mute l-en">Put the file in <code>sdmc:/switch/TrophyNX/games/</code> as <code class="fname">TITLEID.json</code>, then open the app and press Y. It replaces the built-in definition of the same game: start from the built-in achievements so you don't lose them.</p>
+    <p class="small mute l-fr">Placez le fichier dans <code>sdmc:/switch/TrophyNX/games/</code> sous le nom <code class="fname">TITLEID.json</code>, puis relancez l'app et appuyez sur Y. Il remplace la définition intégrée du même jeu : partez des succès intégrés pour ne pas les perdre.</p>
     <pre id="jsonOut"></pre>
   </div>
 </section>
@@ -213,32 +244,34 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 <!-- 6. PC -> SWITCH -->
 <section id="s-pc">
   <div class="card">
-    <h2>Scan de la console</h2>
-    <p class="small mute">Dans l'app Switch, sur l'Aperçu, appuyez sur <b>ZR</b> : le fichier <code>switch/TrophyNX/scan_bundle.json</code> contient le verdict de chaque jeu et une copie des sauvegardes lisibles. Importez-le ici (ou déposez-le dans <code>samples/</code> du dépôt pour les brouillons automatiques).</p>
-    <span class="btn file fix">Importer scan_bundle.json<input type="file" id="pcBundle" accept=".json,application/json"></span>
+    <h2><span class="l-en">Console scan</span><span class="l-fr">Scan de la console</span></h2>
+    <p class="small mute l-en">In the Switch app, on the Overview, press <b>ZR</b>: the file <code>switch/TrophyNX/scan_bundle.json</code> holds each game's verdict and a copy of the readable saves. Import it here (or drop it into the repository's <code>samples/</code> folder for automatic drafts).</p>
+    <p class="small mute l-fr">Dans l'app Switch, sur l'Aperçu, appuyez sur <b>ZR</b> : le fichier <code>switch/TrophyNX/scan_bundle.json</code> contient le verdict de chaque jeu et une copie des sauvegardes lisibles. Importez-le ici (ou déposez-le dans <code>samples/</code> du dépôt pour les brouillons automatiques).</p>
+    <span class="btn file fix"><span class="l-en">Import scan_bundle.json</span><span class="l-fr">Importer scan_bundle.json</span><input type="file" id="pcBundle" accept=".json,application/json"></span>
     <div id="pcBundleOut"></div>
   </div>
   <div class="card">
-    <h2>Succès Steam → règles</h2>
-    <p class="small mute">Rapproche les noms des succès Steam des champs de la sauvegarde (dernière capture ; la première sert de « partie neuve » s'il y en a plusieurs). Aucun appel réseau, aucune IA. <b>Sûr</b> = noms concordants et valeur atteinte dans la capture ; <b>à vérifier</b> = regardez les candidats.</p>
-    <div class="row"><div><label>Liste Steam</label><select id="pcSteam"></select></div></div>
-    <div class="row"><span class="btn file fix">Importer une liste Steam (.json)<input type="file" id="pcSteamFile" accept=".json,application/json"></span><button class="btn pri fix" id="pcRun">Générer les brouillons</button></div>
+    <h2><span class="l-en">Steam achievements → rules</span><span class="l-fr">Succès Steam → règles</span></h2>
+    <p class="small mute l-en">Matches the names of Steam achievements with the fields of the save (last capture; the first one serves as the “new game” if there are several). No network calls, no AI. <b>Sure</b> = names match and the value is reached in the capture; <b>check</b> = look at the candidates.</p>
+    <p class="small mute l-fr">Rapproche les noms des succès Steam des champs de la sauvegarde (dernière capture ; la première sert de « partie neuve » s'il y en a plusieurs). Aucun appel réseau, aucune IA. <b>Sûr</b> = noms concordants et valeur atteinte dans la capture ; <b>à vérifier</b> = regardez les candidats.</p>
+    <div class="row"><div><label><span class="l-en">Steam list</span><span class="l-fr">Liste Steam</span></label><select id="pcSteam"></select></div></div>
+    <div class="row"><span class="btn file fix"><span class="l-en">Import a Steam list (.json)</span><span class="l-fr">Importer une liste Steam (.json)</span><input type="file" id="pcSteamFile" accept=".json,application/json"></span><button class="btn pri fix" id="pcRun"><span class="l-en">Generate drafts</span><span class="l-fr">Générer les brouillons</span></button></div>
     <div id="pcOut"></div>
   </div>
   <div class="card">
-    <h2>Catalogue PC → Switch</h2>
+    <h2><span class="l-en">PC → Switch catalogue</span><span class="l-fr">Catalogue PC → Switch</span></h2>
     <p class="small mute" id="pcCatInfo"></p>
-    <input id="pcCatQ" placeholder="Rechercher un jeu…">
+    <input id="pcCatQ" placeholder="Search a game…" data-fr-ph="Rechercher un jeu…">
     <div id="pcCat"></div>
   </div>
 </section>
 </main>
 
 <div class="selbar" id="selbar"><div class="in">
-  <b id="selN">0</b><span class="mute">sélectionné(s)</span>
-  <button class="btn sm pri" id="selCount">Succès « compter »</button>
-  <button class="btn sm" id="selSum">« somme »</button>
-  <button class="btn sm" id="selExtend">Étendre la série</button>
+  <b id="selN">0</b><span class="mute"><span class="l-en">selected</span><span class="l-fr">sélectionné(s)</span></span>
+  <button class="btn sm pri" id="selCount"><span class="l-en">“Count” achievement</span><span class="l-fr">Succès « compter »</span></button>
+  <button class="btn sm" id="selSum"><span class="l-en">“Sum”</span><span class="l-fr">« somme »</span></button>
+  <button class="btn sm" id="selExtend"><span class="l-en">Extend the series</span><span class="l-fr">Étendre la série</span></button>
   <button class="btn sm ghost" id="selClear">✕</button>
 </div></div>
 <div class="dlg" id="dlg"><div class="box" id="dlgBox"></div></div>
@@ -252,11 +285,13 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 //   nrbf  .NET BinaryFormatter streams (Unity games)                       — source/nrbf.cpp
 (function (root) {
 'use strict';
+// T(english, french): UI language of the page (global T from index.html), English elsewhere (Node tests).
+const T = root && typeof root.T === 'function' ? root.T : (en, fr) => en;
 
 const MAX_STR = 1 << 20;
 class Reader {
   constructor(buf) { this.b = buf; this.dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength); this.o = 0; }
-  need(n) { if (n < 0 || this.o + n > this.b.length) throw new Error('fin de fichier inattendue à 0x' + this.o.toString(16).toUpperCase()); }
+  need(n) { if (n < 0 || this.o + n > this.b.length) throw new Error(T('unexpected end of file at 0x', 'fin de fichier inattendue à 0x') + this.o.toString(16).toUpperCase()); }
   skip(n) { this.need(n); this.o += n; }
   u8() { this.need(1); return this.b[this.o++]; }
   i8() { this.need(1); return this.dv.getInt8(this.o++); }
@@ -290,9 +325,9 @@ const hex8 = (v) => (v >>> 0).toString(16).toUpperCase().padStart(8, '0');
 function gvasFstr(r) {
   const n = r.i32();
   if (n === 0) return '';
-  if (n > 0) { if (n > MAX_STR) throw new Error('chaîne trop longue'); r.need(n); const s = latin1(r.b.subarray(r.o, r.o + n - 1)); r.o += n; return cut(s); }
+  if (n > 0) { if (n > MAX_STR) throw new Error(T('string too long', 'chaîne trop longue')); r.need(n); const s = latin1(r.b.subarray(r.o, r.o + n - 1)); r.o += n; return cut(s); }
   const m = -n;
-  if (m > MAX_STR) throw new Error('chaîne trop longue');
+  if (m > MAX_STR) throw new Error(T('string too long', 'chaîne trop longue'));
   r.need(m * 2);
   const s = utf16.decode(r.b.subarray(r.o, r.o + (m - 1) * 2));
   r.o += m * 2;
@@ -304,9 +339,9 @@ const PROP_NAME = /^[\x20-\x7e -￿]{1,256}$/;
 function readTag(r) {
   const name = gvasFstr(r);
   if (name === 'None') return null;
-  if (!PROP_NAME.test(name)) throw new Error('nom de propriété invalide à 0x' + r.o.toString(16).toUpperCase());
+  if (!PROP_NAME.test(name)) throw new Error(T('invalid property name at 0x', 'nom de propriété invalide à 0x') + r.o.toString(16).toUpperCase());
   const type = gvasFstr(r);
-  if (!/^[A-Za-z0-9_]{1,64}Property$/.test(type)) throw new Error('type de propriété invalide « ' + type.slice(0, 40) + ' »');
+  if (!/^[A-Za-z0-9_]{1,64}Property$/.test(type)) throw new Error(T('invalid property type “', 'type de propriété invalide « ') + type.slice(0, 40) + T('”', ' »'));
   const t = { name, type, size: r.i32(), index: r.i32() };
   switch (type) {
     case 'StructProperty': t.struct = gvasFstr(r); r.skip(16); break;
@@ -325,21 +360,21 @@ function addProp(obj, multi, name, v, index) {
   } else obj[name] = v;
 }
 function readProps(r, ctx, depth) {
-  if (depth > 48) throw new Error('structure trop profonde');
+  if (depth > 48) throw new Error(T('structure nested too deeply', 'structure trop profonde'));
   const obj = {}, multi = new Set();
   for (;;) {
     const t = readTag(r);
     if (!t) return obj;
     let v = null;
     if (t.type === 'BoolProperty') v = !!t.bool;
-    if (t.size < 0 || r.o + t.size > r.b.length) throw new Error('taille de « ' + t.name + ' » invalide');
+    if (t.size < 0 || r.o + t.size > r.b.length) throw new Error(T('invalid size for “', 'taille de « ') + t.name + T('”', ' » invalide'));
     const start = r.o, end = start + t.size;
     if (t.type !== 'BoolProperty') {
       try { v = readValue(r, t, ctx, depth, end); if (r.o > end) { v = null; ctx.skipped++; } }
       catch (e) { v = null; ctx.skipped++; if (ctx.why.length < 8) ctx.why.push(t.name + ' (' + t.type + (t.struct ? ' ' + t.struct : t.inner ? ' de ' + t.inner : '') + ') : ' + e.message); }
     }
     r.o = end;
-    if (--ctx.budget < 0) throw new Error('document trop grand');
+    if (--ctx.budget < 0) throw new Error(T('document too large', 'document trop grand'));
     addProp(obj, multi, t.name, v, t.index);
   }
 }
@@ -349,16 +384,16 @@ function readValue(r, t, ctx, depth, end) {
     case 'StructProperty': return readStruct(r, t.struct, ctx, depth, t.size);
     case 'ArrayProperty': return readArray(r, t.inner, t.size, ctx, depth);
     case 'SetProperty': {
-      const rm = r.i32(); if (rm < 0 || rm > t.size) throw new Error('set invalide');
+      const rm = r.i32(); if (rm < 0 || rm > t.size) throw new Error(T('invalid set', 'set invalide'));
       for (let i = 0; i < rm; i++) readElem(r, t.inner, ctx, depth);
-      const n = r.i32(); if (n < 0 || n > t.size) throw new Error('set invalide');
+      const n = r.i32(); if (n < 0 || n > t.size) throw new Error(T('invalid set', 'set invalide'));
       const out = []; for (let i = 0; i < n; i++) out.push(readElem(r, t.inner, ctx, depth));
       return out;
     }
     case 'MapProperty': {
-      const rm = r.i32(); if (rm < 0 || rm > t.size) throw new Error('map invalide');
+      const rm = r.i32(); if (rm < 0 || rm > t.size) throw new Error(T('invalid map', 'map invalide'));
       for (let i = 0; i < rm; i++) readElem(r, t.key, ctx, depth);
-      const n = r.i32(); if (n < 0 || n > t.size) throw new Error('map invalide');
+      const n = r.i32(); if (n < 0 || n > t.size) throw new Error(T('invalid map', 'map invalide'));
       const out = [];
       for (let i = 0; i < n; i++) { const Key = readElem(r, t.key, ctx, depth); const Value = readElem(r, t.value, ctx, depth); out.push({ Key, Value }); }
       return out;
@@ -388,7 +423,7 @@ function readElem(r, type, ctx, depth, structName) {
     case 'SoftObjectProperty': case 'SoftClassProperty': return softPath(r, ctx);
     case 'TextProperty': return readText(r, -1, ctx);
     case 'StructProperty': return structName ? readStruct(r, structName, ctx, depth, 0) : guessStruct(r, ctx, depth);
-    default: throw new Error('type non géré : ' + type);
+    default: throw new Error(T('unsupported type: ', 'type non géré : ') + type);
   }
 }
 function softPath(r, ctx) {
@@ -398,7 +433,7 @@ function softPath(r, ctx) {
 // FText -> its displayable source: Base -> source string, StringTable -> key, formats -> the format pattern,
 // AsNumber/AsPercent/AsCurrency -> the number, AsDate/AsTime/AsDateTime -> ticks, Transform -> the source text.
 function readText(r, end, ctx, depth = 0) {
-  if (depth > 16) throw new Error('texte trop imbriqué');
+  if (depth > 16) throw new Error(T('text nested too deeply', 'texte trop imbriqué'));
   r.u32();               // flags
   const h = r.i8();
   const arg = () => {
@@ -408,7 +443,7 @@ function readText(r, end, ctx, depth = 0) {
     if (t === 2) return r.f32();
     if (t === 3) return r.f64();
     if (t === 4) return readText(r, -1, ctx, depth + 1);
-    throw new Error('argument de texte non géré (' + t + ')');
+    throw new Error(T('unsupported text argument (', 'argument de texte non géré (') + t + ')');
   };
   const num = () => { const v = arg(); if (r.u32()) r.skip(25); gvasFstr(r); return v; };
   switch (h) {
@@ -416,8 +451,8 @@ function readText(r, end, ctx, depth = 0) {
       if (end >= 0 && r.o + 4 > end) return '';
       return r.i32() ? gvasFstr(r) : '';
     case 0: gvasFstr(r); gvasFstr(r); return gvasFstr(r);                 // namespace, key, source string
-    case 1: case 3: { const f = readText(r, -1, ctx, depth + 1), n = r.i32(); if (n < 0 || n > 1000) throw new Error('texte invalide'); for (let i = 0; i < n; i++) { gvasFstr(r); arg(); } return f; }
-    case 2: { const f = readText(r, -1, ctx, depth + 1), n = r.i32(); if (n < 0 || n > 1000) throw new Error('texte invalide'); for (let i = 0; i < n; i++) arg(); return f; }
+    case 1: case 3: { const f = readText(r, -1, ctx, depth + 1), n = r.i32(); if (n < 0 || n > 1000) throw new Error(T('invalid text', 'texte invalide')); for (let i = 0; i < n; i++) { gvasFstr(r); arg(); } return f; }
+    case 2: { const f = readText(r, -1, ctx, depth + 1), n = r.i32(); if (n < 0 || n > 1000) throw new Error(T('invalid text', 'texte invalide')); for (let i = 0; i < n; i++) arg(); return f; }
     case 4: case 5: return num();
     case 6: gvasFstr(r); return num();
     case 7: { const t = r.i64(); r.i8(); gvasFstr(r); return t; }
@@ -425,12 +460,12 @@ function readText(r, end, ctx, depth = 0) {
     case 9: { const t = r.i64(); r.i8(); r.i8(); gvasFstr(r); gvasFstr(r); return t; }
     case 10: { const f = readText(r, -1, ctx, depth + 1); r.i8(); return f; }
     case 11: gvasFstr(r); return gvasFstr(r);                               // string table: table id, key
-    default: throw new Error('texte non géré (historique ' + h + ')');
+    default: throw new Error(T('unsupported text (history ', 'texte non géré (historique ') + h + ')');
   }
 }
 function readArray(r, inner, size, ctx, depth) {
   const n = r.i32();
-  if (n < 0 || n > size) throw new Error('tableau invalide');
+  if (n < 0 || n > size) throw new Error(T('invalid array', 'tableau invalide'));
   const out = [];
   if (inner === 'StructProperty') {
     gvasFstr(r); gvasFstr(r); const total = r.i64();
@@ -459,7 +494,7 @@ function readStruct(r, name, ctx, depth, size) {
     case 'Guid': return gvasGuid(r);
     case 'DateTime': case 'Timespan': return r.i64();
     case 'GameplayTagContainer': {
-      const n = r.i32(); if (n < 0 || n > 100000) throw new Error('GameplayTagContainer invalide');
+      const n = r.i32(); if (n < 0 || n > 100000) throw new Error(T('invalid GameplayTagContainer', 'GameplayTagContainer invalide'));
       const out = []; for (let i = 0; i < n; i++) out.push(gvasFstr(r)); return out;
     }
     case 'SoftObjectPath': case 'SoftClassPath': return softPath(r, ctx);
@@ -479,12 +514,12 @@ function parseGvas(buf) {
   const r = new Reader(buf);
   r.skip(4);
   const sgv = r.u32();
-  if (sgv < 2 || sgv > 3) throw new Error('version GVAS ' + sgv + ' non gérée');
+  if (sgv < 2 || sgv > 3) throw new Error(T('unsupported GVAS version ', 'version GVAS ') + sgv + T('', ' non gérée'));
   const ue4 = r.u32(), ue5 = sgv >= 3 ? r.u32() : 0;
-  if (ue5 >= 1012) throw new Error('sauvegarde Unreal 5.4 ou plus récente (nouveau format des propriétés, pas encore géré)');
+  if (ue5 >= 1012) throw new Error(T('Unreal 5.4 or newer save (new property format, not supported yet)', 'sauvegarde Unreal 5.4 ou plus récente (nouveau format des propriétés, pas encore géré)'));
   const major = r.u16(), minor = r.u16(), patch = r.u16(); r.u32(); const branch = gvasFstr(r);
   const cvf = r.u32(), ncv = r.u32();
-  if (ncv > 10000) throw new Error('en-tête GVAS invalide');
+  if (ncv > 10000) throw new Error(T('invalid GVAS header', 'en-tête GVAS invalide'));
   for (let i = 0; i < ncv; i++) { if (cvf === 1) r.skip(8); else { r.skip(20); if (cvf === 2) gvasFstr(r); } }
   const cls = gvasFstr(r);
   const ctx = { ue4, ue5, lwc: ue5 >= 1004, skipped: 0, why: [], budget: 2e6 };
@@ -501,8 +536,8 @@ function parseGvas(buf) {
 //   char -> 1-character string · a root that is not an object/list -> { value: root } · cycles -> null
 function lps(r) {
   let n = 0, shift = 0, b;
-  do { if (shift > 28) throw new Error('longueur de chaîne invalide'); b = r.u8(); n |= (b & 0x7f) << shift; shift += 7; } while (b & 0x80);
-  if (n > MAX_STR) throw new Error('chaîne trop longue');
+  do { if (shift > 28) throw new Error(T('invalid string length', 'longueur de chaîne invalide')); b = r.u8(); n |= (b & 0x7f) << shift; shift += 7; } while (b & 0x80);
+  if (n > MAX_STR) throw new Error(T('string too long', 'chaîne trop longue'));
   r.need(n);
   const s = utf8.decode(r.b.subarray(r.o, r.o + n));
   r.o += n;
@@ -526,18 +561,18 @@ function nrbfPrim(r, t) {
     case 16: return r.u64();
     case 17: return null;
     case 18: return lps(r);
-    default: throw new Error('type primitif inconnu ' + t);
+    default: throw new Error(T('unknown primitive type ', 'type primitif inconnu ') + t);
   }
 }
 const REF = (id) => ({ $ref: id });
 function nrbfParseRecords(buf) {
   const r = new Reader(buf);
-  if (r.u8() !== 0) throw new Error('en-tête NRBF manquant');
+  if (r.u8() !== 0) throw new Error(T('missing NRBF header', 'en-tête NRBF manquant'));
   const rootId = r.i32(); r.i32();
-  if (r.i32() !== 1 || r.i32() !== 0) throw new Error('version NRBF non gérée');
+  if (r.i32() !== 1 || r.i32() !== 0) throw new Error(T('unsupported NRBF version', 'version NRBF non gérée'));
   const objs = new Map(), metas = new Map();
   let budget = 2e6;
-  const classInfo = () => { const id = r.i32(), name = lps(r), n = r.i32(); if (n < 0 || n > 100000) throw new Error('classe invalide'); const names = []; for (let i = 0; i < n; i++) names.push(lps(r)); return { id, name, names }; };
+  const classInfo = () => { const id = r.i32(), name = lps(r), n = r.i32(); if (n < 0 || n > 100000) throw new Error(T('invalid class', 'classe invalide')); const names = []; for (let i = 0; i < n; i++) names.push(lps(r)); return { id, name, names }; };
   const typeInfo = (n) => {
     const bt = []; for (let i = 0; i < n; i++) bt.push(r.u8());
     const extra = bt.map(t => t === 0 || t === 7 ? r.u8() : t === 3 ? lps(r) : t === 4 ? (lps(r), r.i32(), 0) : 0);
@@ -547,27 +582,27 @@ function nrbfParseRecords(buf) {
     const vals = [];
     for (let i = 0; i < meta.names.length; i++) {
       if (meta.types && meta.types.bt[i] === 0) vals.push(nrbfPrim(r, meta.types.extra[i]));
-      else { const v = record(); if (v && v.$nulls) throw new Error('nulls multiples dans une classe'); vals.push(v); }
+      else { const v = record(); if (v && v.$nulls) throw new Error(T('several nulls in a class', 'nulls multiples dans une classe')); vals.push(v); }
     }
     return vals;
   };
   const elements = (n, prim) => {
     const out = [];
     while (out.length < n) {
-      if (--budget < 0) throw new Error('document trop grand');
+      if (--budget < 0) throw new Error(T('document too large', 'document trop grand'));
       if (prim !== undefined) { out.push(nrbfPrim(r, prim)); continue; }
       const v = record();
-      if (v && v.$nulls) { if (out.length + v.$nulls > n) throw new Error('tableau invalide'); for (let k = 0; k < v.$nulls; k++) out.push(null); }
+      if (v && v.$nulls) { if (out.length + v.$nulls > n) throw new Error(T('invalid array', 'tableau invalide')); for (let k = 0; k < v.$nulls; k++) out.push(null); }
       else out.push(v);
     }
     return out;
   };
   const record = () => {
     for (;;) {
-      if (--budget < 0) throw new Error('document trop grand');
+      if (--budget < 0) throw new Error(T('document too large', 'document trop grand'));
       const t = r.u8();
       switch (t) {
-        case 1: { const id = r.i32(), meta = metas.get(r.i32()); if (!meta) throw new Error('classe de référence inconnue'); objs.set(id, { cls: meta.name, names: meta.names, vals: members(meta) }); return REF(id); }
+        case 1: { const id = r.i32(), meta = metas.get(r.i32()); if (!meta) throw new Error(T('unknown referenced class', 'classe de référence inconnue')); objs.set(id, { cls: meta.name, names: meta.names, vals: members(meta) }); return REF(id); }
         case 2: case 3: case 4: case 5: {
           const ci = classInfo();
           const meta = { name: ci.name, names: ci.names, types: t >= 4 ? typeInfo(ci.names.length) : null };
@@ -579,12 +614,12 @@ function nrbfParseRecords(buf) {
         case 6: { const id = r.i32(); objs.set(id, lps(r)); return REF(id); }
         case 7: {
           const id = r.i32(), at = r.u8(), rank = r.i32();
-          if (rank < 1 || rank > 32) throw new Error('tableau invalide');
-          let n = 1; for (let i = 0; i < rank; i++) { const l = r.i32(); if (l < 0) throw new Error('tableau invalide'); n *= l; }
+          if (rank < 1 || rank > 32) throw new Error(T('invalid array', 'tableau invalide'));
+          let n = 1; for (let i = 0; i < rank; i++) { const l = r.i32(); if (l < 0) throw new Error(T('invalid array', 'tableau invalide')); n *= l; }
           if (at >= 3 && at <= 5) r.skip(4 * rank);
           const bt = r.u8(), ti = { bt: [bt], extra: [] };
           ti.extra = [bt === 0 || bt === 7 ? r.u8() : bt === 3 ? lps(r) : bt === 4 ? (lps(r), r.i32(), 0) : 0];
-          if (n > buf.length) throw new Error('tableau trop grand');
+          if (n > buf.length) throw new Error(T('array too large', 'tableau trop grand'));
           objs.set(id, elements(n, bt === 0 ? ti.extra[0] : undefined));
           return REF(id);
         }
@@ -595,9 +630,9 @@ function nrbfParseRecords(buf) {
         case 12: r.i32(); lps(r); continue;   // library: followed by the record it introduces
         case 13: return { $nulls: r.u8() };
         case 14: return { $nulls: r.i32() };
-        case 15: { const id = r.i32(), n = r.i32(), p = r.u8(); if (n < 0 || n > buf.length) throw new Error('tableau invalide'); objs.set(id, elements(n, p)); return REF(id); }
-        case 16: case 17: { const id = r.i32(), n = r.i32(); if (n < 0 || n > buf.length) throw new Error('tableau invalide'); objs.set(id, elements(n)); return REF(id); }
-        default: throw new Error('enregistrement NRBF inconnu ' + t + ' à 0x' + (r.o - 1).toString(16).toUpperCase());
+        case 15: { const id = r.i32(), n = r.i32(), p = r.u8(); if (n < 0 || n > buf.length) throw new Error(T('invalid array', 'tableau invalide')); objs.set(id, elements(n, p)); return REF(id); }
+        case 16: case 17: { const id = r.i32(), n = r.i32(); if (n < 0 || n > buf.length) throw new Error(T('invalid array', 'tableau invalide')); objs.set(id, elements(n)); return REF(id); }
+        default: throw new Error(T('unknown NRBF record ', 'enregistrement NRBF inconnu ') + t + T(' at 0x', ' à 0x') + (r.o - 1).toString(16).toUpperCase());
       }
     }
   };
@@ -609,7 +644,7 @@ function nrbfBuild(objs, rootId) {
   let budget = 2e6;
   const stack = new Set();
   const conv = (v, depth) => {
-    if (--budget < 0) throw new Error('document trop grand');
+    if (--budget < 0) throw new Error(T('document too large', 'document trop grand'));
     if (v === null || typeof v !== 'object') return v;
     if (Array.isArray(v)) return v.map(x => conv(x, depth + 1));
     if (v.$ref === undefined) return null;
@@ -722,6 +757,9 @@ else root.SaveFormats = api;
 // here behaves the same on the console.
 (function (root) {
 'use strict';
+// T(english, french): UI language of the page (global T from index.html), English elsewhere (Node tests).
+const T = root && typeof root.T === 'function' ? root.T : (en, fr) => en;
+const SEP = T(': ', ' : ');
 const F = typeof module !== 'undefined' && module.exports ? require('./formats.js') : root.SaveFormats;
 
 // ------------------------------------------------------------------ hashes (same as the app)
@@ -803,7 +841,7 @@ const printable = (s) => /^[\x20-\x7e]+$/.test(s);
 
 // ------------------------------------------------------------------ ZIP (JKSV exports, phone zips)
 async function inflateRaw(data) {
-  if (typeof DecompressionStream === 'undefined') throw new Error('Décompression ZIP non prise en charge par ce navigateur');
+  if (typeof DecompressionStream === 'undefined') throw new Error(T('This browser cannot unzip files', 'Décompression ZIP non prise en charge par ce navigateur'));
   const ds = new DecompressionStream('deflate-raw');
   const stream = new Blob([data]).stream().pipeThrough(ds);
   return new Uint8Array(await new Response(stream).arrayBuffer());
@@ -814,13 +852,13 @@ async function unzip(buf) {
   for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) {
     if (buf[i] === 0x50 && buf[i + 1] === 0x4b && buf[i + 2] === 5 && buf[i + 3] === 6) { eocd = i; break; }
   }
-  if (eocd < 0) throw new Error('ZIP invalide (fin de répertoire introuvable)');
+  if (eocd < 0) throw new Error(T('Invalid ZIP (end of central directory not found)', 'ZIP invalide (fin de répertoire introuvable)'));
   const count = rd(buf, eocd + 10, 2);
   let p = rd(buf, eocd + 16, 4);
   const files = [];
   const dec = new TextDecoder();
   for (let i = 0; i < count; i++) {
-    if (rd(buf, p, 4) !== 0x02014b50) throw new Error('ZIP invalide (répertoire central)');
+    if (rd(buf, p, 4) !== 0x02014b50) throw new Error(T('Invalid ZIP (central directory)', 'ZIP invalide (répertoire central)'));
     const method = rd(buf, p + 10, 2);
     const csize = rd(buf, p + 20, 4), usize = rd(buf, p + 24, 4);
     const nlen = rd(buf, p + 28, 2), xlen = rd(buf, p + 30, 2), clen = rd(buf, p + 32, 2);
@@ -834,8 +872,8 @@ async function unzip(buf) {
     let data;
     if (method === 0) data = raw.slice();
     else if (method === 8) data = await inflateRaw(raw);
-    else throw new Error(name + ' : méthode de compression ZIP ' + method + ' non prise en charge');
-    if (data.length !== usize) throw new Error(name + ' : taille décompressée inattendue');
+    else throw new Error(name + T(': unsupported ZIP compression method ', ' : méthode de compression ZIP ') + method + T('', ' non prise en charge'));
+    if (data.length !== usize) throw new Error(name + T(': unexpected uncompressed size', ' : taille décompressée inattendue'));
     files.push({ path: name, data });
   }
   return files;
@@ -858,25 +896,25 @@ function stripCommonPrefix(files) {
 
 // ------------------------------------------------------------------ identification
 const MAGICS = [
-  [[0x78, 0x01], 'zlib (compressé)'], [[0x78, 0x9C], 'zlib (compressé)'], [[0x78, 0xDA], 'zlib (compressé)'],
-  [[0x1F, 0x8B], 'gzip (compressé)'], [[0x28, 0xB5, 0x2F, 0xFD], 'zstd (compressé)'],
-  [[0x04, 0x22, 0x4D, 0x18], 'LZ4 frame (compressé)'], [[0x59, 0x61, 0x7A, 0x30], 'Yaz0 (compressé Nintendo)'],
-  [[0x53, 0x41, 0x52, 0x43], 'SARC (archive Nintendo)'], [[0x42, 0x59], 'BYML big-endian'], [[0x59, 0x42], 'BYML little-endian'],
-  [[0x41, 0x41, 0x4D, 0x50], 'AAMP (paramètres Nintendo)'], [[0x4D, 0x73, 0x67, 0x53, 0x74, 0x64, 0x42, 0x6E], 'MSBT (textes)'],
+  [[0x78, 0x01], T('zlib (compressed)', 'zlib (compressé)')], [[0x78, 0x9C], T('zlib (compressed)', 'zlib (compressé)')], [[0x78, 0xDA], T('zlib (compressed)', 'zlib (compressé)')],
+  [[0x1F, 0x8B], T('gzip (compressed)', 'gzip (compressé)')], [[0x28, 0xB5, 0x2F, 0xFD], T('zstd (compressed)', 'zstd (compressé)')],
+  [[0x04, 0x22, 0x4D, 0x18], T('LZ4 frame (compressed)', 'LZ4 frame (compressé)')], [[0x59, 0x61, 0x7A, 0x30], T('Yaz0 (Nintendo compression)', 'Yaz0 (compressé Nintendo)')],
+  [[0x53, 0x41, 0x52, 0x43], T('SARC (Nintendo archive)', 'SARC (archive Nintendo)')], [[0x42, 0x59], 'BYML big-endian'], [[0x59, 0x42], 'BYML little-endian'],
+  [[0x41, 0x41, 0x4D, 0x50], T('AAMP (Nintendo parameters)', 'AAMP (paramètres Nintendo)')], [[0x4D, 0x73, 0x67, 0x53, 0x74, 0x64, 0x42, 0x6E], T('MSBT (texts)', 'MSBT (textes)')],
   [[0x50, 0x4B, 0x03, 0x04], 'ZIP'], [[0x53, 0x51, 0x4C, 0x69, 0x74, 0x65], 'SQLite'],
-  [[0x7B], 'JSON / texte'], [[0x3C], 'XML / texte'],
+  [[0x7B], T('JSON / text', 'JSON / texte')], [[0x3C], T('XML / text', 'XML / texte')],
 ];
 
 // Known save formats the app already reads.
 const KNOWN = [
   { id: 'botw', test: (b) => b.length >= 0x30 && rd(b, 4, 4) === 0xFFFFFFFF, reader: 'gamedata_hash', hash: 'crc32',
-    label: 'Table hash/valeur type Zelda BotW (game_data.sav) — lisible par le lecteur « gamedata_hash »' },
+    label: T('Zelda BotW-style hash/value table (game_data.sav) — readable with the “gamedata_hash” reader', 'Table hash/valeur type Zelda BotW (game_data.sav) — lisible par le lecteur « gamedata_hash »') },
   { id: 'totk', test: (b) => b.length >= 0x30 && rd(b, 0, 4) === 0x01020304, reader: 'totk_progress', hash: 'murmur3',
-    label: 'Table hash/valeur type Zelda TotK (progress.sav) — lisible par le lecteur « totk_progress »' },
+    label: T('Zelda TotK-style hash/value table (progress.sav) — readable with the “totk_progress” reader', 'Table hash/valeur type Zelda TotK (progress.sav) — lisible par le lecteur « totk_progress »') },
   { id: 'mk8d', test: (b) => asciiAt(b, 0, 4) === 'SUTC', reader: 'binary_le', magic: 'SUTC',
-    label: 'Mario Kart 8 Deluxe (en-tête SUTC) — offsets fixes, lecteur « binary_le »' },
+    label: T('Mario Kart 8 Deluxe (SUTC header) — fixed offsets, “binary_le” reader', 'Mario Kart 8 Deluxe (en-tête SUTC) — offsets fixes, lecteur « binary_le »') },
   { id: 'smash', test: (b) => b.length === 5982968, reader: 'binary_le',
-    label: 'Smash Bros. Ultimate system_data.bin (taille 5 982 968) — offsets fixes, lecteur « binary_le »' },
+    label: T('Smash Bros. Ultimate system_data.bin (size 5,982,968) — fixed offsets, “binary_le” reader', 'Smash Bros. Ultimate system_data.bin (taille 5 982 968) — offsets fixes, lecteur « binary_le »') },
 ];
 
 // Heuristic: a run of 8-byte entries "u32 hash, u32 value" where hashes look random and values small.
@@ -921,18 +959,18 @@ function extractStrings(buf, min = 5, max = 80) {
 
 function identify(buf, path = '') {
   const notes = [];
-  const r = { size: buf.length, path, notes, format: 'inconnu', reader: '', analyzable: true };
+  const r = { size: buf.length, path, notes, format: T('unknown', 'inconnu'), reader: '', analyzable: true };
   const bh = findByml(buf);
   if (bh) {
     r.known = 'byml'; r.reader = 'byml'; r.byml = bh;
-    r.format = 'Document BYML v' + bh.ver + (bh.le ? ' (little-endian)' : ' (big-endian)') + (bh.base ? ' après un en-tête de 0x' + bh.base.toString(16) + ' octets (format Super Mario Odyssey)' : '');
-    notes.push('Arbre de données Nintendo : les valeurs sont identifiées par leur chemin (ex. ShineData[*]/IsGet), pas par leur position. Lecteur « byml » de l\'app.');
+    r.format = 'Document BYML v' + bh.ver + (bh.le ? ' (little-endian)' : ' (big-endian)') + (bh.base ? T(' after a 0x', ' après un en-tête de 0x') + bh.base.toString(16) + T('-byte header (Super Mario Odyssey layout)', ' octets (format Super Mario Odyssey)') : '');
+    notes.push(T('Nintendo data tree: values are identified by their path (e.g. ShineData[*]/IsGet), not by their position. App reader “byml”.', 'Arbre de données Nintendo : les valeurs sont identifiées par leur chemin (ex. ShineData[*]/IsGet), pas par leur position. Lecteur « byml » de l\'app.'));
   }
   if (!bh && looksJson(buf)) {
     let ok = false; try { ok = !!parseJson(buf); } catch (e) { r.jsonError = e.message; }
     if (ok) {
-      r.known = 'json'; r.reader = 'json'; r.format = 'Document JSON (texte)';
-      notes.push('Sauvegarde en texte JSON (jeux Unity, ex. Hollow Knight) : les valeurs sont identifiées par leur chemin (ex. playerData/grubsCollected). Lecteur « json » de l\'app.');
+      r.known = 'json'; r.reader = 'json'; r.format = T('JSON document (text)', 'Document JSON (texte)');
+      notes.push(T('Plain-text JSON save (Unity games, e.g. Hollow Knight): values are identified by their path (e.g. playerData/grubsCollected). App reader “json”.', 'Sauvegarde en texte JSON (jeux Unity, ex. Hollow Knight) : les valeurs sont identifiées par leur chemin (ex. playerData/grubsCollected). Lecteur « json » de l\'app.'));
     }
   }
   if (!bh && !r.known && (F.isGvas(buf) || F.isNrbf(buf))) {
@@ -942,17 +980,17 @@ function identify(buf, path = '') {
       const d = gv ? F.parseGvas(buf) : F.parseNrbf(buf);
       r.meta = d.meta;
       if (gv) {
-        r.format = 'Sauvegarde Unreal Engine ' + d.meta.engine + ' (GVAS, classe ' + d.meta.saveClass + ')';
-        notes.push('Format standard des jeux Unreal : les propriétés sont identifiées par leur nom (ex. Achievements/BooksCollected[=E_Books::Book1]). Lecteur « gvas » de l\'app.');
-        if (d.meta.skipped) notes.push(d.meta.skipped + ' valeur(s) non décodée(s), remplacées par null : ' + d.meta.why.slice(0, 3).join(' ; '));
+        r.format = T('Unreal Engine ', 'Sauvegarde Unreal Engine ') + d.meta.engine + T(' save (GVAS, class ', ' (GVAS, classe ') + d.meta.saveClass + ')';
+        notes.push(T('Standard Unreal save format: properties are identified by name (e.g. Achievements/BooksCollected[=E_Books::Book1]). App reader “gvas”.', 'Format standard des jeux Unreal : les propriétés sont identifiées par leur nom (ex. Achievements/BooksCollected[=E_Books::Book1]). Lecteur « gvas » de l\'app.'));
+        if (d.meta.skipped) notes.push(d.meta.skipped + T(' value(s) could not be decoded and were replaced by null: ', ' valeur(s) non décodée(s), remplacées par null : ') + d.meta.why.slice(0, 3).join(' ; '));
       } else {
-        r.format = 'Données .NET BinaryFormatter (NRBF, objet racine ' + (d.meta.rootClass.split('[')[0] || '?') + ')';
-        notes.push('Format de sérialisation .NET utilisé par des jeux Unity : les champs sont identifiés par leur nom (ex. flags[Key=Ending_A]/Value). Lecteur « nrbf » de l\'app.');
-        if (d.meta.rootClass === 'System.String') notes.push('Le fichier ne contient qu\'une chaîne : la vraie sauvegarde est probablement chiffrée ou encodée dedans (ex. Hollow Knight sur PC).');
+        r.format = T('.NET BinaryFormatter data (NRBF, root object ', 'Données .NET BinaryFormatter (NRBF, objet racine ') + (d.meta.rootClass.split('[')[0] || '?') + ')';
+        notes.push(T('.NET serialization format used by some Unity games: fields are identified by name (e.g. flags[Key=Ending_A]/Value). App reader “nrbf”.', 'Format de sérialisation .NET utilisé par des jeux Unity : les champs sont identifiés par leur nom (ex. flags[Key=Ending_A]/Value). Lecteur « nrbf » de l\'app.'));
+        if (d.meta.rootClass === 'System.String') notes.push(T('The file only holds a string: the real save is probably encrypted or encoded inside it (e.g. Hollow Knight on PC).', 'Le fichier ne contient qu\'une chaîne : la vraie sauvegarde est probablement chiffrée ou encodée dedans (ex. Hollow Knight sur PC).'));
       }
     } catch (e) {
       r.treeError = e.message;
-      r.format = (gv ? 'Sauvegarde Unreal (GVAS)' : 'Données .NET (NRBF)') + ' illisible : ' + e.message;
+      r.format = (gv ? T('Unreal save (GVAS)', 'Sauvegarde Unreal (GVAS)') : T('.NET data (NRBF)', 'Données .NET (NRBF)')) + T(' unreadable: ', ' illisible : ') + e.message;
     }
   }
   if (!bh && !r.known && F.looksXorText(buf)) {
@@ -960,8 +998,8 @@ function identify(buf, path = '') {
     try { d = parseTree(buf); } catch (e) { d = null; }
     if (d && d.xorKey) {
       r.known = r.reader = d.reader; r.xorKey = d.xorKey;
-      r.format = treeFormat(d.reader).label + ' chiffré par XOR (clé répétée de ' + d.xorKey.length + ' caractères' + (d.xorKnown ? ', connue : ' + d.xorKnown : ', retrouvée automatiquement') + ')';
-      notes.push('Clé : « ' + d.xorKey.replace(/[^\x20-\x7e]/g, '·') + ' ». Elle est ajoutée à la définition (champ xor_key) : l\'app déchiffre le fichier avant de le lire.');
+      r.format = treeFormat(d.reader).label + T(' scrambled with XOR (repeating ', ' chiffré par XOR (clé répétée de ') + d.xorKey.length + T('-character key', ' caractères') + (d.xorKnown ? T(', known: ', ', connue : ') + d.xorKnown : T(', recovered automatically', ', retrouvée automatiquement')) + ')';
+      notes.push(T('Key: “', 'Clé : « ') + d.xorKey.replace(/[^\x20-\x7e]/g, '·') + T('”. It is added to the definition (xor_key field): the app unscrambles the file before reading it.', ' ». Elle est ajoutée à la définition (champ xor_key) : l\'app déchiffre le fichier avant de le lire.'));
     }
   }
   if (!bh && !r.known) for (const k of KNOWN) if (k.test(buf)) { r.known = k.id; r.format = k.label; r.reader = k.reader; r.hash = k.hash || ''; if (k.magic) r.magic = k.magic; break; }
@@ -984,26 +1022,26 @@ function identify(buf, path = '') {
     const ht = detectHashTable(buf);
     if (ht) {
       r.hashTable = ht;
-      r.format = 'Table hash/valeur probable (entrées de 8 octets à partir de ' + hexOff(ht.start) + ')';
-      notes.push('Les clés ressemblent à des empreintes (CRC32/Murmur3) de noms de drapeaux : collez des noms candidats dans le dictionnaire pour les identifier.');
+      r.format = T('Probable hash/value table (8-byte entries from ', 'Table hash/valeur probable (entrées de 8 octets à partir de ') + hexOff(ht.start) + ')';
+      notes.push(T('The keys look like hashes (CRC32/Murmur3) of flag names: paste candidate names into the dictionary to identify them.', 'Les clés ressemblent à des empreintes (CRC32/Murmur3) de noms de drapeaux : collez des noms candidats dans le dictionnaire pour les identifier.'));
     }
   }
   if (TREE_READERS.includes(r.known)) { /* structured */ }
   else if (r.container && /compress/.test(r.container)) {
     r.analyzable = false;
-    notes.push('Le fichier est compressé (' + r.container + ') : les offsets changent à chaque sauvegarde. L\'app ne sait pas encore lire ce cas.');
+    notes.push(T('The file is compressed (', 'Le fichier est compressé (') + r.container + T('): offsets move with every save. The app cannot read this case yet.', ') : les offsets changent à chaque sauvegarde. L\'app ne sait pas encore lire ce cas.'));
   } else if (r.highBlocks > 0.85 && r.entropy > 7.8) {
     r.analyzable = false;
-    r.format = r.known ? r.format : 'Chiffré ou compressé (entropie ' + r.entropy.toFixed(2) + ' bits/octet)';
-    notes.push('Presque tout le fichier ressemble à du bruit aléatoire : il est sans doute chiffré (ex. Pokémon, Animal Crossing) ou compressé. La comparaison d\'offsets ne donnera rien tant qu\'il n\'est pas déchiffré.');
+    r.format = r.known ? r.format : T('Encrypted or compressed (entropy ', 'Chiffré ou compressé (entropie ') + r.entropy.toFixed(2) + T(' bits/byte)', ' bits/octet)');
+    notes.push(T('Almost the whole file looks like random noise: it is probably encrypted (e.g. Pokémon, Animal Crossing) or compressed. Comparing offsets will give nothing until it is decrypted.', 'Presque tout le fichier ressemble à du bruit aléatoire : il est sans doute chiffré (ex. Pokémon, Animal Crossing) ou compressé. La comparaison d\'offsets ne donnera rien tant qu\'il n\'est pas déchiffré.'));
   } else if (r.highBlocks > 0.3) {
-    notes.push(Math.round(r.highBlocks * 100) + ' % du fichier a une entropie très élevée (zones compressées ou chiffrées) ; le reste peut être exploitable.');
+    notes.push(Math.round(r.highBlocks * 100) + T('% of the file has very high entropy (compressed or encrypted areas); the rest may be usable.', ' % du fichier a une entropie très élevée (zones compressées ou chiffrées) ; le reste peut être exploitable.'));
   }
   if (!r.known && !r.hashTable && r.analyzable) {
-    r.format = r.magicText ? 'Binaire à en-tête « ' + r.magicText + ' »' : 'Binaire à structure fixe probable';
+    r.format = r.magicText ? T('Binary with header “', 'Binaire à en-tête « ') + r.magicText + T('”', ' »') : T('Probably a fixed-layout binary', 'Binaire à structure fixe probable');
     r.reader = 'binary_le';
     if (r.magicText) r.magic = r.magicText;
-    notes.push('Format adapté au lecteur « binary_le » : comparez des captures avant/après pour trouver les compteurs et drapeaux.');
+    notes.push(T('Fits the “binary_le” reader: compare before/after captures to find counters and flags.', 'Format adapté au lecteur « binary_le » : comparez des captures avant/après pour trouver les compteurs et drapeaux.'));
   }
   r.strings = extractStrings(buf);
   return r;
@@ -1054,7 +1092,7 @@ function parseByml(buf) {
   const strtab = (off) => {
     if (!off) return [];
     const o = base + off;
-    if (buf[o] !== 0xC2) throw new Error('table de chaînes invalide');
+    if (buf[o] !== 0xC2) throw new Error(T('invalid string table', 'table de chaînes invalide'));
     const n = u24(o + 1), out = [];
     for (let i = 0; i < n; i++) {
       const s = o + u32(o + 4 + 4 * i);
@@ -1081,7 +1119,7 @@ function parseByml(buf) {
     }
   };
   const node = (off, depth) => {
-    if (depth > 64 || --budget < 0) throw new Error('document BYML trop profond');
+    if (depth > 64 || --budget < 0) throw new Error(T('BYML document nested too deeply', 'document BYML trop profond'));
     const o = base + off, t = buf[o], n = u24(o + 1);
     if (t === 0xC0) {
       const vo = o + 4 + ((n + 3) & ~3), arr = new Array(n);
@@ -1093,7 +1131,7 @@ function parseByml(buf) {
       for (let i = 0; i < n; i++) { const e = o + 4 + 8 * i; r[keys[u24(e)]] = val(buf[e + 3], u32(e + 4), depth); }
       return r;
     }
-    throw new Error('nœud BYML inconnu 0x' + t.toString(16));
+    throw new Error(T('unknown BYML node 0x', 'nœud BYML inconnu 0x') + t.toString(16));
   };
   return Object.assign(h, { tree: node(u32(base + 12), 0) });
 }
@@ -1307,8 +1345,8 @@ function popcount(x) { let n = 0; x >>>= 0; while (x) { n += x & 1; x >>>= 1; } 
 function isSmallStep(v) { return v.every((x, i) => !i || x - v[i - 1] <= 3); }
 
 const KIND_LABEL = {
-  flag: 'Drapeau 0→1', bits: 'Champ de bits (bits ajoutés)', counter: 'Compteur croissant',
-  decreasing: 'Décroissant', variable: 'Variable (bruit ?)', noise: 'Bruit (change sans action)', float: 'Flottant', timestamp: 'Horodatage / horloge', new: 'Nouvelle entrée',
+  flag: T('Flag 0→1', 'Drapeau 0→1'), bits: T('Bit field (bits added)', 'Champ de bits (bits ajoutés)'), counter: T('Rising counter', 'Compteur croissant'),
+  decreasing: T('Decreasing', 'Décroissant'), variable: T('Variable (noise?)', 'Variable (bruit ?)'), noise: T('Noise (changes on its own)', 'Bruit (change sans action)'), float: T('Float', 'Flottant'), timestamp: T('Timestamp / clock', 'Horodatage / horloge'), new: T('New entry', 'Nouvelle entrée'),
 };
 
 // ------------------------------------------------------------------ binary diff
@@ -1553,14 +1591,14 @@ function evaluate(def, files, opts = {}) {
     for (const p of def.save_files || []) {
       const f = pick([p]);
       if (!f) continue;
-      if (def.file_size && f.data.length !== def.file_size) { why = p + ' : taille ' + f.data.length + ' ≠ ' + def.file_size; continue; }
-      if (def.magic && asciiAt(f.data, 0, def.magic.length) !== def.magic) { why = p + ' : en-tête différent de « ' + def.magic + ' »'; continue; }
+      if (def.file_size && f.data.length !== def.file_size) { why = p + T(': size ', ' : taille ') + f.data.length + ' ≠ ' + def.file_size; continue; }
+      if (def.magic && asciiAt(f.data, 0, def.magic.length) !== def.magic) { why = p + T(': header differs from “', ' : en-tête différent de « ') + def.magic + T('”', ' »'); continue; }
       file = f; break;
     }
     for (const a of def.achievements || []) {
       const t = a.rule && a.rule.type;
       if (!SAVE_TYPES.includes(t)) { res.push({ id: a.id, skip: true }); continue; }
-      if (!file) { res.push({ id: a.id, value: 0, met: false, note: why || 'aucun fichier de save_files trouvé' }); continue; }
+      if (!file) { res.push({ id: a.id, value: 0, met: false, note: why || T('none of the save_files was found', 'aucun fichier de save_files trouvé') }); continue; }
       const r = compileRule(a.rule, fn);
       let total = 0, bad = false;
       for (const o of r.offsets) {
@@ -1570,7 +1608,7 @@ function evaluate(def, files, opts = {}) {
         if (t === 'count') total += v ? 1 : 0; else total += v;
       }
       const value = bad ? 0 : total;
-      res.push({ id: a.id, value, met: value + 1e-9 >= r.target, note: bad ? 'valeur hors limites (offset déplacé ?)' : '' });
+      res.push({ id: a.id, value, met: value + 1e-9 >= r.target, note: bad ? T('value out of range (offset moved?)', 'valeur hors limites (offset déplacé ?)') : '' });
     }
     return { file: file && file.path, results: res };
   }
@@ -1580,14 +1618,14 @@ function evaluate(def, files, opts = {}) {
     for (const a of def.achievements || []) {
       const t = a.rule && a.rule.type;
       if (!SAVE_TYPES.includes(t)) { res.push({ id: a.id, skip: true }); continue; }
-      if (!docs.length) { res.push({ id: a.id, value: 0, met: false, note: 'aucun fichier ' + treeFormat(reader).label + ' lisible' }); continue; }
+      if (!docs.length) { res.push({ id: a.id, value: 0, met: false, note: T('no readable ', 'aucun fichier ') + treeFormat(reader).label + T(' file', ' lisible') }); continue; }
       const r = a.rule;
       const rule = { type: t, paths: [].concat(r.path ? [r.path] : [], Array.isArray(r.paths) ? r.paths : []) };
       const eq = r.equals === undefined ? undefined : typeof r.equals === 'boolean' ? String(r.equals) : String(r.equals);
       let best = -Infinity, foundMax = 0;
       for (const tree of docs) { const v = bymlRuleValue(rule, tree, eq); if (v.value > best) best = v.value; foundMax = Math.max(foundMax, v.found); }
       const target = r.target ?? 1;
-      res.push({ id: a.id, value: best, met: best + 1e-9 >= target, note: foundMax < rule.paths.length ? (rule.paths.length - foundMax) + '/' + rule.paths.length + ' chemin(s) introuvable(s)' : '' });
+      res.push({ id: a.id, value: best, met: best + 1e-9 >= target, note: foundMax < rule.paths.length ? (rule.paths.length - foundMax) + '/' + rule.paths.length + T(' path(s) not found', ' chemin(s) introuvable(s)') : '' });
     }
     return { results: res };
   }
@@ -1597,7 +1635,7 @@ function evaluate(def, files, opts = {}) {
     for (const a of def.achievements || []) {
       const t = a.rule && a.rule.type;
       if (!SAVE_TYPES.includes(t)) { res.push({ id: a.id, skip: true }); continue; }
-      if (!slots.length) { res.push({ id: a.id, value: 0, met: false, note: 'aucun fichier lisible' }); continue; }
+      if (!slots.length) { res.push({ id: a.id, value: 0, met: false, note: T('no readable file', 'aucun fichier lisible') }); continue; }
       const r = compileRule(a.rule, fn);
       let best = -Infinity, missing = r.hashes.length;
       for (const { t: s } of slots) {
@@ -1617,7 +1655,7 @@ function evaluate(def, files, opts = {}) {
         if (val > best) best = val;
         missing = Math.min(missing, r.hashes.length - found);
       }
-      res.push({ id: a.id, value: best, met: best + 1e-9 >= r.target, note: missing ? missing + '/' + r.hashes.length + ' drapeau(x) absent(s) de la save' : '' });
+      res.push({ id: a.id, value: best, met: best + 1e-9 >= r.target, note: missing ? missing + '/' + r.hashes.length + T(' flag(s) missing from the save', ' drapeau(x) absent(s) de la save') : '' });
     }
     return { results: res };
   }
@@ -1710,8 +1748,8 @@ function autoAchievements(snaps, diff, opts = {}) {
       const ms = milestones(total);
       ms.forEach((t, i) => out.push({
         group: L, auto: true,
-        name: t === 1 ? L + ' : premier' : t === total ? L + ' : complète' : L + ' : ' + t + '/' + total,
-        desc: 'Obtenir ' + t + ' élément(s) sur ' + total + ' (' + total + ' drapeaux dès ' + hexOff(g.offsets[0]) + ', pas ' + g.stride + ' ; ' + setNow + ' obtenus dans la dernière capture)',
+        name: t === 1 ? L + T(': first', ' : premier') : t === total ? L + T(': complete', ' : complète') : L + SEP + t + '/' + total,
+        desc: T('Get ', 'Obtenir ') + t + T(' item(s) out of ', ' élément(s) sur ') + total + ' (' + total + T(' flags from ', ' drapeaux dès ') + hexOff(g.offsets[0]) + T(', stride ', ', pas ') + g.stride + ' ; ' + setNow + T(' set in the last capture)', ' obtenus dans la dernière capture)'),
         points: pts(i, ms.length),
         rule: { type: 'count', offsets: g.offsets.map(hexOff), size: g.size, max: 1, target: t },
       }));
@@ -1723,8 +1761,8 @@ function autoAchievements(snaps, diff, opts = {}) {
       const ms = milestones(total);
       ms.forEach((t, i) => out.push({
         group: label, auto: true,
-        name: t === 1 ? label + ' : premier' : t === total ? label + ' : complet' : label + ' : ' + t + '/' + total,
-        desc: 'Obtenir ' + t + ' sur ' + total,
+        name: t === 1 ? label + T(': first', ' : premier') : t === total ? label + T(': complete', ' : complet') : label + SEP + t + '/' + total,
+        desc: T('Get ', 'Obtenir ') + t + T(' out of ', ' sur ') + total,
         points: pts(i, ms.length),
         rule: { type: 'count', names: g.names || g.hashes.map(h => hex(h)), target: t },
       }));
@@ -1736,7 +1774,7 @@ function autoAchievements(snaps, diff, opts = {}) {
   let ci = 0;
   for (const c of counters) {
     const best = c.vals[last];
-    const N = 'Compteur ' + (++ci);
+    const N = T('Counter ', 'Compteur ') + (++ci);
     const ts = [...new Set([niceBelow(best / 10), niceBelow(best / 2), niceBelow(best)])].filter(t => t >= 1);
     const named = isHash && opts.dict && opts.dict.get(c.hash);
     const ref = isHash ? (named ? named.name : hex(c.hash)) : hexOff(c.off);
@@ -1744,7 +1782,7 @@ function autoAchievements(snaps, diff, opts = {}) {
       const rule = { type: 'flag', target: t };
       if (isHash) rule[named ? 'name' : 'hash'] = ref;
       else { rule.offset = ref; rule.size = c.size; rule.max = Math.min(4294967295, Math.max(1000, niceNum(best * 1000))); }
-      out.push({ group: N, auto: true, name: N + ' : ' + t, desc: 'Atteindre ' + t + ' (' + ref + ' ; ' + best + ' dans la dernière capture)', points: ts.length === 1 ? 25 : [10, 25, 50][i] || 25, rule });
+      out.push({ group: N, auto: true, name: N + SEP + t, desc: T('Reach ', 'Atteindre ') + t + ' (' + ref + ' ; ' + best + T(' in the last capture)', ' dans la dernière capture)'), points: ts.length === 1 ? 25 : [10, 25, 50][i] || 25, rule });
     });
   }
   return out;
@@ -1777,21 +1815,21 @@ function autoByml(trees, diff, opts = {}) {
     const L = label(pat);
     ms.forEach((t, i) => out.push({
       group: L, auto: true,
-      name: L + ' : ' + t, desc: 'Atteindre ' + t + (g.member ? '' : ' sur ' + slots) + ' (' + pat + ' ; ' + have + ' dans la dernière capture)',
+      name: L + SEP + t, desc: T('Reach ', 'Atteindre ') + t + (g.member ? '' : T(' out of ', ' sur ') + slots) + ' (' + pat + ' ; ' + have + T(' in the last capture)', ' dans la dernière capture)'),
       points: i === 0 ? 5 : i === ms.length - 1 ? 50 : i === 1 ? 10 : 25,
       rule: { type: 'count', path: pat, target: t },
     }));
   }
   for (const c of singles.slice(0, 20)) {
     const L = label(c.path) || c.path;
-    out.push({ group: 'Étapes', auto: true, name: L, desc: c.path + ' passe à 1', points: 10, rule: { type: 'flag', path: c.path, target: 1 } });
+    out.push({ group: T('Milestones', 'Étapes'), auto: true, name: L, desc: c.path + T(' becomes 1', ' passe à 1'), points: 10, rule: { type: 'flag', path: c.path, target: 1 } });
   }
   const counters = diff.candidates.filter(c => c.kind === 'counter' && !c.float && c.vals[c.vals.length - 1] >= 2).slice(0, opts.maxCounters || 12);
   for (const c of counters) {
     const best = c.vals[c.vals.length - 1];
     const ts = best >= 20 ? [...new Set([niceBelow(best / 10), niceBelow(best / 2), niceBelow(best)])] : [best];
     const L = label(c.path) || c.path;
-    ts.forEach((t, i) => out.push({ group: L, auto: true, name: L + ' : ' + t, desc: 'Atteindre ' + t + ' (' + c.path + ' ; ' + best + ' dans la dernière capture)', points: ts.length === 1 ? 10 : [10, 25, 50][i], rule: { type: 'flag', path: c.path, target: t } }));
+    ts.forEach((t, i) => out.push({ group: L, auto: true, name: L + SEP + t, desc: T('Reach ', 'Atteindre ') + t + ' (' + c.path + ' ; ' + best + T(' in the last capture)', ' dans la dernière capture)'), points: ts.length === 1 ? 10 : [10, 25, 50][i], rule: { type: 'flag', path: c.path, target: t } }));
   }
   return out;
 }
@@ -1799,29 +1837,29 @@ function autoByml(trees, diff, opts = {}) {
 // Validation like the app's parser: catches what the console would silently drop.
 function validate(def) {
   const errs = [];
-  if (!/^[0-9A-Fa-f]{16}$/.test(def.title_id || '')) errs.push('title_id doit faire 16 caractères hexadécimaux');
+  if (!/^[0-9A-Fa-f]{16}$/.test(def.title_id || '')) errs.push(T('title_id must be 16 hexadecimal characters', 'title_id doit faire 16 caractères hexadécimaux'));
   const ids = new Set();
   const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches'];
   for (const a of def.achievements || []) {
-    if (!a.id) errs.push('un succès n\'a pas d\'id');
-    else if (ids.has(a.id)) errs.push('id en double : ' + a.id);
+    if (!a.id) errs.push(T('an achievement has no id', 'un succès n\'a pas d\'id'));
+    else if (ids.has(a.id)) errs.push(T('duplicate id: ', 'id en double : ') + a.id);
     ids.add(a.id);
     const r = a.rule || {};
-    if (!types.includes(r.type)) { errs.push(a.id + ' : type de règle inconnu « ' + r.type + ' »'); continue; }
+    if (!types.includes(r.type)) { errs.push(a.id + T(': unknown rule type “', ' : type de règle inconnu « ') + r.type + T('”', ' »')); continue; }
     if (SAVE_TYPES.includes(r.type)) {
       const hasSrc = r.name || r.hash || (r.names && r.names.length) || r.pattern || r.offset !== undefined || (r.offsets && r.offsets.length) || r.path || (r.paths && r.paths.length);
-      if (!hasSrc) errs.push(a.id + ' : il faut un offset, un hash ou un nom');
+      if (!hasSrc) errs.push(a.id + T(': needs an offset, a hash or a name', ' : il faut un offset, un hash ou un nom'));
       const hasPath = r.path || (r.paths && r.paths.length);
       const tree = TREE_READERS.includes(def.reader);
-      if (tree && !hasPath) errs.push(a.id + ' : le lecteur ' + def.reader + ' utilise des chemins (path / paths)');
-      if (!tree && hasPath) errs.push(a.id + ' : path/paths ne servent qu\'aux lecteurs ' + TREE_READERS.join(', '));
-      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^[^[\]/]+(\[[^\]]*\])*(\/[^[\]/]*(\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + ' : chemin mal formé « ' + pp + ' »');
-      if (def.reader === 'binary_le' && (r.name || r.hash || r.names || r.pattern)) errs.push(a.id + ' : le lecteur binary_le n\'utilise que des offsets');
-      if (def.reader !== 'binary_le' && !TREE_READERS.includes(def.reader) && (r.offset !== undefined || r.offsets)) errs.push(a.id + ' : ce lecteur n\'utilise que des hashes/noms');
-      if (!def.reader) errs.push(a.id + ' : règle de sauvegarde mais aucun lecteur (reader) choisi');
+      if (tree && !hasPath) errs.push(a.id + T(': the ', ' : le lecteur ') + def.reader + T(' reader uses paths (path / paths)', ' utilise des chemins (path / paths)'));
+      if (!tree && hasPath) errs.push(a.id + T(': path/paths only work with the readers ', ' : path/paths ne servent qu\'aux lecteurs ') + TREE_READERS.join(', '));
+      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^[^[\]/]+(\[[^\]]*\])*(\/[^[\]/]*(\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + T(': malformed path “', ' : chemin mal formé « ') + pp + T('”', ' »'));
+      if (def.reader === 'binary_le' && (r.name || r.hash || r.names || r.pattern)) errs.push(a.id + T(': the binary_le reader only uses offsets', ' : le lecteur binary_le n\'utilise que des offsets'));
+      if (def.reader !== 'binary_le' && !TREE_READERS.includes(def.reader) && (r.offset !== undefined || r.offsets)) errs.push(a.id + T(': this reader only uses hashes/names', ' : ce lecteur n\'utilise que des hashes/noms'));
+      if (!def.reader) errs.push(a.id + T(': save rule but no reader chosen', ' : règle de sauvegarde mais aucun lecteur (reader) choisi'));
     }
   }
-  if (def.reader && !(def.save_files || []).length) errs.push('save_files est vide : l\'app ne saura pas quel fichier ouvrir');
+  if (def.reader && !(def.save_files || []).length) errs.push(T('save_files is empty: the app won\'t know which file to open', 'save_files est vide : l\'app ne saura pas quel fichier ouvrir'));
   return errs;
 }
 
@@ -2179,7 +2217,15 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmt = (v) => v === undefined || v === null ? '∅' : typeof v === 'number' && !Number.isInteger(v) ? String(+v.toFixed(3)) : String(v);
-const fmtBytes = (n) => n < 1024 ? n + ' o' : n < 1048576 ? (n / 1024).toFixed(1) + ' Ko' : (n / 1048576).toFixed(2) + ' Mo';
+const fmtBytes = (n) => n < 1024 ? n + T(' B', ' o') : n < 1048576 ? (n / 1024).toFixed(1) + T(' KB', ' Ko') : (n / 1048576).toFixed(2) + T(' MB', ' Mo');
+const LOC = T('en-US', 'fr-FR');
+// static texts: French options / placeholders, language switch
+if (SL_LANG === 'fr') { $$('[data-fr]').forEach(el => { el.textContent = el.dataset.fr; }); $$('[data-fr-ph]').forEach(el => { el.placeholder = el.dataset.frPh; }); }
+$('#langBtn').textContent = SL_LANG === 'fr' ? 'EN' : 'FR';
+$('#langBtn').addEventListener('click', () => { try { localStorage.setItem('savelab-lang', SL_LANG === 'fr' ? 'en' : 'fr'); } catch (e) { } location.reload(); });
+$('#clearAll').textContent = T('Clear all', 'Tout effacer');
+$('#askClaude').textContent = T('✦ Claude suggestions', '✦ Suggestions de Claude');
+$('#structOut').innerHTML = '<div class="card empty">' + T('Add a capture to see its structure.', 'Ajoutez une capture pour voir sa structure.') + '</div>';
 let toastT;
 function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
 
@@ -2233,12 +2279,12 @@ function showTab(t) {
 const GAMES = Object.values(BUILTIN).sort((a, b) => a.name.localeCompare(b.name));
 function renderGameSel() {
   const sel = $('#gameSel');
-  sel.innerHTML = '<option value="">— Choisir un jeu —</option>' + GAMES.map(g => `<option value="${g.title_id}">${esc(g.name)}${g.reader ? ' · save lue' : ''}</option>`).join('') + '<option value="other">Autre jeu (Title ID)…</option>';
+  sel.innerHTML = '<option value="">' + T('— Choose a game —', '— Choisir un jeu —') + '</option>' + GAMES.map(g => `<option value="${g.title_id}">${esc(g.name)}${g.reader ? T(' · save read', ' · save lue') : ''}</option>`).join('') + '<option value="other">' + T('Other game (Title ID)…', 'Autre jeu (Title ID)…') + '</option>';
   const known = BUILTIN[S.game.title_id];
   sel.value = known ? S.game.title_id : (S.game.title_id || S.game.custom ? 'other' : '');
   $('#gameCustom').style.display = sel.value === 'other' ? '' : 'none';
   $('#tid').value = S.game.title_id; $('#gname').value = S.game.name;
-  $('#hdrGame').textContent = S.game.name ? S.game.name + ' · ' + S.game.title_id : 'aucun jeu choisi';
+  $('#hdrGame').textContent = S.game.name ? S.game.name + ' · ' + S.game.title_id : T('no game chosen', 'aucun jeu choisi');
 }
 $('#gameSel').addEventListener('change', (e) => {
   const v = e.target.value;
@@ -2251,7 +2297,7 @@ $('#gameSel').addEventListener('change', (e) => {
 ['#tid', '#gname'].forEach(s => $(s).addEventListener('input', () => {
   S.game = { title_id: $('#tid').value.toUpperCase().replace(/[^0-9A-F]/g, ''), name: $('#gname').value, custom: true };
   if (S.def) { S.def.title_id = S.game.title_id; S.def.name = S.game.name; }
-  $('#hdrGame').textContent = S.game.name ? S.game.name + ' · ' + S.game.title_id : 'aucun jeu choisi';
+  $('#hdrGame').textContent = S.game.name ? S.game.name + ' · ' + S.game.title_id : T('no game chosen', 'aucun jeu choisi');
   persist();
 }));
 
@@ -2269,13 +2315,13 @@ $('#addCap').addEventListener('change', async (e) => {
     }
     if (list.length > 1 || files.some(f => f.path.includes('/'))) files = files.length > 1 ? E.stripCommonPrefix(files) : files;
     files = files.filter(f => !/(^|\/)\.|\.DS_Store$/.test(f.path));
-    if (!files.length) { toast('Aucun fichier dans cette sélection'); return; }
+    if (!files.length) { toast(T('No file in this selection', 'Aucun fichier dans cette sélection')); return; }
     S.caps.push({ id: nextId++, label: 'Capture ' + (S.caps.length + 1), control: false, files });
     autoTarget();
     S.diff = null; S.val = null;
     renderCaps(); persist();
-    toast(files.length + ' fichier(s) ajouté(s)');
-  } catch (err) { toast('Erreur : ' + err.message); }
+    toast(files.length + T(' file(s) added', ' fichier(s) ajouté(s)'));
+  } catch (err) { toast(T('Error: ', 'Erreur : ') + err.message); }
 });
 function commonPaths() {
   if (!S.caps.length) return [];
@@ -2308,25 +2354,25 @@ function targetFile(cap) {
 function targetData(cap) { const f = targetFile(cap); return f ? f.data : null; }
 function renderCaps() {
   const box = $('#capList');
-  if (!S.caps.length) { box.innerHTML = '<div class="empty">Aucune capture pour l\'instant.</div>'; $('#targetBox').style.display = 'none'; return; }
+  if (!S.caps.length) { box.innerHTML = '<div class="empty">' + T('No capture yet.', 'Aucune capture pour l\'instant.') + '</div>'; $('#targetBox').style.display = 'none'; return; }
   box.innerHTML = S.caps.map((c, i) => {
     const d = targetData(c);
     return `<div class="cap" data-id="${c.id}">
       <div class="n">${i + 1}</div>
       <div class="body">
-        <input type="text" class="capLabel" value="${esc(c.label)}" aria-label="Nom de la capture">
-        <div class="small mute" style="margin-top:4px">${c.files.length} fichier(s)${d ? ' · ' + esc(targetFile(c).path) + ' ' + fmtBytes(d.length) : ' · <span style="color:var(--bad)">fichier analysé absent</span>'}</div>
-        ${i ? `<label style="margin:6px 0 0"><input type="checkbox" class="capCtl" ${c.control ? 'checked' : ''}>contrôle (rien fait en jeu depuis la précédente)</label>` : ''}
+        <input type="text" class="capLabel" value="${esc(c.label)}" aria-label="${T('Capture name', 'Nom de la capture')}">
+        <div class="small mute" style="margin-top:4px">${c.files.length}${T(' file(s)', ' fichier(s)')}${d ? ' · ' + esc(targetFile(c).path) + ' ' + fmtBytes(d.length) : ' · <span style="color:var(--bad)">' + T('analysed file missing', 'fichier analysé absent') + '</span>'}</div>
+        ${i ? `<label style="margin:6px 0 0"><input type="checkbox" class="capCtl" ${c.control ? 'checked' : ''}>${T('control (nothing done in game since the previous one)', 'contrôle (rien fait en jeu depuis la précédente)')}</label>` : ''}
       </div>
       <div class="fix" style="display:flex;flex-direction:column;gap:4px">
-        <button class="btn sm capUp" ${i ? '' : 'disabled'} aria-label="Monter">↑</button>
-        <button class="btn sm capDel" aria-label="Supprimer">✕</button>
+        <button class="btn sm capUp" ${i ? '' : 'disabled'} aria-label="${T('Move up', 'Monter')}">↑</button>
+        <button class="btn sm capDel" aria-label="${T('Delete', 'Supprimer')}">✕</button>
       </div></div>`;
   }).join('');
   const paths = commonPaths();
   const all = [...new Set(S.caps.flatMap(c => c.files.map(f => f.path)))];
   $('#targetBox').style.display = S.caps.some(c => c.files.length > 1) ? '' : 'none';
-  $('#targetSel').innerHTML = all.map(p => `<option value="${esc(p)}" ${p === S.target ? 'selected' : ''}>${esc(p)}${paths.includes(p) ? '' : ' (pas dans toutes les captures)'}</option>`).join('');
+  $('#targetSel').innerHTML = all.map(p => `<option value="${esc(p)}" ${p === S.target ? 'selected' : ''}>${esc(p)}${paths.includes(p) ? '' : T(' (not in every capture)', ' (pas dans toutes les captures)')}</option>`).join('');
 }
 $('#capList').addEventListener('input', (e) => {
   const c = capOf(e.target); if (!c) return;
@@ -2347,10 +2393,10 @@ $('#capList').addEventListener('click', (e) => {
 function autoTargetSafe() { if (S.caps.length) autoTarget(); else S.target = ''; }
 function capOf(el) { const d = el.closest('.cap'); return d && S.caps.find(c => c.id === +d.dataset.id); }
 $('#clearAll').addEventListener('click', () => {
-  if ($('#clearAll').dataset.arm !== '1') { $('#clearAll').dataset.arm = '1'; $('#clearAll').textContent = 'Confirmer ?'; setTimeout(() => { $('#clearAll').dataset.arm = ''; $('#clearAll').textContent = 'Tout effacer'; }, 3000); return; }
+  if ($('#clearAll').dataset.arm !== '1') { $('#clearAll').dataset.arm = '1'; $('#clearAll').textContent = T('Confirm?', 'Confirmer ?'); setTimeout(() => { $('#clearAll').dataset.arm = ''; $('#clearAll').textContent = T('Clear all', 'Tout effacer'); }, 3000); return; }
   S.caps = []; S.target = ''; S.def = null; S.diff = null; S.val = null; S.sel.clear(); S.dict.clear();
-  $('#clearAll').dataset.arm = ''; $('#clearAll').textContent = 'Tout effacer';
-  renderCaps(); persist(); toast('Session effacée');
+  $('#clearAll').dataset.arm = ''; $('#clearAll').textContent = T('Clear all', 'Tout effacer');
+  renderCaps(); persist(); toast(T('Session cleared', 'Session effacée'));
 });
 $('#targetSel').addEventListener('change', (e) => { S.target = e.target.value; S.diff = null; S.val = null; renderCaps(); persist(); });
 
@@ -2383,52 +2429,52 @@ function describeNode(v) {
   if (Array.isArray(v)) {
     const filled = v.filter(x => x !== '' && x !== null && x !== false && x !== 0).length;
     const first = v.find(x => x !== '' && x !== null) ?? v[0];
-    return 'liste de ' + v.length + (filled !== v.length ? ' (' + filled + ' remplis)' : '') + (first !== undefined ? ' · ex. ' + JSON.stringify(first).slice(0, 90) : '');
+    return T('list of ', 'liste de ') + v.length + (filled !== v.length ? ' (' + filled + T(' filled)', ' remplis)') : '') + (first !== undefined ? T(' · e.g. ', ' · ex. ') + JSON.stringify(first).slice(0, 90) : '');
   }
-  if (v && typeof v === 'object') return Object.keys(v).length + ' clés : ' + Object.keys(v).slice(0, 6).join(', ') + (Object.keys(v).length > 6 ? '…' : '');
+  if (v && typeof v === 'object') return Object.keys(v).length + T(' keys: ', ' clés : ') + Object.keys(v).slice(0, 6).join(', ') + (Object.keys(v).length > 6 ? '…' : '');
   return JSON.stringify(v);
 }
 function renderStruct() {
   const out = $('#structOut');
   const id = currentIdent();
-  if (!id) { out.innerHTML = '<div class="card empty">Ajoutez une capture pour voir sa structure.</div>'; return; }
+  if (!id) { out.innerHTML = '<div class="card empty">' + T('Add a capture to see its structure.', 'Ajoutez une capture pour voir sa structure.') + '</div>'; return; }
   const tabs = hashTables();
   const sizes = S.caps.map(c => targetData(c)).filter(Boolean).map(d => d.length);
   const sameSize = sizes.every(s => s === sizes[0]);
   let h = `<div class="card"><h2>${esc(S.target)}</h2><dl class="kv">
     <dt>Format</dt><dd>${esc(id.format)}</dd>
-    <dt>Taille</dt><dd>${id.size.toLocaleString('fr-FR')} octets (${fmtBytes(id.size)})${S.caps.length > 1 ? (sameSize ? ' · identique dans toutes les captures' : ' · <span style="color:var(--warn)">varie selon les captures</span>') : ''}</dd>
-    ${id.magicText ? `<dt>En-tête</dt><dd class="mono">« ${esc(id.magicText)} »</dd>` : ''}
-    ${id.container ? `<dt>Conteneur</dt><dd>${esc(id.container)}</dd>` : ''}
-    <dt>Entropie</dt><dd>${id.entropy.toFixed(2)} bits/octet · ${Math.round(id.zeroRatio * 100)} % de zéros</dd>
-    <dt>Lecteur conseillé</dt><dd class="mono">${esc(id.reader || '—')}</dd>
+    <dt>${T('Size', 'Taille')}</dt><dd>${id.size.toLocaleString(LOC)} ${T('bytes', 'octets')} (${fmtBytes(id.size)})${S.caps.length > 1 ? (sameSize ? T(' · same in every capture', ' · identique dans toutes les captures') : ' · <span style="color:var(--warn)">' + T('varies between captures', 'varie selon les captures') + '</span>') : ''}</dd>
+    ${id.magicText ? `<dt>${T('Header', 'En-tête')}</dt><dd class="mono">“${esc(id.magicText)}”</dd>` : ''}
+    ${id.container ? `<dt>${T('Container', 'Conteneur')}</dt><dd>${esc(id.container)}</dd>` : ''}
+    <dt>${T('Entropy', 'Entropie')}</dt><dd>${id.entropy.toFixed(2)} ${T('bits/byte', 'bits/octet')} · ${Math.round(id.zeroRatio * 100)}${T('% zeros', ' % de zéros')}</dd>
+    <dt>${T('Suggested reader', 'Lecteur conseillé')}</dt><dd class="mono">${esc(id.reader || '—')}</dd>
   </dl>
-  <h3>Carte d'entropie (bleu = vide/structuré, rouge = aléatoire)</h3>
+  <h3>${T('Entropy map (blue = empty/structured, red = random)', 'Carte d\'entropie (bleu = vide/structuré, rouge = aléatoire)')}</h3>
   <div class="heat">${id.blocks.map(e => `<i style="background:${heatColor(e)}"></i>`).join('')}</div>
   ${id.notes.map(n => `<div class="note">${esc(n)}</div>`).join('')}
-  ${!sameSize && id.reader === 'binary_le' ? '<div class="note">La taille change d\'une capture à l\'autre : les données se décalent peut-être (listes de longueur variable). Les offsets fixes risquent d\'être fragiles.</div>' : ''}
+  ${!sameSize && id.reader === 'binary_le' ? '<div class="note">' + T('The size changes from one capture to the next: data may shift (variable-length lists). Fixed offsets may be fragile.', 'La taille change d\'une capture à l\'autre : les données se décalent peut-être (listes de longueur variable). Les offsets fixes risquent d\'être fragiles.') + '</div>' : ''}
   </div>`;
   if (tabs) {
     const keys = [...tabs[tabs.length - 1].keys()];
     const named = keys.filter(k => S.dict.has(k)).length;
-    h += `<div class="card"><h2>Table hash → valeur</h2>
-      <p>${tabs[tabs.length - 1].size.toLocaleString('fr-FR')} entrées${tabs[0].le ? '' : ' (big-endian)'} · ${named} nommée(s) par le dictionnaire.</p>
-      <h3>Dictionnaire de noms</h3>
-      <p class="small mute">Collez des noms de drapeaux possibles (un par ligne : wikis, datamines, fichiers du jeu…). L'outil teste CRC32, Murmur3 et FNV‑1a et nomme les entrées qui correspondent.</p>
+    h += `<div class="card"><h2>${T('Hash → value table', 'Table hash → valeur')}</h2>
+      <p>${tabs[tabs.length - 1].size.toLocaleString(LOC)} ${T('entries', 'entrées')}${tabs[0].le ? '' : ' (big-endian)'} · ${named} ${T('named by the dictionary', 'nommée(s) par le dictionnaire')}.</p>
+      <h3>${T('Name dictionary', 'Dictionnaire de noms')}</h3>
+      <p class="small mute">${T('Paste possible flag names (one per line: wikis, datamines, game files…). The tool tries CRC32, Murmur3 and FNV‑1a and names the entries that match.', 'Collez des noms de drapeaux possibles (un par ligne : wikis, datamines, fichiers du jeu…). L\'outil teste CRC32, Murmur3 et FNV‑1a et nomme les entrées qui correspondent.')}</p>
       <textarea id="dictIn" placeholder="IsGet_Obj_DRStone_Get&#10;Clear_Dungeon000&#10;…"></textarea>
-      <p><button class="btn" id="dictRun">Tester les noms</button> <span id="dictRes" class="small mute"></span></p></div>`;
+      <p><button class="btn" id="dictRun">${T('Test the names', 'Tester les noms')}</button> <span id="dictRes" class="small mute"></span></p></div>`;
   }
   if (E.TREE_READERS.includes(id.reader)) {
     const b = bymlOf(targetData(S.caps[S.caps.length - 1]));
     if (b && b.tree) {
       const keys = Object.keys(b.tree);
-      h += `<div class="card"><h2>Arbre de données (${keys.length} entrées, ${b.flat.size.toLocaleString('fr-FR')} valeurs)</h2>
-        <p class="small mute">Chaque valeur a un chemin. Dans une règle : <span class="mono">CoinNum</span>, <span class="mono">ShineData[*]/IsGet</span> (tous les éléments), <span class="mono">ShineData[UniqueId=205]/IsGet</span> (un élément précis), <span class="mono">HackDictionary[=Wanwan]</span> (liste qui contient).</p>
+      h += `<div class="card"><h2>${T('Data tree', 'Arbre de données')} (${keys.length} ${T('entries', 'entrées')}, ${b.flat.size.toLocaleString(LOC)} ${T('values', 'valeurs')})</h2>
+        <p class="small mute">${T('Each value has a path. In a rule:', 'Chaque valeur a un chemin. Dans une règle :')} <span class="mono">CoinNum</span>, <span class="mono">ShineData[*]/IsGet</span> (${T('every element', 'tous les éléments')}), <span class="mono">ShineData[UniqueId=205]/IsGet</span> (${T('one specific element', 'un élément précis')}), <span class="mono">HackDictionary[=Wanwan]</span> (${T('list contains', 'liste qui contient')}).</p>
         <div class="mono small">${keys.map(k => `<div style="padding:3px 0;border-top:1px solid var(--line)"><b>${esc(k)}</b> <span class="mute">${esc(describeNode(b.tree[k]))}</span></div>`).join('')}</div></div>`;
-    } else if (b && b.error) h += `<div class="card"><div class="note bad">${esc(E.treeFormat(id.reader).label)} illisible : ${esc(b.error)}</div></div>`;
+    } else if (b && b.error) h += `<div class="card"><div class="note bad">${esc(E.treeFormat(id.reader).label)} ${T('unreadable:', 'illisible :')} ${esc(b.error)}</div></div>`;
   }
   if (id.strings.length && !E.TREE_READERS.includes(id.reader)) {
-    h += `<div class="card"><h2>Textes trouvés</h2><p class="small mute">Noms de joueur, identifiants internes, versions… utiles pour comprendre le format.</p>
+    h += `<div class="card"><h2>${T('Texts found', 'Textes trouvés')}</h2><p class="small mute">${T('Player names, internal ids, versions… useful to understand the format.', 'Noms de joueur, identifiants internes, versions… utiles pour comprendre le format.')}</p>
       <div class="mono small">${id.strings.slice(0, 60).map(s => `<div><span class="mute">${E.hexOff(s.off)}</span> ${esc(s.s.slice(0, 70))}${s.enc === 'UTF-16' ? ' <span class="mute">(UTF‑16)</span>' : ''}</div>`).join('')}</div></div>`;
   }
   out.innerHTML = h;
@@ -2438,7 +2484,7 @@ function renderStruct() {
     const keys = [...tabs[tabs.length - 1].keys()];
     const r = E.matchDictionary(names, keys);
     for (const [k, v] of r.found) S.dict.set(k, v);
-    $('#dictRes').textContent = r.found.size + ' correspondance(s) — ' + Object.entries(r.stats).filter(([, n]) => n).map(([a, n]) => a + ' : ' + n).join(', ');
+    $('#dictRes').textContent = r.found.size + T(' match(es) — ', ' correspondance(s) — ') + Object.entries(r.stats).filter(([, n]) => n).map(([a, n]) => a + T(': ', ' : ') + n).join(', ');
     persist();
   });
 }
@@ -2455,9 +2501,9 @@ function candRow(c) {
   const kind = c.kind || (c.float ? 'float' : 'counter');
   const vals = c.vals.map((v, i) => `<b title="${esc(S.caps[i] && S.caps[i].label)}">${fmt(v)}</b>`).join(' → ');
   return `<div class="res" data-k="${esc(k)}">
-    <input type="checkbox" class="pick" ${S.sel.has(k) ? 'checked' : ''} aria-label="Sélectionner">
+    <input type="checkbox" class="pick" ${S.sel.has(k) ? 'checked' : ''} aria-label="${T('Select', 'Sélectionner')}">
     <div class="where">${where(c)}</div>
-    <div><span class="badge k-${kind}">${esc(E.KIND_LABEL[kind] || (kind === 'new' ? 'Nouvelle entrée' : kind))}</span> <button class="btn sm mk">＋ Succès</button></div>
+    <div><span class="badge k-${kind}">${esc(E.KIND_LABEL[kind] || (kind === 'new' ? T('New entry', 'Nouvelle entrée') : kind))}</span> <button class="btn sm mk">${T('＋ Achievement', '＋ Succès')}</button></div>
     <div class="vals">${vals}</div></div>`;
 }
 function bindCandList(box, list) {
@@ -2486,17 +2532,17 @@ $('#diffFilter').addEventListener('click', (e) => {
 });
 function controls() { return S.caps.map((c, i) => c.control ? i : -1).filter(i => i > 0); }
 function runDiff() {
-  if (S.caps.length < 2) { $('#diffSummary').innerHTML = '<div class="note">Il faut au moins 2 captures.</div>'; return; }
+  if (S.caps.length < 2) { $('#diffSummary').innerHTML = '<div class="note">' + T('You need at least 2 captures.', 'Il faut au moins 2 captures.') + '</div>'; return; }
   const datas = S.caps.map(targetData);
-  if (datas.some(d => !d)) { $('#diffSummary').innerHTML = '<div class="note bad">Le fichier analysé manque dans au moins une capture.</div>'; return; }
+  if (datas.some(d => !d)) { $('#diffSummary').innerHTML = '<div class="note bad">' + T('The analysed file is missing from at least one capture.', 'Le fichier analysé manque dans au moins une capture.') + '</div>'; return; }
   const id = currentIdent();
-  if (!id.analyzable) { $('#diffSummary').innerHTML = '<div class="note bad">Ce fichier semble chiffré ou compressé : la comparaison ne donnera que du bruit.</div>'; }
+  if (!id.analyzable) { $('#diffSummary').innerHTML = '<div class="note bad">' + T('This file looks encrypted or compressed: comparing will only give noise.', 'Ce fichier semble chiffré ou compressé : la comparaison ne donnera que du bruit.') + '</div>'; }
   const t0 = performance.now();
   const tabs = hashTables();
   const opts = { controls: controls(), showNoise: $('#showNoise').checked };
   if (isByml()) {
     const all = bymlAll();
-    if (!all) { $('#diffSummary').innerHTML = '<div class="note bad">BYML illisible dans au moins une capture.</div>'; return; }
+    if (!all) { $('#diffSummary').innerHTML = '<div class="note bad">' + T('Tree unreadable in at least one capture.', 'BYML illisible dans au moins une capture.') + '</div>'; return; }
     S.diff = E.diffByml(all.map(x => x.flat), opts);
     S.diff.ms = Math.round(performance.now() - t0); S.diffShown = 150; renderDiff(); return;
   }
@@ -2511,14 +2557,14 @@ function renderDiff() {
   const counts = {};
   for (const c of d.candidates) counts[c.kind] = (counts[c.kind] || 0) + 1;
   const other = (counts.decreasing || 0) + (counts.variable || 0) + (counts.noise || 0) + (counts.timestamp || 0);
-  const parts = [['flag', 'drapeau(x)'], ['counter', 'compteur(s)'], ['bits', 'champ(s) de bits'], ['float', 'flottant(s)'], ['new', 'nouvelle(s) entrée(s)']].filter(([k]) => counts[k]).map(([k, l]) => `<span class="k-${k}">${counts[k]} ${l}</span>`);
-  if (other) parts.push(`<span class="mute">${other} autre(s)</span>`);
-  $('#diffSummary').innerHTML = (d.candidates.length ? `<p class="small">${parts.join(' · ')}</p>` : '<div class="note">Aucune différence exploitable entre les captures.</div>') +
-    `<p class="small mute">${d.mode === 'byml' ? 'Comparaison par chemin (' + treeReader().toUpperCase() + ')' : d.mode === 'hash' ? 'Comparaison par clé (hash)' : 'Comparaison octet par octet'} en ${d.ms} ms${d.noiseCount ? ' · ' + d.noiseCount + ' valeur(s) écartée(s) comme bruit grâce aux captures de contrôle' : controls().length ? '' : ' · astuce : une capture « contrôle » élimine le bruit'}${d.total > d.candidates.length ? ' · ' + d.total + ' au total, les ' + d.candidates.length + ' meilleures affichées' : ''}.</p>`;
+  const parts = [['flag', T('flag(s)', 'drapeau(x)')], ['counter', T('counter(s)', 'compteur(s)')], ['bits', T('bit field(s)', 'champ(s) de bits')], ['float', T('float(s)', 'flottant(s)')], ['new', T('new entry(ies)', 'nouvelle(s) entrée(s)')]].filter(([k]) => counts[k]).map(([k, l]) => `<span class="k-${k}">${counts[k]} ${l}</span>`);
+  if (other) parts.push(`<span class="mute">${other} ${T('other(s)', 'autre(s)')}</span>`);
+  $('#diffSummary').innerHTML = (d.candidates.length ? `<p class="small">${parts.join(' · ')}</p>` : '<div class="note">' + T('No usable difference between the captures.', 'Aucune différence exploitable entre les captures.') + '</div>') +
+    `<p class="small mute">${d.mode === 'byml' ? T('Compared by path (', 'Comparaison par chemin (') + treeReader().toUpperCase() + ')' : d.mode === 'hash' ? T('Compared by key (hash)', 'Comparaison par clé (hash)') : T('Compared byte by byte', 'Comparaison octet par octet')} ${T('in', 'en')} ${d.ms} ms${d.noiseCount ? ' · ' + d.noiseCount + T(' value(s) set aside as noise thanks to the control captures', ' valeur(s) écartée(s) comme bruit grâce aux captures de contrôle') : controls().length ? '' : T(' · tip: a “control” capture removes noise', ' · astuce : une capture « contrôle » élimine le bruit')}${d.total > d.candidates.length ? ' · ' + d.total + T(' in total, the best ', ' au total, les ') + d.candidates.length + T(' shown', ' meilleures affichées') : ''}.</p>`;
   const f = S.diffFilter;
   const list = d.candidates.filter(c => f === 'all' || c.kind === f || (f === 'other' && ['decreasing', 'variable', 'noise', 'timestamp'].includes(c.kind)));
   box.style.display = list.length ? '' : 'none';
-  box.innerHTML = list.slice(0, S.diffShown).map(candRow).join('') + (list.length > S.diffShown ? `<p style="text-align:center"><button class="btn" id="more">Afficher plus (${list.length - S.diffShown})</button></p>` : '');
+  box.innerHTML = list.slice(0, S.diffShown).map(candRow).join('') + (list.length > S.diffShown ? `<p style="text-align:center"><button class="btn" id="more">${T('Show more', 'Afficher plus')} (${list.length - S.diffShown})</button></p>` : '');
   bindCandList(box, list);
 }
 
@@ -2531,14 +2577,14 @@ $('#autoGen').addEventListener('click', () => {
   const groups = [];
   for (const a of list) { let g = groups.find(x => x.name === a.group); if (!g) groups.push(g = { name: a.group, achs: [] }); g.achs.push(a); }
   const hasCtl = controls().length > 0;
-  openDialog(`<h2>Succès générés automatiquement</h2>
-    <p class="small mute">Collections = drapeaux 0→1 rangés à intervalle régulier (avec leurs voisins pas encore obtenus) ; compteurs = valeurs qui montent. Paliers calés sur la dernière capture : idéal avec une save 100 %.${hasCtl ? '' : ' Sans capture « contrôle », une horloge de jeu peut passer pour un compteur : vérifiez.'}</p>
-    ${groups.length ? groups.map((g, gi) => `<div class="ach"><label style="margin:0;color:var(--text)"><input type="checkbox" class="agPick" data-g="${gi}" checked><b>${esc(g.name)}</b> <span class="mute small">· ${g.achs.length} succès</span></label>
+  openDialog(`<h2>${T('Automatically generated achievements', 'Succès générés automatiquement')}</h2>
+    <p class="small mute">${T('Collections = 0→1 flags stored at regular intervals (with their neighbours not obtained yet); counters = values that go up. Tiers are based on the last capture: ideal with a 100% save.', 'Collections = drapeaux 0→1 rangés à intervalle régulier (avec leurs voisins pas encore obtenus) ; compteurs = valeurs qui montent. Paliers calés sur la dernière capture : idéal avec une save 100 %.')}${hasCtl ? '' : T(' Without a “control” capture, an in-game clock can look like a counter: check.', ' Sans capture « contrôle », une horloge de jeu peut passer pour un compteur : vérifiez.')}</p>
+    ${groups.length ? groups.map((g, gi) => `<div class="ach"><label style="margin:0;color:var(--text)"><input type="checkbox" class="agPick" data-g="${gi}" checked><b>${esc(g.name)}</b> <span class="mute small">· ${g.achs.length} ${T('achievements', 'succès')}</span></label>
       <div class="small mute" style="margin-top:4px">${esc(g.achs[g.achs.length - 1].desc)}</div>
-      <div class="small mono" style="margin-top:4px">${g.achs.map(a => esc(a.name.split(' : ')[1] || a.name)).join(' · ')}</div></div>`).join('')
-      : '<div class="empty">Rien de généralisable trouvé. Essayez avec une capture de début de partie et une capture bien plus avancée.</div>'}
-    <div class="row" style="margin-top:10px">${groups.length ? '<button class="btn pri fix" id="agAdd">Ajouter la sélection</button>' : ''}<button class="btn fix" id="agClose">Fermer</button></div>
-    <p class="small mute">Ensuite, onglet 5 : renommez-les, ou « ✦ Suggestions de Claude » pour des noms parlants.</p>`);
+      <div class="small mono" style="margin-top:4px">${g.achs.map(a => esc(a.name.split(/ ?: /)[1] || a.name)).join(' · ')}</div></div>`).join('')
+      : '<div class="empty">' + T('Nothing that generalises was found. Try a capture from the start of the game and a much more advanced one.', 'Rien de généralisable trouvé. Essayez avec une capture de début de partie et une capture bien plus avancée.') + '</div>'}
+    <div class="row" style="margin-top:10px">${groups.length ? '<button class="btn pri fix" id="agAdd">' + T('Add the selection', 'Ajouter la sélection') + '</button>' : ''}<button class="btn fix" id="agClose">${T('Close', 'Fermer')}</button></div>
+    <p class="small mute">${T('Then, tab 5: rename them.', 'Ensuite, onglet 5 : renommez-les.')}${sample ? T(' Or “✦ Claude suggestions” for meaningful names.', ' Ou « ✦ Suggestions de Claude » pour des noms parlants.') : ''}</p>`);
   $('#agClose').onclick = closeDialog;
   const add = $('#agAdd');
   if (add) add.onclick = () => {
@@ -2547,7 +2593,7 @@ $('#autoGen').addEventListener('click', () => {
     if (!d.save_files || !d.save_files.length) d.save_files = [S.target];
     let n = 0;
     $$('.agPick').forEach(cb => { if (!cb.checked) return; for (const a of groups[+cb.dataset.g].achs) { const { group, auto, ...rest } = a; d.achievements.push(Object.assign({ id: uniqueId(slug(a.name)) }, rest)); n++; } });
-    persist(); closeDialog(); toast(n + ' succès ajoutés'); showTab('ach');
+    persist(); closeDialog(); toast(n + T(' achievements added', ' succès ajoutés')); showTab('ach');
   };
 });
 
@@ -2555,20 +2601,20 @@ $('#autoGen').addEventListener('click', () => {
 function renderValInputs() {
   const box = $('#valInputs');
   const prev = $$('#valInputs input').map(i => i.value);
-  box.innerHTML = S.caps.length ? S.caps.map((c, i) => `<div class="row"><label class="fix" style="width:40%;margin:6px 0">${esc(c.label)}</label><input type="text" inputmode="decimal" class="valIn" value="${esc(prev[i] || '')}" placeholder="inconnue"></div>`).join('') : '<div class="empty">Ajoutez des captures d\'abord.</div>';
+  box.innerHTML = S.caps.length ? S.caps.map((c, i) => `<div class="row"><label class="fix" style="width:40%;margin:6px 0">${esc(c.label)}</label><input type="text" inputmode="decimal" class="valIn" value="${esc(prev[i] || '')}" placeholder="${T('unknown', 'inconnue')}"></div>`).join('') : '<div class="empty">' + T('Add captures first.', 'Ajoutez des captures d\'abord.') + '</div>';
 }
 $('#runVal').addEventListener('click', () => {
   const known = $$('.valIn').map(i => i.value.trim() === '' ? null : +i.value.replace(',', '.').replace(/\s/g, ''));
-  if (!known.some(v => v !== null && !isNaN(v))) { $('#valSummary').innerHTML = '<div class="note">Entrez au moins une valeur.</div>'; return; }
+  if (!known.some(v => v !== null && !isNaN(v))) { $('#valSummary').innerHTML = '<div class="note">' + T('Enter at least one value.', 'Entrez au moins une valeur.') + '</div>'; return; }
   const datas = S.caps.map(targetData);
-  if (datas.some(d => !d)) { $('#valSummary').innerHTML = '<div class="note bad">Le fichier analysé manque dans au moins une capture.</div>'; return; }
+  if (datas.some(d => !d)) { $('#valSummary').innerHTML = '<div class="note bad">' + T('The analysed file is missing from at least one capture.', 'Le fichier analysé manque dans au moins une capture.') + '</div>'; return; }
   const tabs = hashTables();
   const bAll = isByml() ? bymlAll() : null;
   const res = bAll ? E.searchValueByml(bAll.map(x => x.flat), known) : tabs ? E.searchValueHash(tabs, known) : E.searchValue(datas, known, $('#valType').value, { unaligned: $('#valUnaligned').checked });
   const given = known.filter(v => v !== null).length;
-  $('#valSummary').innerHTML = `<p class="small">${res.length >= 500 ? '500+' : res.length} emplacement(s) trouvé(s).</p>` +
-    (res.length > 20 && given < 3 ? '<div class="note">Beaucoup de résultats : faites une capture de plus avec une valeur différente et ajoutez-la pour affiner.</div>' : '') +
-    (!res.length ? '<div class="note">Rien trouvé. Essayez « offsets non alignés », un autre type, ou la valeur peut être stockée différemment (×10, en centièmes, chiffrée…).</div>' : '');
+  $('#valSummary').innerHTML = `<p class="small">${res.length >= 500 ? '500+' : res.length} ${T('location(s) found', 'emplacement(s) trouvé(s)')}.</p>` +
+    (res.length > 20 && given < 3 ? '<div class="note">' + T('Many results: take one more capture with a different value and add it to narrow down.', 'Beaucoup de résultats : faites une capture de plus avec une valeur différente et ajoutez-la pour affiner.') + '</div>' : '') +
+    (!res.length ? '<div class="note">' + T('Nothing found. Try “unaligned offsets”, another type, or the value may be stored differently (×10, in hundredths, encrypted…).', 'Rien trouvé. Essayez « offsets non alignés », un autre type, ou la valeur peut être stockée différemment (×10, en centièmes, chiffrée…).') + '</div>' : '');
   const box = $('#valList');
   box.style.display = res.length ? '' : 'none';
   res.forEach(r => { r.kind = r.float ? 'float' : (E.classify(r.vals, []) || { kind: 'counter' }).kind; if (r.kind === 'variable' || r.kind === 'decreasing') r.kind = 'counter'; });
@@ -2594,27 +2640,27 @@ $('#selExtend').addEventListener('click', () => {
     const all = bymlAll(); const lastTree = all[all.length - 1].tree;
     const g = E.bymlGroupRule(lastTree, arr.map(c => c.path));
     const have = S.caps.map((c, i) => esc(c.label) + ' ' + g.paths.reduce((n, p) => n + (E.queryByml(all[i].tree, p) || []).filter(v => v !== '' && v !== false && v !== 0 && v !== null).length, 0));
-    openDialog(`<h2>Généraliser en collection</h2>
-      <p class="small mute">Les éléments choisis appartiennent à ${g.paths.length > 1 ? 'ces listes' : 'cette liste'} ; la règle comptera tous les éléments « obtenus ».</p>
+    openDialog(`<h2>${T('Turn into a collection', 'Généraliser en collection')}</h2>
+      <p class="small mute">${T('The chosen items belong to ', 'Les éléments choisis appartiennent à ')}${g.paths.length > 1 ? T('these lists', 'ces listes') : T('this list', 'cette liste')}${T('; the rule will count every “obtained” item.', ' ; la règle comptera tous les éléments « obtenus ».')}</p>
       <p class="mono small">${g.paths.map(esc).join('<br>')}</p>
-      <p><b>${g.total}</b> élément(s) au total · obtenus : ${have.join(' · ')}</p>
-      <div class="row"><div><label>Objectif</label><input id="gxT" inputmode="numeric" value="${g.total}"></div></div>
-      <div class="row" style="margin-top:12px"><button class="btn pri fix" id="gxOk">Créer un succès « compter »</button><button class="btn fix" id="gxNo">Fermer</button></div>`);
+      <p><b>${g.total}</b> ${T('item(s) in total · obtained:', 'élément(s) au total · obtenus :')} ${have.join(' · ')}</p>
+      <div class="row"><div><label>${T('Target', 'Objectif')}</label><input id="gxT" inputmode="numeric" value="${g.total}"></div></div>
+      <div class="row" style="margin-top:12px"><button class="btn pri fix" id="gxOk">${T('Create a “count” achievement', 'Créer un succès « compter »')}</button><button class="btn fix" id="gxNo">${T('Close', 'Fermer')}</button></div>`);
     $('#gxNo').onclick = closeDialog;
-    $('#gxOk').onclick = () => { closeDialog(); addBymlRule({ type: 'count', ...(g.paths.length === 1 ? { path: g.paths[0] } : { paths: g.paths }), target: +$('#gxT').value || g.total }, 'Collection', 'Obtenir ' + (+$('#gxT').value || g.total) + ' élément(s)'); };
+    $('#gxOk').onclick = () => { closeDialog(); addBymlRule({ type: 'count', ...(g.paths.length === 1 ? { path: g.paths[0] } : { paths: g.paths }), target: +$('#gxT').value || g.total }, 'Collection', T('Get ', 'Obtenir ') + (+$('#gxT').value || g.total) + T(' item(s)', ' élément(s)')); };
     return;
   }
   const size = arr[0].size;
   const offs = arr.map(c => c.off);
   const guess = E.extendSeries(S.caps.map(targetData), offs, size);
-  openDialog(`<h2>Étendre une série de drapeaux</h2>
-    <p class="small mute">Les collections (sanctuaires, personnages, niveaux…) sont souvent rangées à intervalle régulier. À partir de vos ${offs.length} drapeau(x), l'outil cherche les voisins qui valent 0 ou 1 dans toutes les captures — y compris ceux pas encore débloqués.</p>
-    <div class="row"><div><label>Pas (octets)</label><input id="exStride" inputmode="numeric" value="${guess.stride || size}"></div><div><label>Nombre max</label><input id="exMax" inputmode="numeric" value="256"></div><div><label>Zéros tolérés aux bords</label><input id="exZero" inputmode="numeric" value="8"></div></div>
-    <p><button class="btn" id="exRun">Recalculer</button></p>
+  openDialog(`<h2>${T('Extend a series of flags', 'Étendre une série de drapeaux')}</h2>
+    <p class="small mute">${T('Collections (shrines, characters, levels…) are often stored at regular intervals. From your ', 'Les collections (sanctuaires, personnages, niveaux…) sont souvent rangées à intervalle régulier. À partir de vos ')}${offs.length}${T(' flag(s), the tool looks for neighbours that are 0 or 1 in every capture — including the ones not unlocked yet.', ' drapeau(x), l\'outil cherche les voisins qui valent 0 ou 1 dans toutes les captures — y compris ceux pas encore débloqués.')}</p>
+    <div class="row"><div><label>${T('Stride (bytes)', 'Pas (octets)')}</label><input id="exStride" inputmode="numeric" value="${guess.stride || size}"></div><div><label>${T('Max count', 'Nombre max')}</label><input id="exMax" inputmode="numeric" value="256"></div><div><label>${T('Zeros allowed at the edges', 'Zéros tolérés aux bords')}</label><input id="exZero" inputmode="numeric" value="8"></div></div>
+    <p><button class="btn" id="exRun">${T('Recompute', 'Recalculer')}</button></p>
     <div id="exOut"></div>
-    <div class="row" style="margin-top:12px"><button class="btn pri fix" id="exCount">Créer un succès « compter »</button><button class="btn fix" id="exClose">Fermer</button></div>`);
+    <div class="row" style="margin-top:12px"><button class="btn pri fix" id="exCount">${T('Create a “count” achievement', 'Créer un succès « compter »')}</button><button class="btn fix" id="exClose">${T('Close', 'Fermer')}</button></div>`);
   let cur = guess;
-  const show = () => { $('#exOut').innerHTML = `<p><b>${cur.offsets.length}</b> offsets, de <span class="mono">${E.hexOff(cur.offsets[0])}</span> à <span class="mono">${E.hexOff(cur.offsets[cur.offsets.length - 1])}</span>, pas ${cur.stride}.</p><p class="small mute">Actuellement à 1 : ${S.caps.map((c, i) => esc(c.label) + ' ' + cur.offsets.filter(o => E.rd(targetData(c), o, size) === 1).length).join(' · ')}</p>`; };
+  const show = () => { $('#exOut').innerHTML = `<p><b>${cur.offsets.length}</b> offsets, ${T('from', 'de')} <span class="mono">${E.hexOff(cur.offsets[0])}</span> ${T('to', 'à')} <span class="mono">${E.hexOff(cur.offsets[cur.offsets.length - 1])}</span>, ${T('stride', 'pas')} ${cur.stride}.</p><p class="small mute">${T('Currently at 1:', 'Actuellement à 1 :')} ${S.caps.map((c, i) => esc(c.label) + ' ' + cur.offsets.filter(o => E.rd(targetData(c), o, size) === 1).length).join(' · ')}</p>`; };
   show();
   $('#exRun').onclick = () => { cur = E.extendSeries(S.caps.map(targetData), offs, size, { stride: +$('#exStride').value || 0, maxCount: +$('#exMax').value || 256, maxZeroRun: +$('#exZero').value }); show(); };
   $('#exClose').onclick = closeDialog;
@@ -2648,7 +2694,7 @@ function addBymlRule(rule, name, desc) {
   if (!d.save_files || !d.save_files.length) d.save_files = [S.target];
   d.achievements.push({ id: uniqueId(slug(name)), name, desc, points: 10, rule });
   S.sel.clear(); $$('.pick').forEach(p => p.checked = false); updateSelbar();
-  persist(); toast('Succès ajouté — onglet 5 pour le nommer');
+  persist(); toast(T('Achievement added — tab 5 to name it', 'Succès ajouté — onglet 5 pour le nommer'));
 }
 function addAchievementFrom(cands, mode, extra = {}) {
   if (cands[0].path !== undefined) {
@@ -2656,14 +2702,14 @@ function addAchievementFrom(cands, mode, extra = {}) {
     const leafName = (p) => p.replace(/\[[^\]]*\]/g, '').split('/').filter(Boolean).pop() || p;
     if (cands.length === 1 && !mode) {
       const c = cands[0];
-      if (c.kind === 'flag' || c.kind === 'new') return addBymlRule({ type: 'flag', path: c.path, target: 1 }, leafName(c.path), c.path + ' obtenu');
+      if (c.kind === 'flag' || c.kind === 'new') return addBymlRule({ type: 'flag', path: c.path, target: 1 }, leafName(c.path), c.path + T(' obtained', ' obtenu'));
       const t = nice(Math.max(1, Math.abs(+last(c) || 1) * 1.5));
-      return addBymlRule({ type: 'flag', path: c.path, target: t }, leafName(c.path) + ' ' + t, 'Atteindre ' + t + ' (' + c.path + ')');
+      return addBymlRule({ type: 'flag', path: c.path, target: t }, leafName(c.path) + ' ' + t, T('Reach ', 'Atteindre ') + t + ' (' + c.path + ')');
     }
     const type = mode || 'count';
     const paths = cands.map(c => c.path);
     const target = extra.target || (type === 'count' ? paths.length : nice(Math.max(1, cands.reduce((n, c) => n + (+last(c) || 0), 0) * 1.5)));
-    return addBymlRule({ type, paths, target }, type === 'count' ? 'Collection ' + target : 'Total ' + target, type === 'count' ? 'Obtenir ' + target + ' sur ' + paths.length : 'Atteindre un total de ' + target);
+    return addBymlRule({ type, paths, target }, type === 'count' ? 'Collection ' + target : 'Total ' + target, type === 'count' ? T('Get ', 'Obtenir ') + target + T(' out of ', ' sur ') + paths.length : T('Reach a total of ', 'Atteindre un total de ') + target);
   }
   const d = ensureDef();
   const isHash = cands[0].hash !== undefined;
@@ -2674,8 +2720,8 @@ function addAchievementFrom(cands, mode, extra = {}) {
   let rule, name, desc;
   if (cands.length === 1 && !mode) {
     const c = cands[0];
-    if (c.kind === 'flag') { rule = { type: 'flag', target: 1 }; name = 'Nouveau drapeau'; desc = 'Débloqué quand ' + ref(c) + ' passe à 1'; }
-    else { const tgt = nice(Math.max(1, Math.abs(last(c)) * 1.5)); rule = { type: 'flag', target: tgt }; name = 'Compteur ' + tgt; desc = 'Atteindre ' + tgt + ' (' + ref(c) + ')'; }
+    if (c.kind === 'flag') { rule = { type: 'flag', target: 1 }; name = T('New flag', 'Nouveau drapeau'); desc = T('Unlocked when ', 'Débloqué quand ') + ref(c) + T(' becomes 1', ' passe à 1'); }
+    else { const tgt = nice(Math.max(1, Math.abs(last(c)) * 1.5)); rule = { type: 'flag', target: tgt }; name = T('Counter ', 'Compteur ') + tgt; desc = T('Reach ', 'Atteindre ') + tgt + ' (' + ref(c) + ')'; }
     if (isHash) { rule[S.dict.get(c.hash) ? 'name' : 'hash'] = ref(c); if (c.float) rule.float = true; }
     else { rule.offset = E.hexOff(c.off); rule.size = c.size; rule.max = c.kind === 'flag' ? 1 : Math.min(4294967295, Math.max(1000, nice(Math.abs(last(c)) * 1000))); }
   } else {
@@ -2685,14 +2731,14 @@ function addAchievementFrom(cands, mode, extra = {}) {
     if (isHash) rule.names = cands.map(ref);
     else { rule.offsets = cands.map(c => E.hexOff(c.off)); rule.size = cands[0].size; rule.max = type === 'count' ? 1 : Math.min(4294967295, Math.max(1000, nice(Math.max(...cands.map(c => Math.abs(last(c)))) * 1000))); }
     name = type === 'count' ? 'Collection (' + rule.target + ')' : 'Total ' + rule.target;
-    desc = type === 'count' ? 'Obtenir ' + rule.target + ' élément(s) sur ' + cands.length : 'Atteindre un total de ' + rule.target;
+    desc = type === 'count' ? T('Get ', 'Obtenir ') + rule.target + T(' item(s) out of ', ' élément(s) sur ') + cands.length : T('Reach a total of ', 'Atteindre un total de ') + rule.target;
   }
-  if (cands.some(c => c.float) && !isHash) toast('Attention : le lecteur binary_le ne lit pas les flottants');
-  if (cands.some(c => c.kind === 'bits')) toast('Champ de bits : l\'app compare la valeur entière, vérifiez le test');
+  if (cands.some(c => c.float) && !isHash) toast(T('Careful: the binary_le reader does not read floats', 'Attention : le lecteur binary_le ne lit pas les flottants'));
+  if (cands.some(c => c.kind === 'bits')) toast(T('Bit field: the app compares the whole value, check the test', 'Champ de bits : l\'app compare la valeur entière, vérifiez le test'));
   d.achievements.push({ id: uniqueId(slug(name)), name, desc, points: 10, rule });
   S.sel.clear(); $$('.pick').forEach(p => p.checked = false); updateSelbar();
   persist();
-  toast('Succès ajouté — onglet 5 pour le nommer');
+  toast(T('Achievement added — tab 5 to name it', 'Succès ajouté — onglet 5 pour le nommer'));
 }
 
 // ---------------------------------------------------------------- achievements editor
@@ -2719,7 +2765,7 @@ function renderAch() {
   const evals = S.caps.map(cap => E.evaluate(d, cap.files, { fallback: targetFile(cap) }).results);
   const named = S.caps.every(c => { const f = targetFile(c); return !f || (d.save_files || []).some(p => f.path === p || f.path.endsWith('/' + p)); });
   $('#fileWarn').innerHTML = d.reader && S.target && !named && (d.save_files || []).length
-    ? `<div class="note">Vos captures ont été renommées (ex. « ${esc(S.target)} ») mais l'app lira ${d.save_files.map(esc).join(', ')}. Pour les tests ici, le fichier de chaque capture est utilisé à la place. Gardez les vrais noms de la sauvegarde dans la liste.</div>` : '';
+    ? `<div class="note">${T('Your captures were renamed (e.g. “', 'Vos captures ont été renommées (ex. « ')}${esc(S.target)}${T('”) but the app will read ', ' ») mais l\'app lira ')}${d.save_files.map(esc).join(', ')}${T('. For the tests here, each capture\'s file is used instead. Keep the real save file names in the list.', '. Pour les tests ici, le fichier de chaque capture est utilisé à la place. Gardez les vrais noms de la sauvegarde dans la liste.')}</div>` : '';
   $('#achCount').textContent = '(' + d.achievements.length + ')';
   $('#achList').innerHTML = d.achievements.length ? d.achievements.map((a, i) => {
     const test = evals.map((r, ci) => {
@@ -2729,25 +2775,25 @@ function renderAch() {
     const note = evals.length && evals[0][i] && evals[0][i].note ? `<div class="small" style="color:var(--bad)">${esc(evals[evals.length - 1][i].note || evals[0][i].note)}</div>` : '';
     const isSave = ['flag', 'value', 'count', 'sum'].includes(a.rule && a.rule.type);
     return `<div class="ach" data-i="${i}">
-      <div class="top"><input class="aName" value="${esc(a.name)}" placeholder="Nom"><select class="aPts fix" style="width:auto">${[5, 10, 25, 50, 100].map(p => `<option ${p === a.points ? 'selected' : ''}>${p}</option>`).join('')}</select><button class="btn sm aDel fix" aria-label="Supprimer">✕</button></div>
+      <div class="top"><input class="aName" value="${esc(a.name)}" placeholder="${T('Name', 'Nom')}"><select class="aPts fix" style="width:auto">${[5, 10, 25, 50, 100].map(p => `<option ${p === a.points ? 'selected' : ''}>${p}</option>`).join('')}</select><button class="btn sm aDel fix" aria-label="${T('Delete', 'Supprimer')}">✕</button></div>
       <input class="aDesc" value="${esc(a.desc)}" placeholder="Description" style="margin-top:6px">
-      <div class="row" style="margin-top:6px"><div><label style="margin:0">Objectif</label><input class="aTarget" inputmode="decimal" value="${esc(a.rule && a.rule.target !== undefined ? a.rule.target : 1)}"></div><label class="fix" style="margin-top:18px"><input type="checkbox" class="aHidden" ${a.hidden ? 'checked' : ''}>caché</label><div class="fix mono small mute" style="margin-top:18px">${esc(a.id)}</div></div>
-      <details style="margin-top:6px"><summary>Règle (JSON)</summary><textarea class="aRule">${esc(JSON.stringify(a.rule, null, 1))}</textarea></details>
-      ${isSave && S.caps.length ? `<div class="test">${test}</div>${note}` : (!isSave ? '<div class="small mute" style="margin-top:6px">Règle basée sur les statistiques de jeu (temps / lancements).</div>' : '')}
+      <div class="row" style="margin-top:6px"><div><label style="margin:0">${T('Target', 'Objectif')}</label><input class="aTarget" inputmode="decimal" value="${esc(a.rule && a.rule.target !== undefined ? a.rule.target : 1)}"></div><label class="fix" style="margin-top:18px"><input type="checkbox" class="aHidden" ${a.hidden ? 'checked' : ''}>${T('hidden', 'caché')}</label><div class="fix mono small mute" style="margin-top:18px">${esc(a.id)}</div></div>
+      <details style="margin-top:6px"><summary>${T('Rule (JSON)', 'Règle (JSON)')}</summary><textarea class="aRule">${esc(JSON.stringify(a.rule, null, 1))}</textarea></details>
+      ${isSave && S.caps.length ? `<div class="test">${test}</div>${note}` : (!isSave ? '<div class="small mute" style="margin-top:6px">' + T('Rule based on play statistics (time / launches).', 'Règle basée sur les statistiques de jeu (temps / lancements).') + '</div>' : '')}
     </div>`;
-  }).join('') : '<div class="empty">Aucun succès. Ajoutez-en depuis « Différences » ou « Valeur connue ».</div>';
+  }).join('') : '<div class="empty">' + T('No achievement yet. Add some from “Differences” or “Known value”.', 'Aucun succès. Ajoutez-en depuis « Différences » ou « Valeur connue ».') + '</div>';
   renderExport();
 }
 $('#achList').addEventListener('change', (e) => {
   const box = e.target.closest('.ach'); if (!box) return;
   const a = S.def.achievements[+box.dataset.i];
   const cl = e.target.classList;
-  if (cl.contains('aName')) { a.name = e.target.value; if (/^(nouveau_drapeau|compteur_|collection_|total_|ach)/.test(a.id)) a.id = uniqueIdExcept(slug(a.name), a); }
+  if (cl.contains('aName')) { a.name = e.target.value; if (/^(nouveau_drapeau|compteur_|new_flag|counter_|collection_|total_|ach|nouveau|new_ach)/.test(a.id)) a.id = uniqueIdExcept(slug(a.name), a); }
   else if (cl.contains('aDesc')) a.desc = e.target.value;
   else if (cl.contains('aPts')) a.points = +e.target.value;
   else if (cl.contains('aHidden')) { if (e.target.checked) a.hidden = true; else delete a.hidden; }
   else if (cl.contains('aTarget')) { const v = +e.target.value.replace(',', '.'); if (!isNaN(v)) a.rule.target = v; }
-  else if (cl.contains('aRule')) { try { a.rule = JSON.parse(e.target.value); } catch (err) { toast('JSON de règle invalide : ' + err.message); return; } }
+  else if (cl.contains('aRule')) { try { a.rule = JSON.parse(e.target.value); } catch (err) { toast(T('Invalid rule JSON: ', 'JSON de règle invalide : ') + err.message); return; } }
   persist(); renderAch();
 });
 function uniqueIdExcept(base, self) { let id = base, n = 2; while (S.def.achievements.some(a => a !== self && a.id === id)) id = base + '_' + n++; return id; }
@@ -2758,8 +2804,8 @@ $('#achList').addEventListener('click', (e) => {
 });
 $('#addEmpty').addEventListener('click', () => {
   const d = ensureDef();
-  const rule = d.reader === 'binary_le' ? { type: 'flag', offset: '0x0', size: 4, target: 1, max: 1000000 } : E.TREE_READERS.includes(d.reader) ? { type: 'flag', path: d.reader === 'json' ? 'playerData/geo' : d.reader === 'byml' ? 'CoinNum' : 'NomDeLaPropriete', target: 100 } : d.reader ? { type: 'flag', name: 'NomDuDrapeau' } : { type: 'playtime_hours', target: 10 };
-  d.achievements.push({ id: uniqueId('nouveau'), name: 'Nouveau succès', desc: '', points: 10, rule });
+  const rule = d.reader === 'binary_le' ? { type: 'flag', offset: '0x0', size: 4, target: 1, max: 1000000 } : E.TREE_READERS.includes(d.reader) ? { type: 'flag', path: d.reader === 'json' ? 'playerData/geo' : d.reader === 'byml' ? 'CoinNum' : T('PropertyName', 'NomDeLaPropriete'), target: 100 } : d.reader ? { type: 'flag', name: T('FlagName', 'NomDuDrapeau') } : { type: 'playtime_hours', target: 10 };
+  d.achievements.push({ id: uniqueId(T('new_ach', 'nouveau')), name: T('New achievement', 'Nouveau succès'), desc: '', points: 10, rule });
   persist(); renderAch();
 });
 $('#loadBuiltin').addEventListener('click', () => {
@@ -2769,17 +2815,17 @@ $('#loadBuiltin').addEventListener('click', () => {
   S.def = JSON.parse(JSON.stringify(b));
   if (keepReader) { const id = currentIdent(); S.def.reader = id ? id.reader : 'binary_le'; S.def.save_files = S.target ? [S.target] : []; if (id && id.magic) S.def.magic = id.magic; }
   S.def.achievements.push(...mine);
-  persist(); renderAch(); toast(b.achievements.length + ' succès intégrés chargés' + (mine.length ? ' + ' + mine.length + ' à vous' : ''));
+  persist(); renderAch(); toast(b.achievements.length + T(' built-in achievements loaded', ' succès intégrés chargés') + (mine.length ? ' + ' + mine.length + T(' of yours', ' à vous') : ''));
 });
 $('#importJson').addEventListener('change', async (e) => {
   const f = e.target.files[0]; e.target.value = ''; if (!f) return;
   try {
     const j = JSON.parse(await f.text());
-    if (!j.achievements) throw new Error('pas de liste « achievements »');
+    if (!j.achievements) throw new Error(T('no “achievements” list', 'pas de liste « achievements »'));
     S.def = j;
     if (j.title_id) { S.game = { title_id: j.title_id.toUpperCase(), name: j.name || '' }; renderGameSel(); }
-    persist(); renderAch(); toast('Définition importée : ' + j.achievements.length + ' succès');
-  } catch (err) { toast('JSON invalide : ' + err.message); }
+    persist(); renderAch(); toast(T('Definition imported: ', 'Définition importée : ') + j.achievements.length + T(' achievements', ' succès'));
+  } catch (err) { toast(T('Invalid JSON: ', 'JSON invalide : ') + err.message); }
 });
 
 // ---------------------------------------------------------------- export
@@ -2808,12 +2854,12 @@ function renderPc() {
   const row = catRow(S.game.title_id);
   const sel = $('#pcSteam');
   const cur = pc.steam ? 'file' : (row && PCDATA.steam && PCDATA.steam[row[2]] ? String(row[2]) : '');
-  sel.innerHTML = (pc.steam ? `<option value="file">${esc(pc.steamName)} (importée)</option>` : '') + '<option value="">— Choisir —</option>' +
-    ch.map(c => `<option value="${c.appid}">${esc(c.name)} · ${c.achievements.length} succès</option>`).join('');
+  sel.innerHTML = (pc.steam ? `<option value="file">${esc(pc.steamName)} (${T('imported', 'importée')})</option>` : '') + '<option value="">' + T('— Choose —', '— Choisir —') + '</option>' +
+    ch.map(c => `<option value="${c.appid}">${esc(c.name)} · ${c.achievements.length} ${T('achievements', 'succès')}</option>`).join('');
   sel.value = cur;
   const cat = PCDATA.catalog || [];
-  $('#pcCatInfo').textContent = cat.length ? `${cat.length} jeux Switch aussi sur Steam (${PCDATA.generated || '?'}), dont ${cat.filter(r => r[3] > 0).length} avec des succès. Généré par tools/pc2switch/catalog.js.` :
-    'Catalogue pas encore généré : lancez le workflow « PC → Switch » sur GitHub (clé Steam requise), puis reconstruisez Save Lab.';
+  $('#pcCatInfo').textContent = cat.length ? T(`${cat.length} Switch games also on Steam (${PCDATA.generated || '?'}), ${cat.filter(r => r[3] > 0).length} of them with achievements. Generated by tools/pc2switch/catalog.js.`, `${cat.length} jeux Switch aussi sur Steam (${PCDATA.generated || '?'}), dont ${cat.filter(r => r[3] > 0).length} avec des succès. Généré par tools/pc2switch/catalog.js.`) :
+    T('Catalogue not generated yet: run the “PC to Switch” workflow on GitHub (Steam key needed), then rebuild the Save Lab.', 'Catalogue pas encore généré : lancez le workflow « PC → Switch » sur GitHub (clé Steam requise), puis reconstruisez Save Lab.');
   renderCat();
   renderBundle();
   renderDrafts();
@@ -2823,8 +2869,8 @@ function renderCat() {
   const cat = (PCDATA.catalog || []).filter(r => !q || r[1].toLowerCase().includes(q) || String(r[0]).toLowerCase().includes(q));
   const mine = r => /^(supported|scanned|playtime)/.test(r[5] || '');
   cat.sort((a, b) => mine(b) - mine(a) || (b[3] || 0) - (a[3] || 0));
-  $('#pcCat').innerHTML = cat.slice(0, 200).map(r => `<div class="pcrow small"><b>${esc(r[1])}</b> <span class="mono mute">${r[0]}</span><br>Steam ${r[2]}${r[4] !== 'exact' ? ' (' + esc(r[4]) + ')' : ''} · ${r[3] == null ? '?' : r[3]} succès · <span class="mute">${esc(r[5] || '')}</span></div>`).join('') +
-    (cat.length > 200 ? `<p class="small mute">… ${cat.length - 200} autres, affinez la recherche.</p>` : '');
+  $('#pcCat').innerHTML = cat.slice(0, 200).map(r => `<div class="pcrow small"><b>${esc(r[1])}</b> <span class="mono mute">${r[0]}</span><br>Steam ${r[2]}${r[4] !== 'exact' ? ' (' + esc(r[4]) + ')' : ''} · ${r[3] == null ? '?' : r[3]} ${T('achievements', 'succès')} · <span class="mute">${esc(r[5] || '')}</span></div>`).join('') +
+    (cat.length > 200 ? `<p class="small mute">… ${cat.length - 200} ${T('more, narrow the search.', 'autres, affinez la recherche.')}</p>` : '');
 }
 $('#pcCatQ').addEventListener('input', renderCat);
 $('#pcBundle').addEventListener('change', async (e) => {
@@ -2832,22 +2878,22 @@ $('#pcBundle').addEventListener('change', async (e) => {
   if (!f) return;
   try {
     const b = JSON.parse(await f.text());
-    if (b.format !== 'trophynx-scan' && b.format !== 'switch-achievements-scan') throw new Error('ce n\'est pas un scan_bundle.json');
-    pc.bundle = b; renderBundle(); toast(b.games.length + ' jeux dans le scan');
-  } catch (err) { toast('Erreur : ' + err.message); }
+    if (b.format !== 'trophynx-scan' && b.format !== 'switch-achievements-scan') throw new Error(T('this is not a scan_bundle.json', 'ce n\'est pas un scan_bundle.json'));
+    pc.bundle = b; renderBundle(); toast(b.games.length + T(' games in the scan', ' jeux dans le scan'));
+  } catch (err) { toast(T('Error: ', 'Erreur : ') + err.message); }
 });
-const VERD = { supported: 'succès de sauvegarde déjà pris en charge', draftable: 'lisible (JSON/BYML) : brouillons possibles', text: 'texte (XML…) : lecteur à écrire', binary: 'binaire : captures + différences', encrypted: 'chiffré ou compressé', 'no-save': 'pas de sauvegarde' };
+const VERD = { supported: T('save achievements already supported', 'succès de sauvegarde déjà pris en charge'), draftable: T('readable (JSON/BYML/GVAS/NRBF): drafts possible', 'lisible (JSON/BYML/GVAS/NRBF) : brouillons possibles'), text: T('text (XML…): a reader is needed', 'texte (XML…) : lecteur à écrire'), binary: T('binary: captures + differences', 'binaire : captures + différences'), encrypted: T('encrypted or compressed', 'chiffré ou compressé'), 'no-save': T('no save data', 'pas de sauvegarde') };
 function renderBundle() {
   const b = pc.bundle;
   if (!b) { $('#pcBundleOut').innerHTML = ''; return; }
   const order = { draftable: 0, text: 1, binary: 2, supported: 3, encrypted: 4, 'no-save': 5 };
   const games = b.games.slice().sort((x, y) => (order[x.verdict] ?? 9) - (order[y.verdict] ?? 9) || x.name.localeCompare(y.name));
-  $('#pcBundleOut').innerHTML = `<p class="small mute">Scan du ${new Date(b.generated * 1000).toLocaleDateString('fr-FR')} · app ${esc(b.app_version)}</p>` + games.map((g, i) => {
+  $('#pcBundleOut').innerHTML = `<p class="small mute">${T('Scan of', 'Scan du')} ${new Date(b.generated * 1000).toLocaleDateString(LOC)} · app ${esc(b.app_version)}</p>` + games.map((g, i) => {
     const has = (g.files || []).some(x => x.data_b64);
     const row = catRow(g.title_id);
-    return `<div class="pcrow"><b>${esc(g.name)}</b> <span class="badge">${esc(g.verdict)}</span><br><span class="small mute">${esc(VERD[g.verdict] || '')}${row ? ' · Steam ' + row[2] + ' (' + (row[3] ?? '?') + ' succès)' : ''}<br>` +
+    return `<div class="pcrow"><b>${esc(g.name)}</b> <span class="badge">${esc(g.verdict)}</span><br><span class="small mute">${esc(VERD[g.verdict] || '')}${row ? ' · Steam ' + row[2] + ' (' + (row[3] ?? '?') + T(' achievements)', ' succès)') : ''}<br>` +
       (g.files || []).map(x => esc(x.path) + ' — ' + esc(x.format) + ', ' + fmtBytes(x.size)).join('<br>') + (g.error ? esc(g.error) : '') + '</span>' +
-      (has ? `<br><button class="btn sm" data-load="${esc(g.title_id)}">Charger comme capture</button>` : '') + '</div>';
+      (has ? `<br><button class="btn sm" data-load="${esc(g.title_id)}">${T('Load as a capture', 'Charger comme capture')}</button>` : '') + '</div>';
   }).join('');
 }
 $('#pcBundleOut').addEventListener('click', (e) => {
@@ -2855,9 +2901,9 @@ $('#pcBundleOut').addEventListener('click', (e) => {
   const g = pc.bundle.games.find(x => x.title_id === tid);
   const files = g.files.filter(x => x.data_b64).map(x => { const bin = atob(x.data_b64); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return { path: x.path, data: u }; });
   if (S.game.title_id !== tid) { S.game = { title_id: tid, name: g.name, custom: !BUILTIN[tid] }; S.def = null; renderGameSel(); }
-  S.caps.push({ id: nextId++, label: 'Scan console', control: false, files });
+  S.caps.push({ id: nextId++, label: T('Console scan', 'Scan console'), control: false, files });
   autoTarget(); S.diff = null; S.val = null; renderCaps(); persist();
-  toast(files.length + ' fichier(s) chargé(s) — choisissez la liste Steam puis « Générer »');
+  toast(files.length + T(' file(s) loaded — choose the Steam list, then “Generate”', ' fichier(s) chargé(s) — choisissez la liste Steam puis « Générer »'));
   renderPc();
 });
 $('#pcSteamFile').addEventListener('change', async (e) => {
@@ -2866,21 +2912,21 @@ $('#pcSteamFile').addEventListener('change', async (e) => {
   try {
     const j = JSON.parse(await f.text());
     const list = j.achievements || (j.game && j.game.availableGameStats && j.game.availableGameStats.achievements);
-    if (!Array.isArray(list) || !list.length) throw new Error('aucune liste de succès dans ce fichier');
+    if (!Array.isArray(list) || !list.length) throw new Error(T('no achievement list in this file', 'aucune liste de succès dans ce fichier'));
     pc.steam = list; pc.steamName = j.name || (j.game && j.game.gameName) || f.name;
-    renderPc(); toast(list.length + ' succès Steam chargés');
-  } catch (err) { toast('Erreur : ' + err.message); }
+    renderPc(); toast(list.length + T(' Steam achievements loaded', ' succès Steam chargés'));
+  } catch (err) { toast(T('Error: ', 'Erreur : ') + err.message); }
 });
 $('#pcRun').addEventListener('click', () => {
   const v = $('#pcSteam').value;
   const list = v === 'file' ? pc.steam : v && PCDATA.steam[v] ? PCDATA.steam[v].achievements : null;
-  if (!list) { toast('Choisissez ou importez une liste Steam'); return; }
+  if (!list) { toast(T('Choose or import a Steam list', 'Choisissez ou importez une liste Steam')); return; }
   const trees = S.caps.map(c => bymlOf(targetData(c))).filter(x => x && x.flat);
   // every readable file of the last capture: some games keep their own achievement list in a separate file
   const last = S.caps[S.caps.length - 1];
   const files = last ? last.files.map(f => { let d = null; try { d = E.parseTree(f.data); } catch (e) { } return d ? { path: f.path, flat: E.flattenByml(d.tree), reader: d.reader } : null; }).filter(Boolean) : [];
   const st = files.length ? P.selfTracked(list, files) : null;
-  if (!trees.length && !st) { toast('Ajoutez une capture lisible (JSON/BYML) dans l\'onglet 1 ou depuis le scan'); return; }
+  if (!trees.length && !st) { toast(T('Add a readable capture (JSON/BYML…) in tab 1 or from the scan', 'Ajoutez une capture lisible (JSON/BYML…) dans l\'onglet 1 ou depuis le scan')); return; }
   pc.self = st ? { file: st.file, found: st.found, reader: files.find(f => f.path === st.file).reader } : null;
   if (st) pc.drafts = st.drafts;
   else { const adv = trees[trees.length - 1].flat, fresh = trees.length > 1 ? trees[0].flat : null; pc.drafts = P.draftRules(list, adv, fresh); }
@@ -2892,13 +2938,13 @@ function renderDrafts() {
   if (!d) { $('#pcOut').innerHTML = ''; return; }
   const sum = P.summary(d);
   const order = { sure: 0, maybe: 1, unmatched: 2, skip: 3 };
-  const lab = { sure: 'sûr', maybe: 'à vérifier', unmatched: 'non trouvé', skip: 'hors save' };
-  const ruleTxt = r => !r ? '' : r.paths ? r.paths.length + ' drapeaux (' + r.paths[0] + '…) ≥ ' + r.target : r.path + ' ≥ ' + r.target;
-  $('#pcOut').innerHTML = (pc.self ? `<div class="note ok">Ce jeu enregistre lui-même ses succès dans <b>${esc(pc.self.file)}</b> (${pc.self.found} trouvés sous leur nom Steam) : chaque succès a une règle exacte sur ce fichier.</div>` : '') + `<div class="note">${sum.sure} sûr(s) · ${sum.maybe} à vérifier · ${sum.unmatched} non trouvé(s) · ${sum.skip} hors sauvegarde</div>
-    <div class="row"><button class="btn pri fix" id="pcAddSure">Ajouter les sûrs à la définition</button><button class="btn fix" id="pcAddAll">Ajouter sûrs + à vérifier</button></div>` +
+  const lab = { sure: T('sure', 'sûr'), maybe: T('check', 'à vérifier'), unmatched: T('not found', 'non trouvé'), skip: T('not in save', 'hors save') };
+  const ruleTxt = r => !r ? '' : r.paths ? r.paths.length + T(' flags (', ' drapeaux (') + r.paths[0] + '…) ≥ ' + r.target : r.path + ' ≥ ' + r.target;
+  $('#pcOut').innerHTML = (pc.self ? `<div class="note ok">${T('This game records its own achievements in', 'Ce jeu enregistre lui-même ses succès dans')} <b>${esc(pc.self.file)}</b> (${pc.self.found} ${T('found under their Steam names): every achievement gets an exact rule on that file.', 'trouvés sous leur nom Steam) : chaque succès a une règle exacte sur ce fichier.')}</div>` : '') + `<div class="note">${sum.sure} ${T('sure', 'sûr(s)')} · ${sum.maybe} ${T('to check', 'à vérifier')} · ${sum.unmatched} ${T('not found', 'non trouvé(s)')} · ${sum.skip} ${T('not in the save', 'hors sauvegarde')}</div>
+    <div class="row"><button class="btn pri fix" id="pcAddSure">${T('Add the sure ones to the definition', 'Ajouter les sûrs à la définition')}</button><button class="btn fix" id="pcAddAll">${T('Add sure + to check', 'Ajouter sûrs + à vérifier')}</button></div>` +
     d.slice().sort((a, b) => order[a.confidence] - order[b.confidence]).map(x => `<div class="pcrow small"><span class="cf cf-${x.confidence}">${lab[x.confidence]}</span><b>${esc(x.title)}</b> — ${esc(x.desc)}` +
       (x.rule ? `<br><span class="mono">${esc(ruleTxt(x.rule))}</span>` : '') + (x.note ? `<br><span class="mute">${esc(x.note)}</span>` : '') + (x.why ? `<br><span class="mute">${esc(x.why)}</span>` : '') +
-      ((x.candidates || []).length && x.confidence !== 'sure' ? '<br><span class="mute">candidats : ' + x.candidates.map(c => esc(c.path) + ' (' + c.score + ', valeur ' + fmt(c.value) + ')').join(' · ') + '</span>' : '') + '</div>').join('');
+      ((x.candidates || []).length && x.confidence !== 'sure' ? '<br><span class="mute">' + T('candidates: ', 'candidats : ') + x.candidates.map(c => esc(c.path) + ' (' + c.score + T(', value ', ', valeur ') + fmt(c.value) + ')').join(' · ') + '</span>' : '') + '</div>').join('');
   $('#pcAddSure').onclick = () => addDrafts(false);
   $('#pcAddAll').onclick = () => addDrafts(true);
 }
@@ -2914,26 +2960,33 @@ function addDrafts(includeMaybe) {
     if (d.achievements.some(x => x._api === a._api || JSON.stringify(x.rule) === JSON.stringify(a.rule))) continue;
     a.id = uniqueId(a.id); d.achievements.push(a); n++;
   }
-  persist(); toast(n + ' succès ajouté(s) — onglet 5 pour vérifier et exporter');
+  persist(); toast(n + T(' achievement(s) added — tab 5 to check and export', ' succès ajouté(s) — onglet 5 pour vérifier et exporter'));
 }
 
 function renderExport() {
   const d = ensureDef();
   const errs = E.validate(d);
-  $('#valid').innerHTML = errs.length ? `<div class="note bad">${errs.map(esc).join('<br>')}</div>` : (d.achievements.length ? '<div class="note ok">Définition valide pour l\'app.</div>' : '');
+  $('#valid').innerHTML = errs.length ? `<div class="note bad">${errs.map(esc).join('<br>')}</div>` : (d.achievements.length ? '<div class="note ok">' + T('Valid definition for the app.', 'Définition valide pour l\'app.') + '</div>' : '');
   $('#jsonOut').textContent = defJson();
-  $('#fname').textContent = (d.title_id || 'TITLEID') + '.json';
+  $$('.fname').forEach(x => { x.textContent = (d.title_id || 'TITLEID') + '.json'; });
   $('#dlName').textContent = (d.title_id || 'TITLEID') + '.json';
 }
 $('#copyJson').addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText(defJson()); toast('JSON copié'); }
-  catch (e) { const r = document.createRange(); r.selectNodeContents($('#jsonOut')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Sélectionné : utilisez Copier'); }
+  try { await navigator.clipboard.writeText(defJson()); toast(T('JSON copied', 'JSON copié')); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($('#jsonOut')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast(T('Selected: use Copy', 'Sélectionné : utilisez Copier')); }
 });
 let downloads = null, sample = null;
 $('#dlJson').addEventListener('click', async () => {
-  if (!downloads) return;
-  try { await downloads.save({ filename: (S.def.title_id || 'game') + '.json', data: defJson() }); }
-  catch (e) { toast('Téléchargement annulé'); }
+  const filename = ((S.def && S.def.title_id) || 'game') + '.json';
+  if (downloads) {
+    try { await downloads.save({ filename, data: defJson() }); }
+    catch (e) { toast(T('Download cancelled', 'Téléchargement annulé')); }
+    return;
+  }
+  // plain web page (GitHub Pages, local file): regular browser download
+  const url = URL.createObjectURL(new Blob([defJson()], { type: 'application/json' }));
+  const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 
 // ---------------------------------------------------------------- Claude suggestions
@@ -2941,24 +2994,24 @@ $('#askClaude').addEventListener('click', async () => {
   if (!sample) return;
   const d = ensureDef();
   const cands = (S.diff ? S.diff.candidates : []).filter(c => c.kind !== 'noise' && c.kind !== 'variable').slice(0, 80);
-  if (!cands.length) { toast('Lancez d\'abord une comparaison (onglet 3)'); return; }
-  const btn = $('#askClaude'); btn.disabled = true; btn.textContent = '✦ Claude réfléchit…';
+  if (!cands.length) { toast(T('Run a comparison first (tab 3)', 'Lancez d\'abord une comparaison (onglet 3)')); return; }
+  const btn = $('#askClaude'); btn.disabled = true; btn.textContent = T('✦ Claude is thinking…', '✦ Claude réfléchit…');
   const lines = cands.map(c => c.path !== undefined ? `path ${c.path} [${c.kind}] ${c.vals.map(fmt).join(' -> ')}` : `${c.hash !== undefined ? 'hash ' + E.hex(c.hash) + (S.dict.get(c.hash) ? ' (' + S.dict.get(c.hash).name + ')' : '') : 'offset ' + E.hexOff(c.off) + ' u' + c.size * 8}${c.float ? ' float' : ''} [${c.kind}] ${c.vals.map(fmt).join(' -> ')}`).join('\n');
   const prompt = `Tu aides à créer des succès (achievements) pour le jeu Nintendo Switch « ${d.name || S.game.name || 'inconnu'} » (${d.title_id}) à partir de valeurs trouvées dans sa sauvegarde.
 Captures dans l'ordre, avec ce que le joueur a fait avant chacune : ${S.caps.map((c, i) => (i + 1) + '. ' + c.label + (c.control ? ' (contrôle)' : '')).join(' ; ')}.
 Valeurs qui ont changé (emplacement [type] valeurs par capture) :
 ${lines}
 
-Propose au plus 8 succès plausibles, en t'appuyant sur les noms des captures et la forme des valeurs. Pour chacun : une interprétation de la valeur, un nom accrocheur en français, une description, des points (5, 10, 25, 50 ou 100), et la règle. Pour un chemin BYML, recopie-le à l'identique dans refs ; préfère les collections (plusieurs éléments d'une même liste) en type count. Règles possibles : {"type":"flag","target":N} sur un emplacement (valeur >= N), {"type":"count","target":N} sur plusieurs drapeaux (nombre non nuls >= N), {"type":"sum","target":N}. N'invente pas d'emplacements absents de la liste. Si une interprétation est incertaine, dis-le dans "why".
+Propose au plus 8 succès plausibles, en t'appuyant sur les noms des captures et la forme des valeurs. Pour chacun : une interprétation de la valeur, un nom accrocheur ${T('en anglais', 'en français')}, une description dans la même langue, une description, des points (5, 10, 25, 50 ou 100), et la règle. Pour un chemin BYML, recopie-le à l'identique dans refs ; préfère les collections (plusieurs éléments d'une même liste) en type count. Règles possibles : {"type":"flag","target":N} sur un emplacement (valeur >= N), {"type":"count","target":N} sur plusieurs drapeaux (nombre non nuls >= N), {"type":"sum","target":N}. N'invente pas d'emplacements absents de la liste. Si une interprétation est incertaine, dis-le dans "why".
 Réponds UNIQUEMENT en JSON : {"suggestions":[{"refs":["0x1A0", "0xHASH" ou le chemin exact],"type":"flag|count|sum","target":N,"name":"...","desc":"...","points":10,"why":"..."}]}`;
   try {
     const r = await sample.json(prompt, { modelTier: 'default' });
     const list = (r && r.suggestions) || [];
     const byRef = new Map(cands.map(c => [(c.path !== undefined ? c.path : c.hash !== undefined ? E.hex(c.hash) : E.hexOff(c.off)).toUpperCase(), c]));
     const usable = list.map(s => ({ s, cs: (s.refs || []).map(x => byRef.get(String(x).toUpperCase().replace(/^0X0*/, '0X').replace(/^0X/, '0x').toUpperCase()) || byRef.get(String(x).toUpperCase())).filter(Boolean) })).filter(x => x.cs.length);
-    openDialog(`<h2>Suggestions de Claude</h2><p class="small mute">À vérifier : Claude devine le sens des valeurs d'après les noms de vos captures.</p>` +
-      (usable.length ? usable.map((x, i) => `<div class="ach"><div class="top"><b style="flex:1">${esc(x.s.name)}</b><span class="mute small">${esc(x.s.points)} pts</span></div><div class="small">${esc(x.s.desc)}</div><div class="small mute" style="margin-top:4px">${esc(x.s.why || '')}</div><div class="small mono mute">${esc(x.s.type)} ≥ ${esc(x.s.target)} · ${x.cs.length} emplacement(s)</div><p><button class="btn sm pri sgAdd" data-i="${i}">Ajouter</button></p></div>`).join('') : '<div class="empty">Aucune suggestion exploitable.</div>') +
-      '<p><button class="btn" id="sgClose">Fermer</button></p>');
+    openDialog(`<h2>${T('Claude suggestions', 'Suggestions de Claude')}</h2><p class="small mute">${T('To check: Claude guesses what the values mean from the names of your captures.', 'À vérifier : Claude devine le sens des valeurs d\'après les noms de vos captures.')}</p>` +
+      (usable.length ? usable.map((x, i) => `<div class="ach"><div class="top"><b style="flex:1">${esc(x.s.name)}</b><span class="mute small">${esc(x.s.points)} pts</span></div><div class="small">${esc(x.s.desc)}</div><div class="small mute" style="margin-top:4px">${esc(x.s.why || '')}</div><div class="small mono mute">${esc(x.s.type)} ≥ ${esc(x.s.target)} · ${x.cs.length} ${T('location(s)', 'emplacement(s)')}</div><p><button class="btn sm pri sgAdd" data-i="${i}">${T('Add', 'Ajouter')}</button></p></div>`).join('') : '<div class="empty">' + T('No usable suggestion.', 'Aucune suggestion exploitable.') + '</div>') +
+      '<p><button class="btn" id="sgClose">' + T('Close', 'Fermer') + '</button></p>');
     $('#sgClose').onclick = closeDialog;
     $$('.sgAdd').forEach(b => b.onclick = () => {
       const x = usable[+b.dataset.i];
@@ -2966,12 +3019,12 @@ Réponds UNIQUEMENT en JSON : {"suggestions":[{"refs":["0x1A0", "0xHASH" ou le c
       addAchievementFrom(x.cs, x.cs.length > 1 || x.s.type !== 'flag' ? (x.s.type === 'flag' ? 'count' : x.s.type) : undefined);
       const a = S.def.achievements[n];
       if (a) { a.name = x.s.name; a.desc = x.s.desc; a.points = [5, 10, 25, 50, 100].includes(+x.s.points) ? +x.s.points : 10; if (+x.s.target > 0) a.rule.target = +x.s.target; a.id = uniqueIdExcept(slug(a.name), a); }
-      b.disabled = true; b.textContent = 'Ajouté'; persist(); renderAch();
+      b.disabled = true; b.textContent = T('Added', 'Ajouté'); persist(); renderAch();
     });
   } catch (e) {
     if (e && e.code === 'not_granted') btn.style.display = 'none';
-    toast(e && e.code === 'rate_limited' ? 'Trop de demandes, réessayez plus tard' : 'Claude n\'a pas pu répondre');
-  } finally { btn.disabled = false; btn.textContent = '✦ Suggestions de Claude'; }
+    toast(e && e.code === 'rate_limited' ? T('Too many requests, try again later', 'Trop de demandes, réessayez plus tard') : T('Claude could not answer', 'Claude n\'a pas pu répondre'));
+  } finally { btn.disabled = false; btn.textContent = T('✦ Claude suggestions', '✦ Suggestions de Claude'); }
 });
 
 // ---------------------------------------------------------------- boot
@@ -2983,10 +3036,10 @@ Réponds UNIQUEMENT en JSON : {"suggestions":[{"refs":["0x1A0", "0xHASH" ou le c
     S.game = s.game || S.game; S.caps = s.caps; S.target = s.target || ''; S.def = s.def || null; S.dict = new Map(s.dict || []);
     nextId = Math.max(0, ...S.caps.map(c => c.id)) + 1;
     renderGameSel(); renderCaps();
-    if (S.caps.length) toast('Session précédente restaurée');
+    if (S.caps.length) toast(T('Previous session restored', 'Session précédente restaurée'));
   }
   if (window.claude && claude.use) {
-    claude.use('downloads').then(d => { downloads = d; if (d) $('#dlJson').style.display = ''; }).catch(() => {});
+    claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
     claude.use('sample').then(sm => { sample = sm; if (sm) $('#askClaude').style.display = ''; }).catch(() => {});
   }
 })();

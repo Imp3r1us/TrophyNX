@@ -3,6 +3,9 @@
 // here behaves the same on the console.
 (function (root) {
 'use strict';
+// T(english, french): UI language of the page (global T from index.html), English elsewhere (Node tests).
+const T = root && typeof root.T === 'function' ? root.T : (en, fr) => en;
+const SEP = T(': ', ' : ');
 const F = typeof module !== 'undefined' && module.exports ? require('./formats.js') : root.SaveFormats;
 
 // ------------------------------------------------------------------ hashes (same as the app)
@@ -84,7 +87,7 @@ const printable = (s) => /^[\x20-\x7e]+$/.test(s);
 
 // ------------------------------------------------------------------ ZIP (JKSV exports, phone zips)
 async function inflateRaw(data) {
-  if (typeof DecompressionStream === 'undefined') throw new Error('Décompression ZIP non prise en charge par ce navigateur');
+  if (typeof DecompressionStream === 'undefined') throw new Error(T('This browser cannot unzip files', 'Décompression ZIP non prise en charge par ce navigateur'));
   const ds = new DecompressionStream('deflate-raw');
   const stream = new Blob([data]).stream().pipeThrough(ds);
   return new Uint8Array(await new Response(stream).arrayBuffer());
@@ -95,13 +98,13 @@ async function unzip(buf) {
   for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) {
     if (buf[i] === 0x50 && buf[i + 1] === 0x4b && buf[i + 2] === 5 && buf[i + 3] === 6) { eocd = i; break; }
   }
-  if (eocd < 0) throw new Error('ZIP invalide (fin de répertoire introuvable)');
+  if (eocd < 0) throw new Error(T('Invalid ZIP (end of central directory not found)', 'ZIP invalide (fin de répertoire introuvable)'));
   const count = rd(buf, eocd + 10, 2);
   let p = rd(buf, eocd + 16, 4);
   const files = [];
   const dec = new TextDecoder();
   for (let i = 0; i < count; i++) {
-    if (rd(buf, p, 4) !== 0x02014b50) throw new Error('ZIP invalide (répertoire central)');
+    if (rd(buf, p, 4) !== 0x02014b50) throw new Error(T('Invalid ZIP (central directory)', 'ZIP invalide (répertoire central)'));
     const method = rd(buf, p + 10, 2);
     const csize = rd(buf, p + 20, 4), usize = rd(buf, p + 24, 4);
     const nlen = rd(buf, p + 28, 2), xlen = rd(buf, p + 30, 2), clen = rd(buf, p + 32, 2);
@@ -115,8 +118,8 @@ async function unzip(buf) {
     let data;
     if (method === 0) data = raw.slice();
     else if (method === 8) data = await inflateRaw(raw);
-    else throw new Error(name + ' : méthode de compression ZIP ' + method + ' non prise en charge');
-    if (data.length !== usize) throw new Error(name + ' : taille décompressée inattendue');
+    else throw new Error(name + T(': unsupported ZIP compression method ', ' : méthode de compression ZIP ') + method + T('', ' non prise en charge'));
+    if (data.length !== usize) throw new Error(name + T(': unexpected uncompressed size', ' : taille décompressée inattendue'));
     files.push({ path: name, data });
   }
   return files;
@@ -139,25 +142,25 @@ function stripCommonPrefix(files) {
 
 // ------------------------------------------------------------------ identification
 const MAGICS = [
-  [[0x78, 0x01], 'zlib (compressé)'], [[0x78, 0x9C], 'zlib (compressé)'], [[0x78, 0xDA], 'zlib (compressé)'],
-  [[0x1F, 0x8B], 'gzip (compressé)'], [[0x28, 0xB5, 0x2F, 0xFD], 'zstd (compressé)'],
-  [[0x04, 0x22, 0x4D, 0x18], 'LZ4 frame (compressé)'], [[0x59, 0x61, 0x7A, 0x30], 'Yaz0 (compressé Nintendo)'],
-  [[0x53, 0x41, 0x52, 0x43], 'SARC (archive Nintendo)'], [[0x42, 0x59], 'BYML big-endian'], [[0x59, 0x42], 'BYML little-endian'],
-  [[0x41, 0x41, 0x4D, 0x50], 'AAMP (paramètres Nintendo)'], [[0x4D, 0x73, 0x67, 0x53, 0x74, 0x64, 0x42, 0x6E], 'MSBT (textes)'],
+  [[0x78, 0x01], T('zlib (compressed)', 'zlib (compressé)')], [[0x78, 0x9C], T('zlib (compressed)', 'zlib (compressé)')], [[0x78, 0xDA], T('zlib (compressed)', 'zlib (compressé)')],
+  [[0x1F, 0x8B], T('gzip (compressed)', 'gzip (compressé)')], [[0x28, 0xB5, 0x2F, 0xFD], T('zstd (compressed)', 'zstd (compressé)')],
+  [[0x04, 0x22, 0x4D, 0x18], T('LZ4 frame (compressed)', 'LZ4 frame (compressé)')], [[0x59, 0x61, 0x7A, 0x30], T('Yaz0 (Nintendo compression)', 'Yaz0 (compressé Nintendo)')],
+  [[0x53, 0x41, 0x52, 0x43], T('SARC (Nintendo archive)', 'SARC (archive Nintendo)')], [[0x42, 0x59], 'BYML big-endian'], [[0x59, 0x42], 'BYML little-endian'],
+  [[0x41, 0x41, 0x4D, 0x50], T('AAMP (Nintendo parameters)', 'AAMP (paramètres Nintendo)')], [[0x4D, 0x73, 0x67, 0x53, 0x74, 0x64, 0x42, 0x6E], T('MSBT (texts)', 'MSBT (textes)')],
   [[0x50, 0x4B, 0x03, 0x04], 'ZIP'], [[0x53, 0x51, 0x4C, 0x69, 0x74, 0x65], 'SQLite'],
-  [[0x7B], 'JSON / texte'], [[0x3C], 'XML / texte'],
+  [[0x7B], T('JSON / text', 'JSON / texte')], [[0x3C], T('XML / text', 'XML / texte')],
 ];
 
 // Known save formats the app already reads.
 const KNOWN = [
   { id: 'botw', test: (b) => b.length >= 0x30 && rd(b, 4, 4) === 0xFFFFFFFF, reader: 'gamedata_hash', hash: 'crc32',
-    label: 'Table hash/valeur type Zelda BotW (game_data.sav) — lisible par le lecteur « gamedata_hash »' },
+    label: T('Zelda BotW-style hash/value table (game_data.sav) — readable with the “gamedata_hash” reader', 'Table hash/valeur type Zelda BotW (game_data.sav) — lisible par le lecteur « gamedata_hash »') },
   { id: 'totk', test: (b) => b.length >= 0x30 && rd(b, 0, 4) === 0x01020304, reader: 'totk_progress', hash: 'murmur3',
-    label: 'Table hash/valeur type Zelda TotK (progress.sav) — lisible par le lecteur « totk_progress »' },
+    label: T('Zelda TotK-style hash/value table (progress.sav) — readable with the “totk_progress” reader', 'Table hash/valeur type Zelda TotK (progress.sav) — lisible par le lecteur « totk_progress »') },
   { id: 'mk8d', test: (b) => asciiAt(b, 0, 4) === 'SUTC', reader: 'binary_le', magic: 'SUTC',
-    label: 'Mario Kart 8 Deluxe (en-tête SUTC) — offsets fixes, lecteur « binary_le »' },
+    label: T('Mario Kart 8 Deluxe (SUTC header) — fixed offsets, “binary_le” reader', 'Mario Kart 8 Deluxe (en-tête SUTC) — offsets fixes, lecteur « binary_le »') },
   { id: 'smash', test: (b) => b.length === 5982968, reader: 'binary_le',
-    label: 'Smash Bros. Ultimate system_data.bin (taille 5 982 968) — offsets fixes, lecteur « binary_le »' },
+    label: T('Smash Bros. Ultimate system_data.bin (size 5,982,968) — fixed offsets, “binary_le” reader', 'Smash Bros. Ultimate system_data.bin (taille 5 982 968) — offsets fixes, lecteur « binary_le »') },
 ];
 
 // Heuristic: a run of 8-byte entries "u32 hash, u32 value" where hashes look random and values small.
@@ -202,18 +205,18 @@ function extractStrings(buf, min = 5, max = 80) {
 
 function identify(buf, path = '') {
   const notes = [];
-  const r = { size: buf.length, path, notes, format: 'inconnu', reader: '', analyzable: true };
+  const r = { size: buf.length, path, notes, format: T('unknown', 'inconnu'), reader: '', analyzable: true };
   const bh = findByml(buf);
   if (bh) {
     r.known = 'byml'; r.reader = 'byml'; r.byml = bh;
-    r.format = 'Document BYML v' + bh.ver + (bh.le ? ' (little-endian)' : ' (big-endian)') + (bh.base ? ' après un en-tête de 0x' + bh.base.toString(16) + ' octets (format Super Mario Odyssey)' : '');
-    notes.push('Arbre de données Nintendo : les valeurs sont identifiées par leur chemin (ex. ShineData[*]/IsGet), pas par leur position. Lecteur « byml » de l\'app.');
+    r.format = 'Document BYML v' + bh.ver + (bh.le ? ' (little-endian)' : ' (big-endian)') + (bh.base ? T(' after a 0x', ' après un en-tête de 0x') + bh.base.toString(16) + T('-byte header (Super Mario Odyssey layout)', ' octets (format Super Mario Odyssey)') : '');
+    notes.push(T('Nintendo data tree: values are identified by their path (e.g. ShineData[*]/IsGet), not by their position. App reader “byml”.', 'Arbre de données Nintendo : les valeurs sont identifiées par leur chemin (ex. ShineData[*]/IsGet), pas par leur position. Lecteur « byml » de l\'app.'));
   }
   if (!bh && looksJson(buf)) {
     let ok = false; try { ok = !!parseJson(buf); } catch (e) { r.jsonError = e.message; }
     if (ok) {
-      r.known = 'json'; r.reader = 'json'; r.format = 'Document JSON (texte)';
-      notes.push('Sauvegarde en texte JSON (jeux Unity, ex. Hollow Knight) : les valeurs sont identifiées par leur chemin (ex. playerData/grubsCollected). Lecteur « json » de l\'app.');
+      r.known = 'json'; r.reader = 'json'; r.format = T('JSON document (text)', 'Document JSON (texte)');
+      notes.push(T('Plain-text JSON save (Unity games, e.g. Hollow Knight): values are identified by their path (e.g. playerData/grubsCollected). App reader “json”.', 'Sauvegarde en texte JSON (jeux Unity, ex. Hollow Knight) : les valeurs sont identifiées par leur chemin (ex. playerData/grubsCollected). Lecteur « json » de l\'app.'));
     }
   }
   if (!bh && !r.known && (F.isGvas(buf) || F.isNrbf(buf))) {
@@ -223,17 +226,17 @@ function identify(buf, path = '') {
       const d = gv ? F.parseGvas(buf) : F.parseNrbf(buf);
       r.meta = d.meta;
       if (gv) {
-        r.format = 'Sauvegarde Unreal Engine ' + d.meta.engine + ' (GVAS, classe ' + d.meta.saveClass + ')';
-        notes.push('Format standard des jeux Unreal : les propriétés sont identifiées par leur nom (ex. Achievements/BooksCollected[=E_Books::Book1]). Lecteur « gvas » de l\'app.');
-        if (d.meta.skipped) notes.push(d.meta.skipped + ' valeur(s) non décodée(s), remplacées par null : ' + d.meta.why.slice(0, 3).join(' ; '));
+        r.format = T('Unreal Engine ', 'Sauvegarde Unreal Engine ') + d.meta.engine + T(' save (GVAS, class ', ' (GVAS, classe ') + d.meta.saveClass + ')';
+        notes.push(T('Standard Unreal save format: properties are identified by name (e.g. Achievements/BooksCollected[=E_Books::Book1]). App reader “gvas”.', 'Format standard des jeux Unreal : les propriétés sont identifiées par leur nom (ex. Achievements/BooksCollected[=E_Books::Book1]). Lecteur « gvas » de l\'app.'));
+        if (d.meta.skipped) notes.push(d.meta.skipped + T(' value(s) could not be decoded and were replaced by null: ', ' valeur(s) non décodée(s), remplacées par null : ') + d.meta.why.slice(0, 3).join(' ; '));
       } else {
-        r.format = 'Données .NET BinaryFormatter (NRBF, objet racine ' + (d.meta.rootClass.split('[')[0] || '?') + ')';
-        notes.push('Format de sérialisation .NET utilisé par des jeux Unity : les champs sont identifiés par leur nom (ex. flags[Key=Ending_A]/Value). Lecteur « nrbf » de l\'app.');
-        if (d.meta.rootClass === 'System.String') notes.push('Le fichier ne contient qu\'une chaîne : la vraie sauvegarde est probablement chiffrée ou encodée dedans (ex. Hollow Knight sur PC).');
+        r.format = T('.NET BinaryFormatter data (NRBF, root object ', 'Données .NET BinaryFormatter (NRBF, objet racine ') + (d.meta.rootClass.split('[')[0] || '?') + ')';
+        notes.push(T('.NET serialization format used by some Unity games: fields are identified by name (e.g. flags[Key=Ending_A]/Value). App reader “nrbf”.', 'Format de sérialisation .NET utilisé par des jeux Unity : les champs sont identifiés par leur nom (ex. flags[Key=Ending_A]/Value). Lecteur « nrbf » de l\'app.'));
+        if (d.meta.rootClass === 'System.String') notes.push(T('The file only holds a string: the real save is probably encrypted or encoded inside it (e.g. Hollow Knight on PC).', 'Le fichier ne contient qu\'une chaîne : la vraie sauvegarde est probablement chiffrée ou encodée dedans (ex. Hollow Knight sur PC).'));
       }
     } catch (e) {
       r.treeError = e.message;
-      r.format = (gv ? 'Sauvegarde Unreal (GVAS)' : 'Données .NET (NRBF)') + ' illisible : ' + e.message;
+      r.format = (gv ? T('Unreal save (GVAS)', 'Sauvegarde Unreal (GVAS)') : T('.NET data (NRBF)', 'Données .NET (NRBF)')) + T(' unreadable: ', ' illisible : ') + e.message;
     }
   }
   if (!bh && !r.known && F.looksXorText(buf)) {
@@ -241,8 +244,8 @@ function identify(buf, path = '') {
     try { d = parseTree(buf); } catch (e) { d = null; }
     if (d && d.xorKey) {
       r.known = r.reader = d.reader; r.xorKey = d.xorKey;
-      r.format = treeFormat(d.reader).label + ' chiffré par XOR (clé répétée de ' + d.xorKey.length + ' caractères' + (d.xorKnown ? ', connue : ' + d.xorKnown : ', retrouvée automatiquement') + ')';
-      notes.push('Clé : « ' + d.xorKey.replace(/[^\x20-\x7e]/g, '·') + ' ». Elle est ajoutée à la définition (champ xor_key) : l\'app déchiffre le fichier avant de le lire.');
+      r.format = treeFormat(d.reader).label + T(' scrambled with XOR (repeating ', ' chiffré par XOR (clé répétée de ') + d.xorKey.length + T('-character key', ' caractères') + (d.xorKnown ? T(', known: ', ', connue : ') + d.xorKnown : T(', recovered automatically', ', retrouvée automatiquement')) + ')';
+      notes.push(T('Key: “', 'Clé : « ') + d.xorKey.replace(/[^\x20-\x7e]/g, '·') + T('”. It is added to the definition (xor_key field): the app unscrambles the file before reading it.', ' ». Elle est ajoutée à la définition (champ xor_key) : l\'app déchiffre le fichier avant de le lire.'));
     }
   }
   if (!bh && !r.known) for (const k of KNOWN) if (k.test(buf)) { r.known = k.id; r.format = k.label; r.reader = k.reader; r.hash = k.hash || ''; if (k.magic) r.magic = k.magic; break; }
@@ -265,26 +268,26 @@ function identify(buf, path = '') {
     const ht = detectHashTable(buf);
     if (ht) {
       r.hashTable = ht;
-      r.format = 'Table hash/valeur probable (entrées de 8 octets à partir de ' + hexOff(ht.start) + ')';
-      notes.push('Les clés ressemblent à des empreintes (CRC32/Murmur3) de noms de drapeaux : collez des noms candidats dans le dictionnaire pour les identifier.');
+      r.format = T('Probable hash/value table (8-byte entries from ', 'Table hash/valeur probable (entrées de 8 octets à partir de ') + hexOff(ht.start) + ')';
+      notes.push(T('The keys look like hashes (CRC32/Murmur3) of flag names: paste candidate names into the dictionary to identify them.', 'Les clés ressemblent à des empreintes (CRC32/Murmur3) de noms de drapeaux : collez des noms candidats dans le dictionnaire pour les identifier.'));
     }
   }
   if (TREE_READERS.includes(r.known)) { /* structured */ }
   else if (r.container && /compress/.test(r.container)) {
     r.analyzable = false;
-    notes.push('Le fichier est compressé (' + r.container + ') : les offsets changent à chaque sauvegarde. L\'app ne sait pas encore lire ce cas.');
+    notes.push(T('The file is compressed (', 'Le fichier est compressé (') + r.container + T('): offsets move with every save. The app cannot read this case yet.', ') : les offsets changent à chaque sauvegarde. L\'app ne sait pas encore lire ce cas.'));
   } else if (r.highBlocks > 0.85 && r.entropy > 7.8) {
     r.analyzable = false;
-    r.format = r.known ? r.format : 'Chiffré ou compressé (entropie ' + r.entropy.toFixed(2) + ' bits/octet)';
-    notes.push('Presque tout le fichier ressemble à du bruit aléatoire : il est sans doute chiffré (ex. Pokémon, Animal Crossing) ou compressé. La comparaison d\'offsets ne donnera rien tant qu\'il n\'est pas déchiffré.');
+    r.format = r.known ? r.format : T('Encrypted or compressed (entropy ', 'Chiffré ou compressé (entropie ') + r.entropy.toFixed(2) + T(' bits/byte)', ' bits/octet)');
+    notes.push(T('Almost the whole file looks like random noise: it is probably encrypted (e.g. Pokémon, Animal Crossing) or compressed. Comparing offsets will give nothing until it is decrypted.', 'Presque tout le fichier ressemble à du bruit aléatoire : il est sans doute chiffré (ex. Pokémon, Animal Crossing) ou compressé. La comparaison d\'offsets ne donnera rien tant qu\'il n\'est pas déchiffré.'));
   } else if (r.highBlocks > 0.3) {
-    notes.push(Math.round(r.highBlocks * 100) + ' % du fichier a une entropie très élevée (zones compressées ou chiffrées) ; le reste peut être exploitable.');
+    notes.push(Math.round(r.highBlocks * 100) + T('% of the file has very high entropy (compressed or encrypted areas); the rest may be usable.', ' % du fichier a une entropie très élevée (zones compressées ou chiffrées) ; le reste peut être exploitable.'));
   }
   if (!r.known && !r.hashTable && r.analyzable) {
-    r.format = r.magicText ? 'Binaire à en-tête « ' + r.magicText + ' »' : 'Binaire à structure fixe probable';
+    r.format = r.magicText ? T('Binary with header “', 'Binaire à en-tête « ') + r.magicText + T('”', ' »') : T('Probably a fixed-layout binary', 'Binaire à structure fixe probable');
     r.reader = 'binary_le';
     if (r.magicText) r.magic = r.magicText;
-    notes.push('Format adapté au lecteur « binary_le » : comparez des captures avant/après pour trouver les compteurs et drapeaux.');
+    notes.push(T('Fits the “binary_le” reader: compare before/after captures to find counters and flags.', 'Format adapté au lecteur « binary_le » : comparez des captures avant/après pour trouver les compteurs et drapeaux.'));
   }
   r.strings = extractStrings(buf);
   return r;
@@ -335,7 +338,7 @@ function parseByml(buf) {
   const strtab = (off) => {
     if (!off) return [];
     const o = base + off;
-    if (buf[o] !== 0xC2) throw new Error('table de chaînes invalide');
+    if (buf[o] !== 0xC2) throw new Error(T('invalid string table', 'table de chaînes invalide'));
     const n = u24(o + 1), out = [];
     for (let i = 0; i < n; i++) {
       const s = o + u32(o + 4 + 4 * i);
@@ -362,7 +365,7 @@ function parseByml(buf) {
     }
   };
   const node = (off, depth) => {
-    if (depth > 64 || --budget < 0) throw new Error('document BYML trop profond');
+    if (depth > 64 || --budget < 0) throw new Error(T('BYML document nested too deeply', 'document BYML trop profond'));
     const o = base + off, t = buf[o], n = u24(o + 1);
     if (t === 0xC0) {
       const vo = o + 4 + ((n + 3) & ~3), arr = new Array(n);
@@ -374,7 +377,7 @@ function parseByml(buf) {
       for (let i = 0; i < n; i++) { const e = o + 4 + 8 * i; r[keys[u24(e)]] = val(buf[e + 3], u32(e + 4), depth); }
       return r;
     }
-    throw new Error('nœud BYML inconnu 0x' + t.toString(16));
+    throw new Error(T('unknown BYML node 0x', 'nœud BYML inconnu 0x') + t.toString(16));
   };
   return Object.assign(h, { tree: node(u32(base + 12), 0) });
 }
@@ -588,8 +591,8 @@ function popcount(x) { let n = 0; x >>>= 0; while (x) { n += x & 1; x >>>= 1; } 
 function isSmallStep(v) { return v.every((x, i) => !i || x - v[i - 1] <= 3); }
 
 const KIND_LABEL = {
-  flag: 'Drapeau 0→1', bits: 'Champ de bits (bits ajoutés)', counter: 'Compteur croissant',
-  decreasing: 'Décroissant', variable: 'Variable (bruit ?)', noise: 'Bruit (change sans action)', float: 'Flottant', timestamp: 'Horodatage / horloge', new: 'Nouvelle entrée',
+  flag: T('Flag 0→1', 'Drapeau 0→1'), bits: T('Bit field (bits added)', 'Champ de bits (bits ajoutés)'), counter: T('Rising counter', 'Compteur croissant'),
+  decreasing: T('Decreasing', 'Décroissant'), variable: T('Variable (noise?)', 'Variable (bruit ?)'), noise: T('Noise (changes on its own)', 'Bruit (change sans action)'), float: T('Float', 'Flottant'), timestamp: T('Timestamp / clock', 'Horodatage / horloge'), new: T('New entry', 'Nouvelle entrée'),
 };
 
 // ------------------------------------------------------------------ binary diff
@@ -834,14 +837,14 @@ function evaluate(def, files, opts = {}) {
     for (const p of def.save_files || []) {
       const f = pick([p]);
       if (!f) continue;
-      if (def.file_size && f.data.length !== def.file_size) { why = p + ' : taille ' + f.data.length + ' ≠ ' + def.file_size; continue; }
-      if (def.magic && asciiAt(f.data, 0, def.magic.length) !== def.magic) { why = p + ' : en-tête différent de « ' + def.magic + ' »'; continue; }
+      if (def.file_size && f.data.length !== def.file_size) { why = p + T(': size ', ' : taille ') + f.data.length + ' ≠ ' + def.file_size; continue; }
+      if (def.magic && asciiAt(f.data, 0, def.magic.length) !== def.magic) { why = p + T(': header differs from “', ' : en-tête différent de « ') + def.magic + T('”', ' »'); continue; }
       file = f; break;
     }
     for (const a of def.achievements || []) {
       const t = a.rule && a.rule.type;
       if (!SAVE_TYPES.includes(t)) { res.push({ id: a.id, skip: true }); continue; }
-      if (!file) { res.push({ id: a.id, value: 0, met: false, note: why || 'aucun fichier de save_files trouvé' }); continue; }
+      if (!file) { res.push({ id: a.id, value: 0, met: false, note: why || T('none of the save_files was found', 'aucun fichier de save_files trouvé') }); continue; }
       const r = compileRule(a.rule, fn);
       let total = 0, bad = false;
       for (const o of r.offsets) {
@@ -851,7 +854,7 @@ function evaluate(def, files, opts = {}) {
         if (t === 'count') total += v ? 1 : 0; else total += v;
       }
       const value = bad ? 0 : total;
-      res.push({ id: a.id, value, met: value + 1e-9 >= r.target, note: bad ? 'valeur hors limites (offset déplacé ?)' : '' });
+      res.push({ id: a.id, value, met: value + 1e-9 >= r.target, note: bad ? T('value out of range (offset moved?)', 'valeur hors limites (offset déplacé ?)') : '' });
     }
     return { file: file && file.path, results: res };
   }
@@ -861,14 +864,14 @@ function evaluate(def, files, opts = {}) {
     for (const a of def.achievements || []) {
       const t = a.rule && a.rule.type;
       if (!SAVE_TYPES.includes(t)) { res.push({ id: a.id, skip: true }); continue; }
-      if (!docs.length) { res.push({ id: a.id, value: 0, met: false, note: 'aucun fichier ' + treeFormat(reader).label + ' lisible' }); continue; }
+      if (!docs.length) { res.push({ id: a.id, value: 0, met: false, note: T('no readable ', 'aucun fichier ') + treeFormat(reader).label + T(' file', ' lisible') }); continue; }
       const r = a.rule;
       const rule = { type: t, paths: [].concat(r.path ? [r.path] : [], Array.isArray(r.paths) ? r.paths : []) };
       const eq = r.equals === undefined ? undefined : typeof r.equals === 'boolean' ? String(r.equals) : String(r.equals);
       let best = -Infinity, foundMax = 0;
       for (const tree of docs) { const v = bymlRuleValue(rule, tree, eq); if (v.value > best) best = v.value; foundMax = Math.max(foundMax, v.found); }
       const target = r.target ?? 1;
-      res.push({ id: a.id, value: best, met: best + 1e-9 >= target, note: foundMax < rule.paths.length ? (rule.paths.length - foundMax) + '/' + rule.paths.length + ' chemin(s) introuvable(s)' : '' });
+      res.push({ id: a.id, value: best, met: best + 1e-9 >= target, note: foundMax < rule.paths.length ? (rule.paths.length - foundMax) + '/' + rule.paths.length + T(' path(s) not found', ' chemin(s) introuvable(s)') : '' });
     }
     return { results: res };
   }
@@ -878,7 +881,7 @@ function evaluate(def, files, opts = {}) {
     for (const a of def.achievements || []) {
       const t = a.rule && a.rule.type;
       if (!SAVE_TYPES.includes(t)) { res.push({ id: a.id, skip: true }); continue; }
-      if (!slots.length) { res.push({ id: a.id, value: 0, met: false, note: 'aucun fichier lisible' }); continue; }
+      if (!slots.length) { res.push({ id: a.id, value: 0, met: false, note: T('no readable file', 'aucun fichier lisible') }); continue; }
       const r = compileRule(a.rule, fn);
       let best = -Infinity, missing = r.hashes.length;
       for (const { t: s } of slots) {
@@ -898,7 +901,7 @@ function evaluate(def, files, opts = {}) {
         if (val > best) best = val;
         missing = Math.min(missing, r.hashes.length - found);
       }
-      res.push({ id: a.id, value: best, met: best + 1e-9 >= r.target, note: missing ? missing + '/' + r.hashes.length + ' drapeau(x) absent(s) de la save' : '' });
+      res.push({ id: a.id, value: best, met: best + 1e-9 >= r.target, note: missing ? missing + '/' + r.hashes.length + T(' flag(s) missing from the save', ' drapeau(x) absent(s) de la save') : '' });
     }
     return { results: res };
   }
@@ -991,8 +994,8 @@ function autoAchievements(snaps, diff, opts = {}) {
       const ms = milestones(total);
       ms.forEach((t, i) => out.push({
         group: L, auto: true,
-        name: t === 1 ? L + ' : premier' : t === total ? L + ' : complète' : L + ' : ' + t + '/' + total,
-        desc: 'Obtenir ' + t + ' élément(s) sur ' + total + ' (' + total + ' drapeaux dès ' + hexOff(g.offsets[0]) + ', pas ' + g.stride + ' ; ' + setNow + ' obtenus dans la dernière capture)',
+        name: t === 1 ? L + T(': first', ' : premier') : t === total ? L + T(': complete', ' : complète') : L + SEP + t + '/' + total,
+        desc: T('Get ', 'Obtenir ') + t + T(' item(s) out of ', ' élément(s) sur ') + total + ' (' + total + T(' flags from ', ' drapeaux dès ') + hexOff(g.offsets[0]) + T(', stride ', ', pas ') + g.stride + ' ; ' + setNow + T(' set in the last capture)', ' obtenus dans la dernière capture)'),
         points: pts(i, ms.length),
         rule: { type: 'count', offsets: g.offsets.map(hexOff), size: g.size, max: 1, target: t },
       }));
@@ -1004,8 +1007,8 @@ function autoAchievements(snaps, diff, opts = {}) {
       const ms = milestones(total);
       ms.forEach((t, i) => out.push({
         group: label, auto: true,
-        name: t === 1 ? label + ' : premier' : t === total ? label + ' : complet' : label + ' : ' + t + '/' + total,
-        desc: 'Obtenir ' + t + ' sur ' + total,
+        name: t === 1 ? label + T(': first', ' : premier') : t === total ? label + T(': complete', ' : complet') : label + SEP + t + '/' + total,
+        desc: T('Get ', 'Obtenir ') + t + T(' out of ', ' sur ') + total,
         points: pts(i, ms.length),
         rule: { type: 'count', names: g.names || g.hashes.map(h => hex(h)), target: t },
       }));
@@ -1017,7 +1020,7 @@ function autoAchievements(snaps, diff, opts = {}) {
   let ci = 0;
   for (const c of counters) {
     const best = c.vals[last];
-    const N = 'Compteur ' + (++ci);
+    const N = T('Counter ', 'Compteur ') + (++ci);
     const ts = [...new Set([niceBelow(best / 10), niceBelow(best / 2), niceBelow(best)])].filter(t => t >= 1);
     const named = isHash && opts.dict && opts.dict.get(c.hash);
     const ref = isHash ? (named ? named.name : hex(c.hash)) : hexOff(c.off);
@@ -1025,7 +1028,7 @@ function autoAchievements(snaps, diff, opts = {}) {
       const rule = { type: 'flag', target: t };
       if (isHash) rule[named ? 'name' : 'hash'] = ref;
       else { rule.offset = ref; rule.size = c.size; rule.max = Math.min(4294967295, Math.max(1000, niceNum(best * 1000))); }
-      out.push({ group: N, auto: true, name: N + ' : ' + t, desc: 'Atteindre ' + t + ' (' + ref + ' ; ' + best + ' dans la dernière capture)', points: ts.length === 1 ? 25 : [10, 25, 50][i] || 25, rule });
+      out.push({ group: N, auto: true, name: N + SEP + t, desc: T('Reach ', 'Atteindre ') + t + ' (' + ref + ' ; ' + best + T(' in the last capture)', ' dans la dernière capture)'), points: ts.length === 1 ? 25 : [10, 25, 50][i] || 25, rule });
     });
   }
   return out;
@@ -1058,21 +1061,21 @@ function autoByml(trees, diff, opts = {}) {
     const L = label(pat);
     ms.forEach((t, i) => out.push({
       group: L, auto: true,
-      name: L + ' : ' + t, desc: 'Atteindre ' + t + (g.member ? '' : ' sur ' + slots) + ' (' + pat + ' ; ' + have + ' dans la dernière capture)',
+      name: L + SEP + t, desc: T('Reach ', 'Atteindre ') + t + (g.member ? '' : T(' out of ', ' sur ') + slots) + ' (' + pat + ' ; ' + have + T(' in the last capture)', ' dans la dernière capture)'),
       points: i === 0 ? 5 : i === ms.length - 1 ? 50 : i === 1 ? 10 : 25,
       rule: { type: 'count', path: pat, target: t },
     }));
   }
   for (const c of singles.slice(0, 20)) {
     const L = label(c.path) || c.path;
-    out.push({ group: 'Étapes', auto: true, name: L, desc: c.path + ' passe à 1', points: 10, rule: { type: 'flag', path: c.path, target: 1 } });
+    out.push({ group: T('Milestones', 'Étapes'), auto: true, name: L, desc: c.path + T(' becomes 1', ' passe à 1'), points: 10, rule: { type: 'flag', path: c.path, target: 1 } });
   }
   const counters = diff.candidates.filter(c => c.kind === 'counter' && !c.float && c.vals[c.vals.length - 1] >= 2).slice(0, opts.maxCounters || 12);
   for (const c of counters) {
     const best = c.vals[c.vals.length - 1];
     const ts = best >= 20 ? [...new Set([niceBelow(best / 10), niceBelow(best / 2), niceBelow(best)])] : [best];
     const L = label(c.path) || c.path;
-    ts.forEach((t, i) => out.push({ group: L, auto: true, name: L + ' : ' + t, desc: 'Atteindre ' + t + ' (' + c.path + ' ; ' + best + ' dans la dernière capture)', points: ts.length === 1 ? 10 : [10, 25, 50][i], rule: { type: 'flag', path: c.path, target: t } }));
+    ts.forEach((t, i) => out.push({ group: L, auto: true, name: L + SEP + t, desc: T('Reach ', 'Atteindre ') + t + ' (' + c.path + ' ; ' + best + T(' in the last capture)', ' dans la dernière capture)'), points: ts.length === 1 ? 10 : [10, 25, 50][i], rule: { type: 'flag', path: c.path, target: t } }));
   }
   return out;
 }
@@ -1080,29 +1083,29 @@ function autoByml(trees, diff, opts = {}) {
 // Validation like the app's parser: catches what the console would silently drop.
 function validate(def) {
   const errs = [];
-  if (!/^[0-9A-Fa-f]{16}$/.test(def.title_id || '')) errs.push('title_id doit faire 16 caractères hexadécimaux');
+  if (!/^[0-9A-Fa-f]{16}$/.test(def.title_id || '')) errs.push(T('title_id must be 16 hexadecimal characters', 'title_id doit faire 16 caractères hexadécimaux'));
   const ids = new Set();
   const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches'];
   for (const a of def.achievements || []) {
-    if (!a.id) errs.push('un succès n\'a pas d\'id');
-    else if (ids.has(a.id)) errs.push('id en double : ' + a.id);
+    if (!a.id) errs.push(T('an achievement has no id', 'un succès n\'a pas d\'id'));
+    else if (ids.has(a.id)) errs.push(T('duplicate id: ', 'id en double : ') + a.id);
     ids.add(a.id);
     const r = a.rule || {};
-    if (!types.includes(r.type)) { errs.push(a.id + ' : type de règle inconnu « ' + r.type + ' »'); continue; }
+    if (!types.includes(r.type)) { errs.push(a.id + T(': unknown rule type “', ' : type de règle inconnu « ') + r.type + T('”', ' »')); continue; }
     if (SAVE_TYPES.includes(r.type)) {
       const hasSrc = r.name || r.hash || (r.names && r.names.length) || r.pattern || r.offset !== undefined || (r.offsets && r.offsets.length) || r.path || (r.paths && r.paths.length);
-      if (!hasSrc) errs.push(a.id + ' : il faut un offset, un hash ou un nom');
+      if (!hasSrc) errs.push(a.id + T(': needs an offset, a hash or a name', ' : il faut un offset, un hash ou un nom'));
       const hasPath = r.path || (r.paths && r.paths.length);
       const tree = TREE_READERS.includes(def.reader);
-      if (tree && !hasPath) errs.push(a.id + ' : le lecteur ' + def.reader + ' utilise des chemins (path / paths)');
-      if (!tree && hasPath) errs.push(a.id + ' : path/paths ne servent qu\'aux lecteurs ' + TREE_READERS.join(', '));
-      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^[^[\]/]+(\[[^\]]*\])*(\/[^[\]/]*(\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + ' : chemin mal formé « ' + pp + ' »');
-      if (def.reader === 'binary_le' && (r.name || r.hash || r.names || r.pattern)) errs.push(a.id + ' : le lecteur binary_le n\'utilise que des offsets');
-      if (def.reader !== 'binary_le' && !TREE_READERS.includes(def.reader) && (r.offset !== undefined || r.offsets)) errs.push(a.id + ' : ce lecteur n\'utilise que des hashes/noms');
-      if (!def.reader) errs.push(a.id + ' : règle de sauvegarde mais aucun lecteur (reader) choisi');
+      if (tree && !hasPath) errs.push(a.id + T(': the ', ' : le lecteur ') + def.reader + T(' reader uses paths (path / paths)', ' utilise des chemins (path / paths)'));
+      if (!tree && hasPath) errs.push(a.id + T(': path/paths only work with the readers ', ' : path/paths ne servent qu\'aux lecteurs ') + TREE_READERS.join(', '));
+      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^[^[\]/]+(\[[^\]]*\])*(\/[^[\]/]*(\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + T(': malformed path “', ' : chemin mal formé « ') + pp + T('”', ' »'));
+      if (def.reader === 'binary_le' && (r.name || r.hash || r.names || r.pattern)) errs.push(a.id + T(': the binary_le reader only uses offsets', ' : le lecteur binary_le n\'utilise que des offsets'));
+      if (def.reader !== 'binary_le' && !TREE_READERS.includes(def.reader) && (r.offset !== undefined || r.offsets)) errs.push(a.id + T(': this reader only uses hashes/names', ' : ce lecteur n\'utilise que des hashes/noms'));
+      if (!def.reader) errs.push(a.id + T(': save rule but no reader chosen', ' : règle de sauvegarde mais aucun lecteur (reader) choisi'));
     }
   }
-  if (def.reader && !(def.save_files || []).length) errs.push('save_files est vide : l\'app ne saura pas quel fichier ouvrir');
+  if (def.reader && !(def.save_files || []).length) errs.push(T('save_files is empty: the app won\'t know which file to open', 'save_files est vide : l\'app ne saura pas quel fichier ouvrir'));
   return errs;
 }
 

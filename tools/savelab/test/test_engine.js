@@ -201,7 +201,7 @@ ok(!E.identify(rnd).analyzable, 'random data flagged as encrypted/compressed');
     const r0 = E.evaluate(jdef, [{ path: 'user1.dat', data: j0 }]).results, r2 = E.evaluate(jdef, [{ path: 'user1.dat', data: j0 }, { path: 'user2.dat', data: j2 }]).results;
     ok(r0.every(x => !x.met), 'fresh JSON save: nothing met');
     ok(['g', 'm', 'd', 'maps'].every(id => r2.find(x => x.id === id).met) && !r2.find(x => x.id === 'miss').met, 'best slot wins, missing path not met');
-    ok(r2.find(x => x.id === 'miss').note.includes('introuvable'), 'missing JSON path reported');
+    ok(r2.find(x => x.id === 'miss').note.includes('not found'), 'missing JSON path reported');
   }
   // perf: Smash-sized diff
   const big = [0, 1, 2].map(i => { const b = new Uint8Array(5982968); b[0x53FF40 + i * 8] = 1; b[1000] = i; return b; });

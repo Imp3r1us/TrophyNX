@@ -168,8 +168,9 @@ doesn't remember (no-damage runs, speedruns) can be checked.
 
 ### Find the right field: the Save Lab
 
-[`tools/savelab/index.html`](../tools/savelab) is a single web page that runs offline in any browser, phones
-included. Download the file and open it.
+The **Save Lab** is a web page that runs in any browser, phones included: open
+**https://imp3r1us.github.io/TrophyNX/** (English / French). Your saves stay on your device: nothing is uploaded.
+It also works offline: download [`tools/savelab/index.html`](../tools/savelab/index.html) and open it.
 
 1. Back up your save with JKSV at a few moments, naming each backup after what you just did:
    `fresh`, `beat first boss`, `got double jump`… Close the game between captures.

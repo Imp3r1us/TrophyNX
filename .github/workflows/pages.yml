@@ -1,0 +1,49 @@
+# Publishes the Save Lab (tools/savelab) on GitHub Pages: https://imp3r1us.github.io/TrophyNX/
+# Rebuilt whenever the page, its engine, the built-in game definitions or the PC -> Switch data change.
+# One-time setup: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+name: Save Lab website
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/savelab/**'
+      - 'tools/pc2switch/match.js'
+      - 'romfs/games/**'
+      - 'data/pc2switch/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Tests
+        run: |
+          node tools/savelab/test/test_engine.js
+          node tools/savelab/test/test_formats.js
+      - name: Build the page
+        run: |
+          python3 tools/savelab/build.py
+          mkdir -p _site
+          cp tools/savelab/index.html _site/index.html
+          cp tools/savelab/index.html _site/savelab.html
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

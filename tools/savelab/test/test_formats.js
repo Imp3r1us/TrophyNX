@@ -37,7 +37,7 @@ const defG = { title_id: '0100000000000001', reader: 'gvas', save_files: ['Slot1
   { id: 'missing', rule: { type: 'flag', path: 'nope', target: 1 } }] };
 ok(!E.validate(defG).length, 'gvas definition validates');
 const rg = E.evaluate(defG, [{ path: 'Slot1.sav', data: s1 }]).results;
-ok(rg[0].met && rg[1].met && rg[2].met && !rg[3].met && /introuvable/.test(rg[3].note), 'evaluate on GVAS');
+ok(rg[0].met && rg[1].met && rg[2].met && !rg[3].met && /not found/.test(rg[3].note), 'evaluate on GVAS');
 
 // ---- NRBF
 const n0 = load('nrbf/save0.dat'), n1 = load('nrbf/save1.dat');
@@ -48,7 +48,7 @@ ok(one(b, 'stats/kills') === 250 && one(b, 'statsAgain/kills') === 250, 'nested 
 ok(E.queryByml(b, 'collected[*]').length === 3 && one(b, 'flags[Key=Ending_A]/Value') === true && one(b, 'perLevel[Key=2]/Value/kills') === 9, 'List, Dictionary');
 ok(E.queryByml(b, 'unlocked[=Bow]').length === 1 && one(b, 'Coins') === 77, 'HashSet, auto-property');
 ok(E.queryByml(a, 'mixed[*]').length === 300 && one(a, 'loop/next/next') === null && one(a, 'grade') === 'é', 'null runs, cycle, char');
-ok(one(E.parseTree(load('nrbf/string.dat')).tree, 'value') === 'base64-payload==' && /chaîne/.test(E.identify(load('nrbf/string.dat')).notes.join(' ')), 'string root');
+ok(one(E.parseTree(load('nrbf/string.dat')).tree, 'value') === 'base64-payload==' && /only holds a string/.test(E.identify(load('nrbf/string.dat')).notes.join(' ')), 'string root');
 // differences + automatic achievements work on NRBF trees
 const fa = E.flattenByml(a), fb = E.flattenByml(b);
 const d = E.diffByml([fa, fb]);

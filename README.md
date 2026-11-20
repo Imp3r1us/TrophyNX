@@ -11,7 +11,8 @@ and remembers them on the SD card. A background module shows a popup when you un
 
 ![Achievement popup in Breath of the Wild](docs/popup-botw.jpg)
 
-**Want achievements for a game that isn't supported?** See [Making your own achievement list](docs/custom-achievements.md).
+**Want achievements for a game that isn't supported?** See [Making your own achievement list](docs/custom-achievements.md)
+and the online **[Save Lab](https://imp3r1us.github.io/TrophyNX/)**.
 
 **Download:** [latest release](https://github.com/Imp3r1us/TrophyNX/releases/latest) — unzip `TrophyNX-sd.zip`
 at the root of the SD card. Then update from the app with ZL.
@@ -347,7 +348,7 @@ Things like "beat the game without taking damage" or speedruns usually can't be 
 
 If you already know how a game stores its data (from an editor, a decompilation or a cheat table), you can write
 its definition yourself: see [Adding a game (JSON)](#adding-a-game-json). The **Save Lab**
-(`tools/savelab/index.html`, a single page that runs in any browser, phones included) compares saves, finds what
+(**https://imp3r1us.github.io/TrophyNX/**, a single page that runs in any browser, phones included; your saves stay on your device) compares saves, finds what
 changed and drafts the achievements for you. Pull requests are welcome.
 
 ## Roadmap
