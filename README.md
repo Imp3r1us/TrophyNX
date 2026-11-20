@@ -27,7 +27,7 @@ at the root of the SD card. Then update from the app with ZL.
 | Play statistics (system play log) | **every installed game** | first launch, 10/50/100 hours, 25 launches |
 | Global | your whole library | play 5/20/50 games, 100/500/1000 hours, unlock 25/100 achievements |
 | Save file | **Zelda: Breath of the Wild** (33) | first minutes (Old Shirt, Sheikah Slate, leaving the cave), shrines, Divine Beasts, Master Sword, Ganon, Koroks, hearts, stamina, Lynels... |
-| Play log, themed | **33 more games** (Persona 5 Royal, Metroid Dread, Slay the Spire...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
+| Play log, themed | **36 more games** (Persona 5 Royal, Hades, DELTARUNE, Metroid Dread...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
 | Save file | **Super Smash Bros. Ultimate** (23 + 4 play-time) | fighters unlocked, KOs, Classic Mode, World of Light, spirits, online, Elite Smash... |
 | Save file | **Mario Kart 8 Deluxe** (17 + 4 play-time) | coins, drifts, mini-turbos, online races/wins, VR, battles (offsets not yet confirmed on a current save) |
 | Save file | **Zelda: Tears of the Kingdom** (37) | shrines, Skyview Towers, Lightroots, Koroks, caves, wells, Bubbulfrogs, Gleeoks... |
