@@ -1,9 +1,577 @@
 {
  "title_id": "0100698009C6E000",
  "name": "Blasphemous",
- "reader": "",
- "save_files": [],
+ "reader": "nrbf",
+ "save_files": [
+  "Save_0.bin",
+  "Save_1.bin",
+  "Save_2.bin"
+ ],
+ "_note": "Steam achievements, read from the game's own achievement manager in the save (Id = Steam API name, Progress 100 = done).",
  "achievements": [
+  {
+   "id": "ac01",
+   "name": "A Long Path Ahead",
+   "desc": "Beat the Warden of the Silent Sorrow.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC01]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac02",
+   "name": "No Mercy",
+   "desc": "Beat Ten Piedad.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC02]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac03",
+   "name": "Look Her In The Eye",
+   "desc": "Beat Our Lady of the Charred Visage.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC03]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac04",
+   "name": "Danse Macabre",
+   "desc": "Beat Tres Angustias.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC04]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac05",
+   "name": "The Brother",
+   "desc": "Beat Esdras, of the Anointed Legion.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC05]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac06",
+   "name": "The Bejeweled Saint",
+   "desc": "Beat Melquíades, The Exhumed Archbishop.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC06]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac07",
+   "name": "Blind Innocence",
+   "desc": "Beat Exposito, Scion of Abjuration.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC07]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac08",
+   "name": "Ashes to Ashes",
+   "desc": "Beat Quirce of the Eternal Pyre.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC08]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac09",
+   "name": "Duel of Faith",
+   "desc": "Beat Crisanta of the Anointed Blade.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC09]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac10",
+   "name": "Summa Blasphemia",
+   "desc": "Beat His Holiness Escribar.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC10]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac11",
+   "name": "The Path of the Believer",
+   "desc": "Unlock ending A.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC11]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac12",
+   "name": "The Path of the Unworthy",
+   "desc": "Unlock ending B.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC12]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac13",
+   "name": "The Bull and the Moon",
+   "desc": "Release all cherubins.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC13]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac14",
+   "name": "Last Words",
+   "desc": "Talk with all corpses.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC14]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac15",
+   "name": "Detestatio Sacrorum",
+   "desc": "Beat all the arena challenges.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC15]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac16",
+   "name": "Unwavering Devotion",
+   "desc": "Get the 13 original prayers.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC16]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac17",
+   "name": "Skin and Bones",
+   "desc": "Get the 7 original relics.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC17]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac18",
+   "name": "Mysteria Lucis",
+   "desc": "Get the 30 original rosary beads.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC18]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac19",
+   "name": "Warden of the Ossuary",
+   "desc": "Get the 44 original collectibles.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC19]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac20",
+   "name": "Heartbreaker",
+   "desc": "Get the 9 original sword hearts.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC20]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac21",
+   "name": "Cvstodia's Pilgrim",
+   "desc": "Discover the main areas of Cvstodia.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC21]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac22",
+   "name": "Six Stinging Pains",
+   "desc": "Achieve maximum health.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC22]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac23",
+   "name": "Baptism of Faith",
+   "desc": "Achieve maximum fervor.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC23]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac24",
+   "name": "Mea Culpa",
+   "desc": "Achieve the maximum level of the sword Mea Culpa.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC24]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac25",
+   "name": "The Fountain of Life",
+   "desc": "Achieve maximum flask capacity.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC25]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac26",
+   "name": "Engracia",
+   "desc": "Achieve the maximum number of rosary bead slots.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC26]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac27",
+   "name": "Inquisition",
+   "desc": "Execute 5 different enemies.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC27]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac28",
+   "name": "Power Unleashed",
+   "desc": "Use a Righteous Riposte 5 times.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC28]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac29",
+   "name": "The Desire of the Corrupted",
+   "desc": "Visit the tomb of Gémino's lover.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC29]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac30",
+   "name": "True Shrine",
+   "desc": "Bring all the offerings to Lvdovico.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC30]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac31",
+   "name": "Dying Breath",
+   "desc": "Witness the last moments of Viridiana.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC31]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac32",
+   "name": "Rebirth",
+   "desc": "Help Cleofás in his path of redemption.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC32]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac33",
+   "name": "Ultreia Et Suseia",
+   "desc": "Help the Pilgrim reach his final destination.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC33]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac34",
+   "name": "In the name of the High Wills",
+   "desc": "Bring all the offerings to the Blessed Lord of Salty Shores.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC34]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac35",
+   "name": "Mediterranean Diet",
+   "desc": "Save all Kissers of Wounds.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC35]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac36",
+   "name": "Flea Market",
+   "desc": "Buy all the items of the Candelaria shops.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC36]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac37",
+   "name": "Warm and Soft",
+   "desc": "Hatch the Egg of Altasgracias.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC37]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac38",
+   "name": "The Sister",
+   "desc": "Beat Perpetua.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC38]/Progress",
+    "target": 100,
+    "show_progress": false
+   },
+   "hidden": true
+  },
+  {
+   "id": "ac39",
+   "name": "Bestiary",
+   "desc": "Defeat the 51 original types of enemies.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC39]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac40",
+   "name": "Blood and Tears",
+   "desc": "Unlock all the abilities on the Mea Culpa altars.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC40]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac41",
+   "name": "The Number of the Beasts",
+   "desc": "Kill 666 enemies.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC41]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac42",
+   "name": "Crossing Souls",
+   "desc": "Provoke the meeting between Redento and Cleofás.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC42]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac43",
+   "name": "Requiem Aeternam",
+   "desc": "Defeat the original bosses without consuming any bile flasks.",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC43]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac44",
+   "name": "Bronze Medal",
+   "desc": "Pass through the bronze door on the Bridge of Calvary in less than 3 hours.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC44]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ac46",
+   "name": "Witness of The Miracle",
+   "desc": "Beat 100% of the game.",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "[Key=savegame_0.save]/Value/commonElements/ID_ACHIEVEMENTS_MANAGER/achievements[Id=AC46]/Progress",
+    "target": 100,
+    "show_progress": false
+   }
+  },
   {
    "id": "t_launch",
    "name": "Penitent Returns",

@@ -723,6 +723,41 @@ cJSON* gvasToJson(const uint8_t* data, size_t size, std::string& error, SaveForm
     return tree;
 }
 
+// Byte arrays that hold JSON text (e.g. Blasphemous keeps its whole save as JSON in byte[] values) are
+// replaced by the parsed JSON, so their content can be addressed by path. Same rule as the Save Lab.
+static cJSON* jsonFromBytes(const cJSON* arr) {
+    int n = cJSON_GetArraySize(arr);
+    if (n < 2 || n > (16 << 20)) return nullptr;
+    std::string s;
+    s.reserve(n);
+    const cJSON* c;
+    cJSON_ArrayForEach(c, arr) {
+        if (!cJSON_IsNumber(c)) return nullptr;
+        double v = c->valuedouble;
+        if (v < 0 || v > 255 || v != (int)v) return nullptr;
+        s.push_back((char)(int)v);
+        if (s.size() == 1 && s[0] != '{' && s[0] != '[') return nullptr;
+    }
+    return cJSON_ParseWithLength(s.data(), s.size());
+}
+static void decodeJsonByteArrays(cJSON* n, int depth) {
+    if (!n || depth > 64) return;
+    cJSON* c = n->child;
+    while (c) {
+        cJSON* next = c->next;
+        if (cJSON_IsArray(c) && c->child && cJSON_IsNumber(c->child)) {
+            if (cJSON* j = jsonFromBytes(c)) {
+                if (cJSON_IsObject(n) && c->string) cJSON_ReplaceItemInObjectCaseSensitive(n, c->string, j);   // keeps the key
+                else cJSON_ReplaceItemViaPointer(n, c, j);
+                c = next;
+                continue;
+            }
+        }
+        if (cJSON_IsArray(c) || cJSON_IsObject(c)) decodeJsonByteArrays(c, depth + 1);
+        c = next;
+    }
+}
+
 cJSON* nrbfToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info) {
     if (!isNrbf(data, size)) { error = "not a .NET BinaryFormatter stream"; return nullptr; }
     std::unique_ptr<Nrbf> p(new Nrbf(data, size));
@@ -740,6 +775,7 @@ cJSON* nrbfToJson(const uint8_t* data, size_t size, std::string& error, SaveForm
     root.k = NVal::Ref;
     root.id = rootId;
     cJSON* tree = p->conv(root, 0);
+    if (tree) decodeJsonByteArrays(tree, 0);
     if (p->tooBig) { cJSON_Delete(tree); error = "document too large"; return nullptr; }
     if (!cJSON_IsObject(tree) && !cJSON_IsArray(tree)) {
         cJSON* w = cJSON_CreateObject();
@@ -763,6 +799,159 @@ bool GvasDoc::parse(std::vector<uint8_t>&& data) {
 
 bool NrbfDoc::parse(std::vector<uint8_t>&& data) {
     cJSON* t = nrbfToJson(data.data(), data.size(), error, &info);
+    if (!t) return false;
+    adopt(t, false);
+    return true;
+}
+
+// ================================================================== Supergiant "SGB1" (Hades)
+bool lz4BlockDecompress(const uint8_t* in, size_t n, std::vector<uint8_t>& out, size_t maxOut) {
+    out.clear();
+    size_t p = 0;
+    while (p < n) {
+        uint8_t tok = in[p++];
+        size_t lit = tok >> 4;
+        if (lit == 15) { uint8_t b; do { if (p >= n) return false; b = in[p++]; lit += b; } while (b == 255); }
+        if (lit > n - p || out.size() + lit > maxOut) return false;
+        out.insert(out.end(), in + p, in + p + lit);
+        p += lit;
+        if (p >= n) break;   // the last sequence has literals only
+        if (p + 2 > n) return false;
+        size_t off = in[p] | (in[p + 1] << 8);
+        p += 2;
+        if (off == 0 || off > out.size()) return false;
+        size_t len = tok & 15;
+        if (len == 15) { uint8_t b; do { if (p >= n) return false; b = in[p++]; len += b; } while (b == 255); }
+        len += 4;
+        if (out.size() + len > maxOut) return false;
+        size_t from = out.size() - off;
+        for (size_t i = 0; i < len; i++) out.push_back(out[from + i]);   // may overlap
+    }
+    return true;
+}
+
+bool isSgb(const uint8_t* d, size_t n) {
+    if (n < 16 || memcmp(d, "SGB1", 4) != 0) return false;
+    uint32_t v = d[8] | (d[9] << 8) | (d[10] << 16) | ((uint32_t)d[11] << 24);
+    return v == 15 || v == 16;
+}
+
+namespace {
+struct SgbReader {
+    const uint8_t* d; size_t n; size_t p = 0; bool ok = true;
+    bool need(size_t k) { if (!ok || k > n - p) { ok = false; return false; } return true; }
+    uint32_t u32() { if (!need(4)) return 0; uint32_t v = d[p] | (d[p + 1] << 8) | (d[p + 2] << 16) | ((uint32_t)d[p + 3] << 24); p += 4; return v; }
+    uint64_t u64() { uint64_t lo = u32(); return lo | ((uint64_t)u32() << 32); }
+    std::string str() { uint32_t k = u32(); if (!need(k)) return ""; std::string s((const char*)d + p, k); p += k; return s; }
+};
+
+// luabins: '-' nil, '0' false, '1' true, 'N' double, 'S' u32 length + bytes, 'T' u32 array size, u32 hash size, pairs
+cJSON* luabinsValue(SgbReader& r, int depth, std::string& err);
+std::string luabinsKey(cJSON* k) {
+    if (cJSON_IsString(k)) return k->valuestring ? k->valuestring : "";
+    if (cJSON_IsNumber(k)) {
+        char b[40];
+        double v = k->valuedouble;
+        if (v == std::floor(v) && std::fabs(v) < 1e15) snprintf(b, sizeof(b), "%lld", (long long)v);
+        else snprintf(b, sizeof(b), "%.17g", v);
+        return b;
+    }
+    if (cJSON_IsBool(k)) return cJSON_IsTrue(k) ? "true" : "false";
+    return "";
+}
+cJSON* luabinsValue(SgbReader& r, int depth, std::string& err) {
+    if (depth > 64) { err = "Lua tables nested too deep"; r.ok = false; return nullptr; }
+    if (!r.need(1)) { err = "truncated Lua state"; return nullptr; }
+    char t = (char)r.d[r.p++];
+    switch (t) {
+        case '-': return cJSON_CreateNull();
+        case '0': return cJSON_CreateFalse();
+        case '1': return cJSON_CreateTrue();
+        case 'N': {
+            if (!r.need(8)) { err = "truncated number"; return nullptr; }
+            double v;
+            memcpy(&v, r.d + r.p, 8);
+            r.p += 8;
+            return cJSON_CreateNumber(v);
+        }
+        case 'S': {
+            std::string s = r.str();
+            if (!r.ok) { err = "truncated string"; return nullptr; }
+            return cJSON_CreateString(s.c_str());
+        }
+        case 'T': {
+            uint64_t na = r.u32(), nh = r.u32();
+            if (!r.ok || na + nh > (r.n - r.p) / 2) { err = "bad Lua table size"; r.ok = false; return nullptr; }
+            cJSON* o = cJSON_CreateObject();
+            for (uint64_t i = 0; i < na + nh; i++) {
+                cJSON* k = luabinsValue(r, depth + 1, err);
+                if (!k) { cJSON_Delete(o); return nullptr; }
+                cJSON* v = luabinsValue(r, depth + 1, err);
+                if (!v) { cJSON_Delete(k); cJSON_Delete(o); return nullptr; }
+                std::string key = luabinsKey(k);
+                cJSON_Delete(k);
+                cJSON_AddItemToObject(o, key.c_str(), v);
+            }
+            return o;
+        }
+        default: {
+            char b[64];
+            snprintf(b, sizeof(b), "unknown Lua value tag 0x%02X at %zu", (unsigned)(uint8_t)t, r.p - 1);
+            err = b;
+            r.ok = false;
+            return nullptr;
+        }
+    }
+}
+}  // namespace
+
+cJSON* sgbToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info) {
+    if (!isSgb(data, size)) { error = "not a Supergiant SGB1 save"; return nullptr; }
+    SgbReader h{data, size};
+    h.p = 8;   // signature + checksum
+    uint32_t version = h.u32();
+    if (version >= 16) h.u64();   // timestamp
+    std::string location = h.str();
+    uint32_t runs = h.u32(), meta = h.u32(), shrine = h.u32();
+    if (!h.need(2)) { error = "truncated header"; return nullptr; }
+    int god = data[h.p], hell = data[h.p + 1];
+    h.p += 2;
+    uint32_t nkeys = h.u32();
+    for (uint32_t i = 0; i < nkeys && h.ok; i++) h.str();
+    std::string map = h.str();
+    h.str();   // start_next_map
+    uint32_t packed = h.u32();
+    if (!h.ok || !h.need(packed)) { error = "truncated header"; return nullptr; }
+    std::vector<uint8_t> raw;
+    if (!lz4BlockDecompress(data + h.p, packed, raw, 9388032)) { error = "LZ4 data is corrupted"; return nullptr; }
+    SgbReader r{raw.data(), raw.size()};
+    if (!r.need(1)) { error = "empty Lua state"; return nullptr; }
+    int count = raw[r.p++];
+    cJSON* root = nullptr;
+    for (int i = 0; i < count; i++) {
+        cJSON* v = luabinsValue(r, 0, error);
+        if (!v) { if (root) cJSON_Delete(root); return nullptr; }
+        if (!root && cJSON_IsObject(v)) root = v;
+        else cJSON_Delete(v);
+    }
+    if (!root) root = cJSON_CreateObject();
+    cJSON* hd = cJSON_CreateObject();
+    cJSON_AddNumberToObject(hd, "version", version);
+    cJSON_AddStringToObject(hd, "location", location.c_str());
+    cJSON_AddNumberToObject(hd, "runs", runs);
+    cJSON_AddNumberToObject(hd, "meta_points", meta);
+    cJSON_AddNumberToObject(hd, "shrine_points", shrine);
+    cJSON_AddNumberToObject(hd, "god_mode", god);
+    cJSON_AddNumberToObject(hd, "hell_mode", hell);
+    cJSON_AddStringToObject(hd, "map", map.c_str());
+    cJSON_AddItemToObject(root, "_header", hd);
+    if (info) info->summary = "Supergiant SGB1 v" + std::to_string(version) + ", " + std::to_string(runs) + " runs, Lua state " +
+                              std::to_string(raw.size() / 1024) + " KB";
+    return root;
+}
+
+bool SgbDoc::parse(std::vector<uint8_t>&& data) {
+    cJSON* t = sgbToJson(data.data(), data.size(), error, &info);
     if (!t) return false;
     adopt(t, false);
     return true;

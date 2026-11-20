@@ -27,13 +27,19 @@ at the root of the SD card. Then update from the app with ZL.
 | Play statistics (system play log) | **every installed game** | first launch, 10/50/100 hours, 25 launches |
 | Global | your whole library | play 5/20/50 games, 100/500/1000 hours, unlock 25/100 achievements |
 | Save file | **Zelda: Breath of the Wild** (33) | first minutes (Old Shirt, Sheikah Slate, leaving the cave), shrines, Divine Beasts, Master Sword, Ganon, Koroks, hearts, stamina, Lynels... |
-| Play log, themed | **36 more games** (Persona 5 Royal, Hades, DELTARUNE, Metroid Dread...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
+| Play log, themed | **29 more games** (Persona 5 Royal, DELTARUNE, Metroid Dread...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
 | Save file | **Super Smash Bros. Ultimate** (23 + 4 play-time) | fighters unlocked, KOs, Classic Mode, World of Light, spirits, online, Elite Smash... |
 | Save file | **Mario Kart 8 Deluxe** (17 + 4 play-time) | coins, drifts, mini-turbos, online races/wins, VR, battles (offsets not yet confirmed on a current save) |
 | Save file | **Zelda: Tears of the Kingdom** (37) | shrines, Skyview Towers, Lightroots, Koroks, caves, wells, Bubbulfrogs, Gleeoks... |
 | Save file | **Super Mario Odyssey** (59 + 4 play-time) | Power Moons, captures, each kingdom visited, kingdom stories cleared, regional coins, outfits/hats, souvenirs, checkpoints, music, jump/cap-throw counts, Jaxi, Toadette's achievements... |
 | Save file | **Hollow Knight** (56 + 4 play-time) | charms, masks, soul vessels, every boss and dream boss, Dreamers, essence, grubs, stags, maps, Hunter's Journal, Colosseum, Grimm Troupe, pantheons, 112%... |
 | Save file | **SIGNALIS** (13 + 4 play-time) | the game's own 13 achievements, with their original names (3 endings hidden) |
+| Save file | **Hades** (41 + 4 play-time) | 38 of the 49 Steam achievements, from the game's own conditions: escapes, prophecies, keepsakes, companions, aspects, Mirror, Codex, Skelly, fishing... + escape-attempt milestones |
+| Save file | **DAVE THE DIVER** (56 + 4 play-time) | the 56 Steam achievements, from the game's own record and counters |
+| Save file | **Blasphemous** (45 + 4 play-time) | the 45 Steam achievements, from the game's own achievement tracker |
+| Save file | **Slay the Spire** (46 + 4), **Vampire Survivors** (243 + 4), **Vampire Crawlers** (161 + 4) | every Steam achievement, from the game's own record |
+| Save file | **OCTOPATH TRAVELER** (22) | travelers, levels, story chapters, chests, side stories, enemy weaknesses |
+| Save file | **Paper Mario: The Origami King** (22 + 4 play-time) | coins, battles, enemies, Excellent hits, ring puzzles, museum... |
 
 Unlocks are permanent: if you later delete or overwrite a save, what you unlocked stays unlocked.
 When a game has several save slots, the best slot counts.
@@ -260,11 +266,13 @@ Drop a file in `sdmc:/switch/TrophyNX/games/` named after the title ID:
 | `byml` | Nintendo BYML tree (`YB`/`BY`) at offset 0 or 0x10 — Super Mario Odyssey `File*.bin` | — (rules use `path`/`paths`, optional `equals`) |
 | `json` | plain-text JSON (optional BOM, trailing NULs ignored) — Unity games such as Hollow Knight `user1.dat` | — (same `path`/`paths` syntax as `byml`) |
 | `gvas` | Unreal Engine 4 / 5 (up to 5.3) SaveGame `.sav` (magic `GVAS`) — property names become keys | — (same `path`/`paths` syntax) |
-| `nrbf` | .NET BinaryFormatter stream (Unity games) — class fields become keys | — (same `path`/`paths` syntax) |
+| `nrbf` | .NET BinaryFormatter stream (Unity games) — class fields become keys; byte arrays holding JSON text are decoded (Blasphemous) | — (same `path`/`paths` syntax) |
+| `sgb` | Supergiant Games save (Hades `Profile*.sav`: `SGB1` header + LZ4 + luabins) — the saved Lua globals (`GameState`, `CurrentRun`, `TextLinesRecord`, `CodexStatus`...), number keys written `1`, `2`...; `_header/runs` etc. | — (same `path`/`paths` syntax) |
 
 **`byml` / `json` paths** select values in the tree, segments separated by `/`:
 `CoinNum`, `GameProgressData/UnlockWorldNum`, `WorldInfo[3]/ScenarioNo` (index), `ShineData[*]/IsGet` (every element),
-`ShineData[UniqueId=205]/IsGet` (elements whose field matches), `HackDictionary[=Wanwan]` (list contains), `ItemCap[*]`.
+`ShineData[UniqueId=205]/IsGet` (elements whose field matches), `HackDictionary[=Wanwan]` (list contains), `ItemCap[*]`,
+`GameState/QuestStatus[*]` (`[*]` on an object: every value of it).
 `flag` takes the largest matched value, `count` counts matched values that are true / non-zero / non-empty
 (or equal to `equals`, e.g. `"equals": false`), `sum` adds them. Strings count as 1 when non-empty.
 For `json`, `true`/`false` read as 1/0, so `{ "type": "flag", "path": "playerData/killedHollowKnight" }` works as-is.

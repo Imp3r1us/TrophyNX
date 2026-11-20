@@ -102,5 +102,20 @@ if (process.env.CPP_DUMP) {
     ok(!err, 'app = Save Lab : ' + path.basename(f) + (err ? ' → ' + err : ''));
   }
 }
+// ---------------------------------------------------------------- Hades SGB1 (same bytes as host/test/test_sgb.cpp)
+{
+  const E = require('../engine.js');
+  const sgb = Uint8Array.from(Buffer.from('5347423100000000100000000000000000000000110000004c6f636174696f6e5f54617274617275732a000000070000000300000000010000000004000000526f6f6d000000003f010000f10901540000000003000000530900000047616d6553746174651700f10504000000530b00000051756573745374617475731900f10602000000530c000000576561706f6e436c656172734100914361736865644f75741f00f50c5061637455706772616465735308000000556e6c6f636b6564530d3d00021300025800140171005253776f72645d00325402000100124e070023f03f0900231440090014000900f701f03f530a000000456e656d794b696c6c5500f3020d000000547261696e696e674d656c65653c00b230405305000000466c61672e00010b01f12808000000486172644d6f64653153030000004f66663053070000004e6f7468696e672d530f000000546578744c696e65735265636f72641c0101c400110887007164696e673031313800df50616464696e6753c8000000780100af507878787878', 'hex'));
+  ok(F.isSgb(sgb), 'SGB1 detected');
+  const d = F.parseSgb(sgb), t = d.tree;
+  ok(t._header.runs === 42 && t._header.hell_mode === 1 && t._header.location === 'Location_Tartarus', 'SGB1 header');
+  ok(t.GameState.EnemyKills.TrainingMelee === 16 && t.GameState.QuestStatus.WeaponClears === 'CashedOut', 'luabins values');
+  ok(E.queryByml(t, 'GameState/WeaponUnlocks/SwordWeapon/1')[0] === 5, 'number keys as "1"');
+  ok(E.queryByml(t, 'GameState/WeaponUnlocks[*][*]').join() === '5,1', '[*] over objects');
+  ok(E.identify(sgb, 'Profile1.sav').reader === 'sgb', 'identify -> sgb');
+  let threw = 0;
+  for (const cut of [20, 60, sgb.length - 30]) { try { F.parseSgb(sgb.subarray(0, cut)); } catch (e) { threw++; } }
+  ok(threw === 3, 'truncated SGB1 rejected');
+}
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
 process.exit(fails ? 1 : 0);

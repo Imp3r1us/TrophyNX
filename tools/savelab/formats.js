@@ -402,11 +402,24 @@ function isNrbf(buf) {
   const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
   return dv.getInt32(9, true) === 1 && dv.getInt32(13, true) === 0;
 }
+// Byte arrays holding JSON text (Blasphemous keeps its whole save as JSON in byte[] values) become the
+// parsed JSON. Same rule as the app (source/save_formats.cpp, decodeJsonByteArrays).
+function decodeJsonBytes(x, depth) {
+  if (depth > 64 || !x || typeof x !== 'object') return x;
+  if (Array.isArray(x)) {
+    if (x.length >= 2 && (x[0] === 0x7B || x[0] === 0x5B) && x.every(v => Number.isInteger(v) && v >= 0 && v <= 255)) {
+      try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(x))); } catch (e) { }
+    }
+    return x.map(v => decodeJsonBytes(v, depth + 1));
+  }
+  for (const k of Object.keys(x)) x[k] = decodeJsonBytes(x[k], depth + 1);
+  return x;
+}
 function parseNrbf(buf) {
   if (!isNrbf(buf)) return null;
   const { rootId, objs } = nrbfParseRecords(buf);
   const root = objs.get(rootId);
-  return { nrbf: true, tree: nrbfBuild(objs, rootId), meta: { rootClass: root && root.cls ? root.cls : typeof root === 'string' ? 'System.String' : '', objects: objs.size } };
+  return { nrbf: true, tree: decodeJsonBytes(nrbfBuild(objs, rootId), 0), meta: { rootClass: root && root.cls ? root.cls : typeof root === 'string' ? 'System.String' : '', objects: objs.size } };
 }
 
 // ================================================================== XOR obfuscation (repeating key)
@@ -465,7 +478,79 @@ function unwrapXor(buf, parse) {
   return g ? tryKey(g, '') : null;
 }
 
-const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor };
+// ================================================================== Supergiant "SGB1" (Hades)
+// Header (version 15/16) + LZ4 block + luabins Lua state. Same tree as the app (source/save_formats.cpp):
+// the saved Lua globals, every table as an object (number keys "1", "2"...), plus "_header".
+function lz4Block(src, maxOut) {
+  let out = new Uint8Array(Math.min(maxOut, Math.max(1024, src.length * 8))), o = 0, p = 0;
+  const grow = (need) => { if (o + need <= out.length) return; if (o + need > maxOut) throw new Error('LZ4: output too large'); let n = out.length; while (n < o + need) n *= 2; const b = new Uint8Array(Math.min(n, maxOut)); b.set(out.subarray(0, o)); out = b; };
+  while (p < src.length) {
+    const tok = src[p++];
+    let lit = tok >> 4;
+    if (lit === 15) { let b; do { if (p >= src.length) throw new Error('LZ4: truncated'); b = src[p++]; lit += b; } while (b === 255); }
+    if (lit > src.length - p) throw new Error('LZ4: truncated literals');
+    grow(lit); out.set(src.subarray(p, p + lit), o); o += lit; p += lit;
+    if (p >= src.length) break;
+    if (p + 2 > src.length) throw new Error('LZ4: truncated offset');
+    const off = src[p] | (src[p + 1] << 8); p += 2;
+    if (!off || off > o) throw new Error('LZ4: bad offset');
+    let len = tok & 15;
+    if (len === 15) { let b; do { if (p >= src.length) throw new Error('LZ4: truncated'); b = src[p++]; len += b; } while (b === 255); }
+    len += 4;
+    grow(len);
+    for (let i = 0; i < len; i++) { out[o] = out[o - off]; o++; }
+  }
+  return out.subarray(0, o);
+}
+function isSgb(buf) {
+  if (buf.length < 16 || buf[0] !== 0x53 || buf[1] !== 0x47 || buf[2] !== 0x42 || buf[3] !== 0x31) return false;
+  const v = buf[8] | (buf[9] << 8) | (buf[10] << 16) | (buf[11] << 24);
+  return v === 15 || v === 16;
+}
+function parseSgb(buf) {
+  if (!isSgb(buf)) return null;
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength), dec = new TextDecoder();
+  let p = 8;
+  const u32 = () => { if (p + 4 > buf.length) throw new Error('SGB1: truncated header'); const v = dv.getUint32(p, true); p += 4; return v; };
+  const str = () => { const n = u32(); if (p + n > buf.length) throw new Error('SGB1: truncated header'); const s = dec.decode(buf.subarray(p, p + n)); p += n; return s; };
+  const version = u32();
+  if (version >= 16) p += 8;   // timestamp
+  const location = str(), runs = u32(), meta = u32(), shrine = u32(), god = buf[p], hell = buf[p + 1];
+  p += 2;
+  const nk = u32(); for (let i = 0; i < nk; i++) str();
+  const map = str(); str();
+  const packed = u32();
+  if (p + packed > buf.length) throw new Error('SGB1: truncated');
+  const raw = lz4Block(buf.subarray(p, p + packed), 9388032), rv = new DataView(raw.buffer, raw.byteOffset, raw.byteLength);
+  let q = 0;
+  const key = (k) => typeof k === 'number' ? (Number.isInteger(k) ? String(k) : String(k)) : typeof k === 'boolean' ? String(k) : String(k ?? '');
+  const val = (depth) => {
+    if (depth > 64) throw new Error('Lua tables nested too deep');
+    if (q >= raw.length) throw new Error('truncated Lua state');
+    const t = raw[q++];
+    if (t === 0x2D) return null;           // '-'
+    if (t === 0x30) return false;          // '0'
+    if (t === 0x31) return true;           // '1'
+    if (t === 0x4E) { const v = rv.getFloat64(q, true); q += 8; return v; }   // 'N'
+    if (t === 0x53) { const n = rv.getUint32(q, true); q += 4; const s = dec.decode(raw.subarray(q, q + n)); q += n; return s; }   // 'S'
+    if (t === 0x54) {   // 'T'
+      const na = rv.getUint32(q, true), nh = rv.getUint32(q + 4, true); q += 8;
+      if (na + nh > (raw.length - q) / 2) throw new Error('bad Lua table size');
+      const o = {};
+      for (let i = 0; i < na + nh; i++) { const k = val(depth + 1); o[key(k)] = val(depth + 1); }
+      return o;
+    }
+    throw new Error('unknown Lua value tag 0x' + t.toString(16) + ' at ' + (q - 1));
+  };
+  const count = raw[q++];
+  let tree = null;
+  for (let i = 0; i < count; i++) { const v = val(0); if (!tree && v && typeof v === 'object') tree = v; }
+  tree = tree || {};
+  tree._header = { version, location, runs, meta_points: meta, shrine_points: shrine, god_mode: god, hell_mode: hell, map };
+  return { sgb: true, tree, meta: { version, runs, location, luaBytes: raw.length } };
+}
+
+const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveFormats = api;
 })(typeof self !== 'undefined' ? self : this);

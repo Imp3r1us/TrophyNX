@@ -81,9 +81,13 @@ void JsonDoc::walk(const cJSON* n, const std::vector<std::string>& atoms, size_t
         if (cJSON_IsObject(n)) walk(cJSON_GetObjectItemCaseSensitive(n, a.c_str()), atoms, i + 1, out, depth + 1);
         return;
     }
-    if (!cJSON_IsArray(n)) return;
     std::string sel = a.substr(1, a.size() - 2);
     const cJSON* c;
+    if (sel == "*" && cJSON_IsObject(n)) {   // every value of an object (Lua tables, dictionaries)
+        cJSON_ArrayForEach(c, n) walk(c, atoms, i + 1, out, depth + 1);
+        return;
+    }
+    if (!cJSON_IsArray(n)) return;
     if (sel == "*") {
         cJSON_ArrayForEach(c, n) walk(c, atoms, i + 1, out, depth + 1);
         return;

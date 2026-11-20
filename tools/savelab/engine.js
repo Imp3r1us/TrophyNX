@@ -241,6 +241,15 @@ function identify(buf, path = '') {
       notes.push(T('Plain-text JSON save (Unity games, e.g. Hollow Knight): values are identified by their path (e.g. playerData/grubsCollected). App reader “json”.', 'Sauvegarde en texte JSON (jeux Unity, ex. Hollow Knight) : les valeurs sont identifiées par leur chemin (ex. playerData/grubsCollected). Lecteur « json » de l\'app.'));
     }
   }
+  if (!bh && !r.known && F.isSgb(buf)) {
+    r.known = r.reader = 'sgb';
+    try {
+      const d = F.parseSgb(buf);
+      r.meta = d.meta;
+      r.format = T('Supergiant save (SGB1 v', 'Sauvegarde Supergiant (SGB1 v') + d.meta.version + ', ' + d.meta.runs + T(' runs)', ' parties)');
+      notes.push(T('Hades save: the game\'s Lua state (LZ4 + luabins), values identified by path (e.g. GameState/QuestStatus/WeaponClears). App reader “sgb”.', 'Sauvegarde Hades : l\'état Lua du jeu (LZ4 + luabins), valeurs identifiées par chemin (ex. GameState/QuestStatus/WeaponClears). Lecteur « sgb » de l\'app.'));
+    } catch (e) { r.treeError = e.message; r.format = T('Supergiant save (SGB1) unreadable: ', 'Sauvegarde Supergiant (SGB1) illisible : ') + e.message; }
+  }
   if (!bh && !r.known && (F.isGvas(buf) || F.isNrbf(buf))) {
     const gv = F.isGvas(buf);
     r.known = r.reader = gv ? 'gvas' : 'nrbf';
@@ -446,6 +455,7 @@ const TREE_FORMATS = [
   { reader: 'byml', label: 'BYML', parse: parseByml },
   { reader: 'gvas', label: 'GVAS (Unreal)', parse: (b) => F.parseGvas(b) },
   { reader: 'nrbf', label: 'NRBF (.NET / Unity)', parse: (b) => F.parseNrbf(b) },
+  { reader: 'sgb', label: 'Supergiant SGB1 (Hades)', parse: (b) => F.parseSgb(b) },
   { reader: 'json', label: 'JSON', parse: parseJson },
 ];
 const TREE_READERS = TREE_FORMATS.map(f => f.reader);
@@ -507,8 +517,9 @@ function queryByml(tree, path) {
     if (i === atoms.length) { out.push(n); return; }
     const a = atoms[i];
     if (a[0] !== '[') { if (isObj(n) && a in n) walk(n[a], i + 1); return; }
-    if (!Array.isArray(n)) return;
     const sel = a.slice(1, -1);
+    if (sel === '*' && isObj(n)) { Object.values(n).forEach(c => walk(c, i + 1)); return; }   // every value of an object (Lua tables, dictionaries)
+    if (!Array.isArray(n)) return;
     if (sel === '*') { n.forEach(c => walk(c, i + 1)); return; }
     const eq = sel.indexOf('=');
     if (eq < 0) { if (/^\d+$/.test(sel) && +sel < n.length) walk(n[+sel], i + 1); return; }
@@ -1125,7 +1136,7 @@ function validate(def) {
       const tree = TREE_READERS.includes(def.reader);
       if (tree && !hasPath) errs.push(a.id + T(': the ', ' : le lecteur ') + def.reader + T(' reader uses paths (path / paths)', ' utilise des chemins (path / paths)'));
       if (!tree && hasPath) errs.push(a.id + T(': path/paths only work with the readers ', ' : path/paths ne servent qu\'aux lecteurs ') + TREE_READERS.join(', '));
-      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^[^[\]/]+(\[[^\]]*\])*(\/[^[\]/]*(\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + T(': malformed path “', ' : chemin mal formé « ') + pp + T('”', ' »'));
+      if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^(?:[^[\]/]+(?:\[[^\]]*\])*|(?:\[[^\]]*\])+)(?:\/[^[\]/]*(?:\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + T(': malformed path “', ' : chemin mal formé « ') + pp + T('”', ' »'));
       if (def.reader === 'binary_le' && (r.name || r.hash || r.names || r.pattern)) errs.push(a.id + T(': the binary_le reader only uses offsets', ' : le lecteur binary_le n\'utilise que des offsets'));
       if (def.reader !== 'binary_le' && !TREE_READERS.includes(def.reader) && (r.offset !== undefined || r.offsets)) errs.push(a.id + T(': this reader only uses hashes/names', ' : ce lecteur n\'utilise que des hashes/noms'));
       if (!def.reader) errs.push(a.id + T(': save rule but no reader chosen', ' : règle de sauvegarde mais aucun lecteur (reader) choisi'));

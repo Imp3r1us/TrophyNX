@@ -1,9 +1,889 @@
 {
  "title_id": "0100535012974000",
  "name": "Hades",
- "reader": "",
- "save_files": [],
+ "reader": "sgb",
+ "save_files": [
+  "Saved Games/Hades/Profile1.sav",
+  "Saved Games/Hades/Profile1_Temp.sav",
+  "Saved Games/Hades/Profile2.sav",
+  "Saved Games/Hades/Profile2_Temp.sav",
+  "Saved Games/Hades/Profile3.sav",
+  "Saved Games/Hades/Profile3_Temp.sav",
+  "Saved Games/Hades/Profile4.sav",
+  "Saved Games/Hades/Profile4_Temp.sav"
+ ],
+ "_note": "Rules from the game's own AchievementData.lua conditions (Steam names). Not tracked (they happen during a run and leave nothing in the save): Champion of Elysium, Hold the Onions, Weapon of Fate, Friends Forever, Thanks But No Thanks, Well Stocked, Thorn of Thanatos, Haste of Hermes, Death Dealer, Friends in High Places, Bad Call.",
  "achievements": [
+  {
+   "id": "escaped_tartarus",
+   "name": "Escaped Tartarus",
+   "desc": "Clear Tartarus",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/RoomCountCache/B_Intro",
+    "target": 1
+   }
+  },
+  {
+   "id": "escaped_asphodel",
+   "name": "Escaped Asphodel",
+   "desc": "Clear Asphodel",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/RoomCountCache/C_Intro",
+    "target": 1
+   }
+  },
+  {
+   "id": "escaped_elysium",
+   "name": "Escaped Elysium",
+   "desc": "Clear Elysium",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/RoomCountCache/D_Intro",
+    "target": 1
+   }
+  },
+  {
+   "id": "no_escape",
+   "name": "Is There No Escape?",
+   "desc": "Clear an escape attempt",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/RoomCountCache/E_Intro",
+    "target": 1
+   }
+  },
+  {
+   "id": "family_secret",
+   "name": "The Family Secret",
+   "desc": "Complete the main quest in the story",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "TextLinesRecord/Ending01",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "one_for_the_ages",
+   "name": "One for the Ages",
+   "desc": "Reach the story's epilogue",
+   "points": 100,
+   "rule": {
+    "type": "flag",
+    "path": "TextLinesRecord/OlympianReunionQuestComplete",
+    "target": 1
+   },
+   "hidden": true
+  },
+  {
+   "id": "back_to_work",
+   "name": "Back to Work",
+   "desc": "Earn access to the Administrative Chamber",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/Cosmetics/OfficeDoorUnlockItem",
+    "target": 1,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "useless_trinket",
+   "name": "The Useless Trinket",
+   "desc": "Earn the first of Skelly's prizes",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TextLinesRecord/TrophyQuest_BronzeUnlocked_01",
+    "target": 1
+   }
+  },
+  {
+   "id": "skelly_last",
+   "name": "Skelly's Last Lamentations",
+   "desc": "Earn the second of Skelly's prizes",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "TextLinesRecord/TrophyQuest_SilverUnlocked_01",
+    "target": 1
+   }
+  },
+  {
+   "id": "skelly_slayer",
+   "name": "Skelly Slayer",
+   "desc": "Slay Skelly 15 times",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/EnemyKills/TrainingMelee",
+    "target": 15
+   }
+  },
+  {
+   "id": "cerberus_pets",
+   "name": "Three-Headed Boy",
+   "desc": "Pet Cerberus 10 times",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/NumCerberusPettings",
+    "target": 10
+   }
+  },
+  {
+   "id": "charon_credit",
+   "name": "To Charon's Credit",
+   "desc": "Earn a Loyalty Card",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/TraitsTaken/DiscountTrait",
+    "target": 1
+   }
+  },
+  {
+   "id": "broker",
+   "name": "Day-or-Night Trader",
+   "desc": "Trade 20 times with the Wretched Broker",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/MarketSales",
+    "target": 20
+   }
+  },
+  {
+   "id": "home_makeover",
+   "name": "Home Makeover",
+   "desc": "Pay for 50 jobs from the House Contractor",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/CosmeticsAdded",
+    "target": 50
+   }
+  },
+  {
+   "id": "river_denizens",
+   "name": "River Denizens",
+   "desc": "Catch a fish from each region (counted on each region's common fish)",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "GameState/TotalCaughtFish/Fish_Tartarus_Common_01",
+     "GameState/TotalCaughtFish/Fish_Asphodel_Common_01",
+     "GameState/TotalCaughtFish/Fish_Elysium_Common_01",
+     "GameState/TotalCaughtFish/Fish_Styx_Common_01",
+     "GameState/TotalCaughtFish/Fish_Surface_Common_01"
+    ],
+    "target": 5
+   }
+  },
+  {
+   "id": "arms_collector",
+   "name": "Arms Collector",
+   "desc": "Unlock each of the Infernal Arms",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "GameState/WeaponsUnlocked/SwordWeapon",
+     "GameState/WeaponsUnlocked/SpearWeapon",
+     "GameState/WeaponsUnlocked/ShieldWeapon",
+     "GameState/WeaponsUnlocked/BowWeapon",
+     "GameState/WeaponsUnlocked/FistWeapon",
+     "GameState/WeaponsUnlocked/GunWeapon"
+    ],
+    "target": 6
+   }
+  },
+  {
+   "id": "blood_bound",
+   "name": "Blood Bound",
+   "desc": "Max any Weapon Aspect",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "GameState/WeaponUnlocks[*][*]",
+    "equals": 5,
+    "target": 1,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "infernal_arms",
+   "name": "Infernal Arms",
+   "desc": "Unlock all Weapon Aspects",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "GameState/WeaponUnlocks/SwordWeapon/2",
+     "GameState/WeaponUnlocks/SwordWeapon/3",
+     "GameState/WeaponUnlocks/SwordWeapon/4",
+     "GameState/WeaponUnlocks/SpearWeapon/2",
+     "GameState/WeaponUnlocks/SpearWeapon/3",
+     "GameState/WeaponUnlocks/SpearWeapon/4",
+     "GameState/WeaponUnlocks/ShieldWeapon/2",
+     "GameState/WeaponUnlocks/ShieldWeapon/3",
+     "GameState/WeaponUnlocks/ShieldWeapon/4",
+     "GameState/WeaponUnlocks/BowWeapon/2",
+     "GameState/WeaponUnlocks/BowWeapon/3",
+     "GameState/WeaponUnlocks/BowWeapon/4",
+     "GameState/WeaponUnlocks/FistWeapon/2",
+     "GameState/WeaponUnlocks/FistWeapon/3",
+     "GameState/WeaponUnlocks/FistWeapon/4",
+     "GameState/WeaponUnlocks/GunWeapon/2",
+     "GameState/WeaponUnlocks/GunWeapon/3",
+     "GameState/WeaponUnlocks/GunWeapon/4"
+    ],
+    "target": 18
+   }
+  },
+  {
+   "id": "tools_architect",
+   "name": "Tools of the Architect",
+   "desc": "Choose 50 different Daedalus Hammer enchantments",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "GameState/TraitsTaken/BowBondBoostTrait",
+     "GameState/TraitsTaken/BowChainShotTrait",
+     "GameState/TraitsTaken/BowCloseAttackTrait",
+     "GameState/TraitsTaken/BowConsecutiveBarrageTrait",
+     "GameState/TraitsTaken/BowDoubleShotTrait",
+     "GameState/TraitsTaken/BowLongRangeDamageTrait",
+     "GameState/TraitsTaken/BowPenetrationTrait",
+     "GameState/TraitsTaken/BowPowerShotTrait",
+     "GameState/TraitsTaken/BowSecondaryBarrageTrait",
+     "GameState/TraitsTaken/BowSecondaryFocusedFireTrait",
+     "GameState/TraitsTaken/BowSlowChargeDamageTrait",
+     "GameState/TraitsTaken/BowTapFireTrait",
+     "GameState/TraitsTaken/BowTripleShotTrait",
+     "GameState/TraitsTaken/FistAttackDefenseTrait",
+     "GameState/TraitsTaken/FistAttackFinisherTrait",
+     "GameState/TraitsTaken/FistChargeSpecialTrait",
+     "GameState/TraitsTaken/FistConsecutiveAttackTrait",
+     "GameState/TraitsTaken/FistDashAttackHealthBufferTrait",
+     "GameState/TraitsTaken/FistDetonateBoostTrait",
+     "GameState/TraitsTaken/FistDoubleDashSpecialTrait",
+     "GameState/TraitsTaken/FistHeavyAttackTrait",
+     "GameState/TraitsTaken/FistKillTrait",
+     "GameState/TraitsTaken/FistReachAttackTrait",
+     "GameState/TraitsTaken/FistSpecialFireballTrait",
+     "GameState/TraitsTaken/FistSpecialLandTrait",
+     "GameState/TraitsTaken/FistTeleportSpecialTrait",
+     "GameState/TraitsTaken/GunArmorPenerationTrait",
+     "GameState/TraitsTaken/GunChainShotTrait",
+     "GameState/TraitsTaken/GunExplodingSecondaryTrait",
+     "GameState/TraitsTaken/GunGrenadeClusterTrait",
+     "GameState/TraitsTaken/GunGrenadeDropTrait",
+     "GameState/TraitsTaken/GunGrenadeFastTrait",
+     "GameState/TraitsTaken/GunHeavyBulletTrait",
+     "GameState/TraitsTaken/GunHomingBulletTrait",
+     "GameState/TraitsTaken/GunInfiniteAmmoTrait",
+     "GameState/TraitsTaken/GunLoadedGrenadeBoostTrait",
+     "GameState/TraitsTaken/GunLoadedGrenadeInfiniteAmmoTrait",
+     "GameState/TraitsTaken/GunLoadedGrenadeLaserTrait",
+     "GameState/TraitsTaken/GunLoadedGrenadeSpeedTrait",
+     "GameState/TraitsTaken/GunLoadedGrenadeWideTrait",
+     "GameState/TraitsTaken/GunMinigunTrait",
+     "GameState/TraitsTaken/GunShotgunTrait",
+     "GameState/TraitsTaken/GunSlowGrenade",
+     "GameState/TraitsTaken/ShieldBashDamageTrait",
+     "GameState/TraitsTaken/ShieldBlockEmpowerTrait",
+     "GameState/TraitsTaken/ShieldChargeHealthBufferTrait",
+     "GameState/TraitsTaken/ShieldChargeSpeedTrait",
+     "GameState/TraitsTaken/ShieldDashAOETrait",
+     "GameState/TraitsTaken/ShieldLoadAmmoBoostTrait",
+     "GameState/TraitsTaken/ShieldPerfectRushTrait",
+     "GameState/TraitsTaken/ShieldRushProjectileTrait",
+     "GameState/TraitsTaken/ShieldThrowCatchExplode",
+     "GameState/TraitsTaken/ShieldThrowElectiveCharge",
+     "GameState/TraitsTaken/ShieldThrowEmpowerTrait",
+     "GameState/TraitsTaken/ShieldThrowFastTrait",
+     "GameState/TraitsTaken/ShieldThrowRushTrait",
+     "GameState/TraitsTaken/SpearAttackPhalanxTrait",
+     "GameState/TraitsTaken/SpearAutoAttack",
+     "GameState/TraitsTaken/SpearDashMultiStrike",
+     "GameState/TraitsTaken/SpearReachAttack",
+     "GameState/TraitsTaken/SpearSpinChargeAreaDamageTrait",
+     "GameState/TraitsTaken/SpearSpinChargeLevelTime",
+     "GameState/TraitsTaken/SpearSpinDamageRadius",
+     "GameState/TraitsTaken/SpearSpinTravelDurationTrait",
+     "GameState/TraitsTaken/SpearThrowBounce",
+     "GameState/TraitsTaken/SpearThrowCritical",
+     "GameState/TraitsTaken/SpearThrowElectiveCharge",
+     "GameState/TraitsTaken/SpearThrowExplode",
+     "GameState/TraitsTaken/SpearThrowPenetrate",
+     "GameState/TraitsTaken/SwordBackstabTrait",
+     "GameState/TraitsTaken/SwordBlinkTrait",
+     "GameState/TraitsTaken/SwordConsecrationBoostTrait",
+     "GameState/TraitsTaken/SwordCriticalTrait",
+     "GameState/TraitsTaken/SwordCursedLifeStealTrait",
+     "GameState/TraitsTaken/SwordDoubleDashAttackTrait",
+     "GameState/TraitsTaken/SwordGoldDamageTrait",
+     "GameState/TraitsTaken/SwordHealthBufferDamageTrait",
+     "GameState/TraitsTaken/SwordHeavySecondStrikeTrait",
+     "GameState/TraitsTaken/SwordSecondaryAreaDamageTrait",
+     "GameState/TraitsTaken/SwordSecondaryDoubleAttackTrait",
+     "GameState/TraitsTaken/SwordThrustWaveTrait",
+     "GameState/TraitsTaken/SwordTwoComboTrait"
+    ],
+    "target": 50
+   }
+  },
+  {
+   "id": "blessed_gods",
+   "name": "Blessed by the Gods",
+   "desc": "Choose 100 different Olympian Boon effects",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "GameState/TraitsTaken/AmmoBoltTrait",
+     "GameState/TraitsTaken/AmmoReclaimTrait",
+     "GameState/TraitsTaken/AmmoReloadTrait",
+     "GameState/TraitsTaken/AphroditeDeathTrait",
+     "GameState/TraitsTaken/AphroditeDurationTrait",
+     "GameState/TraitsTaken/AphroditePotencyTrait",
+     "GameState/TraitsTaken/AphroditeRangedBonusTrait",
+     "GameState/TraitsTaken/AphroditeRangedTrait",
+     "GameState/TraitsTaken/AphroditeRetaliateTrait",
+     "GameState/TraitsTaken/AphroditeRushTrait",
+     "GameState/TraitsTaken/AphroditeSecondaryTrait",
+     "GameState/TraitsTaken/AphroditeShoutTrait",
+     "GameState/TraitsTaken/AphroditeWeakenTrait",
+     "GameState/TraitsTaken/AphroditeWeaponTrait",
+     "GameState/TraitsTaken/AresAoETrait",
+     "GameState/TraitsTaken/AresCursedRiftTrait",
+     "GameState/TraitsTaken/AresDragTrait",
+     "GameState/TraitsTaken/AresHomingTrait",
+     "GameState/TraitsTaken/AresLoadCurseTrait",
+     "GameState/TraitsTaken/AresLongCurseTrait",
+     "GameState/TraitsTaken/AresRangedTrait",
+     "GameState/TraitsTaken/AresRetaliateTrait",
+     "GameState/TraitsTaken/AresRushTrait",
+     "GameState/TraitsTaken/AresSecondaryTrait",
+     "GameState/TraitsTaken/AresShoutTrait",
+     "GameState/TraitsTaken/AresWeaponTrait",
+     "GameState/TraitsTaken/ArtemisAmmoExitTrait",
+     "GameState/TraitsTaken/ArtemisBonusProjectileTrait",
+     "GameState/TraitsTaken/ArtemisCriticalTrait",
+     "GameState/TraitsTaken/ArtemisRangedTrait",
+     "GameState/TraitsTaken/ArtemisReflectBuffTrait",
+     "GameState/TraitsTaken/ArtemisRushTrait",
+     "GameState/TraitsTaken/ArtemisSecondaryTrait",
+     "GameState/TraitsTaken/ArtemisShoutTrait",
+     "GameState/TraitsTaken/ArtemisSupportingFireTrait",
+     "GameState/TraitsTaken/ArtemisWeaponTrait",
+     "GameState/TraitsTaken/AthenaBackstabDebuffTrait",
+     "GameState/TraitsTaken/AthenaRangedTrait",
+     "GameState/TraitsTaken/AthenaRetaliateTrait",
+     "GameState/TraitsTaken/AthenaRushTrait",
+     "GameState/TraitsTaken/AthenaSecondaryTrait",
+     "GameState/TraitsTaken/AthenaShieldTrait",
+     "GameState/TraitsTaken/AthenaShoutTrait",
+     "GameState/TraitsTaken/AthenaWeaponTrait",
+     "GameState/TraitsTaken/AutoRetaliateTrait",
+     "GameState/TraitsTaken/BlizzardOrbTrait",
+     "GameState/TraitsTaken/BonusCollisionTrait",
+     "GameState/TraitsTaken/BonusDashTrait",
+     "GameState/TraitsTaken/BossDamageTrait",
+     "GameState/TraitsTaken/CastBackstabTrait",
+     "GameState/TraitsTaken/CastNovaTrait",
+     "GameState/TraitsTaken/ChamberGoldTrait",
+     "GameState/TraitsTaken/CharmTrait",
+     "GameState/TraitsTaken/CritBonusTrait",
+     "GameState/TraitsTaken/CritVulnerabilityTrait",
+     "GameState/TraitsTaken/CriticalBufferMultiplierTrait",
+     "GameState/TraitsTaken/CriticalSuperGenerationTrait",
+     "GameState/TraitsTaken/CurseSickTrait",
+     "GameState/TraitsTaken/DefensiveSuperGenerationTrait",
+     "GameState/TraitsTaken/DemeterRangedBonusTrait",
+     "GameState/TraitsTaken/DemeterRangedTrait",
+     "GameState/TraitsTaken/DemeterRetaliateTrait",
+     "GameState/TraitsTaken/DemeterRushTrait",
+     "GameState/TraitsTaken/DemeterSecondaryTrait",
+     "GameState/TraitsTaken/DemeterShoutTrait",
+     "GameState/TraitsTaken/DemeterWeaponTrait",
+     "GameState/TraitsTaken/DionysusAphroditeStackIncreaseTrait",
+     "GameState/TraitsTaken/DionysusComboVulnerability",
+     "GameState/TraitsTaken/DionysusDefenseTrait",
+     "GameState/TraitsTaken/DionysusPoisonPowerTrait",
+     "GameState/TraitsTaken/DionysusRangedTrait",
+     "GameState/TraitsTaken/DionysusRushTrait",
+     "GameState/TraitsTaken/DionysusSecondaryTrait",
+     "GameState/TraitsTaken/DionysusShoutTrait",
+     "GameState/TraitsTaken/DionysusSlowTrait",
+     "GameState/TraitsTaken/DionysusSpreadTrait",
+     "GameState/TraitsTaken/DionysusWeaponTrait",
+     "GameState/TraitsTaken/DodgeChanceTrait",
+     "GameState/TraitsTaken/DoorHealTrait",
+     "GameState/TraitsTaken/DoubleCollisionTrait",
+     "GameState/TraitsTaken/EncounterStartOffenseBuffTrait",
+     "GameState/TraitsTaken/EnemyDamageTrait",
+     "GameState/TraitsTaken/FishingTrait",
+     "GameState/TraitsTaken/FountainDamageBonusTrait",
+     "GameState/TraitsTaken/HealthRewardBonusTrait",
+     "GameState/TraitsTaken/HeartsickCritDamageTrait",
+     "GameState/TraitsTaken/HermesSecondaryTrait",
+     "GameState/TraitsTaken/HermesShoutDodge",
+     "GameState/TraitsTaken/HermesWeaponTrait",
+     "GameState/TraitsTaken/HomingLaserTrait",
+     "GameState/TraitsTaken/IceStrikeArrayTrait",
+     "GameState/TraitsTaken/ImpactBoltTrait",
+     "GameState/TraitsTaken/ImprovedPomTrait",
+     "GameState/TraitsTaken/IncreasedDamageTrait",
+     "GameState/TraitsTaken/InstantChillKill",
+     "GameState/TraitsTaken/JoltDurationTrait",
+     "GameState/TraitsTaken/LastStandDamageBonusTrait",
+     "GameState/TraitsTaken/LightningCloudTrait",
+     "GameState/TraitsTaken/LowHealthDefenseTrait",
+     "GameState/TraitsTaken/MagnetismTrait",
+     "GameState/TraitsTaken/MarkedDropGoldTrait",
+     "GameState/TraitsTaken/MaximumChillBlast",
+     "GameState/TraitsTaken/MaximumChillBonusSlow",
+     "GameState/TraitsTaken/MoreAmmoTrait",
+     "GameState/TraitsTaken/MoveSpeedTrait",
+     "GameState/TraitsTaken/NoLastStandRegenerationTrait",
+     "GameState/TraitsTaken/OnEnemyDeathDamageInstanceBuffTrait",
+     "GameState/TraitsTaken/OnWrathDamageBuffTrait",
+     "GameState/TraitsTaken/PerfectDashBoltTrait",
+     "GameState/TraitsTaken/PoisonCritVulnerabilityTrait",
+     "GameState/TraitsTaken/PoisonTickRateTrait",
+     "GameState/TraitsTaken/PoseidonAresProjectileTrait",
+     "GameState/TraitsTaken/PoseidonRangedTrait",
+     "GameState/TraitsTaken/PoseidonRushTrait",
+     "GameState/TraitsTaken/PoseidonSecondaryTrait",
+     "GameState/TraitsTaken/PoseidonShoutDurationTrait",
+     "GameState/TraitsTaken/PoseidonShoutTrait",
+     "GameState/TraitsTaken/PoseidonWeaponTrait",
+     "GameState/TraitsTaken/PreloadSuperGenerationTrait",
+     "GameState/TraitsTaken/ProximityArmorTrait",
+     "GameState/TraitsTaken/RapidCastTrait",
+     "GameState/TraitsTaken/RaritySuperBoost",
+     "GameState/TraitsTaken/ReboundingAthenaCastTrait",
+     "GameState/TraitsTaken/RegeneratingCappedSuperTrait",
+     "GameState/TraitsTaken/RegeneratingSuperTrait",
+     "GameState/TraitsTaken/RetaliateWeaponTrait",
+     "GameState/TraitsTaken/RoomRewardBonusTrait",
+     "GameState/TraitsTaken/RushRallyTrait",
+     "GameState/TraitsTaken/RushSpeedBoostTrait",
+     "GameState/TraitsTaken/SelfLaserTrait",
+     "GameState/TraitsTaken/ShieldHitTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_AphroditeRangedTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_AresRangedTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_ArtemisRangedTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_AthenaRangedTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_DemeterRangedTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_DionysusRangedTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_PoseidonRangedTrait",
+     "GameState/TraitsTaken/ShieldLoadAmmo_ZeusRangedTrait",
+     "GameState/TraitsTaken/SlamExplosionTrait",
+     "GameState/TraitsTaken/SlipperyTrait",
+     "GameState/TraitsTaken/SlowProjectileTrait",
+     "GameState/TraitsTaken/SpeedDamageTrait",
+     "GameState/TraitsTaken/StationaryRiftTrait",
+     "GameState/TraitsTaken/StatusImmunityTrait",
+     "GameState/TraitsTaken/SuperGenerationTrait",
+     "GameState/TraitsTaken/TrapDamageTrait",
+     "GameState/TraitsTaken/TriggerCurseTrait",
+     "GameState/TraitsTaken/UnstoredAmmoDamageTrait",
+     "GameState/TraitsTaken/ZeroAmmoBonusTrait",
+     "GameState/TraitsTaken/ZeusBoltAoETrait",
+     "GameState/TraitsTaken/ZeusBonusBoltTrait",
+     "GameState/TraitsTaken/ZeusBonusBounceTrait",
+     "GameState/TraitsTaken/ZeusChargedBoltTrait",
+     "GameState/TraitsTaken/ZeusLightningDebuff",
+     "GameState/TraitsTaken/ZeusRangedTrait",
+     "GameState/TraitsTaken/ZeusRushTrait",
+     "GameState/TraitsTaken/ZeusSecondaryTrait",
+     "GameState/TraitsTaken/ZeusShoutTrait",
+     "GameState/TraitsTaken/ZeusWeaponTrait"
+    ],
+    "target": 100
+   }
+  },
+  {
+   "id": "well_versed",
+   "name": "Well Versed",
+   "desc": "Fully unlock the Olympians' Codex entries",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "CodexStatus/OlympianGods/ZeusUpgrade/3/Unlocked",
+     "CodexStatus/OlympianGods/PoseidonUpgrade/3/Unlocked",
+     "CodexStatus/OlympianGods/AthenaUpgrade/3/Unlocked",
+     "CodexStatus/OlympianGods/AphroditeUpgrade/3/Unlocked",
+     "CodexStatus/OlympianGods/AresUpgrade/3/Unlocked",
+     "CodexStatus/OlympianGods/ArtemisUpgrade/3/Unlocked",
+     "CodexStatus/OlympianGods/DionysusUpgrade/3/Unlocked",
+     "CodexStatus/OlympianGods/DemeterUpgrade/4/Unlocked",
+     "CodexStatus/OlympianGods/HermesUpgrade/3/Unlocked"
+    ],
+    "target": 9
+   }
+  },
+  {
+   "id": "nyx_mirror",
+   "name": "Nyx's Mirror",
+   "desc": "Have at least one rank in each Mirror of Night Talent",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "GameState/MetaUpgrades/BackstabMetaUpgrade",
+     "GameState/MetaUpgradeState/BackstabMetaUpgrade",
+     "GameState/MetaUpgrades/FirstStrikeMetaUpgrade",
+     "GameState/MetaUpgradeState/FirstStrikeMetaUpgrade",
+     "GameState/MetaUpgrades/DoorHealMetaUpgrade",
+     "GameState/MetaUpgradeState/DoorHealMetaUpgrade",
+     "GameState/MetaUpgrades/DarknessHealMetaUpgrade",
+     "GameState/MetaUpgradeState/DarknessHealMetaUpgrade",
+     "GameState/MetaUpgrades/ExtraChanceMetaUpgrade",
+     "GameState/MetaUpgradeState/ExtraChanceMetaUpgrade",
+     "GameState/MetaUpgrades/ExtraChanceReplenishMetaUpgrade",
+     "GameState/MetaUpgradeState/ExtraChanceReplenishMetaUpgrade",
+     "GameState/MetaUpgrades/StaminaMetaUpgrade",
+     "GameState/MetaUpgradeState/StaminaMetaUpgrade",
+     "GameState/MetaUpgrades/PerfectDashMetaUpgrade",
+     "GameState/MetaUpgradeState/PerfectDashMetaUpgrade",
+     "GameState/MetaUpgrades/StoredAmmoVulnerabilityMetaUpgrade",
+     "GameState/MetaUpgradeState/StoredAmmoVulnerabilityMetaUpgrade",
+     "GameState/MetaUpgrades/StoredAmmoSlowMetaUpgrade",
+     "GameState/MetaUpgradeState/StoredAmmoSlowMetaUpgrade",
+     "GameState/MetaUpgrades/AmmoMetaUpgrade",
+     "GameState/MetaUpgradeState/AmmoMetaUpgrade",
+     "GameState/MetaUpgrades/ReloadAmmoMetaUpgrade",
+     "GameState/MetaUpgradeState/ReloadAmmoMetaUpgrade",
+     "GameState/MetaUpgrades/MoneyMetaUpgrade",
+     "GameState/MetaUpgradeState/MoneyMetaUpgrade",
+     "GameState/MetaUpgrades/InterestMetaUpgrade",
+     "GameState/MetaUpgradeState/InterestMetaUpgrade",
+     "GameState/MetaUpgrades/HealthMetaUpgrade",
+     "GameState/MetaUpgradeState/HealthMetaUpgrade",
+     "GameState/MetaUpgrades/HighHealthDamageMetaUpgrade",
+     "GameState/MetaUpgradeState/HighHealthDamageMetaUpgrade",
+     "GameState/MetaUpgrades/VulnerabilityEffectBonusMetaUpgrade",
+     "GameState/MetaUpgradeState/VulnerabilityEffectBonusMetaUpgrade",
+     "GameState/MetaUpgrades/GodEnhancementMetaUpgrade",
+     "GameState/MetaUpgradeState/GodEnhancementMetaUpgrade",
+     "GameState/MetaUpgrades/RareBoonDropMetaUpgrade",
+     "GameState/MetaUpgradeState/RareBoonDropMetaUpgrade",
+     "GameState/MetaUpgrades/RunProgressRewardMetaUpgrade",
+     "GameState/MetaUpgradeState/RunProgressRewardMetaUpgrade",
+     "GameState/MetaUpgrades/EpicBoonDropMetaUpgrade",
+     "GameState/MetaUpgradeState/EpicBoonDropMetaUpgrade",
+     "GameState/MetaUpgrades/RerollPanelMetaUpgrade",
+     "GameState/MetaUpgradeState/RerollPanelMetaUpgrade",
+     "GameState/MetaUpgrades/RerollMetaUpgrade",
+     "GameState/MetaUpgradeState/RerollMetaUpgrade",
+     "GameState/MetaUpgrades/DuoRarityBoonDropMetaUpgrade",
+     "GameState/MetaUpgradeState/DuoRarityBoonDropMetaUpgrade"
+    ],
+    "target": 24,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "something_from_everyone",
+   "name": "Something From Everyone",
+   "desc": "Unlock each standard Keepsake",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "TextLinesRecord/CerberusGift01",
+     "TextLinesRecord/AchillesGift01",
+     "TextLinesRecord/NyxGift01",
+     "TextLinesRecord/HypnosGift01",
+     "TextLinesRecord/CharonGift01",
+     "TextLinesRecord/MegaeraGift01",
+     "TextLinesRecord/ThanatosGift01",
+     "TextLinesRecord/OrpheusGift01",
+     "TextLinesRecord/DusaGift01",
+     "TextLinesRecord/SkellyGift01",
+     "TextLinesRecord/SisyphusGift01",
+     "TextLinesRecord/EurydiceGift01",
+     "TextLinesRecord/PatroclusGift01",
+     "TextLinesRecord/PersephoneGift01",
+     "TextLinesRecord/HadesGift02",
+     "TextLinesRecord/AthenaGift01",
+     "TextLinesRecord/ZeusGift01",
+     "TextLinesRecord/PoseidonGift01",
+     "TextLinesRecord/AphroditeGift01",
+     "TextLinesRecord/ArtemisGift01",
+     "TextLinesRecord/AresGift01",
+     "TextLinesRecord/DionysusGift01",
+     "TextLinesRecord/ChaosGift01",
+     "TextLinesRecord/HermesGift01",
+     "TextLinesRecord/DemeterGift01"
+    ],
+    "target": 25
+   }
+  },
+  {
+   "id": "rare_collectible",
+   "name": "Rare Collectible",
+   "desc": "Equip a Chthonic Companion",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/LastAssistTrait",
+    "target": 1,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "complete_set",
+   "name": "Complete Set",
+   "desc": "Earn all Chthonic Companions",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "TextLinesRecord/MegaeraGift07",
+     "TextLinesRecord/ThanatosGift07_A",
+     "TextLinesRecord/DusaGift07",
+     "TextLinesRecord/SkellyGift07",
+     "TextLinesRecord/SisyphusGift07_A",
+     "TextLinesRecord/AchillesGift07_A"
+    ],
+    "target": 6
+   }
+  },
+  {
+   "id": "grown_close",
+   "name": "Grown Close",
+   "desc": "Forge a bond with any character",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "TextLinesRecord/CerberusGift09",
+     "TextLinesRecord/AchillesGift09_A",
+     "TextLinesRecord/NyxGift09",
+     "TextLinesRecord/HypnosGift08",
+     "TextLinesRecord/CharonGift07",
+     "TextLinesRecord/MegaeraGift10",
+     "TextLinesRecord/ThanatosGift10",
+     "TextLinesRecord/OrpheusGift08",
+     "TextLinesRecord/BecameCloseWithDusa01",
+     "TextLinesRecord/SkellyGift09",
+     "TextLinesRecord/SisyphusGift09_A",
+     "TextLinesRecord/EurydiceGift08",
+     "TextLinesRecord/PatroclusGift08_A",
+     "TextLinesRecord/PersephoneGift09",
+     "TextLinesRecord/HadesGift05",
+     "TextLinesRecord/ZeusGift07",
+     "TextLinesRecord/PoseidonGift07",
+     "TextLinesRecord/AthenaGift07",
+     "TextLinesRecord/AphroditeGift07",
+     "TextLinesRecord/ArtemisGift07",
+     "TextLinesRecord/AresGift07",
+     "TextLinesRecord/DionysusGift07",
+     "TextLinesRecord/DemeterGift07",
+     "TextLinesRecord/ChaosGift08",
+     "TextLinesRecord/HermesGift08",
+     "TextLinesRecord/HermesGift08B"
+    ],
+    "target": 1,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "urge_to_sing",
+   "name": "Urge to Sing",
+   "desc": "Compel Orpheus to sing again",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "TextLinesRecord/OrpheusSingsAgain01",
+     "TextLinesRecord/OrpheusSingsAgain01_B",
+     "TextLinesRecord/OrpheusSingsAgain01_C",
+     "TextLinesRecord/OrpheusSingsAgain01_D",
+     "TextLinesRecord/OrpheusSingsAgain02",
+     "TextLinesRecord/OrpheusSingsAgain03",
+     "TextLinesRecord/OrpheusSingsAgain03_B"
+    ],
+    "target": 1,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "had_to_happen",
+   "name": "Had to Happen",
+   "desc": "Fulfill any 15 Prophecies",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "GameState/QuestStatus[*]",
+    "equals": "CashedOut",
+    "target": 15
+   }
+  },
+  {
+   "id": "chthonic_colleagues",
+   "name": "Chthonic Colleagues",
+   "desc": "Fulfill the 'Chthonic Colleagues' Prophecy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/MeetChthonicGods",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "night_and_darkness",
+   "name": "Night and Darkness",
+   "desc": "Fulfill the 'Night and Darkness' Prophecy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/NyxChaosReunion",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "war_gods_bloodlust",
+   "name": "War-God's Bloodlust",
+   "desc": "Fulfill the 'War-God's Bloodlust' Prophecy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/AresEarnKills",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "end_to_torment",
+   "name": "End to Torment",
+   "desc": "Fulfill the 'End to Torment' Prophecy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/SisyphusLiberation",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "musician_and_muse",
+   "name": "Musician and Muse",
+   "desc": "Fulfill the 'Musician and Muse' Prophecy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/OrpheusEurydiceReunion",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "dark_reflections",
+   "name": "Dark Reflections",
+   "desc": "Fulfill the 'Dark Reflections' Prophecy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/MirrorUpgrades",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "harsh_conditions",
+   "name": "Harsh Conditions",
+   "desc": "Fulfill the 'Harsh Conditions' Prophecy",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/PactUpgrades",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "master_of_arms",
+   "name": "Master of Arms",
+   "desc": "Fulfill the 'Master of Arms' Prophecy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/WeaponClears",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "slashed_benefits",
+   "name": "Slashed Benefits",
+   "desc": "Fulfill the 'Slashed Benefits' Prophecy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "GameState/QuestStatus/EliteAttributeKills",
+    "equals": "CashedOut"
+   }
+  },
+  {
+   "id": "divided_by_death",
+   "name": "Divided by Death",
+   "desc": "Fulfill the 'Divided by Death' Prophecy",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "paths": [
+     "GameState/QuestStatus/AchillesPatroclusReunion_A",
+     "GameState/QuestStatus/AchillesPatroclusReunion_B",
+     "GameState/QuestStatus/AchillesPatroclusReunion_C"
+    ],
+    "equals": "CashedOut",
+    "target": 1,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "attempts_10",
+   "name": "Down Below, Again",
+   "desc": "Make 10 escape attempts",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "_header/runs",
+    "target": 10
+   }
+  },
+  {
+   "id": "attempts_50",
+   "name": "Prince of Persistence",
+   "desc": "Make 50 escape attempts",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "_header/runs",
+    "target": 50
+   }
+  },
+  {
+   "id": "attempts_100",
+   "name": "Son of the House",
+   "desc": "Make 100 escape attempts",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "_header/runs",
+    "target": 100
+   }
+  },
   {
    "id": "t_launch",
    "name": "Blood and Darkness",
