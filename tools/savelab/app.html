@@ -98,7 +98,8 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
   <span class="hdrLinks"><a href="https://github.com/Imp3r1us/TrophyNX/blob/main/docs/custom-achievements.md" target="_blank" rel="noopener"><span class="l-en">Guide</span><span class="l-fr">Guide</span></a>
   <button class="btn sm ghost" id="langBtn" title="Language / Langue"></button></span></header>
 <nav id="tabs">
-  <button data-t="caps" class="on"><b>1</b><span class="l-en">Captures</span><span class="l-fr">Captures</span></button>
+  <button data-t="auto" class="on"><b>⚡</b>Auto</button>
+  <button data-t="caps"><b>1</b><span class="l-en">Captures</span><span class="l-fr">Captures</span></button>
   <button data-t="struct"><b>2</b><span class="l-en">Structure</span><span class="l-fr">Structure</span></button>
   <button data-t="diff"><b>3</b><span class="l-en">Differences</span><span class="l-fr">Différences</span></button>
   <button data-t="value"><b>4</b><span class="l-en">Known value</span><span class="l-fr">Valeur connue</span></button>
@@ -107,8 +108,40 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
 </nav>
 <main>
 
+<!-- 0. AUTO -->
+<section id="s-auto" class="on">
+  <div class="card">
+    <h2><span class="l-en">⚡ Automatic achievement list</span><span class="l-fr">⚡ Liste de succès automatique</span></h2>
+    <p class="small mute l-en">Give two saves of the same game: the tool finds what changed, matches the game's Steam achievements when there are some, names everything and checks it. Everything happens in your browser: your saves are never uploaded.</p>
+    <p class="small mute l-fr">Donnez deux sauvegardes du même jeu : l'outil trouve ce qui a changé, reprend les succès Steam du jeu s'il y en a, nomme tout et vérifie. Tout se passe dans votre navigateur : vos sauvegardes ne sont jamais envoyées.</p>
+    <h3><span class="l-en">1. Game</span><span class="l-fr">1. Jeu</span></h3>
+    <input id="auQ" placeholder="Search a game (name or Title ID)…" data-fr-ph="Rechercher un jeu (nom ou Title ID)…" autocomplete="off">
+    <div id="auHits"></div>
+    <div id="auGame" class="small" style="margin-top:6px"></div>
+    <details id="auManual" style="margin-top:6px"><summary><span class="l-en">Not in the list? Enter it by hand</span><span class="l-fr">Pas dans la liste ? Saisie manuelle</span></summary>
+      <div class="row">
+        <div><label><span class="l-en">Title ID (16 characters)</span><span class="l-fr">Title ID (16 caractères)</span></label><input id="auTid" placeholder="0100XXXXXXXXX000" maxlength="16" autocapitalize="characters"></div>
+        <div><label><span class="l-en">Name</span><span class="l-fr">Nom</span></label><input id="auName"></div>
+      </div>
+      <p class="small mute"><span class="l-en">The Title ID is in <code>scan_report.txt</code> (ZR in TrophyNX) or in the HOME menu's data management.</span><span class="l-fr">Le Title ID est dans <code>scan_report.txt</code> (ZR dans TrophyNX) ou dans la gestion des données du menu HOME.</span></p>
+    </details>
+    <h3><span class="l-en">2. Saves (JKSV backups: the files or the .zip)</span><span class="l-fr">2. Sauvegardes (backups JKSV : les fichiers ou le .zip)</span></h3>
+    <div class="row">
+      <span class="btn file fix"><span class="l-en">Early save</span><span class="l-fr">Save du début</span><input type="file" id="auEarly" multiple></span>
+      <span class="small mute" id="auEarlyInfo"></span>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <span class="btn file fix"><span class="l-en">Advanced save</span><span class="l-fr">Save avancée</span><input type="file" id="auLate" multiple></span>
+      <span class="small mute" id="auLateInfo"></span>
+    </div>
+    <p class="small mute"><span class="l-en">Best: a save right after the intro + your most advanced save (100% is ideal). Only the advanced one works too, but finds less.</span><span class="l-fr">Idéal : une save juste après l'intro + votre save la plus avancée (100 % c'est parfait). Seulement l'avancée marche aussi, mais trouve moins.</span></p>
+    <p style="margin-top:12px"><button class="btn pri" id="auRun"><span class="l-en">⚡ Make my achievement list</span><span class="l-fr">⚡ Créer ma liste de succès</span></button></p>
+    <div id="auOut"></div>
+  </div>
+</section>
+
 <!-- 1. CAPTURES -->
-<section id="s-caps" class="on">
+<section id="s-caps">
   <div class="card">
     <h2><span class="l-en">Game</span><span class="l-fr">Jeu</span></h2>
     <select id="gameSel"></select>
@@ -1174,6 +1207,175 @@ Réponds UNIQUEMENT en JSON : {"suggestions":[{"refs":["0x1A0", "0xHASH" ou le c
     if (e && e.code === 'not_granted') btn.style.display = 'none';
     toast(e && e.code === 'rate_limited' ? T('Too many requests, try again later', 'Trop de demandes, réessayez plus tard') : T('Claude could not answer', 'Claude n\'a pas pu répondre'));
   } finally { btn.disabled = false; btn.textContent = T('✦ Claude suggestions', '✦ Suggestions de Claude'); }
+});
+
+// ---------------------------------------------------------------- 0. automatic list (no AI: the same tools as the other
+// tabs, chained): two saves -> format -> differences -> collections/counters -> Steam list match -> names -> checks.
+const AU = { game: null, early: null, late: null };
+function auGames(q) {
+  q = q.trim().toLowerCase(); if (q.length < 2) return [];
+  const seen = new Set(), out = [];
+  const add = (tid, name, appid, ach) => { if (seen.has(tid)) return; seen.add(tid); out.push({ tid, name, appid, ach }); };
+  const hit = (name, tid) => name.toLowerCase().includes(q) || tid.toLowerCase().startsWith(q);
+  for (const g of GAMES) if (hit(g.name, g.title_id)) { const r = catRow(g.title_id); add(g.title_id, g.name, r ? r[2] : null, r ? r[3] : null); }
+  for (const r of PCDATA.catalog || []) { if (out.length >= 12) break; if (hit(r[1], r[0])) add(r[0], r[1], r[2], r[3]); }
+  return out.slice(0, 12);
+}
+function auShowGame() {
+  const g = AU.game;
+  $('#auGame').innerHTML = g ? `✓ <b>${esc(g.name)}</b> <span class="mono mute">${esc(g.tid)}</span>${g.appid && g.ach > 0 ? ' · ' + T('Steam list:', 'liste Steam :') + ' ' + g.ach + ' ' + T('achievements', 'succès') : ''}` : '';
+}
+$('#auQ').addEventListener('input', () => {
+  const hits = auGames($('#auQ').value);
+  $('#auHits').innerHTML = hits.map(h => `<div class="pcrow small" style="cursor:pointer" data-tid="${esc(h.tid)}"><b>${esc(h.name)}</b> <span class="mono mute">${esc(h.tid)}</span>${h.ach > 0 ? ' · Steam ' + h.ach : ''}</div>`).join('');
+});
+$('#auHits').addEventListener('click', (e) => {
+  const row = e.target.closest('[data-tid]'); if (!row) return;
+  const h = auGames($('#auQ').value).find(x => x.tid === row.dataset.tid) || { tid: row.dataset.tid, name: row.querySelector('b').textContent };
+  AU.game = h; $('#auHits').innerHTML = ''; $('#auQ').value = h.name; auShowGame();
+});
+['#auTid', '#auName'].forEach(s => $(s).addEventListener('input', () => {
+  const tid = $('#auTid').value.toUpperCase().replace(/[^0-9A-F]/g, '');
+  const r = catRow(tid);
+  AU.game = tid ? { tid, name: $('#auName').value.trim() || (BUILTIN[tid] && BUILTIN[tid].name) || (r && r[1]) || tid, appid: r ? r[2] : null, ach: r ? r[3] : null } : null;
+  auShowGame();
+}));
+async function auReadFiles(list) {
+  let files = [];
+  for (const f of list) {
+    const data = new Uint8Array(await f.arrayBuffer());
+    if (/\.zip$/i.test(f.name) && data[0] === 0x50 && data[1] === 0x4b) files.push(...E.stripCommonPrefix(await E.unzip(data)));
+    else files.push({ path: f.webkitRelativePath || f.name, data });
+  }
+  if (files.length > 1) files = E.stripCommonPrefix(files);
+  return files.filter(f => !/(^|\/)\.|\.DS_Store$/.test(f.path));
+}
+[['#auEarly', 'early', '#auEarlyInfo'], ['#auLate', 'late', '#auLateInfo']].forEach(([sel, key, info]) => $(sel).addEventListener('change', async (e) => {
+  const list = [...e.target.files]; e.target.value = ''; if (!list.length) return;
+  try {
+    AU[key] = await auReadFiles(list);
+    $(info).textContent = '✓ ' + AU[key].length + T(' file(s): ', ' fichier(s) : ') + AU[key].slice(0, 3).map(f => f.path).join(', ') + (AU[key].length > 3 ? '…' : '');
+  } catch (err) { $(info).textContent = T('Error: ', 'Erreur : ') + err.message; }
+}));
+
+// Readable names for generated achievements: "ShineData IsGet: 100" -> "Shine Data: 100"
+const GENERIC = new Set(['isget', 'value', 'values', 'status', 'flag', 'flags', 'key', 'data', 'playerdata', 'savedata', 'get', 'is', 'state', 'list', 'count', 'num']);
+function humanWords(s) { return String(s).replace(/\[[^\]]*\]/g, ' ').replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2').replace(/[_\-.]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+function humanName(name) {
+  const m = String(name).match(/^(.*?)(\s?:\s.*)?$/);
+  const segs = m[1].split(/[\s/]+/).filter(Boolean);
+  let keep = segs.filter(w => !GENERIC.has(w.toLowerCase().replace(/[^a-z]/g, '')));
+  if (!keep.length) keep = segs;
+  const words = humanWords(keep.slice(-2).join(' ')).split(' ').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1));
+  return (words.join(' ') || name) + (m[2] ? m[2].replace(/^\s?:\s/, SEP_UI) : '');
+}
+const SEP_UI = T(': ', ' : ');
+const PROGRESS = /count|collect|kill|defeat|beat|found|total|num|coin|money|gold|geo|gem|star|moon|shine|level|lvl|rank|xp|exp\b|score|win|victor|clear|complet|death|unlock|journal|grub|essence|ore|seal|relic|egg|fish|catch|caught|card|trophy|medal|badge|chapter|stage|world|floor|run|ascen|boss|enem|quest|mission|item|key/i;
+const MILESTONE = /kill|defeat|beat|slain|got[A-Z_]|has[A-Z_]|have[A-Z_]|found|obtain|unlock|complet|clear|finish|opened|rescu|saved|freed|learn|acquir|collected|visited|discover|reached|ending/;
+const NOT_PROGRESS = /cost|state|version|seed|time|timer|clock|date|pos|position|rot|angle|\bid\b|index|setting|option|volume|lang|camera|color|colour|scale|damage|health|hp\b|mp\b|speed|offset|last|prev|current|selected|equipped/i;
+function auPlaytime(name) {
+  return [
+    { id: 't_launch', name: T('First Steps', 'Premiers pas'), desc: T('Launch ', 'Lancer ') + name + T(' 5 times', ' 5 fois'), points: 5, rule: { type: 'launches', target: 5 } },
+    { id: 't_hours_5', name: T('Getting Started', 'Bien parti'), desc: T('Play ', 'Jouer à ') + name + T(' for 5 hours', ' pendant 5 heures'), points: 10, rule: { type: 'playtime_hours', target: 5 } },
+    { id: 't_hours_20', name: T('Dedicated', 'Assidu'), desc: T('Play ', 'Jouer à ') + name + T(' for 20 hours', ' pendant 20 heures'), points: 25, rule: { type: 'playtime_hours', target: 20 } },
+    { id: 't_hours_50', name: T('True Fan', 'Vrai fan'), desc: T('Play ', 'Jouer à ') + name + T(' for 50 hours', ' pendant 50 heures'), points: 50, rule: { type: 'playtime_hours', target: 50 } },
+  ];
+}
+$('#auRun').addEventListener('click', async () => {
+  const out = $('#auOut');
+  const say = (h) => { out.innerHTML = h; };
+  if (!AU.game || !/^[0-9A-F]{16}$/.test(AU.game.tid)) { say(`<div class="note">${T('Choose the game first (step 1).', 'Choisissez d\'abord le jeu (étape 1).')}</div>`); return; }
+  if (!AU.late && !AU.early) { say(`<div class="note">${T('Add at least the advanced save (step 2).', 'Ajoutez au moins la save avancée (étape 2).')}</div>`); return; }
+  if (S.caps.length && !confirm(T('This replaces the captures and the achievement list of your current session. Continue?', 'Cela remplace les captures et la liste de succès de votre session actuelle. Continuer ?'))) return;
+  const g = AU.game, log = [];
+  // session = these captures + an empty definition for this game
+  S.game = { title_id: g.tid, name: g.name, custom: !BUILTIN[g.tid] };
+  S.caps = []; S.def = null; S.diff = null; S.val = null; S.sel.clear(); S.target = '';
+  if (AU.early) S.caps.push({ id: nextId++, label: T('Early save', 'Save du début'), control: false, files: AU.early });
+  if (AU.late) S.caps.push({ id: nextId++, label: T('Advanced save', 'Save avancée'), control: false, files: AU.late });
+  identCache = null; autoTarget(); renderGameSel(); renderCaps();
+  const id = currentIdent();
+  const d = ensureDef();
+  d.achievements = [];
+  log.push(`<dt>${T('Save file', 'Fichier de save')}</dt><dd class="mono">${esc(S.target || '?')}</dd><dt>Format</dt><dd>${esc(id ? id.format : '?')}</dd>`);
+  const readable = id && id.analyzable && id.reader;
+  let fromSteam = 0, fromDiff = 0;
+  // 1. Steam list: built in, else published on the website
+  let steam = null;
+  if (readable && g.appid && g.ach > 0) {
+    say(`<p class="small mute">${T('Loading the Steam list…', 'Chargement de la liste Steam…')}</p>`);
+    steam = (PCDATA.steam && PCDATA.steam[String(g.appid)]) || await fetchSteamList(g.appid);
+  }
+  if (steam) {
+    const last = S.caps[S.caps.length - 1];
+    const files = last.files.map(f => { let t = null; try { t = E.parseTree(f.data); } catch (e) { } return t ? { path: f.path, flat: E.flattenByml(t.tree), reader: t.reader } : null; }).filter(Boolean);
+    const st = files.length ? P.selfTracked(steam.achievements, files) : null;
+    let drafts = null, reader = null, saveFiles = null;
+    if (st) { drafts = st.drafts; reader = files.find(f => f.path === st.file).reader; saveFiles = [st.file]; }
+    else {
+      const trees = S.caps.map(c => bymlOf(targetData(c))).filter(x => x && x.flat);
+      if (trees.length) { drafts = P.draftRules(steam.achievements, trees[trees.length - 1].flat, trees.length > 1 ? trees[0].flat : null); reader = treeReader(); saveFiles = [S.target]; }
+    }
+    if (drafts) {
+      const gen = P.buildDefinition({ title_id: g.tid, name: g.name, reader, save_files: saveFiles, appid: g.appid }, drafts, { includeMaybe: !!st });
+      d.reader = reader; d.save_files = saveFiles; keepXor(d);
+      for (const a of gen.achievements) { a.id = uniqueId(a.id); d.achievements.push(a); fromSteam++; }
+      const sm = P.summary(drafts);
+      log.push(`<dt>Steam</dt><dd>${st ? T('the game records its own achievements: exact rules', 'le jeu enregistre ses propres succès : règles exactes') : sm.sure + ' ' + T('sure', 'sûr(s)') + ', ' + sm.maybe + ' ' + T('to check (left out, see tab 6)', 'à vérifier (laissés de côté, voir onglet 6)')} · ${sm.skip} ${T('not in the save', 'hors sauvegarde')}</dd>`);
+    }
+  } else if (g.appid && g.ach > 0 && readable) log.push(`<dt>Steam</dt><dd>${T('list not available yet', 'liste pas encore disponible')}</dd>`);
+  // 2. what changed between the two saves: collections and counters
+  if (readable && S.caps.length >= 2) {
+    runDiff();
+    if (S.diff) {
+      const snaps = S.diff.mode === 'byml' ? bymlAll().map(x => x.tree) : S.caps.map(targetData);
+      const list = E.autoAchievements(snaps, S.diff, { dict: S.dict, maxSingles: 2000 });
+      // the app reads every file of save_files with one reader and keeps the best value per rule, so the diff rules
+      // can join the Steam rules only when both use the same reader
+      const diffReader = S.diff.mode === 'binary' ? 'binary_le' : S.diff.mode === 'byml' ? treeReader() : (id.reader || 'gamedata_hash');
+      const compatible = !fromSteam || d.reader === diffReader;
+      if (compatible) {
+        d.reader = diffReader; keepXor(d);
+        d.save_files = [...new Set([...(fromSteam ? d.save_files || [] : []), ...(BUILTIN[g.tid] && BUILTIN[g.tid].reader === diffReader ? BUILTIN[g.tid].save_files : []), S.target])];
+      }
+      const same = (r) => d.achievements.some(x => JSON.stringify(x.rule) === JSON.stringify(r));
+      // counters: only those whose name looks like progress (kills, collectibles, money, levels…), never settings/states
+      const isCounter = (a) => a.rule.type === 'flag' && a.rule.target > 1;
+      const where = (a) => String(a.rule.path || (a.rule.paths || [])[0] || a.rule.name || a.desc || '');
+      const single = (a) => a.rule.type === 'flag' && a.rule.target === 1 && a.rule.path && !a.rule.paths;
+      const score = (a) => { const w = where(a).split('/').pop(); return (MILESTONE.test(w) ? 2 : 0) + (PROGRESS.test(w) ? 1 : 0) - (NOT_PROGRESS.test(w) || /talk|convo|seen|dialog|text|met\b|meet|hint|tutorial|prompt|check/i.test(w) ? 3 : 0); };
+      const pool = compatible ? list.filter(a => !same(a.rule) && (!isCounter(a) || (PROGRESS.test(where(a)) && !NOT_PROGRESS.test(where(a))) || S.diff.mode !== 'byml')) : [];
+      // single 0->1 flags: the 30 that look most like progress (a 100% save has hundreds)
+      const singles = pool.filter(single).map(a => [score(a), a]).filter(([sc]) => sc > 0).sort((x, y) => y[0] - x[0]).slice(0, 30).map(([, a]) => a);
+      const usable = pool.filter(a => !single(a)).concat(singles);
+      for (const a of usable.slice(0, 60)) {
+        const { group, auto, ...rest } = a;
+        rest.name = humanName(rest.name);
+        d.achievements.push(Object.assign({ id: uniqueId(slug(rest.name)) }, rest)); fromDiff++;
+      }
+      log.push(`<dt>${T('Changes', 'Changements')}</dt><dd>${S.diff.candidates.length} ${T('values changed', 'valeurs changées')} → ${fromDiff} ${T('achievements (collections, counters, milestones)', 'succès (collections, compteurs, étapes)')}</dd>`);
+    }
+  }
+  // 3. play time, always works
+  for (const a of auPlaytime(g.name)) if (!d.achievements.some(x => x.rule.type === a.rule.type && x.rule.target === a.rule.target)) d.achievements.push(Object.assign({}, a, { id: uniqueId(a.id) }));
+  if (!d.achievements.some(a => ['flag', 'count', 'sum', 'value'].includes(a.rule.type))) { d.reader = ''; d.save_files = []; delete d.xor_key; delete d.magic; }
+  const errs = E.validate(d);
+  const saveAch = d.achievements.filter(a => ['flag', 'count', 'sum', 'value'].includes(a.rule.type)).length;
+  // the same check as tab 5 on the advanced save
+  const ev = S.caps.length ? E.evaluate(d, S.caps[S.caps.length - 1].files, { fallback: targetFile(S.caps[S.caps.length - 1]) }).results : [];
+  const met = ev.filter(r => r && r.met && !r.skip).length;
+  persist();
+  let verdict;
+  if (!id || !id.analyzable) verdict = `<div class="note bad">${T('This save looks encrypted or compressed: TrophyNX cannot read it yet. Your list has the play-time achievements only. Sharing these saves privately helps add support for the game.', 'Cette sauvegarde semble chiffrée ou compressée : TrophyNX ne sait pas encore la lire. Votre liste n\'a que les succès de temps de jeu. Partager ces saves en privé aide à ajouter le jeu.')}</div>`;
+  else if (!saveAch) verdict = `<div class="note">${T('Nothing usable was found in the save (try a much more advanced save). Your list has the play-time achievements only.', 'Rien d\'exploitable trouvé dans la save (essayez une save bien plus avancée). Votre liste n\'a que les succès de temps de jeu.')}</div>`;
+  else verdict = `<div class="note ok">${saveAch} ${T('save achievements', 'succès de sauvegarde')} (${fromSteam} Steam, ${fromDiff} ${T('found in the changes', 'trouvés dans les changements')}) + ${T('play time', 'temps de jeu')}. ${met} ${T('already unlocked by your advanced save.', 'déjà débloqués par votre save avancée.')}</div>`;
+  say(`${verdict}<dl class="kv small">${log.join('')}</dl>
+    ${errs.length ? `<div class="note bad">${errs.slice(0, 5).map(esc).join('<br>')}</div>` : ''}
+    <p class="small mute">${T('Names are guessed from the save: check and rename them in tab 5 before sharing. Names from Steam are the official ones.', 'Les noms sont devinés d\'après la save : vérifiez-les et renommez-les dans l\'onglet 5 avant de partager. Les noms venant de Steam sont les officiels.')}</p>
+    <div class="row"><button class="btn pri fix" id="auReview">${T('Review (tab 5)', 'Vérifier (onglet 5)')}</button><button class="btn fix" id="auDl">${T('Download', 'Télécharger')}</button><button class="btn fix" id="auShare">${T('🌐 Share', '🌐 Partager')}</button></div>`);
+  $('#auReview').onclick = () => showTab('ach');
+  $('#auDl').onclick = () => $('#dlJson').click();
+  $('#auShare').onclick = () => $('#shareGh').click();
 });
 
 // ---------------------------------------------------------------- boot

@@ -170,7 +170,18 @@ and `"divisor": 4` divides the shown value (e.g. quarter hearts shown as hearts)
 **One rule = one condition.** There is no AND yet ("beat the game AND all charms"), and nothing that the save
 doesn't remember (no-damage runs, speedruns) can be checked.
 
-### Find the right field: the Save Lab
+### The quick way: ⚡ Auto in the Save Lab
+
+Open the [Save Lab](https://imp3r1us.github.io/TrophyNX/), tab **⚡ Auto**: pick the game, give an **early save**
+(right after the intro) and your **most advanced save** (JKSV backup files or .zip), press **⚡ Make my achievement list**.
+It detects the save format, finds what changed, keeps the changes that look like progress (bosses, items, collections,
+counters), takes the game's official Steam achievements when the save matches them, adds play-time achievements and
+checks everything like the app does. No AI and nothing uploaded: it all runs in your browser.
+Then rename what needs it in tab 5, and **Download** or **🌐 Share**.
+
+If the save is encrypted or in a format TrophyNX can't read yet, it says so and you get a play-time list.
+
+### Find the right field by hand: the Save Lab
 
 The **Save Lab** is a web page that runs in any browser, phones included: open
 **https://imp3r1us.github.io/TrophyNX/** (English / French). Your saves stay on your device: nothing is uploaded.

@@ -255,15 +255,19 @@ function identify(buf, path = '') {
   r.entropy = entropy(buf);
   const block = Math.max(256, Math.ceil(buf.length / 256));
   r.blocks = [];
-  let high = 0, zero = 0;
+  let high = 0, zero = 0, counted = 0;
+  // random bytes only reach ~8 - 255/(2n ln 2) bits/byte over n bytes (7.3 for 256): the "looks random"
+  // threshold follows the block size, else small encrypted files were never flagged
+  const highAt = (n) => Math.min(7.6, 8 - 255 / (2 * Math.min(n, 65536) * Math.LN2) - 0.35);
   for (let o = 0; o < buf.length; o += block) {
-    const e = entropy(buf, o, Math.min(buf.length, o + block));
+    const end = Math.min(buf.length, o + block);
+    const e = entropy(buf, o, end);
     r.blocks.push(e);
-    if (e > 7.6) high++;
+    if (end - o >= 64) { counted++; if (e > highAt(end - o)) high++; }
   }
   for (let i = 0; i < buf.length; i++) if (!buf[i]) zero++;
   r.zeroRatio = buf.length ? zero / buf.length : 0;
-  r.highBlocks = r.blocks.length ? high / r.blocks.length : 0;
+  r.highBlocks = counted ? high / counted : 0;
   if (!r.known) {
     const ht = detectHashTable(buf);
     if (ht) {
@@ -276,7 +280,7 @@ function identify(buf, path = '') {
   else if (r.container && /compress/.test(r.container)) {
     r.analyzable = false;
     notes.push(T('The file is compressed (', 'Le fichier est compressé (') + r.container + T('): offsets move with every save. The app cannot read this case yet.', ') : les offsets changent à chaque sauvegarde. L\'app ne sait pas encore lire ce cas.'));
-  } else if (r.highBlocks > 0.85 && r.entropy > 7.8) {
+  } else if (r.highBlocks > 0.85 && r.entropy > Math.min(7.8, 8 - 255 / (2 * buf.length * Math.LN2) - 0.2)) {
     r.analyzable = false;
     r.format = r.known ? r.format : T('Encrypted or compressed (entropy ', 'Chiffré ou compressé (entropie ') + r.entropy.toFixed(2) + T(' bits/byte)', ' bits/octet)');
     notes.push(T('Almost the whole file looks like random noise: it is probably encrypted (e.g. Pokémon, Animal Crossing) or compressed. Comparing offsets will give nothing until it is decrypted.', 'Presque tout le fichier ressemble à du bruit aléatoire : il est sans doute chiffré (ex. Pokémon, Animal Crossing) ou compressé. La comparaison d\'offsets ne donnera rien tant qu\'il n\'est pas déchiffré.'));
@@ -1066,7 +1070,7 @@ function autoByml(trees, diff, opts = {}) {
       rule: { type: 'count', path: pat, target: t },
     }));
   }
-  for (const c of singles.slice(0, 20)) {
+  for (const c of singles.slice(0, opts.maxSingles || 20)) {
     const L = label(c.path) || c.path;
     out.push({ group: T('Milestones', 'Étapes'), auto: true, name: L, desc: c.path + T(' becomes 1', ' passe à 1'), points: 10, rule: { type: 'flag', path: c.path, target: 1 } });
   }

@@ -8,6 +8,9 @@ It also works offline: download `index.html` from this folder and open it.
 
 Step-by-step guide for players: [Making your own achievement list](../../docs/custom-achievements.md).
 
+0. **⚡ Auto**: the whole chain in one button (no AI): game + an early and an advanced save → format, differences,
+   collections/counters and milestone flags that look like progress (name heuristics), Steam list match (built-in or
+   `steam/<appid>.json` from the website), readable names, play-time set, validation. Then Review / Download / Share.
 1. **Captures**: import several saves of the same game (files or JKSV .zip), in order, named after what you did
    in the game. A “control” capture (nothing done since the previous one) removes noise.
 2. **Structure**: recognised format (BotW/TotK/MK8D/Smash, BYML trees, JSON text saves of Unity games such as
