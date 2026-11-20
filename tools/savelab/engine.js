@@ -234,7 +234,15 @@ function identify(buf, path = '') {
     r.format = 'Document BYML v' + bh.ver + (bh.le ? ' (little-endian)' : ' (big-endian)') + (bh.base ? T(' after a 0x', ' après un en-tête de 0x') + bh.base.toString(16) + T('-byte header (Super Mario Odyssey layout)', ' octets (format Super Mario Odyssey)') : '');
     notes.push(T('Nintendo data tree: values are identified by their path (e.g. ShineData[*]/IsGet), not by their position. App reader “byml”.', 'Arbre de données Nintendo : les valeurs sont identifiées par leur chemin (ex. ShineData[*]/IsGet), pas par leur position. Lecteur « byml » de l\'app.'));
   }
-  if (!bh && looksJson(buf)) {
+  if (!bh && F.isDeltarune(buf)) {   // a JSON object of GameMaker text files: before the plain JSON reader
+    try {
+      const d = F.parseDeltarune(buf);
+      r.known = r.reader = 'deltarune'; r.meta = d.meta;
+      r.format = T('DELTARUNE save (', 'Sauvegarde DELTARUNE (') + d.meta.files + T(' chapter files, trophies ', ' fichiers de chapitre, trophées ') + d.meta.trophies + '/30)';
+      notes.push(T('DELTARUNE deltarune.sav: each chapter file decoded (files[*]/flags/<n>, plot, weapon…), plus completed[n], patch[i] (TrophyNX patch flags) and trophy[i]. App reader “deltarune”.', 'deltarune.sav de DELTARUNE : chaque fichier de chapitre décodé (files[*]/flags/<n>, plot, weapon…), plus completed[n], patch[i] (drapeaux du patch TrophyNX) et trophy[i]. Lecteur « deltarune » de l\'app.'));
+    } catch (e) { r.treeError = e.message; }
+  }
+  if (!bh && !r.known && looksJson(buf)) {
     let ok = false; try { ok = !!parseJson(buf); } catch (e) { r.jsonError = e.message; }
     if (ok) {
       r.known = 'json'; r.reader = 'json'; r.format = T('JSON document (text)', 'Document JSON (texte)');
@@ -456,6 +464,7 @@ const TREE_FORMATS = [
   { reader: 'gvas', label: 'GVAS (Unreal)', parse: (b) => F.parseGvas(b) },
   { reader: 'nrbf', label: 'NRBF (.NET / Unity)', parse: (b) => F.parseNrbf(b) },
   { reader: 'sgb', label: 'Supergiant SGB1 (Hades)', parse: (b) => F.parseSgb(b) },
+  { reader: 'deltarune', label: 'DELTARUNE (deltarune.sav)', parse: (b) => F.parseDeltarune(b) },
   { reader: 'json', label: 'JSON', parse: parseJson },
 ];
 const TREE_READERS = TREE_FORMATS.map(f => f.reader);

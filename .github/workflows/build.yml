@@ -26,6 +26,10 @@ jobs:
           /tmp/test_formats
           g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_sgb.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_sgb
           /tmp/test_sgb
+          g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_deltarune.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_deltarune
+          apt-get install -y -qq python3 >/dev/null
+          python3 tools/deltarune/make_test_save.py /tmp/drsave
+          /tmp/test_deltarune /tmp/drsave
       - name: Host test (scan on close = same values as the app)
         run: |
           apt-get install -y -qq python3 >/dev/null

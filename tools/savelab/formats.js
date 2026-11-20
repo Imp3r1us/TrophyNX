@@ -550,7 +550,159 @@ function parseSgb(buf) {
   return { sgb: true, tree, meta: { version, runs, location, luaBytes: raw.length } };
 }
 
-const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor };
+// ================================================================== DELTARUNE (deltarune.sav)
+// Same tree as deltaruneToJson in source/save_formats.cpp (see include/save_formats.h): a JSON object
+// {file name: file text}; "filechN_S" texts are the lines of scr_saveprocess (console branch), arrays as
+// GameMaker ds_list_write hex (u32 0x12F, u32 count, per entry u32 type + value).
+const DR_FLAG_BASE = 2400, DR_TROPHIES = 30;
+function isDeltarune(buf) {
+  let s = buf[0] === 0xEF && buf[1] === 0xBB && buf[2] === 0xBF ? 3 : 0;
+  while (s < buf.length && (buf[s] === 0x20 || buf[s] === 0x09 || buf[s] === 0x0D || buf[s] === 0x0A)) s++;
+  if (buf[s] !== 0x7B) return false;
+  const key = [0x22, 0x66, 0x69, 0x6C, 0x65, 0x63, 0x68];   // "filech
+  outer: for (let i = s; i + 7 <= buf.length; i++) {
+    if (buf[i] !== 0x22) continue;
+    for (let k = 1; k < 7; k++) if (buf[i + k] !== key[k]) continue outer;
+    return true;
+  }
+  return false;
+}
+const DR_NUM = /^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?$/;
+const drNumber = (s) => { if (!DR_NUM.test(s)) return null; const v = parseFloat(s); return Number.isFinite(v) ? v : null; };
+const isDsListLine = (s) => s.length >= 16 && !(s.length & 1) && /^2F010000/i.test(s) && /^[0-9A-Fa-f]*$/.test(s);
+function dsListDecode(s) {
+  const b = new Uint8Array(s.length / 2);
+  for (let i = 0; i < b.length; i++) b[i] = parseInt(s.substr(2 * i, 2), 16);
+  const dv = new DataView(b.buffer);
+  let p = 4;
+  const need = (n) => b.length - p >= n;
+  if (!need(4)) return null;
+  const count = dv.getUint32(p, true); p += 4;
+  if (count > Math.floor((b.length - 8) / 4)) return null;
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    if (!need(4)) return null;
+    const type = dv.getUint32(p, true); p += 4;
+    if (type === 0 || type === 13) { if (!need(8)) return null; const v = dv.getFloat64(p, true); p += 8; out.push(Number.isFinite(v) ? v : null); }
+    else if (type === 1) {
+      if (!need(4)) return null;
+      const len = dv.getUint32(p, true); p += 4;
+      if (len > b.length - p) return null;
+      out.push(cut(utf8.decode(b.subarray(p, p + len)))); p += len;
+    } else if (type === 5) out.push(null);
+    else if (type === 7) { if (!need(4)) return null; out.push(dv.getInt32(p, true)); p += 4; }
+    else if (type === 10) { if (!need(8)) return null; out.push(Number(dv.getBigInt64(p, true))); p += 8; }
+    else return null;
+  }
+  return out;
+}
+function drLines(t) {
+  const l = cut(t).split('\n');
+  if (l.length && l[l.length - 1] === '') l.pop();
+  return l.map(x => x.endsWith('\r') ? x.slice(0, -1) : x);
+}
+function drLayout(chapter) {
+  const one = chapter === 1, l = [['truename', 'S', 1], ['othername', 'L', 1], ['char', 'C', 1], ['char', 'C', 1], ['char', 'C', 1],
+    ['gold', 'N', 1], ['xp', 'N', 1], ['lv', 'N', 1], ['inv', 'X', 1], ['invc', 'X', 1], ['darkzone', 'N', 1]];
+  for (const n of ['hp', 'maxhp', 'at', 'df', 'mag', 'guts', 'charweapon', 'chararmor1', 'chararmor2', 'weaponstyle']) l.push([n, 'L', 1]);
+  l.push(['items', 'X', one ? 4 * (4 * 8 + 12) : 5 * (4 * 10 + 12)], ['bolts', 'X', 3]);
+  for (const n of ['item', 'keyitem', 'weapon', 'armor']) l.push([n, 'L', 1]);
+  if (!one) l.push(['pocketitem', 'L', 1]);
+  for (const n of ['tension', 'maxtension', 'lweapon', 'larmor', 'lxp', 'llv', 'lgold', 'lhp', 'lmaxhp', 'lat', 'ldf', 'lwstrength', 'ladef']) l.push([n, 'N', 1]);
+  l.push(['litem', 'L', 1], ['phone', 'L', 1], ['flags', 'F', 1], ['plot', 'N', 1], ['room', 'N', 1], ['time', 'N', 1]);
+  return l;
+}
+function drFlags(v) {
+  const o = {};
+  v.forEach((x, i) => { if (x !== null && x !== 0 && x !== '') o[String(i)] = x; });
+  return o;
+}
+const drScalar = (line, kind) => { if (kind !== 'S') { const v = drNumber(line); if (v !== null) return v; } return line; };
+function drChapterFile(name, chapter, slot, route, text) {
+  const f = { name, chapter, slot: slot % 3, completion: slot >= 3 ? 1 : 0, route };
+  const lines = drLines(text), lay = drLayout(chapter);
+  let at = 0, fits = true;
+  for (const [, kind, count] of lay) {
+    if (at + count > lines.length) { fits = false; break; }
+    if ((kind === 'L' || kind === 'F') !== isDsListLine(lines[at]) && kind !== 'X' && kind !== 'S') { fits = false; break; }
+    at += count;
+  }
+  if (fits) {
+    at = 0;
+    for (const [n, kind, count] of lay) {
+      const ln = lines[at];
+      at += count;
+      if (kind === 'X') continue;
+      if (kind === 'C') { (f.char = f.char || []).push(drScalar(ln, 'N')); continue; }
+      if (kind === 'S' || kind === 'N') { f[n] = drScalar(ln, kind); continue; }
+      const v = dsListDecode(ln);
+      f[n] = v === null ? null : kind === 'F' ? drFlags(v) : v;
+    }
+    return f;
+  }
+  f.error = 'unknown file layout';
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (!isDsListLine(lines[i])) continue;
+    const v = dsListDecode(lines[i]);
+    if (!v || v.length < 2500) continue;
+    f.flags = drFlags(v);
+    ['plot', 'room', 'time'].forEach((k, j) => { if (i + 1 + j < lines.length) f[k] = drScalar(lines[i + 1 + j], 'N'); });
+    break;
+  }
+  return f;
+}
+function drIni(text) {
+  const o = {};
+  let sec = null;
+  for (let ln of drLines(text)) {
+    ln = ln.replace(/^[ \t]+|[ \t]+$/g, '');
+    if (!ln) continue;
+    if (ln[0] === '[' && ln.endsWith(']')) { const n = ln.slice(1, -1); sec = o[n] = o[n] || {}; continue; }
+    const eq = ln.indexOf('=');
+    if (!sec || eq <= 0) continue;
+    const k = ln.slice(0, eq).replace(/[ \t]+$/, '');
+    let v = ln.slice(eq + 1).replace(/^[ \t]+/, '');
+    if (v.length >= 2 && v[0] === '"' && v.endsWith('"')) v = v.slice(1, -1);
+    delete sec[k];
+    const x = drNumber(v);
+    sec[k] = x !== null ? x : v;
+  }
+  return o;
+}
+function parseDeltarune(buf) {
+  if (!isDeltarune(buf)) return null;
+  let s = buf[0] === 0xEF ? 3 : 0, e = buf.length;
+  while (e > s && (buf[e - 1] === 0 || buf[e - 1] === 0x20 || buf[e - 1] === 0x0D || buf[e - 1] === 0x0A || buf[e - 1] === 0x09)) e--;
+  const src = JSON.parse(utf8.decode(buf.subarray(s, e)));
+  if (!src || typeof src !== 'object' || Array.isArray(src)) throw new Error(T('not a JSON object', 'pas un objet JSON'));
+  const FN = /^filech(\d{1,3})_(\d{1,3})([\s\S]*)$/;
+  const names = Object.keys(src).filter(k => typeof src[k] === 'string');
+  const chapterFiles = names.filter(k => FN.test(k)).sort(), inis = names.filter(k => !FN.test(k) && k.length > 4 && k.endsWith('.ini')).sort();
+  const tree = { files: [], ini: {} };
+  for (const k of chapterFiles) { const m = FN.exec(k); tree.files.push(drChapterFile(k, +m[1], +m[2], m[3], src[k])); }
+  for (const k of inis) tree.ini[k] = drIni(src[k]);
+  const completed = [0, 0, 0, 0, 0, 0], patch = new Array(DR_TROPHIES).fill(0), fb = new Array(DR_TROPHIES).fill(0);
+  const flag = (f, i) => { const v = f.flags && f.flags[String(i)]; return typeof v === 'number' ? v : 0; };
+  const has = (f, list, value, anyNonZero) => Array.isArray(f[list]) && f[list].some(x => typeof x === 'number' && (anyNonZero ? x !== 0 : x === value));
+  for (const f of tree.files) {
+    const ch = typeof f.chapter === 'number' ? f.chapter : 0;
+    if (ch >= 1 && ch <= 5 && f.completion === 1) completed[ch] = 1;
+    for (let i = 0; i < DR_TROPHIES; i++) if (flag(f, DR_FLAG_BASE + i) >= 1) patch[i] = 1;
+    if (flag(f, 106) >= 1) fb[9] = 1;
+    if (ch === 1 && (has(f, 'chararmor1', 0, true) || has(f, 'chararmor2', 0, true))) fb[14] = 1;
+    if (ch >= 2 && flag(f, 325) === 1) fb[18] = 1;
+    if (ch >= 3 && flag(f, 1220) >= 1) fb[22] = 1;
+    if (ch >= 2 && (has(f, 'weapon', 13) || has(f, 'charweapon', 13) || has(f, 'weapon', 22) || has(f, 'charweapon', 22))) fb[27] = 1;
+  }
+  for (let n = 1; n <= 4; n++) fb[n] = completed[n];
+  const trophy = patch.map((p, i) => (p || fb[i]) ? 1 : 0);
+  trophy[0] = patch[0] || trophy.slice(1).every(x => x) ? 1 : 0;
+  Object.assign(tree, { completed, patch, trophy });
+  const meta = { files: chapterFiles.length, completed: completed.map((c, i) => c ? i : 0).filter(Boolean), trophies: trophy.filter(Boolean).length, patched: patch.filter(Boolean).length };
+  return { deltarune: true, tree, meta };
+}
+
+const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveFormats = api;
 })(typeof self !== 'undefined' ? self : this);

@@ -1,9 +1,383 @@
 {
  "title_id": "0100A0D022A68000",
  "name": "DELTARUNE",
- "reader": "",
- "save_files": [],
+ "reader": "deltarune",
+ "save_files": [
+  "Deltarune/deltarune.sav"
+ ],
+ "_note": "The 30 trophies of the PS4/PS5 version. The Switch game has their code but never unlocks them: tools/deltarune (UndertaleModTool patch, LayeredFS) turns it on and saves each unlock as global.flag[2400 + id]. Without the patch, only the trophies the save shows anyway unlock (chapter ends and a few others, see _source).",
  "achievements": [
+  {
+   "id": "dr_trophy_00",
+   "name": "CONNECTION",
+   "desc": "Unlock every other DELTARUNE trophy",
+   "points": 100,
+   "tier": "platinum",
+   "rule": {
+    "type": "count",
+    "paths": [
+     "trophy[1]",
+     "trophy[2]",
+     "trophy[3]",
+     "trophy[4]",
+     "trophy[5]",
+     "trophy[6]",
+     "trophy[7]",
+     "trophy[8]",
+     "trophy[9]",
+     "trophy[10]",
+     "trophy[11]",
+     "trophy[12]",
+     "trophy[13]",
+     "trophy[14]",
+     "trophy[15]",
+     "trophy[16]",
+     "trophy[17]",
+     "trophy[18]",
+     "trophy[19]",
+     "trophy[20]",
+     "trophy[21]",
+     "trophy[22]",
+     "trophy[23]",
+     "trophy[24]",
+     "trophy[25]",
+     "trophy[26]",
+     "trophy[27]",
+     "trophy[28]",
+     "trophy[29]"
+    ],
+    "target": 29
+   },
+   "_source": "PS4/PS5 trophy 0; global.flag[2400] with tools/deltarune; all of trophy[1..29]"
+  },
+  {
+   "id": "dr_trophy_01",
+   "name": "CHAPTER 1 END",
+   "desc": "Finish Chapter 1",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[1]"
+   },
+   "_source": "PS4/PS5 trophy 1; global.flag[2401] with tools/deltarune; without the patch: completion save of Chapter 1"
+  },
+  {
+   "id": "dr_trophy_02",
+   "name": "CHAPTER 2 END",
+   "desc": "Finish Chapter 2",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[2]"
+   },
+   "_source": "PS4/PS5 trophy 2; global.flag[2402] with tools/deltarune; without the patch: completion save of Chapter 2"
+  },
+  {
+   "id": "dr_trophy_03",
+   "name": "CHAPTER 3 END",
+   "desc": "Finish Chapter 3",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[3]"
+   },
+   "_source": "PS4/PS5 trophy 3; global.flag[2403] with tools/deltarune; without the patch: completion save of Chapter 3"
+  },
+  {
+   "id": "dr_trophy_04",
+   "name": "CHAPTER 4 END",
+   "desc": "Finish Chapter 4",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[4]"
+   },
+   "_source": "PS4/PS5 trophy 4; global.flag[2404] with tools/deltarune; without the patch: completion save of Chapter 4"
+  },
+  {
+   "id": "dr_trophy_05",
+   "name": "PAIN",
+   "desc": "Chapter 1: get hurt 4 times (or see a GAME OVER)",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[5]"
+   },
+   "_source": "PS4/PS5 trophy 5; global.flag[2405] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_06",
+   "name": "PAIN",
+   "desc": "Chapter 2: get hurt 8 times (or see a GAME OVER)",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[6]"
+   },
+   "_source": "PS4/PS5 trophy 6; global.flag[2406] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_07",
+   "name": "PAIN",
+   "desc": "Chapter 3: get hurt 14 times (or see a GAME OVER)",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[7]"
+   },
+   "_source": "PS4/PS5 trophy 7; global.flag[2407] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_08",
+   "name": "PAIN",
+   "desc": "Chapter 4: get hurt 22 times (or see a GAME OVER)",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[8]"
+   },
+   "_source": "PS4/PS5 trophy 8; global.flag[2408] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_09",
+   "name": "CONSUMER",
+   "desc": "Chapter 1: use an item",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[9]"
+   },
+   "_source": "PS4/PS5 trophy 9; global.flag[2409] with tools/deltarune; without the patch: moss eaten (flag 106)"
+  },
+  {
+   "id": "dr_trophy_10",
+   "name": "CONSUMER",
+   "desc": "Chapter 2: use an item",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[10]"
+   },
+   "_source": "PS4/PS5 trophy 10; global.flag[2410] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_11",
+   "name": "CONSUMER",
+   "desc": "Chapter 3: use an item",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[11]"
+   },
+   "_source": "PS4/PS5 trophy 11; global.flag[2411] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_12",
+   "name": "CONSUMER",
+   "desc": "Chapter 4: use an item",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[12]"
+   },
+   "_source": "PS4/PS5 trophy 12; global.flag[2412] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_13",
+   "name": "FAILURE",
+   "desc": "See a GAME OVER",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[13]"
+   },
+   "_source": "PS4/PS5 trophy 13; global.flag[2413] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_14",
+   "name": "ARMOR",
+   "desc": "Chapter 1: equip armor",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[14]"
+   },
+   "_source": "PS4/PS5 trophy 14; global.flag[2414] with tools/deltarune; without the patch: armor worn in a Chapter 1 save"
+  },
+  {
+   "id": "dr_trophy_15",
+   "name": "ARMOR",
+   "desc": "Chapter 2: equip armor",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[15]"
+   },
+   "_source": "PS4/PS5 trophy 15; global.flag[2415] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_16",
+   "name": "ARMOR",
+   "desc": "Chapter 3: equip armor",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[16]"
+   },
+   "_source": "PS4/PS5 trophy 16; global.flag[2416] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_17",
+   "name": "ARMOR",
+   "desc": "Chapter 4: equip armor",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[17]"
+   },
+   "_source": "PS4/PS5 trophy 17; global.flag[2417] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_18",
+   "name": "CLOSENESS",
+   "desc": "Share a close moment with a friend",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[18]"
+   },
+   "_source": "PS4/PS5 trophy 18; global.flag[2418] with tools/deltarune; without the patch: Chapter 2 photo (flag 325 = 1)"
+  },
+  {
+   "id": "dr_trophy_19",
+   "name": "STRENGTHEN 2-A",
+   "desc": "Chapter 2: power up",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[19]"
+   },
+   "_source": "PS4/PS5 trophy 19; global.flag[2419] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_20",
+   "name": "CUTLERY",
+   "desc": "Chapter 3: get a ranking better than Z",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[20]"
+   },
+   "_source": "PS4/PS5 trophy 20; global.flag[2420] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_21",
+   "name": "SYMPHONY",
+   "desc": "Chapters 3-4: get a ranking better than Z in a performance",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[21]"
+   },
+   "_source": "PS4/PS5 trophy 21; global.flag[2421] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_22",
+   "name": "BEAST",
+   "desc": "Unleash the beast",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[22]"
+   },
+   "_source": "PS4/PS5 trophy 22; global.flag[2422] with tools/deltarune; without the patch: Susiezilla won (flag 1220)"
+  },
+  {
+   "id": "dr_trophy_23",
+   "name": "TREASUREHUNTER",
+   "desc": "Open 110 treasure chests",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[23]"
+   },
+   "_source": "PS4/PS5 trophy 23; global.flag[2423] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_24",
+   "name": "SCALE",
+   "desc": "Chapter 4: finish the climb in under 90 seconds",
+   "points": 50,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[24]"
+   },
+   "_source": "PS4/PS5 trophy 24; global.flag[2424] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_25",
+   "name": "THRONE",
+   "desc": "Take a good look at a throne",
+   "points": 10,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[25]"
+   },
+   "_source": "PS4/PS5 trophy 25; global.flag[2425] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_26",
+   "name": "SWORD",
+   "desc": "Equip a weapon",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[26]"
+   },
+   "_source": "PS4/PS5 trophy 26; global.flag[2426] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_27",
+   "name": "RING",
+   "desc": "Get a ring",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[27]"
+   },
+   "_source": "PS4/PS5 trophy 27; global.flag[2427] with tools/deltarune; without the patch: ThornRing or FreezeRing owned"
+  },
+  {
+   "id": "dr_trophy_28",
+   "name": "MIRROR",
+   "desc": "Look in a mirror, or copy a save file",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[28]"
+   },
+   "_source": "PS4/PS5 trophy 28; global.flag[2428] with tools/deltarune; needs the patch"
+  },
+  {
+   "id": "dr_trophy_29",
+   "name": "ERASE",
+   "desc": "Erase a save file",
+   "points": 10,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "trophy[29]"
+   },
+   "_source": "PS4/PS5 trophy 29; global.flag[2429] with tools/deltarune; needs the patch"
+  },
   {
    "id": "t_launch",
    "name": "Back to Hometown",

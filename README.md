@@ -27,13 +27,14 @@ at the root of the SD card. Then update from the app with ZL.
 | Play statistics (system play log) | **every installed game** | first launch, 10/50/100 hours, 25 launches |
 | Global | your whole library | play 5/20/50 games, 100/500/1000 hours, unlock 25/100 achievements |
 | Save file | **Zelda: Breath of the Wild** (33) | first minutes (Old Shirt, Sheikah Slate, leaving the cave), shrines, Divine Beasts, Master Sword, Ganon, Koroks, hearts, stamina, Lynels... |
-| Play log, themed | **29 more games** (Persona 5 Royal, DELTARUNE, Metroid Dread...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
+| Play log, themed | **28 more games** (Persona 5 Royal, Metroid Dread...) | 1 launch goal + 3 play-time goals named after each game, scaled to its length |
 | Save file | **Super Smash Bros. Ultimate** (23 + 4 play-time) | fighters unlocked, KOs, Classic Mode, World of Light, spirits, online, Elite Smash... |
 | Save file | **Mario Kart 8 Deluxe** (17 + 4 play-time) | coins, drifts, mini-turbos, online races/wins, VR, battles (offsets not yet confirmed on a current save) |
 | Save file | **Zelda: Tears of the Kingdom** (37) | shrines, Skyview Towers, Lightroots, Koroks, caves, wells, Bubbulfrogs, Gleeoks... |
 | Save file | **Super Mario Odyssey** (59 + 4 play-time) | Power Moons, captures, each kingdom visited, kingdom stories cleared, regional coins, outfits/hats, souvenirs, checkpoints, music, jump/cap-throw counts, Jaxi, Toadette's achievements... |
 | Save file | **Hollow Knight** (56 + 4 play-time) | charms, masks, soul vessels, every boss and dream boss, Dreamers, essence, grubs, stags, maps, Hunter's Journal, Colosseum, Grimm Troupe, pantheons, 112%... |
 | Save file | **SIGNALIS** (13 + 4 play-time) | the game's own 13 achievements, with their original names (3 endings hidden) |
+| Save file | **DELTARUNE** (30 + 4 play-time) | the 30 PS4/PS5 trophies: chapter ends without anything else; all of them with the [trophy patch](tools/deltarune/README.md) (UndertaleModTool script, LayeredFS) |
 | Save file | **Hades** (41 + 4 play-time) | 38 of the 49 Steam achievements, from the game's own conditions: escapes, prophecies, keepsakes, companions, aspects, Mirror, Codex, Skelly, fishing... + escape-attempt milestones |
 | Save file | **DAVE THE DIVER** (56 + 4 play-time) | the 56 Steam achievements, from the game's own record and counters |
 | Save file | **Blasphemous** (45 + 4 play-time) | the 45 Steam achievements, from the game's own achievement tracker |

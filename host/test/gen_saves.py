@@ -69,3 +69,8 @@ bl=[{'Key':k,'Value':random.random()<0.5} for k in 'pen det med res lab mem end 
 bl=[{'Key':'ach_'+x['Key'],'Value':x['Value']} for x in bl]
 txt=json.dumps({'StringData':[],'IntData':[],'FloatData':[],'BoolData':bl}).encode()
 w('0100307018934000','Save/01/lstr.replika',bytes(c^key[i%len(key)] for i,c in enumerate(txt)))
+# DELTARUNE: the synthetic deltarune.sav of tools/deltarune/make_test_save.py
+import importlib.util
+spec=importlib.util.spec_from_file_location('drsave', os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','tools','deltarune','make_test_save.py'))
+drsave=importlib.util.module_from_spec(spec); spec.loader.exec_module(drsave)
+w('0100A0D022A68000','Deltarune/deltarune.sav',drsave.encode(drsave.save_partial()))
