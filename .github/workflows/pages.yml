@@ -1,5 +1,7 @@
 # Publishes the Save Lab (tools/savelab) on GitHub Pages: https://imp3r1us.github.io/TrophyNX/
-# Rebuilt whenever the page, its engine, the built-in game definitions or the PC -> Switch data change.
+# Rebuilt whenever the page, its engine, the built-in game definitions or the PC -> Switch data change,
+# and after each "PC to Switch" run. Also publishes every Steam achievement list fetched by that workflow
+# (its Actions cache) as steam/<appid>.json, loaded on demand by the Save Lab's PC -> Switch catalogue.
 # One-time setup: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
 name: Save Lab website
 on:
@@ -10,7 +12,11 @@ on:
       - 'tools/pc2switch/match.js'
       - 'romfs/games/**'
       - 'data/pc2switch/**'
+      - 'tools/pc2switch/export_steam.js'
       - '.github/workflows/pages.yml'
+  workflow_run:
+    workflows: ["PC to Switch"]
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
@@ -41,6 +47,14 @@ jobs:
           cp tools/savelab/index.html _site/index.html
           cp tools/savelab/index.html _site/savelab.html
           touch _site/.nojekyll
+      - name: Restore the Steam lists fetched by "PC to Switch"
+        uses: actions/cache/restore@v4
+        with:
+          path: .pc2switch-cache
+          key: pages-steam-lists-${{ github.run_id }}
+          restore-keys: pc2switch-
+      - name: Publish the Steam achievement lists
+        run: node tools/pc2switch/export_steam.js --out _site/steam
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -81,6 +81,7 @@ details ol,details ul{padding-left:20px;margin:6px 0}details li{margin:4px 0}
 .cf{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:700;margin-right:6px}.cf-sure{background:#1f6f43;color:#fff}.cf-maybe{background:#8a6d1a;color:#fff}.cf-unmatched{background:#555;color:#fff}.cf-skip{background:transparent;color:inherit;border:1px solid currentColor;opacity:.6}
 .pcrow{padding:7px 0;border-top:1px solid var(--line)}
 a.btn{text-decoration:none}
+.dlg a:not(.btn),.card a:not(.btn){color:var(--acc);overflow-wrap:anywhere}
 @media(min-width:700px){.dlg{align-items:center}.dlg .box{border-radius:14px}}
 html[data-lang="en"] .l-fr,html[data-lang="fr"] .l-en{display:none!important}
 .hdrLinks{margin-left:auto;display:flex;gap:6px;align-items:center}.hdrLinks a{color:var(--acc);font-size:13px;text-decoration:none}
@@ -253,14 +254,15 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
   </div>
   <div class="card">
     <h2><span class="l-en">Steam achievements → rules</span><span class="l-fr">Succès Steam → règles</span></h2>
-    <p class="small mute l-en">Matches the names of Steam achievements with the fields of the save (last capture; the first one serves as the “new game” if there are several). No network calls, no AI. <b>Sure</b> = names match and the value is reached in the capture; <b>check</b> = look at the candidates.</p>
-    <p class="small mute l-fr">Rapproche les noms des succès Steam des champs de la sauvegarde (dernière capture ; la première sert de « partie neuve » s'il y en a plusieurs). Aucun appel réseau, aucune IA. <b>Sûr</b> = noms concordants et valeur atteinte dans la capture ; <b>à vérifier</b> = regardez les candidats.</p>
+    <p class="small mute l-en">Matches the names of Steam achievements with the fields of the save (last capture; the first one serves as the “new game” if there are several). No AI; your saves never leave your device (only public Steam lists are downloaded from the website, when you ask). <b>Sure</b> = names match and the value is reached in the capture; <b>check</b> = look at the candidates.</p>
+    <p class="small mute l-fr">Rapproche les noms des succès Steam des champs de la sauvegarde (dernière capture ; la première sert de « partie neuve » s'il y en a plusieurs). Aucune IA ; vos sauvegardes ne quittent jamais votre appareil (seules les listes Steam publiques sont téléchargées depuis le site, à la demande). <b>Sûr</b> = noms concordants et valeur atteinte dans la capture ; <b>à vérifier</b> = regardez les candidats.</p>
     <div class="row"><div><label><span class="l-en">Steam list</span><span class="l-fr">Liste Steam</span></label><select id="pcSteam"></select></div></div>
     <div class="row"><span class="btn file fix"><span class="l-en">Import a Steam list (.json)</span><span class="l-fr">Importer une liste Steam (.json)</span><input type="file" id="pcSteamFile" accept=".json,application/json"></span><button class="btn pri fix" id="pcRun"><span class="l-en">Generate drafts</span><span class="l-fr">Générer les brouillons</span></button></div>
     <div id="pcOut"></div>
   </div>
   <div class="card">
     <h2><span class="l-en">PC → Switch catalogue</span><span class="l-fr">Catalogue PC → Switch</span></h2>
+    <p class="small mute"><span class="l-en">Find a game, then <b>Use this list</b> to load its Steam achievements into “Steam achievements → rules” above.</span><span class="l-fr">Cherchez un jeu, puis <b>Utiliser cette liste</b> pour charger ses succès Steam dans « Succès Steam → règles » ci-dessus.</span></p>
     <p class="small mute" id="pcCatInfo"></p>
     <input id="pcCatQ" placeholder="Search a game…" data-fr-ph="Rechercher un jeu…">
     <div id="pcCat"></div>
@@ -936,7 +938,7 @@ function renderPc() {
   const row = catRow(S.game.title_id);
   const sel = $('#pcSteam');
   const cur = pc.steam ? 'file' : (row && PCDATA.steam && PCDATA.steam[row[2]] ? String(row[2]) : '');
-  sel.innerHTML = (pc.steam ? `<option value="file">${esc(pc.steamName)} (${T('imported', 'importée')})</option>` : '') + '<option value="">' + T('— Choose —', '— Choisir —') + '</option>' +
+  sel.innerHTML = (pc.steam ? `<option value="file">${esc(pc.steamName)} (${T('loaded', 'chargée')})</option>` : '') + '<option value="">' + T('— Choose —', '— Choisir —') + '</option>' +
     ch.map(c => `<option value="${c.appid}">${esc(c.name)} · ${c.achievements.length} ${T('achievements', 'succès')}</option>`).join('');
   sel.value = cur;
   const cat = PCDATA.catalog || [];
@@ -951,10 +953,47 @@ function renderCat() {
   const cat = (PCDATA.catalog || []).filter(r => !q || r[1].toLowerCase().includes(q) || String(r[0]).toLowerCase().includes(q));
   const mine = r => /^(supported|scanned|playtime)/.test(r[5] || '');
   cat.sort((a, b) => mine(b) - mine(a) || (b[3] || 0) - (a[3] || 0));
-  $('#pcCat').innerHTML = cat.slice(0, 200).map(r => `<div class="pcrow small"><b>${esc(r[1])}</b> <span class="mono mute">${r[0]}</span><br>Steam ${r[2]}${r[4] !== 'exact' ? ' (' + esc(r[4]) + ')' : ''} · ${r[3] == null ? '?' : r[3]} ${T('achievements', 'succès')} · <span class="mute">${esc(r[5] || '')}</span></div>`).join('') +
+  $('#pcCat').innerHTML = cat.slice(0, 200).map(r => `<div class="pcrow small"><b>${esc(r[1])}</b> <span class="mono mute">${r[0]}</span><br>Steam ${r[2]}${r[4] !== 'exact' ? ' (' + esc(r[4]) + ')' : ''} · ${r[3] == null ? '?' : r[3]} ${T('achievements', 'succès')} · <span class="mute">${esc(r[5] || '')}</span>` +
+    (r[3] > 0 ? `<br><button class="btn sm" data-use="${esc(r[0])}">${T('Use this list', 'Utiliser cette liste')}</button>` : '') + '</div>').join('') +
     (cat.length > 200 ? `<p class="small mute">… ${cat.length - 200} ${T('more, narrow the search.', 'autres, affinez la recherche.')}</p>` : '');
 }
 $('#pcCatQ').addEventListener('input', renderCat);
+// "Use this list": the game's Steam list goes into "Steam achievements -> rules". The 20-odd lists of our own
+// games are built into the page; the others are files published next to it on the website (steam/<appid>.json,
+// .github/workflows/pages.yml), downloaded only when asked. Saves are never sent anywhere.
+const STEAM_SITE = 'https://imp3r1us.github.io/TrophyNX/steam/';
+async function fetchSteamList(appid) {
+  const urls = ['steam/' + appid + '.json'];
+  if (!location.href.startsWith('https://imp3r1us.github.io/')) urls.push(STEAM_SITE + appid + '.json');
+  for (const u of urls) {
+    try { const r = await fetch(u, { cache: 'force-cache' }); if (r.ok) { const j = await r.json(); if (j && Array.isArray(j.achievements) && j.achievements.length) return j; } } catch (e) { }
+  }
+  return null;
+}
+$('#pcCat').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-use]'); if (!b) return;
+  const row = catRow(b.dataset.use); if (!row) return;
+  const appid = String(row[2]);
+  if (!S.game.title_id) { S.game = { title_id: row[0], name: row[1], custom: !BUILTIN[row[0]] }; S.def = null; renderGameSel(); persist(); }
+  let list = PCDATA.steam && PCDATA.steam[appid];
+  if (!list) {
+    b.disabled = true; b.textContent = T('Loading…', 'Chargement…');
+    list = await fetchSteamList(appid);
+    b.disabled = false; b.textContent = T('Use this list', 'Utiliser cette liste');
+    if (!list) {
+      openDialog(`<h2>${esc(row[1])}</h2><p class="small">${T('This Steam list is not published on the website yet (it appears after the next “PC to Switch” run), or the page is offline.', 'Cette liste Steam n\'est pas encore publiée sur le site (elle arrive après le prochain passage « PC to Switch »), ou la page est hors ligne.')}</p>
+        <p class="small">${T('You can still import it by hand: save the file below, then “Import a Steam list (.json)”.', 'Vous pouvez quand même l\'importer à la main : enregistrez le fichier ci-dessous, puis « Importer une liste Steam (.json) ».')}</p>
+        <p class="small mono"><a href="${STEAM_SITE + appid}.json" target="_blank" rel="noopener">${STEAM_SITE + appid}.json</a></p>
+        <p><button class="btn" id="useNo">${T('Close', 'Fermer')}</button></p>`);
+      $('#useNo').onclick = closeDialog;
+      return;
+    }
+  }
+  pc.steam = list.achievements; pc.steamName = list.name || row[1]; pc.steamAppid = +appid;
+  renderPc();
+  $('#pcSteam').closest('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  toast(list.achievements.length + T(' Steam achievements loaded: now “Generate drafts”', ' succès Steam chargés : maintenant « Générer les brouillons »') + (S.caps.length ? '' : T(' (add a capture first, tab 1)', ' (ajoutez d\'abord une capture, onglet 1)')));
+});
 $('#pcBundle').addEventListener('change', async (e) => {
   const f = e.target.files[0]; e.target.value = '';
   if (!f) return;
@@ -995,7 +1034,7 @@ $('#pcSteamFile').addEventListener('change', async (e) => {
     const j = JSON.parse(await f.text());
     const list = j.achievements || (j.game && j.game.availableGameStats && j.game.availableGameStats.achievements);
     if (!Array.isArray(list) || !list.length) throw new Error(T('no achievement list in this file', 'aucune liste de succès dans ce fichier'));
-    pc.steam = list; pc.steamName = j.name || (j.game && j.game.gameName) || f.name;
+    pc.steam = list; pc.steamName = j.name || (j.game && j.game.gameName) || f.name; pc.steamAppid = j.appid ? +j.appid : null;
     renderPc(); toast(list.length + T(' Steam achievements loaded', ' succès Steam chargés'));
   } catch (err) { toast(T('Error: ', 'Erreur : ') + err.message); }
 });
@@ -1012,7 +1051,7 @@ $('#pcRun').addEventListener('click', () => {
   pc.self = st ? { file: st.file, found: st.found, reader: files.find(f => f.path === st.file).reader } : null;
   if (st) pc.drafts = st.drafts;
   else { const adv = trees[trees.length - 1].flat, fresh = trees.length > 1 ? trees[0].flat : null; pc.drafts = P.draftRules(list, adv, fresh); }
-  pc.appid = v === 'file' ? null : +v;
+  pc.appid = v === 'file' ? (pc.steamAppid || null) : +v;
   renderDrafts();
 });
 function renderDrafts() {
