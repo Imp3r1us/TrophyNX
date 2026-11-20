@@ -1,33 +1,30 @@
 # PC → Switch catalogue
 
-Generated 2026-11-19 by `tools/pc2switch/catalog.js` (no AI). 19999 Switch games, 11152 also on Steam, **9578 with Steam achievements**.
+Generated 2026-11-20 by `tools/pc2switch/catalog.js` (no AI). 19999 Switch games, 11152 also on Steam, **9002 with Steam achievements**, 745 still to check (next runs).
 
 ## Your games
 
 | Game | Steam | Achievements | Status | Save formats |
 |---|---|---|---|---|
-| BALL x PIT | [BALL x PIT](https://store.steampowered.com/app/2062430)  | 82 | scanned:binary | binary |
-| BioShock 2 Remastered | [BioShock™ 2 Remastered](https://store.steampowered.com/app/409720)  | 53 | scanned:no-save |  |
-| BioShock Remastered | [BioShock™ Remastered](https://store.steampowered.com/app/409710)  | 65 | scanned:text | encrypted, binary, text |
-| Blasphemous | [Blasphemous](https://store.steampowered.com/app/774361)  | 45 | scanned:text | text |
-| COCOON | [COCOON](https://store.steampowered.com/app/1497440)  | 17 | scanned:draftable | json |
-| DAVE THE DIVER | [DAVE THE DIVER](https://store.steampowered.com/app/1868140)  | 56 | scanned:text | binary, text |
-| Disney/Pixar Toy Story 3 Complete Edition | [Disney•Pixar Toy Story 3 Complete Edition](https://store.steampowered.com/app/4049180)  | 41 | scanned:no-save |  |
-| DRAGON QUEST I & II HD-2D Remake | [DRAGON QUEST I & II HD-2D Remake](https://store.steampowered.com/app/2893570)  | 48 | scanned:binary | binary |
-| Grand Theft Auto: San Andreas – The Definitive Edition | [Grand Theft Auto: San Andreas – The Definitive Edition](https://store.steampowered.com/app/1547000)  | 35 | scanned:text | encrypted, text |
-| Hollow Knight | [Hollow Knight](https://store.steampowered.com/app/367520)  | 63 | supported:json | json |
-| It Takes Two | [It Takes Two](https://store.steampowered.com/app/1426210)  | 20 | scanned:draftable | json |
-| Nine Sols | [Nine Sols](https://store.steampowered.com/app/1809540)  | 35 | scanned:binary | encrypted, binary |
-| OCTOPATH TRAVELER II | [OCTOPATH TRAVELER II](https://store.steampowered.com/app/1971650)  | 33 | scanned:no-save |  |
-| Overcooked! 2 | [Overcooked! 2](https://store.steampowered.com/app/728880)  | 54 | scanned:draftable | json |
-| Persona 5 Royal | [Persona 5 Royal](https://store.steampowered.com/app/1687950)  | 53 | scanned:binary | encrypted, binary |
-| SIGNALIS | [SIGNALIS](https://store.steampowered.com/app/1262350)  | 13 | supported:json | json, text, binary |
-| Slay the Spire | [Slay the Spire](https://store.steampowered.com/app/646570)  | 46 | scanned:draftable | json |
-| The Lord of the Rings: War in the North™ - Legacy Edition | [The Lord of the Rings: War in the North™ - Legacy Edition](https://store.steampowered.com/app/2523770)  | 46 | scanned:binary | binary |
-| Ultimate Chicken Horse | [Ultimate Chicken Horse](https://store.steampowered.com/app/386940)  | 31 | scanned:text | text |
-| Vampire Crawlers: The Turbo Wildcard from Vampire Survivors | [Vampire Crawlers: The Turbo Wildcard from Vampire Survivors](https://store.steampowered.com/app/3265700)  | 161 | scanned:draftable | json |
-| Vampire Survivors | [Vampire Survivors](https://store.steampowered.com/app/1794680)  | 243 | scanned:draftable | json |
-| Wizard of Legend 2 | [Wizard of Legend 2](https://store.steampowered.com/app/2193540)  | 41 | scanned:text | binary, text |
+| BALL x PIT | [BALL x PIT](https://store.steampowered.com/app/2062430)  | 82 | playtime-only |  |
+| BioShock Remastered | [BioShock™ Remastered](https://store.steampowered.com/app/409710)  | 65 | playtime-only |  |
+| Blasphemous | [Blasphemous](https://store.steampowered.com/app/774361)  | 45 | playtime-only |  |
+| COCOON | [COCOON](https://store.steampowered.com/app/1497440)  | 17 | playtime-only |  |
+| DAVE THE DIVER | [DAVE THE DIVER](https://store.steampowered.com/app/1868140)  | 56 | playtime-only |  |
+| DRAGON QUEST I & II HD-2D Remake | [DRAGON QUEST I & II HD-2D Remake](https://store.steampowered.com/app/2893570)  | 48 | playtime-only |  |
+| Grand Theft Auto: San Andreas – The Definitive Edition | [Grand Theft Auto: San Andreas – The Definitive Edition](https://store.steampowered.com/app/1547000)  | 35 | playtime-only |  |
+| Hollow Knight | [Hollow Knight](https://store.steampowered.com/app/367520)  | 63 | supported:json |  |
+| It Takes Two | [It Takes Two](https://store.steampowered.com/app/1426210)  | 20 | playtime-only |  |
+| Nine Sols | [Nine Sols](https://store.steampowered.com/app/1809540)  | 35 | playtime-only |  |
+| Overcooked! 2 | [Overcooked! 2](https://store.steampowered.com/app/728880)  | 54 | playtime-only |  |
+| Persona 5 Royal | [Persona 5 Royal](https://store.steampowered.com/app/1687950)  | 53 | playtime-only |  |
+| SIGNALIS | [SIGNALIS](https://store.steampowered.com/app/1262350)  | 13 | supported:json |  |
+| Slay the Spire | [Slay the Spire](https://store.steampowered.com/app/646570)  | 46 | playtime-only |  |
+| The Lord of the Rings: War in the North™ - Legacy Edition | [The Lord of the Rings: War in the North™ - Legacy Edition](https://store.steampowered.com/app/2523770)  | 46 | playtime-only |  |
+| Ultimate Chicken Horse | [Ultimate Chicken Horse](https://store.steampowered.com/app/386940)  | 31 | playtime-only |  |
+| Vampire Crawlers: The Turbo Wildcard from Vampire Survivors | [Vampire Crawlers: The Turbo Wildcard from Vampire Survivors](https://store.steampowered.com/app/3265700)  | 161 | playtime-only |  |
+| Vampire Survivors | [Vampire Survivors](https://store.steampowered.com/app/1794680)  | 243 | playtime-only |  |
+| Wizard of Legend 2 | [Wizard of Legend 2](https://store.steampowered.com/app/2193540)  | 41 | playtime-only |  |
 
 Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = readable save, run draft.js · `scanned:text` = text save, reader needed · `scanned:binary`/`encrypted` = manual work · `playtime-only` = only play-log achievements so far.
 
@@ -65,7 +62,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | hexceed | 1463920 | 250 | exact |
 | Plague Inc: Evolved | 246620 | 250 | exact |
 | Vampire Survivors | 1794680 | 243 | exact |
-| Volcano Princess | 1669980 | 235 | exact |
 | Wartales | 1527950 | 235 | exact |
 | High Times | 2251220 | 232 | exact |
 | Army of Ruin | 1918040 | 221 | exact |
@@ -73,7 +69,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Rabi-Ribi | 400910 | 220 | exact |
 | Suzerain | 1207650 | 220 | exact |
 | Vampire Hunters | 2206270 | 215 | exact |
-| Car Dealer Simulator: Retro Car for Sale | 2404880 | 209 | main-title |
 | Risk of Rain 2 | 632360 | 205 | exact |
 | Book of Demons | 449960 | 202 | exact |
 | DC Universe™ Online | 24200 | 202 | exact |
@@ -85,10 +80,8 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Twilight Survivors | 2788310 | 188 | exact |
 | Luck be a Landlord | 1404850 | 186 | exact |
 | IIN | 795110 | 185 | exact-short |
-| Drop Duchy - Complete Edition | 2525310 | 181 | normalized |
 | Slime 3K: Rise Against Despot | 2348610 | 181 | exact |
 | Greedland | 2218400 | 180 | exact |
-| Dice A Million | 3430340 | 178 | exact |
 | Reus 2 | 1875060 | 177 | exact |
 | Eternal Card Game | 531640 | 176 | exact |
 | Mini Motorways | 1127500 | 170 | exact |
@@ -141,7 +134,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Cassette Beasts | 1321440 | 123 | exact |
 | Son of a Witch | 539400 | 123 | exact |
 | Son of a Witch | 539400 | 123 | exact |
-| Crafty Survivors | 2137760 | 122 | exact |
 | WrestleQuest | 1867510 | 122 | exact |
 | Darkest Dungeon II | 1940340 | 121 | exact |
 | Dead Cells | 588650 | 121 | exact |
@@ -166,7 +158,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Farm Together 2 | 2418520 | 109 | exact |
 | Junk Jack | 414190 | 109 | exact |
 | TRIANGLE STRATEGY™ | 1850510 | 108 | exact |
-| Verho - Curse of Faces | 3017330 | 108 | exact |
 | Elsie | 1515570 | 107 | exact-short |
 | Last Command | 1487270 | 106 | exact |
 | Nightmare: The Lunatic | 1842730 | 106 | exact |
@@ -193,7 +184,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Istanbul: Digital Edition | 943410 | 101 | exact |
 | Reventure | 900270 | 101 | exact |
 | Skul: The Hero Slayer | 1147560 | 101 | exact |
-| Yog-Sothoth’s Yard | 2194530 | 101 | exact |
 | 10 Seconds to Win! | 1846020 | 100 | exact |
 | Alien Breakout | 3581220 | 100 | exact |
 | Block Puzzle | 3370120 | 100 | exact |
@@ -209,11 +199,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | DoDonPachi Resurrection | 464450 | 100 | exact |
 | DORAEMON  STORY OF SEASONS | 965230 | 100 | exact |
 | Genome Guardian | 2891310 | 100 | exact |
-| Good Girls: Angels With Dirty Intentions | 1621750 | 100 | main-title |
-| Good Girls: Seduction Starts With a Smile | 1621750 | 100 | main-title |
-| Good Girls: Sweet Faces | 1621750 | 100 | main-title |
-| Good Girls: Temptation in Disguise | 1621750 | 100 | main-title |
-| Hentai Puzzle X | 916580 | 100 | exact |
 | Jetboard Joust | 1181600 | 100 | exact |
 | Jigsaw Masterpieces | 977490 | 100 | exact |
 | Lightseekers | 988430 | 100 | exact |
@@ -240,8 +225,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Tenement | 3257220 | 100 | exact |
 | The Wonderful 101: Remastered | 1190400 | 100 | exact |
 | Ultimate Anime Jigsaw Puzzle | 2319370 | 100 | exact |
-| We. The Refugees: Ticket to Europe | 2094580 | 100 | exact |
-| Angry Cat | 1426540 | 99 | exact |
 | ASTLIBRA Revision | 1718570 | 99 | exact |
 | Dawnfolk | 2308630 | 99 | exact |
 | Devil May Cry | 631510 | 99 | normalized |
@@ -262,11 +245,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | SHINONOME ABYSS The Maiden Exorcist | 2948080 | 97 | exact |
 | Trine 2: Complete Story | 35720 | 97 | exact |
 | VERTICAL STRIKE ENDLESS CHALLENGE | 313390 | 97 | exact |
-| Hidden Girls: Bikini Dreams | 4542660 | 96 | main-title |
-| Hidden Girls: Private Nights | 4542660 | 96 | main-title |
-| Hidden Girls: Quiet Beauty | 4542660 | 96 | main-title |
-| Hidden Girls: Secret Puzzle | 4542660 | 96 | main-title |
-| Hidden Girls: Tropical Vibes | 4542660 | 96 | main-title |
 | House Flipper | 613100 | 96 | exact |
 | Operius DX | 3281050 | 96 | exact |
 | The Edge of Allegoria | 1870700 | 96 | exact |
@@ -305,9 +283,7 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Bunny e-Shop | 1111460 | 89 | exact |
 | Cabernet | 2401410 | 89 | exact |
 | The Life and Suffering of Sir Brante | 1272160 | 89 | exact |
-| Whisper of the House | 2589500 | 89 | exact |
 | Wizordum | 1715590 | 89 | exact |
-| Basketball Classics | 819630 | 88 | exact |
 | Factorio | 427520 | 88 | exact |
 | Hidden Cats in Tokyo | 2671320 | 88 | exact |
 | Octopath Traveler™ | 921570 | 88 | exact |
@@ -327,7 +303,6 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Banana-Clicker | 2322080 | 86 | exact |
 | CrossCode | 368340 | 86 | exact |
 | In Celebration of Violence | 509570 | 86 | exact |
-| Realm of Ink | 2597080 | 86 | exact |
 | Worlds of Magic: Planar Conquest | 265970 | 86 | main-title |
 | Cricket Captain 2023 | 2333390 | 85 | exact |
 | Dorfromantik | 1455840 | 85 | exact |
@@ -335,3 +310,25 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Hextones | 1570750 | 85 | exact |
 | Mandragora: Whispers of the Witch Tree | 1721060 | 85 | exact |
 | Marble It Up! Ultra | 864060 | 85 | exact |
+| Sniper Elite 4 | 312660 | 85 | exact |
+| SOLITAIRE BATTLE ROYAL | 3795960 | 85 | normalized |
+| The Spy Who Shot Me | 771810 | 85 | exact |
+| A Robot Named Fight | 603530 | 84 | exact |
+| Assassin's Creed® III: Remastered | 911400 | 84 | exact |
+| Cricket Captain 2025 | 3637540 | 84 | exact |
+| Cybercube | 656880 | 84 | exact |
+| LEGO® Harry Potter™ Collection | 2950340 | 84 | exact |
+| Little Friends: Puppy Island | 2172900 | 84 | exact |
+| Lonely Mountains: Downhill | 711540 | 84 | exact |
+| OMORI | 1150690 | 84 | exact-short |
+| Prison Simulator | 842180 | 84 | exact |
+| Rampage Knights | 314410 | 84 | exact |
+| Cultist Simulator: Initiate Edition | 718670 | 83 | main-title |
+| Drill Core | 2821800 | 83 | exact |
+| Dwarf Journey | 1501410 | 83 | exact |
+| Golf With Your Friends | 431240 | 83 | exact |
+| HELLCARD | 1201540 | 83 | exact |
+| Legacy of Kain™ Soul Reaver 1&2 Remastered | 2521380 | 83 | exact |
+| Saviors of Sapphire Wings / Stranger of Sword City Revisited | 1363840 | 83 | exact |
+| The Oregon Trail | 2013360 | 83 | exact |
+| BALL x PIT | 2062430 | 82 | exact |
