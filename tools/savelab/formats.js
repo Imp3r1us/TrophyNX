@@ -1027,8 +1027,39 @@ function parseTheatrhythm(buf) {
   return { tree: d.tree, meta: Object.assign(d.meta, { ps4: dec.ps4, version: typeof d.tree.Version === 'string' ? d.tree.Version : '', top: Object.keys(d.tree).filter(k => k !== 'Version') }) };
 }
 
+// Finds the password among the string literals of the game's global-metadata.dat (IL2CPP v24+), trying them on
+// one save file, nearest to the known indexes first. Mirror of theatrhythmFindPassword (save_formats.cpp).
+// Asynchronous (yields every few candidates so the page stays responsive); onProgress(done, total).
+async function theatrhythmFindPassword(meta, save, onProgress) {
+  const dv = new DataView(meta.buffer, meta.byteOffset, meta.byteLength);
+  if (meta.length < 32 || dv.getUint32(0, true) !== 0xFAB11BAF) throw new Error(T('not a global-metadata.dat file', 'ce n\'est pas un fichier global-metadata.dat'));
+  const lo = dv.getUint32(8, true), lsz = dv.getUint32(12, true), dO = dv.getUint32(16, true), dsz = dv.getUint32(20, true);
+  if (lo + lsz > meta.length || dO + dsz > meta.length) throw new Error(T('damaged global-metadata.dat', 'global-metadata.dat abîmé'));
+  const body = theatrhythmBody(save);
+  if (!body) throw new Error(T('not a THEATRHYTHM save file', 'ce n\'est pas une sauvegarde THEATRHYTHM'));
+  const n = lsz / 8 | 0, hints = [12425, 13610];
+  const order = Array.from({ length: n }, (_, i) => i).sort((a, b) => Math.min(...hints.map(h => Math.abs(a - h))) - Math.min(...hints.map(h => Math.abs(b - h))) || a - b);
+  const salt = new Uint8Array(16); salt.set(body.subarray(0, 8)); salt.set(body.subarray(24, 32), 8);
+  const ct = body.subarray(32), tried = new Set();
+  for (let k = 0; k < order.length; k++) {
+    if (k % 16 === 15) { if (onProgress) onProgress(k, order.length); await new Promise(r => setTimeout(r, 0)); }
+    const i = order[k], len = dv.getUint32(lo + 8 * i, true), di = dv.getUint32(lo + 8 * i + 4, true);
+    if (len < 4 || len > 128 || di + len > dsz) continue;
+    const bytes = meta.subarray(dO + di, dO + di + len), s = latin1(bytes);
+    if (tried.has(s)) continue;
+    tried.add(s);
+    const key = pbkdf2Sha1(bytes, salt, 1000, 16);
+    const tail = aes128CbcDecrypt(key, ct.subarray(ct.length - 32, ct.length - 16), ct.subarray(ct.length - 16));
+    const pad = tail[15];
+    if (pad < 1 || pad > 16 || !tail.subarray(16 - pad).every(x => x === pad)) continue;
+    const pw = utf8.decode(bytes);
+    try { const d = decryptTheatrhythm(save, pw); if (d && parseMsgpack(d.raw).tree) return { password: pw, index: i }; } catch (e) { }
+  }
+  return null;
+}
+
 const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor,
-  parseMsgpack, inflateRawSync, sha1, pbkdf2Sha1, aes128CbcDecrypt, setPassword, isTheatrhythm, parseTheatrhythm, decryptTheatrhythm, TH_FILES };
+  parseMsgpack, inflateRawSync, sha1, pbkdf2Sha1, aes128CbcDecrypt, setPassword, isTheatrhythm, parseTheatrhythm, decryptTheatrhythm, theatrhythmFindPassword, TH_FILES };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveFormats = api;
 })(typeof self !== 'undefined' ? self : this);

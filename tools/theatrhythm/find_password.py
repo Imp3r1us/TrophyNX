@@ -57,7 +57,7 @@ def main():
         if raw[:1] and (raw[0] & 0xF0 == 0x80 or raw[0] in (0xDE, 0xDF)):
             with open(sys.argv[3], 'wb') as f:
                 f.write(s)
-            print('found: literal #%d, %d characters -> %s' % (i, len(s), sys.argv[3]))
+            print('found: literal #%d, %d bytes -> %s' % (i, len(s), sys.argv[3]))
             return
     raise SystemExit('no literal decrypts this save (other game, or damaged save)')
 

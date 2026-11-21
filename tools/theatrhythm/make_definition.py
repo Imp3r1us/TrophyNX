@@ -111,7 +111,7 @@ UNIVERSAL = [
 
 NOTE = ('The 42 PS4 trophies, read from the encrypted save (reader "theatrhythm": AES-128-CBC + raw DEFLATE + MessagePack). '
         'The save password is not shipped: put it in sdmc:/switch/TrophyNX/keys/theatrhythm.txt (see tools/theatrhythm/README.md). '
-        'close_scan false: the decoded musicBackup.inf (~750 KB of MessagePack) does not fit in the live module heap; the app reads it. '
+        'Scan on close (popups): the live module builds only the values the rules use (~2.3 MB peak instead of ~11 MB). '
         'Not tracked: THEATRHYTHM Maestro (platinum: no rule type for "every other"), A Musical Journey Begins (which world is the '
         'THEATRHYTHM series is unknown), Overflowing Gold (a filled Critical Chart is not stored as such), Show of Finesse, Unstoppable Force, '
         "Summon Tamer and Summon's True Power (per-song / per-attack values, not saved), 999er (current stats are not saved, only growth), "
@@ -119,7 +119,7 @@ NOTE = ('The 42 PS4 trophies, read from the encrypted save (reader "theatrhythm"
 
 DEF = {
     'title_id': '010081B01777C000', 'name': 'THEATRHYTHM FINAL BAR LINE', 'reader': 'theatrhythm', 'key_file': 'theatrhythm.txt',
-    'close_scan': False, 'save_files': ['backup.inf', 'musicBackup.inf'], '_note': NOTE, 'achievements': TROPHIES + UNIVERSAL,
+    'save_files': ['backup.inf', 'musicBackup.inf'], '_note': NOTE, 'achievements': TROPHIES + UNIVERSAL,
 }
 
 if __name__ == '__main__':

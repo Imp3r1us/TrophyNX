@@ -227,5 +227,25 @@ if (process.env.CPP_DUMP) {
     }
   }
 }
-console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
-process.exit(fails ? 1 : 0);
+// ---- THEATRHYTHM password search in a (fake) global-metadata.dat: literal table + data, dummy password at #4
+(async () => {
+  const PW = fs.readFileSync(path.join(fx, 'theatrhythm/password.txt'), 'utf8').trim();
+  const lits = ['UnityEngine', 'password', 'abc', 'Not the key either', PW, 'zzzzzzzz'].map(s => Buffer.from(s));
+  const table = Buffer.alloc(8 * lits.length), data = Buffer.concat(lits), head = Buffer.alloc(32);
+  let off = 0;
+  lits.forEach((l, i) => { table.writeUInt32LE(l.length, 8 * i); table.writeUInt32LE(off, 8 * i + 4); off += l.length; });
+  head.writeUInt32LE(0xFAB11BAF, 0); head.writeUInt32LE(29, 4); head.writeUInt32LE(32, 8); head.writeUInt32LE(table.length, 12);
+  head.writeUInt32LE(32 + table.length, 16); head.writeUInt32LE(data.length, 20);
+  const meta = new Uint8Array(Buffer.concat([head, table, data]));
+  const r = await F.theatrhythmFindPassword(meta, load('theatrhythm/proficaBackup.inf'));
+  ok(r && r.password === PW && r.index === 4, 'THEATRHYTHM password found in global-metadata.dat');
+  let threw = false;
+  try { await F.theatrhythmFindPassword(meta.slice(4), load('theatrhythm/proficaBackup.inf')); } catch (e) { threw = true; }
+  ok(threw, 'not a metadata file: error');
+  if (process.env.TH_META && process.env.TH_SAVE) {   // real files: prints only the index
+    const t0 = Date.now(), rr = await F.theatrhythmFindPassword(new Uint8Array(fs.readFileSync(process.env.TH_META)), new Uint8Array(fs.readFileSync(process.env.TH_SAVE)));
+    console.log('     real global-metadata.dat: ' + (rr ? 'found #' + rr.index + ', ' + rr.password.length + ' characters' : 'not found') + ' in ' + (Date.now() - t0) + ' ms');
+  }
+  console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
+  process.exit(fails ? 1 : 0);
+})();

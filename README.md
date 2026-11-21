@@ -100,8 +100,12 @@ Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come fro
 - The module has a 4 MB heap, so it reads saves in a low-memory mode: hash/value saves (BotW, TotK) are read in
   64 KB chunks keeping only the needed values, fixed-offset saves (Smash, MK8D) only the bytes the rules use.
   Tree saves (BYML, JSON, GVAS, NRBF) are read whole, one file at a time; a file too big for the heap is skipped
-  and left to the app (`close_log.txt` says so). `host/test/test_stream.cpp` checks that the values are identical
-  to the app's.
+  and left to the app (`close_log.txt` says so). MessagePack saves (THEATRHYTHM FINAL BAR LINE) are built with
+  only the values the rules use (~2.3 MB instead of ~11 MB for its song records), and the reader stops cleanly
+  if even that would not fit. `host/test/test_stream.cpp` checks that the values are identical to the app's.
+- Encrypted saves (THEATRHYTHM) need their password in `sdmc:/switch/TrophyNX/keys/` (never shipped): the app
+  finds it by itself in the game's `global-metadata.dat` dumped with nxdumptool (see
+  `tools/theatrhythm/README.md`).
 - More than 4 new unlocks at once (first scan of an advanced save): 3 cards, then a "+N more achievements" card.
 - `"close_scan": false` in a definition turns it off for that game (set for Mario Kart 8 Deluxe until its
   offsets are fixed).
