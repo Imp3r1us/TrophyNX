@@ -148,8 +148,8 @@ Encrypted saves whose password is a text of the game itself (THEATRHYTHM FINAL B
 definition names a file with `"key_file"`, and the app reads the password from `sdmc:/switch/TrophyNX/keys/<that file>`
 (one line). Without it the game shows "password file ... is missing" in its log (X) and only the play-time
 achievements count. In the Save Lab, paste the password in *Captures → Encrypted saves*; it stays in your browser.
-To get it without a PC: dump the game's `global-metadata.dat` (romfs `Data/Managed/Metadata/`) with nxdumptool and
-leave it in `sdmc:/nxdt_rd/` (or copy it to `sdmc:/switch/TrophyNX/keys/`): the app finds the password in it and
+Step by step for beginners: [Getting game files from your Switch](dumping-guide.md). In short, without a PC: dump the game's `global-metadata.dat` (romfs `Data/Managed/Metadata/`) with nxdumptool and
+leave it where nxdumptool saves it (`sdmc:/nxdumptool/...`), or copy it to `sdmc:/switch/TrophyNX/keys/`: the app finds the password in it and
 writes the key file itself. The Save Lab can do the same (*Find it in global-metadata.dat*). Details:
 [tools/theatrhythm/README.md](../tools/theatrhythm/README.md).
 

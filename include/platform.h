@@ -81,6 +81,8 @@ namespace plat {
 
 bool readFile(const std::string& path, std::vector<uint8_t>& out);
 void listFilesRecursive(const std::string& root, const std::string& rel, std::vector<std::pair<std::string, uint64_t>>& out, int depth = 0);
+// Full paths of the files called `name` under dir (up to 16 folders deep, at most 16 results).
+void findFilesNamed(const std::string& dir, const std::string& name, std::vector<std::string>& out, int depth = 0);
 bool isCleanText(const std::string& s);   // valid UTF-8, no control characters
 bool writeFile(const std::string& path, const std::string& data);
 void makeDirs(const std::string& path);

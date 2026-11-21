@@ -21,6 +21,8 @@ No game file is included here: the script edits your copy, and you need your own
 
 ## What you need
 
+New to dumping? Follow [the beginner guide](../../docs/dumping-guide.md) first (Step 3).
+
 - Your DELTARUNE dump (title `0100A0D022A68000`, the `romfs` folder with `chapter1_switch` … `chapter4_switch`), e.g. dumped
   with nxdumptool from your own cartridge or installed game. Use the **same game version** as the one on your console
   (base game + update): after a game update, dump and patch again.
