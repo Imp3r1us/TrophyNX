@@ -85,6 +85,25 @@ void listFilesRecursive(const std::string& root, const std::string& rel, std::ve
     }
 }
 
+void findFilesNamed(const std::string& dir, const std::string& name, std::vector<std::string>& out, int depth) {
+    if (depth > 16 || out.size() >= 16) return;
+    DIR* d = opendir(dir.c_str());
+    if (!d) return;
+    std::vector<std::string> names;
+    while (struct dirent* e = readdir(d)) {
+        std::string n = e->d_name;
+        if (n != "." && n != "..") names.push_back(n);
+    }
+    closedir(d);
+    for (const std::string& n : names) {
+        std::string p = dir + "/" + n;
+        struct stat st;
+        if (stat(p.c_str(), &st) != 0) continue;
+        if (S_ISDIR(st.st_mode)) findFilesNamed(p, name, out, depth + 1);
+        else if (n == name && out.size() < 16) out.push_back(p);
+    }
+}
+
 bool pathExists(const std::string& path) {
     struct stat st;
     return stat(path.c_str(), &st) == 0;

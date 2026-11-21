@@ -200,20 +200,25 @@ int main() {
         bad[0] ^= 1;
         check(!theatrhythmFindPassword(bad.data(), bad.size(), sv.data(), sv.size(), found), "not a metadata file: nothing found");
         // app: no key file, the metadata file in the keys folder -> found, saved, save read
-        const std::string tmp = "th_test_keys";
+        // app: no key file, the metadata file where nxdumptool puts it (10 folders deep) -> found, saved, save read
+        const std::string tmp = "th_test_keys", nx = "th_test_nxdumptool";
+        const std::string deep = nx + "/NCA FS/User/Extracted/THEATRHYTHM [010081B01777C000][v0][BASE]/Program #0/2/Data/Managed/Metadata";
         makeDirs(tmp);
-        { std::ofstream o(tmp + "/global-metadata.dat", std::ios::binary); o.write((const char*)meta.data(), (std::streamsize)meta.size()); }
+        makeDirs(deep);
+        { std::ofstream o(deep + "/global-metadata.dat", std::ios::binary); o.write((const char*)meta.data(), (std::streamsize)meta.size()); }
         remove((tmp + "/theatrhythm.txt").c_str());
         setSaveKeyDir(tmp);
-        setSaveKeySearchDirs({tmp});
+        setSaveKeySearchDirs({tmp, nx});
         Game k;
         applyGameDef(k, def);
         evaluateSave(k, src);
         std::vector<uint8_t> written = slurp(tmp + "/theatrhythm.txt");
-        check(k.saveStatus == SaveStatus::Ok && std::string(written.begin(), written.end()) == pw, "app: password found from the game's metadata and saved");
+        check(k.saveStatus == SaveStatus::Ok && std::string(written.begin(), written.end()) == pw, "app: password found in nxdumptool's folder and saved");
         remove((tmp + "/theatrhythm.txt").c_str());
-        remove((tmp + "/global-metadata.dat").c_str());
         rmdir(tmp.c_str());
+        remove((deep + "/global-metadata.dat").c_str());
+        for (std::string d = deep; d.size() > nx.size(); d = d.substr(0, d.find_last_of('/'))) rmdir(d.c_str());
+        rmdir(nx.c_str());
         setSaveKeyDir("");
         setSaveKeySearchDirs({});
     }

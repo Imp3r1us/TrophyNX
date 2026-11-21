@@ -50,7 +50,7 @@ void applyGameDef(Game& g, const GameDef& d);
 // Folder of the save passwords ("key_file" of a definition), e.g. sdmc:/switch/TrophyNX/keys. Empty = none.
 void setSaveKeyDir(const std::string& dir);
 // Where the app looks for a game's global-metadata.dat to find a missing password (recursively), e.g. the keys
-// folder and nxdumptool's output folder.
+// folder and nxdumptool's output folder (sdmc:/nxdumptool/NCA FS/User/Extracted/...).
 void setSaveKeySearchDirs(const std::vector<std::string>& dirs);
 
 // Reads the save of g (g.reader, g.saveFiles...) and sets a.value of its save-based achievements,

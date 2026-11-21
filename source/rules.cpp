@@ -474,14 +474,7 @@ void setSaveKeySearchDirs(const std::vector<std::string>& dirs) { g_metaDirs = d
 static std::string findKeyFromGame(Game& g, SaveSource& src, const std::string& keyPath) {
     if (g.reader != "theatrhythm") return "";
     std::vector<std::string> metas;
-    for (const std::string& root : g_metaDirs) {
-        std::vector<std::pair<std::string, uint64_t>> files;
-        listFilesRecursive(root + "/", "", files, 0);
-        for (auto& f : files) {
-            const std::string& n = f.first;
-            if (f.second < (64u << 20) && n.size() >= 19 && n.compare(n.size() - 19, 19, "global-metadata.dat") == 0) metas.push_back(root + "/" + n);
-        }
-    }
+    for (const std::string& root : g_metaDirs) findFilesNamed(root, "global-metadata.dat", metas);
     if (metas.empty()) return "";
     std::vector<uint8_t> save;
     for (const std::string& f : g.saveFiles) if (src.readAll(f, save)) break;

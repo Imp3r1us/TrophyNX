@@ -13,6 +13,8 @@ and remembers them on the SD card. A background module shows a popup when you un
 
 **Want achievements for a game that isn't supported?** See [Making your own achievement list](docs/custom-achievements.md)
 and the online **[Save Lab](https://imp3r1us.github.io/TrophyNX/)**.
+**THEATRHYTHM FINAL BAR LINE or DELTARUNE?** They need a file from your own copy of the game: see the beginner guide
+[Getting game files from your Switch](docs/dumping-guide.md).
 
 **Download:** [latest release](https://github.com/Imp3r1us/TrophyNX/releases/latest) — unzip `TrophyNX-sd.zip`
 at the root of the SD card. Then update from the app with ZL.
