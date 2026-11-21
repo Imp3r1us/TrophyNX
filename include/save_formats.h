@@ -60,7 +60,10 @@ bool inflateRaw(const uint8_t* in, size_t inSize, std::vector<uint8_t>& out, siz
 // other keys "<float>" "<bin>" "<array>" "<map>" "<ext>"; a repeated key keeps its first place and its last value;
 // integer-like keys 0..2^32-2 first in ascending order, like a JavaScript object), ext -1 (timestamp) -> whole
 // seconds since 1970, other ext -> "ext:<type>:<HEX>". `used` = bytes read (data may have trailing bytes).
-cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_t* used = nullptr);
+// keepPaths (live module, small heap): only the values these rule paths can reach are built, the rest is skipped
+// (array elements become null so indexes stay right; a node where a path ends is kept whole).
+cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_t* used = nullptr,
+                     const std::vector<std::string>* keepPaths = nullptr);
 // THEATRHYTHM FINAL BAR LINE backup.inf / musicBackup.inf / proficaBackup.inf:
 // [u32 LE length, PS4 only] + 32-byte header q0..q3 + AES-128-CBC (salt q0||q3, iv q2||q1,
 // key = PBKDF2-HMAC-SHA1(password, salt, 1000, 16)) of raw DEFLATE of MessagePack. The password is never
@@ -69,7 +72,11 @@ cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_
 // DifficultyRecordDictionary/<d>/PlayStyleRecordDictionary/<s>/{Highscore, ..., TotalPlayCount, TotalClearCount,
 // TotalFullChainClearCount, MaxDamage}, ProficaInfo/MyProfica, ProficaInfo/RivalProficaList[*].
 bool isTheatrhythm(const uint8_t* data, size_t size);   // size check only (the content needs the password)
-cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info = nullptr);
+// Finds the password in the game's own global-metadata.dat (romfs Data/Managed/Metadata, e.g. dumped with nxdumptool):
+// tries its string literals against one save file. false if none decrypts it.
+bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t* save, size_t saveSize, std::string& password, int* index = nullptr);
+cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info = nullptr,
+                         const std::vector<std::string>* keepPaths = nullptr, size_t memoryBudget = 0);
 
 class GvasDoc : public JsonDoc {
 public:
@@ -99,5 +106,7 @@ class TheatrhythmDoc : public JsonDoc {
 public:
     bool parse(std::vector<uint8_t>&& data);   // needs `password` set first
     std::string password;
+    std::vector<std::string> keepPaths;   // non-empty: build only what these paths reach (live module)
+    size_t memoryBudget = 0;              // > 0: give up cleanly (error) if decoding would need more bytes than this
     SaveFormatInfo info;
 };

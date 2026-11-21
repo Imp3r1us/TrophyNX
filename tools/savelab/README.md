@@ -57,7 +57,9 @@ bin → hex, float32 → 6 decimals, ext −1 (timestamp) → seconds since 1970
 **theatrhythm** (THEATRHYTHM FINAL BAR LINE `backup.inf`, `musicBackup.inf`, `proficaBackup.inf`): `[u32 length, PS4]` +
 32-byte header q0‖q1‖q2‖q3 + AES-128-CBC (salt q0‖q3, IV q2‖q1, key PBKDF2-HMAC-SHA1(password, salt, 1000, 16)),
 plaintext = raw DEFLATE of a MessagePack map. The password is typed in the page (*Captures → Encrypted saves*,
-localStorage `savelab-key-theatrhythm`), never bundled; without it the files show as “encrypted”. The game's
+localStorage `savelab-key-theatrhythm`), never bundled; without it the files show as “encrypted”. *Find it in
+global-metadata.dat* recovers it from the game's own file (`theatrhythmFindPassword`, same search as the app) and
+offers `theatrhythm.txt` for the SD card. The game's
 `[Key(n)]` records are labelled (`…/PlayStyleRecordDictionary/<style>/TotalPlayCount`, `ProficaInfo/MyProfica/…`).
 Tests: synthetic saves with a dummy password (`test/make_theatrhythm_fixtures.js` → `test/fixtures/theatrhythm/`).
 Same tree as the app on real saves: `test_formats --dump OUT --key local/theatrhythm.key <files>` then

@@ -171,6 +171,9 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
       <p class="mute small l-en">backup.inf / musicBackup.inf / proficaBackup.inf are AES-encrypted. The password is a text of the game's own files (global-metadata.dat) and is not shipped with the Save Lab: paste it here. It stays in this browser (localStorage) and is never sent anywhere.</p>
       <p class="mute small l-fr">backup.inf / musicBackup.inf / proficaBackup.inf sont chiffrés en AES. Le mot de passe est un texte des fichiers du jeu (global-metadata.dat), non fourni avec le Save Lab : collez-le ici. Il reste dans ce navigateur (localStorage) et n'est envoyé nulle part.</p>
       <div class="row"><input id="thKey" type="password" autocomplete="off" spellcheck="false" style="flex:1"><button class="btn sm fix" id="thKeySave"><span class="l-en">Save and reload</span><span class="l-fr">Enregistrer et recharger</span></button></div>
+      <p class="mute small l-en">Don't have it? Give the game's <b>global-metadata.dat</b> (romfs <code>Data/Managed/Metadata/</code>, e.g. dumped with nxdumptool) with a THEATRHYTHM capture loaded above: the password is found in it, saved here, and you can download <code>theatrhythm.txt</code> for <code>sdmc:/switch/TrophyNX/keys/</code>.</p>
+      <p class="mute small l-fr">Vous ne l'avez pas ? Donnez le <b>global-metadata.dat</b> du jeu (romfs <code>Data/Managed/Metadata/</code>, extrait par ex. avec nxdumptool) avec une capture THEATRHYTHM chargée ci-dessus : le mot de passe y est retrouvé, enregistré ici, et vous pouvez télécharger <code>theatrhythm.txt</code> pour <code>sdmc:/switch/TrophyNX/keys/</code>.</p>
+      <div class="row"><span class="btn sm file fix"><span class="l-en">Find it in global-metadata.dat</span><span class="l-fr">Le trouver dans global-metadata.dat</span><input type="file" id="thMeta"></span><span class="mute small" id="thMetaOut"></span></div>
     </details>
   </div>
 
@@ -352,6 +355,31 @@ const LOC = T('en-US', 'fr-FR');
 if (SL_LANG === 'fr') { $$('[data-fr]').forEach(el => { el.textContent = el.dataset.fr; }); $$('[data-fr-ph]').forEach(el => { el.placeholder = el.dataset.frPh; }); }
 $('#langBtn').textContent = SL_LANG === 'fr' ? 'EN' : 'FR';
 try { if (localStorage.getItem(TH_KEY)) $('#thKey').placeholder = T('(saved)', '(enregistré)'); } catch (e) { }
+$('#thMeta').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0];
+  ev.target.value = '';
+  if (!f) return;
+  const out = $('#thMetaOut');
+  const save = S.caps.flatMap(c => c.files).find(x => SaveFormats.isTheatrhythm(x.data, x.path));
+  if (!save) { out.textContent = T('Load a THEATRHYTHM capture first (backup.inf…).', 'Chargez d\'abord une capture THEATRHYTHM (backup.inf…).'); return; }
+  try {
+    const meta = new Uint8Array(await f.arrayBuffer());
+    const r = await SaveFormats.theatrhythmFindPassword(meta, save.data, (d, n) => { out.textContent = T('Searching… ', 'Recherche… ') + Math.round(100 * d / n) + ' %'; });
+    if (!r) { out.textContent = T('No string of this file decrypts the save (other game or version?).', 'Aucun texte de ce fichier ne déchiffre la sauvegarde (autre jeu ou version ?).'); return; }
+    try { localStorage.setItem(TH_KEY, r.password); } catch (e) { }
+    SaveFormats.setPassword('theatrhythm', r.password);
+    out.innerHTML = esc(T('Found (string #', 'Trouvé (texte n°') + r.index + T('), saved in this browser. ', '), enregistré dans ce navigateur. ')) + '<a href="#" id="thKeyDl">' + esc(T('Download theatrhythm.txt', 'Télécharger theatrhythm.txt')) + '</a> · <a href="#" id="thKeyReload">' + esc(T('Reload to decode', 'Recharger pour décoder')) + '</a>';
+    $('#thKeyDl').addEventListener('click', (e) => {
+      e.preventDefault();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([r.password], { type: 'text/plain' }));
+      a.download = 'theatrhythm.txt';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    });
+    $('#thKeyReload').addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
+  } catch (e) { out.textContent = T('Error: ', 'Erreur : ') + e.message; }
+});
 $('#thKeySave').addEventListener('click', () => { try { const v = $('#thKey').value.trim(); if (v) localStorage.setItem(TH_KEY, v); else localStorage.removeItem(TH_KEY); } catch (e) { } location.reload(); });
 $('#langBtn').addEventListener('click', () => { try { localStorage.setItem('savelab-lang', SL_LANG === 'fr' ? 'en' : 'fr'); } catch (e) { } location.reload(); });
 $('#clearAll').textContent = T('Clear all', 'Tout effacer');

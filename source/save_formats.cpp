@@ -1367,25 +1367,32 @@ struct Sha1 {
     }
 };
 
-void hmacSha1(const uint8_t* key, size_t klen, const uint8_t* msg, size_t mlen, uint8_t out[20]) {
+// The inner/outer HMAC states are computed once: 2 SHA-1 blocks per iteration (the password search runs
+// thousands of these on the console).
+void pbkdf2Sha1(const std::string& pw, const uint8_t* salt, size_t slen, int iter, uint8_t* out, size_t dkLen) {
     uint8_t k[64] = {0}, hk[20];
+    const uint8_t* key = (const uint8_t*)pw.data();
+    size_t klen = pw.size();
     if (klen > 64) { Sha1 s; s.update(key, klen); s.final(hk); key = hk; klen = 20; }
     memcpy(k, key, klen);
-    uint8_t ip[64], op[64], inner[20];
+    uint8_t ip[64], op[64];
     for (int i = 0; i < 64; i++) { ip[i] = k[i] ^ 0x36; op[i] = k[i] ^ 0x5c; }
-    Sha1 a; a.update(ip, 64); a.update(msg, mlen); a.final(inner);
-    Sha1 b; b.update(op, 64); b.update(inner, 20); b.final(out);
-}
-
-void pbkdf2Sha1(const std::string& pw, const uint8_t* salt, size_t slen, int iter, uint8_t* out, size_t dkLen) {
+    Sha1 ictx, octx;
+    ictx.update(ip, 64);
+    octx.update(op, 64);
+    auto hmac = [&](const uint8_t* msg, size_t mlen, uint8_t res[20]) {
+        uint8_t inner[20];
+        Sha1 a = ictx; a.update(msg, mlen); a.final(inner);
+        Sha1 b = octx; b.update(inner, 20); b.final(res);
+    };
     std::vector<uint8_t> s(salt, salt + slen);
     s.insert(s.end(), {0, 0, 0, 1});
     uint8_t u[20], t[20];
-    hmacSha1((const uint8_t*)pw.data(), pw.size(), s.data(), s.size(), u);
+    hmac(s.data(), s.size(), u);
     memcpy(t, u, 20);
     for (int i = 1; i < iter; i++) {
         uint8_t v[20];
-        hmacSha1((const uint8_t*)pw.data(), pw.size(), u, 20, v);
+        hmac(u, 20, v);
         memcpy(u, v, 20);
         for (int j = 0; j < 20; j++) t[j] ^= u[j];
     }
@@ -1455,18 +1462,35 @@ const uint8_t INF_ORDER[19] = {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 1
 
 struct Huff { uint16_t count[16]; uint16_t sym[320]; };
 
+// Output in a malloc'ed buffer: running out of memory (live module heap) is an error, never an abort.
 struct Inflater {
     const uint8_t* src; size_t len, pos = 0;
     uint32_t bitbuf = 0; int bitcnt = 0;
-    std::vector<uint8_t>& out; size_t maxOut;
+    uint8_t* ob = nullptr; size_t on = 0, ocap = 0, maxOut;
     std::string err;
-    Inflater(const uint8_t* s, size_t l, std::vector<uint8_t>& o, size_t m) : src(s), len(l), out(o), maxOut(m) {}
+    Inflater(const uint8_t* s, size_t l, size_t m, size_t initial) : src(s), len(l), maxOut(m) {
+        ocap = std::min(maxOut, std::max<size_t>(initial, 1024));
+        ob = (uint8_t*)malloc(ocap);
+        if (!ob) ocap = 0;
+    }
+    ~Inflater() { free(ob); }
+    uint8_t* release() { uint8_t* b = ob; ob = nullptr; return b; }
     bool fail(const char* m) { if (err.empty()) err = std::string("DEFLATE: ") + m; return false; }
     bool bits(int k, int& v) {
         while (bitcnt < k) { if (pos >= len) return fail("unexpected end"); bitbuf |= (uint32_t)src[pos++] << bitcnt; bitcnt += 8; }
         v = (int)(bitbuf & ((1u << k) - 1)); bitbuf >>= k; bitcnt -= k; return true;
     }
-    bool put(uint8_t b) { if (out.size() >= maxOut) return fail("output too large"); out.push_back(b); return true; }
+    bool put(uint8_t b) {
+        if (on == ocap) {
+            if (on >= maxOut) return fail("output too large");
+            size_t nc = std::min(maxOut, std::max<size_t>(ocap * 2, 1024));
+            uint8_t* nb = (uint8_t*)realloc(ob, nc);
+            if (!nb) return fail("out of memory");
+            ob = nb; ocap = nc;
+        }
+        ob[on++] = b;
+        return true;
+    }
     bool build(Huff& h, const uint8_t* lens, int n) {
         uint16_t offs[16] = {0};
         memset(h.count, 0, sizeof h.count);
@@ -1502,8 +1526,8 @@ struct Inflater {
             if (d >= 30) return fail("bad distance code");
             if (!bits(INF_DEXT[d], e)) return false;
             size_t dist = (size_t)INF_DBASE[d] + e;
-            if (dist > out.size()) return fail("distance too far back");
-            while (n--) if (!put(out[out.size() - dist])) return false;
+            if (dist > on) return fail("distance too far back");
+            while (n--) if (!put(ob[on - dist])) return false;
         }
     }
     bool run() {
@@ -1608,9 +1632,51 @@ void moveKey(cJSON* from, cJSON* to) {
     if (from->type & cJSON_StringIsConst) { to->type |= cJSON_StringIsConst; from->type &= ~cJSON_StringIsConst; }
 }
 
+// Optional pruning (live module): only the values that rule paths can reach are built; everything else is
+// skipped without allocating. State = the (path, atom) pairs still alive at a node; `full` = some path ends at or
+// above this node (it is kept whole: a rule may count its children). Arrays keep their length (skipped elements
+// become null) so that "[n]" indexes stay right; "[Field=value]" elements are kept whole.
+struct MpFilter {
+    std::vector<std::pair<uint16_t, uint16_t>> at;
+    bool full = false;
+    bool dead() const { return !full && at.empty(); }
+};
+typedef std::vector<std::vector<std::string>> MpPaths;
+
+void mpAdvance(const MpPaths& paths, MpFilter& out, size_t p, size_t i) {
+    if (i >= paths[p].size()) out.full = true;
+    else out.at.push_back({(uint16_t)p, (uint16_t)i});
+}
+MpFilter mpChildKey(const MpPaths& paths, const MpFilter& f, const std::string& key) {
+    MpFilter c;
+    for (auto& pi : f.at) {
+        const std::string& a = paths[pi.first][pi.second];
+        if (a[0] != '[') { if (a == key) mpAdvance(paths, c, pi.first, pi.second + 1u); }
+        else if (a == "[*]") mpAdvance(paths, c, pi.first, pi.second + 1u);   // every value of an object
+        if (c.full) break;
+    }
+    return c;
+}
+MpFilter mpChildIndex(const MpPaths& paths, const MpFilter& f, uint64_t j) {
+    MpFilter c;
+    for (auto& pi : f.at) {
+        const std::string& a = paths[pi.first][pi.second];
+        if (a[0] != '[') continue;
+        if (a == "[*]") mpAdvance(paths, c, pi.first, pi.second + 1u);
+        else if (a.find('=') != std::string::npos) c.full = true;   // [Field=value]: the whole element is needed
+        else if (strtoull(a.c_str() + 1, nullptr, 10) == j) mpAdvance(paths, c, pi.first, pi.second + 1u);
+        if (c.full) break;
+    }
+    return c;
+}
+
 struct MpReader {
     const uint8_t* b; size_t n, o = 0;
     std::string err;
+    // pruning (nullptr = whole tree) and field names given to [Key(n)] arrays while reading (pruned mode only)
+    const MpPaths* paths = nullptr;
+    const char* const* (*labeler)(const std::vector<std::string>& keys, uint64_t len) = nullptr;
+    std::vector<std::string> keys;   // keys from the root to the current node (pruned mode)
     MpReader(const uint8_t* d, size_t s) : b(d), n(s) {}
     bool fail(const std::string& m) { if (err.empty()) err = m; return false; }
     bool need(size_t k) {
@@ -1641,29 +1707,92 @@ struct MpReader {
         }
         return cJSON_CreateString(("ext:" + std::to_string((int)type) + ":" + hexUpper(p, k)).c_str());
     }
-    // One value. With `key`, the value is read as a map key: *key receives its text and a dummy node is returned.
-    cJSON* value(int depth, std::string* key);
-    cJSON* array(uint64_t c, int depth, std::string* key) {
-        if (!count(c)) return nullptr;
-        cJSON* a = cJSON_CreateArray();
-        for (uint64_t i = 0; i < c; i++) {
-            cJSON* v = value(depth + 1, nullptr);
-            if (!v) { cJSON_Delete(a); return nullptr; }
-            cJSON_AddItemToArray(a, v);
+    // Skips one value (no allocation).
+    bool skip(int depth) {
+        if (depth > MP_MAX_DEPTH) return fail("MessagePack: nested too deep");
+        if (!need(1)) return false;
+        uint8_t t = b[o++];
+        uint64_t c = 0, ty;
+        if (t <= 0x7f || t >= 0xe0 || t == 0xc0 || t == 0xc2 || t == 0xc3) return true;
+        if ((t >= 0x80 && t <= 0x8f) || t == 0xde || t == 0xdf) {
+            if (t >= 0x80 && t <= 0x8f) c = t & 15; else if (!be(t == 0xde ? 2 : 4, c)) return false;
+            if (!count(c)) return false;
+            for (uint64_t i = 0; i < 2 * c; i++) if (!skip(depth + 1)) return false;
+            return true;
         }
-        if (key) { cJSON_Delete(a); *key = "<array>"; return cJSON_CreateNull(); }
+        if ((t >= 0x90 && t <= 0x9f) || t == 0xdc || t == 0xdd) {
+            if (t >= 0x90 && t <= 0x9f) c = t & 15; else if (!be(t == 0xdc ? 2 : 4, c)) return false;
+            if (!count(c)) return false;
+            for (uint64_t i = 0; i < c; i++) if (!skip(depth + 1)) return false;
+            return true;
+        }
+        if (t >= 0xa0 && t <= 0xbf) c = t & 31;
+        else if (t >= 0xc4 && t <= 0xc6) { if (!be(1 << (t - 0xc4), c)) return false; }
+        else if (t >= 0xc7 && t <= 0xc9) { if (!be(1 << (t - 0xc7), c) || !be(1, ty)) return false; }
+        else if (t == 0xca) c = 4;
+        else if (t == 0xcb) c = 8;
+        else if (t >= 0xcc && t <= 0xcf) c = (uint64_t)1 << (t - 0xcc);
+        else if (t >= 0xd0 && t <= 0xd3) c = (uint64_t)1 << (t - 0xd0);
+        else if (t >= 0xd4 && t <= 0xd8) c = 1 + ((uint64_t)1 << (t - 0xd4));
+        else if (t >= 0xd9 && t <= 0xdb) { if (!be(1 << (t - 0xd9), c)) return false; }
+        else { char m[80]; snprintf(m, sizeof m, "MessagePack: invalid byte 0x%02X at 0x%zX", t, o - 1); return fail(m); }
+        if (!need((size_t)c)) return false;
+        o += (size_t)c;
+        return true;
+    }
+    // One value. With `key`, the value is read as a map key: *key receives its text and a dummy node is returned.
+    // `f`: pruning state of this node (nullptr = build everything below).
+    cJSON* value(int depth, std::string* key, const MpFilter* f = nullptr);
+    cJSON* array(uint64_t c, int depth, std::string* key, const MpFilter* f) {
+        if (!count(c)) return nullptr;
+        if (key) {   // an array used as a map key: read it, keep nothing
+            for (uint64_t i = 0; i < c; i++) if (!skip(depth + 1)) return nullptr;
+            *key = "<array>";
+            return cJSON_CreateNull();
+        }
+        const char* const* names = f && labeler ? labeler(keys, c) : nullptr;
+        cJSON* a = names ? cJSON_CreateObject() : cJSON_CreateArray();
+        if (!a) { fail("out of memory"); return nullptr; }
+        for (uint64_t i = 0; i < c; i++) {
+            MpFilter cf;
+            if (f) cf = names ? mpChildKey(*paths, *f, names[i]) : mpChildIndex(*paths, *f, i);
+            if (f && cf.dead()) {
+                if (!skip(depth + 1)) { cJSON_Delete(a); return nullptr; }
+                if (!names) cJSON_AddItemToArray(a, cJSON_CreateNull());
+                continue;
+            }
+            if (f) keys.push_back(names ? std::string(names[i]) : std::to_string(i));
+            cJSON* v = value(depth + 1, nullptr, f && !cf.full ? &cf : nullptr);
+            if (f) keys.pop_back();
+            if (!v) { cJSON_Delete(a); return nullptr; }
+            if (names) cJSON_AddItemToObjectCS(a, names[i], v);
+            else cJSON_AddItemToArray(a, v);
+        }
         return a;
     }
-    cJSON* map(uint64_t c, int depth, std::string* key) {
+    cJSON* map(uint64_t c, int depth, std::string* key, const MpFilter* f) {
         if (!count(c)) return nullptr;
+        if (key) {   // a map used as a map key: read it, keep nothing
+            for (uint64_t i = 0; i < 2 * c; i++) if (!skip(depth + 1)) return nullptr;
+            *key = "<map>";
+            return cJSON_CreateNull();
+        }
         cJSON* m = cJSON_CreateObject();
+        if (!m) { fail("out of memory"); return nullptr; }
         std::unordered_map<std::string, cJSON*> seen;
         for (uint64_t i = 0; i < c; i++) {
             std::string k;
             cJSON* kd = value(depth + 1, &k);
             if (!kd) { cJSON_Delete(m); return nullptr; }
             cJSON_Delete(kd);
-            cJSON* v = value(depth + 1, nullptr);
+            MpFilter cf;
+            if (f) {
+                cf = mpChildKey(*paths, *f, k);
+                if (cf.dead()) { if (!skip(depth + 1)) { cJSON_Delete(m); return nullptr; } continue; }
+                keys.push_back(k);
+            }
+            cJSON* v = value(depth + 1, nullptr, f && !cf.full ? &cf : nullptr);
+            if (f) keys.pop_back();
             if (!v) { cJSON_Delete(m); return nullptr; }
             auto it = seen.find(k);
             if (it != seen.end()) {   // repeated key: first place, last value (JavaScript object semantics)
@@ -1675,20 +1804,20 @@ struct MpReader {
                 seen[k] = v;
             }
         }
-        if (key) { cJSON_Delete(m); *key = "<map>"; return cJSON_CreateNull(); }
         jsKeyOrder(m);
         return m;
     }
 };
 
-cJSON* MpReader::value(int depth, std::string* key) {
+cJSON* MpReader::value(int depth, std::string* key, const MpFilter* f) {
     if (depth > MP_MAX_DEPTH) { fail("MessagePack: nested too deep"); return nullptr; }
     if (!need(1)) return nullptr;
     uint8_t t = b[o++];
     uint64_t c;
     // scalar: node, and its text when it is a map key
     auto ret = [&](cJSON* node, const std::string& asKey) -> cJSON* {
-        if (node && key) *key = asKey;
+        if (!node) { fail("out of memory"); return nullptr; }
+        if (key) *key = asKey;
         return node;
     };
     auto str = [&](uint64_t k) -> cJSON* {
@@ -1697,10 +1826,10 @@ cJSON* MpReader::value(int depth, std::string* key) {
         o += (size_t)k;
         return ret(cJSON_CreateString(s.c_str()), s);
     };
-    if (t <= 0x7f) return ret(cJSON_CreateNumber(t), std::to_string(t));
-    if (t >= 0xe0) return ret(cJSON_CreateNumber((int)t - 256), std::to_string((int)t - 256));
-    if (t >= 0x80 && t <= 0x8f) return map(t & 15, depth, key);
-    if (t >= 0x90 && t <= 0x9f) return array(t & 15, depth, key);
+    if (t <= 0x7f) return ret(cJSON_CreateNumber(t), key ? std::to_string(t) : std::string());
+    if (t >= 0xe0) return ret(cJSON_CreateNumber((int)t - 256), key ? std::to_string((int)t - 256) : std::string());
+    if (t >= 0x80 && t <= 0x8f) return map(t & 15, depth, key, f);
+    if (t >= 0x90 && t <= 0x9f) return array(t & 15, depth, key, f);
     if (t >= 0xa0 && t <= 0xbf) return str(t & 31);
     switch (t) {
         case 0xc0: return ret(cJSON_CreateNull(), "null");
@@ -1715,15 +1844,16 @@ cJSON* MpReader::value(int depth, std::string* key) {
         case 0xc7: case 0xc8: case 0xc9: {
             uint64_t ty;
             if (!be(1 << (t - 0xc7), c) || !be(1, ty)) return nullptr;
-            return ret(ext((int8_t)(uint8_t)ty, (size_t)c), "<ext>");
+            cJSON* e = ext((int8_t)(uint8_t)ty, (size_t)c);
+            return e ? ret(e, "<ext>") : nullptr;
         }
         case 0xca: {
             uint64_t v;
             if (!be(4, v)) return nullptr;
             uint32_t u = (uint32_t)v;
-            float f;
-            memcpy(&f, &u, 4);
-            double d = f;
+            float fl;
+            memcpy(&fl, &u, 4);
+            double d = fl;
             return ret(std::isfinite(d) ? cJSON_CreateNumber(Reader::fixed6(d)) : cJSON_CreateNull(), "<float>");
         }
         case 0xcb: {
@@ -1735,28 +1865,29 @@ cJSON* MpReader::value(int depth, std::string* key) {
         }
         case 0xcc: case 0xcd: case 0xce: case 0xcf: {
             if (!be(1 << (t - 0xcc), c)) return nullptr;
-            return ret(cJSON_CreateNumber((double)c), std::to_string(c));
+            return ret(cJSON_CreateNumber((double)c), key ? std::to_string(c) : std::string());
         }
         case 0xd0: case 0xd1: case 0xd2: case 0xd3: {
             int k = 1 << (t - 0xd0);
             if (!be(k, c)) return nullptr;
             int64_t v = k == 8 ? (int64_t)c : (int64_t)(c << (64 - 8 * k)) >> (64 - 8 * k);
-            return ret(cJSON_CreateNumber((double)v), std::to_string(v));
+            return ret(cJSON_CreateNumber((double)v), key ? std::to_string(v) : std::string());
         }
         case 0xd4: case 0xd5: case 0xd6: case 0xd7: case 0xd8: {
             uint64_t ty;
             if (!be(1, ty)) return nullptr;
-            return ret(ext((int8_t)(uint8_t)ty, (size_t)1 << (t - 0xd4)), "<ext>");
+            cJSON* e = ext((int8_t)(uint8_t)ty, (size_t)1 << (t - 0xd4));
+            return e ? ret(e, "<ext>") : nullptr;
         }
         case 0xd9: case 0xda: case 0xdb:
             if (!be(1 << (t - 0xd9), c)) return nullptr;
             return str(c);
         case 0xdc: case 0xdd:
             if (!be(t == 0xdc ? 2 : 4, c)) return nullptr;
-            return array(c, depth, key);
+            return array(c, depth, key, f);
         case 0xde: case 0xdf:
             if (!be(t == 0xde ? 2 : 4, c)) return nullptr;
-            return map(c, depth, key);
+            return map(c, depth, key, f);
     }
     char m[80];
     snprintf(m, sizeof m, "MessagePack: invalid byte 0x%02X at 0x%zX", t, o - 1);
@@ -1815,20 +1946,43 @@ const uint8_t* theatrhythmBody(const uint8_t* d, size_t n, size_t& bodyLen, bool
     return nullptr;
 }
 
+// Field names of the game's [Key(n)] arrays, by position in the tree (used while reading, pruned mode).
+const char* const* theatrhythmLabeler(const std::vector<std::string>& k, uint64_t len) {
+    if (len == 10 && k.size() == 7 && k[0] == "MusicInfo" && k[1] == "MusicRecordDictionary" && k[3] == "DifficultyRecordDictionary" &&
+        k[5] == "PlayStyleRecordDictionary") return TH_PLAYSTYLE;
+    if (len == 7 && k.size() == 2 && k[0] == "ProficaInfo" && k[1] == "MyProfica") return TH_MYPROFICA;
+    if (len == 28 && k.size() == 3 && k[0] == "ProficaInfo" && k[1] == "RivalProficaList") return TH_RIVAL;
+    return nullptr;
+}
+
+bool splitPaths(const std::vector<std::string>* in, MpPaths& out) {
+    if (!in) return false;
+    for (const std::string& p : *in) {
+        std::vector<std::string> a;
+        if (!treeSplitPath(p, a) || a.empty()) return false;   // unusable path: build everything (safe)
+        out.push_back(a);
+    }
+    return true;
+}
+
 }  // namespace
 
 bool inflateRaw(const uint8_t* in, size_t inSize, std::vector<uint8_t>& out, size_t maxOut, std::string* error) {
     out.clear();
-    out.reserve(std::min(maxOut, inSize * 4 + 1024));
-    Inflater f(in, inSize, out, maxOut);
+    Inflater f(in, inSize, maxOut, inSize * 4);
     bool ok = f.run();
     if (!ok && error) *error = f.err;
+    if (ok) out.assign(f.ob, f.ob + f.on);
     return ok;
 }
 
-cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_t* used) {
+cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_t* used, const std::vector<std::string>* keepPaths) {
     MpReader r(data, size);
-    cJSON* t = r.value(0, nullptr);
+    MpPaths paths;
+    MpFilter root;
+    bool pruned = splitPaths(keepPaths, paths);
+    if (pruned) { r.paths = &paths; for (size_t p = 0; p < paths.size(); p++) root.at.push_back({(uint16_t)p, 0}); }
+    cJSON* t = r.value(0, nullptr, pruned ? &root : nullptr);
     if (!t) { error = r.err.empty() ? "MessagePack: invalid data" : r.err; return nullptr; }
     if (used) *used = r.o;
     return t;
@@ -1840,7 +1994,8 @@ bool isTheatrhythm(const uint8_t* data, size_t size) {
     return theatrhythmBody(data, size, bl, ps4) != nullptr;
 }
 
-cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info) {
+cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info,
+                         const std::vector<std::string>* keepPaths, size_t memoryBudget) {
     size_t bl = 0;
     bool ps4 = false;
     const uint8_t* body = theatrhythmBody(data, size, bl, ps4);
@@ -1858,29 +2013,98 @@ cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& pa
     bool padOk = pad >= 1 && pad <= 16;
     for (int i = 16 - pad; padOk && i < 16; i++) if (tail[i] != pad) padOk = false;
     if (!padOk) { error = "wrong password or not a THEATRHYTHM save (bad padding)"; return nullptr; }
-    std::vector<uint8_t> pt(clen);
-    aes128CbcDecrypt(key, iv, ct, clen, pt.data());
-    std::vector<uint8_t> raw;
-    std::string e;
-    bool inflated = inflateRaw(pt.data(), clen - (size_t)pad, raw, 64u << 20, &e);
-    std::vector<uint8_t>().swap(pt);
-    if (!inflated) { error = "wrong password or damaged file (" + e + ")"; return nullptr; }
-    cJSON* t = msgpackToJson(raw.data(), raw.size(), error);
-    if (!t) return nullptr;
+    uint8_t* pt = (uint8_t*)malloc(clen);
+    if (!pt) { error = "out of memory"; return nullptr; }
+    aes128CbcDecrypt(key, iv, ct, clen, pt);
+    size_t maxOut = 64u << 20;
+    if (memoryBudget) maxOut = std::min(maxOut, memoryBudget > clen ? (memoryBudget - clen) * 2 / 7 : 0);   // room left for the tree (x2.5)
+    Inflater inf(pt, clen - (size_t)pad, maxOut, std::min(maxOut, clen * 80));   // ~x75 on real saves: one allocation
+    bool inflated = inf.run();
+    free(pt);
+    if (!inflated) {
+        error = inf.err == "DEFLATE: output too large" && memoryBudget ? "not enough memory (" + std::to_string(memoryBudget >> 10) + " KB free)"
+                                                                          : "wrong password or damaged file (" + inf.err + ")";
+        return nullptr;
+    }
+    if (memoryBudget && inf.on + inf.on * 5 / 2 + 65536 > memoryBudget) {   // decoded MessagePack + its (pruned) tree
+        error = "not enough memory (needs ~" + std::to_string((inf.on * 7 / 2 + 65536) >> 10) + " KB, " + std::to_string(memoryBudget >> 10) + " KB free)";
+        return nullptr;
+    }
+    MpReader r(inf.ob, inf.on);
+    MpPaths paths;
+    MpFilter root;
+    if (splitPaths(keepPaths, paths)) {
+        r.paths = &paths;
+        r.labeler = theatrhythmLabeler;
+        for (size_t p = 0; p < paths.size(); p++) root.at.push_back({(uint16_t)p, 0});
+    }
+    cJSON* t = r.value(0, nullptr, r.paths ? &root : nullptr);
+    if (!t) { error = r.err.empty() ? "MessagePack: invalid data" : r.err; return nullptr; }
     if (!cJSON_IsObject(t)) { cJSON_Delete(t); error = "MessagePack root is not a map"; return nullptr; }
     theatrhythmLabels(t);
     if (info) {
         cJSON* v = cJSON_GetObjectItemCaseSensitive(t, "Version");
-        info->summary = std::string("THEATRHYTHM save (") + (ps4 ? "PS4" : "Switch") + ", MessagePack " + std::to_string(raw.size() / 1024) +
-                        " KB" + (cJSON_IsString(v) ? std::string(", v") + v->valuestring : std::string()) + ")";
+        info->summary = std::string("THEATRHYTHM save (") + (ps4 ? "PS4" : "Switch") + ", MessagePack " + std::to_string(inf.on / 1024) +
+                        " KB" + (cJSON_IsString(v) ? std::string(", v") + v->valuestring : std::string()) + (r.paths ? ", rule values only" : "") + ")";
     }
     return t;
 }
 
 bool TheatrhythmDoc::parse(std::vector<uint8_t>&& data) {
-    cJSON* t = theatrhythmToJson(data.data(), data.size(), password, error, &info);
+    cJSON* t = theatrhythmToJson(data.data(), data.size(), password, error, &info, keepPaths.empty() ? nullptr : &keepPaths, memoryBudget);
     std::vector<uint8_t>().swap(data);
     if (!t) return false;
     adopt(t, false);
     return true;
+}
+
+// The password is a string literal of the game's global-metadata.dat (IL2CPP, version 24+ header: magic
+// 0xFAB11BAF, then stringLiteralOffset / stringLiteralSize / stringLiteralDataOffset). Its index changes with
+// game updates, so every literal is tried, nearest to the known indexes first (instant on known versions).
+bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t* save, size_t saveSize, std::string& password, int* index) {
+    if (metaSize < 32) return false;
+    auto rd32 = [&](size_t o) { uint32_t v; memcpy(&v, meta + o, 4); return v; };
+    if (rd32(0) != 0xFAB11BAFu) return false;
+    uint32_t lo = rd32(8), lsz = rd32(12), dO = rd32(16), dsz = rd32(20);
+    if ((uint64_t)lo + lsz > metaSize || (uint64_t)dO + dsz > metaSize) return false;
+    size_t bl = 0;
+    bool ps4 = false;
+    const uint8_t* body = theatrhythmBody(save, saveSize, bl, ps4);
+    if (!body) return false;
+    uint8_t salt[16], key[16], tail[16];
+    memcpy(salt, body, 8);
+    memcpy(salt + 8, body + 24, 8);
+    const uint8_t* ct = body + 32;
+    size_t clen = bl - 32;
+    int n = (int)(lsz / 8);
+    const int hints[] = {12425, 13610};   // Switch build of 2023+ / version 1.00 (rcostanza's converter)
+    std::vector<std::pair<int, int>> order;   // (distance to the nearest hint, index)
+    order.reserve((size_t)n);
+    for (int i = 0; i < n; i++) {
+        int d = 1 << 30;
+        for (int h : hints) d = std::min(d, std::abs(i - h));
+        order.push_back({d, i});
+    }
+    std::sort(order.begin(), order.end());
+    std::set<std::string> tried;
+    for (auto& o : order) {
+        uint32_t len = rd32(lo + 8u * (uint32_t)o.second), di = rd32(lo + 8u * (uint32_t)o.second + 4);
+        if (len < 4 || len > 128 || (uint64_t)di + len > dsz) continue;
+        std::string pw((const char*)meta + dO + di, len);
+        if (!tried.insert(pw).second) continue;
+        pbkdf2Sha1(pw, salt, 16, 1000, key, 16);
+        aes128CbcDecrypt(key, ct + clen - 32, ct + clen - 16, 16, tail);
+        int pad = tail[15];
+        bool ok = pad >= 1 && pad <= 16;
+        for (int i = 16 - pad; ok && i < 16; i++) if (tail[i] != pad) ok = false;
+        if (!ok) continue;
+        std::string err;
+        cJSON* t = theatrhythmToJson(save, saveSize, pw, err);   // confirm: the whole file decodes
+        if (!t) continue;
+        cJSON_Delete(t);
+        password = pw;
+        if (index) *index = o.second;
+        return true;
+    }
+    return false;
 }

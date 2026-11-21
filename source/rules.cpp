@@ -460,13 +460,53 @@ static size_t memoryFactor(const GvasDoc*) { return 16; }
 static size_t memoryFactor(const NrbfDoc*) { return 16; }
 static size_t memoryFactor(const SgbDoc*) { return 160; }   // LZ4 (x4..x40) then a Lua state tree
 static size_t memoryFactor(const DeltaruneDoc*) { return 3; }   // parsed JSON text (~1x) + a small tree (flags kept sparse)
-static size_t memoryFactor(const TheatrhythmDoc*) { return 1500; }   // AES + DEFLATE x75 (9.7 KB -> 727 KB of MessagePack) then a dense tree
+static size_t memoryFactor(const TheatrhythmDoc*) { return 4; }   // pre-check only: the reader checks its real need after decrypting
+// (live module: only the rule values are built, ~2.3 MB peak for musicBackup.inf instead of ~11 MB)
 
 // Password of an encrypted save ("key_file"), given to the readers that need one.
 static std::string g_keyDir;
+static std::vector<std::string> g_metaDirs;
 void setSaveKeyDir(const std::string& dir) { g_keyDir = dir; }
+void setSaveKeySearchDirs(const std::vector<std::string>& dirs) { g_metaDirs = dirs; }
+
+// App only: no password file yet -> look for the game's global-metadata.dat (dumped from the game with nxdumptool,
+// or copied to the keys folder), find the password in it with one of the save files, and save it as the key file.
+static std::string findKeyFromGame(Game& g, SaveSource& src, const std::string& keyPath) {
+    if (g.reader != "theatrhythm") return "";
+    std::vector<std::string> metas;
+    for (const std::string& root : g_metaDirs) {
+        std::vector<std::pair<std::string, uint64_t>> files;
+        listFilesRecursive(root + "/", "", files, 0);
+        for (auto& f : files) {
+            const std::string& n = f.first;
+            if (f.second < (64u << 20) && n.size() >= 19 && n.compare(n.size() - 19, 19, "global-metadata.dat") == 0) metas.push_back(root + "/" + n);
+        }
+    }
+    if (metas.empty()) return "";
+    std::vector<uint8_t> save;
+    for (const std::string& f : g.saveFiles) if (src.readAll(f, save)) break;
+    if (save.empty()) return "";
+    for (const std::string& m : metas) {
+        std::vector<uint8_t> meta;
+        if (!readFile(m, meta)) continue;
+        std::string pw;
+        int idx = -1;
+        if (!theatrhythmFindPassword(meta.data(), meta.size(), save.data(), save.size(), pw, &idx)) {
+            g.debug.push_back("Password search: " + m + " -> no string decrypts this save (other game or version?)");
+            continue;
+        }
+        makeDirs(g_keyDir);
+        bool saved = writeFile(keyPath, pw);
+        g.debug.push_back("Password found in " + m + " (string #" + std::to_string(idx) + ")" + (saved ? ", saved to " + keyPath : ", but " + keyPath + " could not be written"));
+        return pw;
+    }
+    return "";
+}
 template <class Doc> static void giveKey(Doc&, const std::string&) {}
 static void giveKey(TheatrhythmDoc& d, const std::string& k) { d.password = k; }
+// Live module (small heap): readers that can, build only what the rule paths reach, within `budget` bytes.
+template <class Doc> static void givePruning(Doc&, const std::vector<std::string>&, size_t) {}
+static void givePruning(TheatrhythmDoc& d, const std::vector<std::string>& paths, size_t budget) { d.keepPaths = paths; d.memoryBudget = budget; }
 
 // Best value of each achievement over the save files (several slots), shared by every reader.
 // Files are read and evaluated one at a time, so only one document is in memory.
@@ -519,17 +559,21 @@ static void evaluateTree(Game& g, SaveSource& src) {
         size_t lead = 0;
         while (lead < key.size() && blank(key[lead])) lead++;
         key = key.substr(lead);
+        if (key.empty() && !src.streaming() && !g_keyDir.empty()) key = findKeyFromGame(g, src, kp);
         if (key.empty()) {
             src.close();
             g.saveStatus = SaveStatus::Unreadable;
             g.debug.push_back("Encrypted save: password file " + kp + " is missing or empty.");
-            g.debug.push_back("  Put the game's save password in it (one line) to read this save; see the TrophyNX docs. Save skipped.");
+            g.debug.push_back("  Put the game's save password in it (one line), or the game's global-metadata.dat in the keys folder");
+            g.debug.push_back("  (TrophyNX then finds the password itself; see the TrophyNX docs). Save skipped.");
             return;
         }
-        g.debug.push_back("Save password: " + kp + " (" + std::to_string(key.size()) + " characters).");
+        g.debug.push_back("Save password: " + kp + " (" + std::to_string(key.size()) + " bytes).");
     }
     BestValues bv;
     bv.init(g.achs.size());
+    std::vector<std::string> rulePaths;
+    for (const Achievement& a : g.achs) if (isSaveRule(a.rule.type)) rulePaths.insert(rulePaths.end(), a.rule.paths.begin(), a.rule.paths.end());
     for (const std::string& f : g.saveFiles) {
         if (src.streaming()) {   // background module: don't start what can't fit in its heap
             uint64_t size = 0;
@@ -551,6 +595,7 @@ static void evaluateTree(Game& g, SaveSource& src) {
         }
         Doc d;
         giveKey(d, key);
+        if (src.streaming()) givePruning(d, rulePaths, src.memoryAvailable() > size ? src.memoryAvailable() - size : 0);
         if (!d.parse(std::move(buf))) {
             g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> NOT RECOGNISED (" + d.error + ")");
             continue;

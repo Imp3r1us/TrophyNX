@@ -42,13 +42,16 @@ Useful paths (trees are identical in the app and the Save Lab):
 ## The password (never in this repo)
 
 It is a string literal of the game's `global-metadata.dat` (romfs `Data/Managed/Metadata/`). The converter's index
-(#13610) is for v1.00; in the current Switch build it is **#12425** (62 characters). The index moves with updates, so:
+(#13610) is for v1.00; in the current Switch build it is **#12425** (62 bytes of UTF-8, not plain ASCII). The index moves with updates, so:
 
 ```
 python3 tools/theatrhythm/find_password.py <romfs>/Data/Managed/Metadata/global-metadata.dat <save>/backup.inf local/theatrhythm.key
 ```
 
 tries every literal against your save and writes the one that decrypts it (prints only index and length).
+Easier, no PC tools: dump `global-metadata.dat` with nxdumptool on the console; TrophyNX finds the password itself
+when it sees that file in `sdmc:/switch/TrophyNX/keys/` or under `sdmc:/nxdt_rd/`, or use the Save Lab button
+(*Captures → Encrypted saves → Find it in global-metadata.dat*).
 `local/` is git-ignored. Then:
 
 - **console**: copy it to `sdmc:/switch/TrophyNX/keys/theatrhythm.txt` (one line). The definition says

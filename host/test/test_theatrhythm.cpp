@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iterator>
 #include <map>
+#include <unistd.h>
 
 static int fails = 0;
 static void check(bool c, const char* m) { printf("%s %s\n", c ? "ok  " : "FAIL", m); if (!c) fails++; }
@@ -118,14 +119,33 @@ int main() {
     check(str1(ed, "nul") == "a" && str1(ed, "bin") == "0001ABFF" && one(ed, "f32") == 0.1 && q(ed, "nan")[0].kind == BymlValue::Null && one(ed, "ts8") == 1700000001 &&
           str1(ed, "ext") == "ext:7:DEAD" && one(ed, "dup") == 2 && one(ed, "__proto__/polluted") == 1, "MessagePack values: NUL, bin, float, non-finite, ext, duplicates");
 
+    // ---- live-module mode: only the rule values, within a memory budget
+    {
+        std::vector<std::string> keep = {"MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount",
+                                         "MusicInfo/MusicRecordDictionary/160000005/DifficultyRecordDictionary/1/PlayStyleRecordDictionary/0/CriticalBarZones[1]"};
+        TheatrhythmDoc p;
+        p.password = pw;
+        p.keepPaths = keep;
+        p.memoryBudget = 1 << 20;
+        check(p.parse(slurp(FX + "musicBackup.inf")) && q(p, "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount").size() == 27 &&
+              one(p, "MusicInfo/MusicRecordDictionary/160000005/DifficultyRecordDictionary/1/PlayStyleRecordDictionary/0/TotalPlayCount") == 11 &&
+              one(p, "MusicInfo/MusicRecordDictionary/160000005/DifficultyRecordDictionary/1/PlayStyleRecordDictionary/0/CriticalBarZones[1]") == 0.05 &&
+              q(p, "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/Highscore").empty() &&
+              q(p, "MusicInfo/Version").empty(), "pruned: rule values kept (labelled, array indexes intact), the rest dropped");
+        TheatrhythmDoc small;
+        small.password = pw;
+        small.keepPaths = keep;
+        small.memoryBudget = 8 * 1024;
+        check(!small.parse(slurp(FX + "backup.inf")) && small.error.find("not enough memory") != std::string::npos, "budget too small: clean error");
+    }
     // ---- the definition, through evaluateSave (app path)
     {
         std::vector<uint8_t> text = slurp("romfs/games/010081B01777C000.json");
         text.push_back(0);
         GameDef def;
         std::string err;
-        check(parseGameDef((const char*)text.data(), def, err) && err.empty() && def.reader == "theatrhythm" && def.keyFile == "theatrhythm.txt" && !def.closeScan,
-              "definition: reader, key_file, close_scan false");
+        check(parseGameDef((const char*)text.data(), def, err) && err.empty() && def.reader == "theatrhythm" && def.keyFile == "theatrhythm.txt" && def.closeScan,
+              "definition: reader, key_file, scan on close");
         Game g;
         applyGameDef(g, def);
         DirSource src;
@@ -152,6 +172,47 @@ int main() {
         for (const char* w : want) if (!met[w]) { all = false; printf("     not met: %s\n", w); }
         check(all && !met["cards_1000"] && !met["quest_complete_20"] && !met["quest_complete_all"], "THEATRHYTHM rules (same results as the Save Lab)");
         setSaveKeyDir("");
+
+        // ---- password search in a global-metadata.dat (fake one: magic, literal table, literal data)
+        std::vector<std::string> lits = {"UnityEngine", "password", "abc", "Not the key either", pw, "zzzzzzzz"};
+        std::vector<uint8_t> meta(32, 0);
+        auto put32 = [&](size_t at, uint32_t v) { memcpy(&meta[at], &v, 4); };
+        std::string data;
+        std::vector<uint8_t> table;
+        for (const std::string& l : lits) {
+            uint32_t len = (uint32_t)l.size(), off = (uint32_t)data.size();
+            table.insert(table.end(), (uint8_t*)&len, (uint8_t*)&len + 4);
+            table.insert(table.end(), (uint8_t*)&off, (uint8_t*)&off + 4);
+            data += l;
+        }
+        put32(0, 0xFAB11BAF); put32(4, 29); put32(8, 32); put32(12, (uint32_t)table.size());
+        put32(16, 32 + (uint32_t)table.size()); put32(20, (uint32_t)data.size());
+        meta.insert(meta.end(), table.begin(), table.end());
+        meta.insert(meta.end(), data.begin(), data.end());
+        std::vector<uint8_t> sv = slurp(FX + "proficaBackup.inf");
+        std::string found;
+        int idx = -1;
+        check(theatrhythmFindPassword(meta.data(), meta.size(), sv.data(), sv.size(), found, &idx) && found == pw && idx == 4, "password found in global-metadata.dat");
+        std::vector<uint8_t> bad = meta;
+        bad[0] ^= 1;
+        check(!theatrhythmFindPassword(bad.data(), bad.size(), sv.data(), sv.size(), found), "not a metadata file: nothing found");
+        // app: no key file, the metadata file in the keys folder -> found, saved, save read
+        const std::string tmp = "th_test_keys";
+        makeDirs(tmp);
+        { std::ofstream o(tmp + "/global-metadata.dat", std::ios::binary); o.write((const char*)meta.data(), (std::streamsize)meta.size()); }
+        remove((tmp + "/theatrhythm.txt").c_str());
+        setSaveKeyDir(tmp);
+        setSaveKeySearchDirs({tmp});
+        Game k;
+        applyGameDef(k, def);
+        evaluateSave(k, src);
+        std::vector<uint8_t> written = slurp(tmp + "/theatrhythm.txt");
+        check(k.saveStatus == SaveStatus::Ok && std::string(written.begin(), written.end()) == pw, "app: password found from the game's metadata and saved");
+        remove((tmp + "/theatrhythm.txt").c_str());
+        remove((tmp + "/global-metadata.dat").c_str());
+        rmdir(tmp.c_str());
+        setSaveKeyDir("");
+        setSaveKeySearchDirs({});
     }
     printf(fails ? "%d FAILED\n" : "ALL PASSED\n", fails);
     return fails ? 1 : 0;
