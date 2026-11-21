@@ -119,7 +119,7 @@ ok(!E.identify(noise).xorKey, 'no XOR false positive on 7-bit noise');
   ok(one1(b, 'SeriesQuestInfo/WorldDictionary/50000003/Cleared') === true && E.queryByml(b, 'SeriesQuestInfo/WorldDictionary[*]/Completed').filter(Boolean).length === 11, 'int-keyed Dictionary -> object');
   ok(Object.keys(b.CharacterInfo.Characters['230000003'].AbilityData).join() === '240000229,4294967295', 'key order: integer-like keys, then 4294967295');
   const ps = mu.tree.MusicInfo.MusicRecordDictionary['160000005'].DifficultyRecordDictionary['1'].PlayStyleRecordDictionary['0'];
-  ok(ps.Highscore === 987654 && ps.TotalPlayCount === 11 && ps.TotalFullChainClearCount === 6 && ps.BestClearMark === 0 && ps.CriticalBarZones[1] === 0.05, 'PlayStyleRecord fields labelled');
+  ok(ps.Highscore === 9900000 && ps.TotalPlayCount === 11 && ps.TotalFullChainClearCount === 6 && ps.BestClearMark === 0 && ps.CriticalBarZones[1] === 0.05, 'PlayStyleRecord fields labelled');
   ok(Object.keys(mu.tree.MusicInfo.MusicRecordDictionary).join() === '160000000,160000001,160000005', 'music ids in ascending order');
   ok(one1(pr.tree, 'ProficaInfo/MyProfica/ProficaIllustID') === 150000031 && one1(pr.tree, 'ProficaInfo/MyProfica/LatestPlayedMusics[0]') === 160000005, 'MyProfica labelled');
   const ed = F.parseTheatrhythm(TH('edge.inf')).tree;
@@ -132,13 +132,15 @@ ok(!E.identify(noise).xorKey, 'no XOR false positive on 7-bit noise');
   // the definition, evaluated on the synthetic saves
   const defT = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../romfs/games/010081B01777C000.json'), 'utf8'));
   ok(!E.validate(defT).length && defT.reader === 'theatrhythm', 'THEATRHYTHM definition validates');
-  const rt = E.evaluate(defT, [{ path: 'backup.inf', data: TH('backup.inf') }, { path: 'musicBackup.inf', data: TH('musicBackup.inf') }]).results.filter(x => !x.skip);
+  const rt = E.evaluate(defT, [{ path: 'backup.inf', data: TH('backup.inf') }, { path: 'musicBackup.inf', data: TH('musicBackup.inf') }, { path: 'proficaBackup.inf', data: TH('proficaBackup.inf') }]).results.filter(x => !x.skip);
   const met = rt.filter(x => x.met).map(x => x.id);
   const notFound = rt.filter(x => /not found/.test(x.note || '')).map(x => x.id);
   ok(!notFound.length, 'every rule path exists in the synthetic saves' + (notFound.length ? ' (missing: ' + notFound + ')' : ''));
   ok(['first_perfect_chain', 'all_critical', 'ending', 'played_300', 'encore', 'chains_100', 'points_5b', 'items_100', 'abilities_1000', 'enemies_5000', 'lv99_x4', 'star9',
       'rhythmia_100k', 'cards_300', 'drops_1000', 'summonstones_30', 'quests_10', 'quest_complete_10', 'endless_20', 'top_hits_5'].every(i => met.includes(i)) &&
      !met.includes('cards_1000') && !met.includes('quest_complete_20'), 'THEATRHYTHM rules on the synthetic saves (met: ' + met.length + ')');
+  ok(['feat_first_summon', 'feat_played_200', 'feat_quests_5', 'feat_endless_chain_1500', 'feat_moogles', 'feat_score_expert'].every(i => met.includes(i)) &&
+     !['feat_airships', 'feat_score_basic', 'feat_score_supreme', 'feat_played_500', 'feat_proficard_edit', 'feat_star9_x4'].some(i => met.includes(i)), 'THEATRHYTHM feats on the synthetic saves');
   F.setPassword('theatrhythm', '');
 }
 

@@ -50,7 +50,7 @@ $(shell cp -f tools/savelab/index.html romfs/savelab.html)
 endif
 APP_TITLE	:=	TrophyNX
 APP_AUTHOR	:=	Imp3r1us
-APP_VERSION	:=	0.11.0
+APP_VERSION	:=	0.11.1
 
 #---------------------------------------------------------------------------------
 # options for code generation
