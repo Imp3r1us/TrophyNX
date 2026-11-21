@@ -137,11 +137,18 @@ When several save files are listed (slots), **the best one counts**.
 | .NET BinaryFormatter (many Unity games; the Save Lab detects it) | `nrbf` |
 | starts with `SGB1` (Supergiant Games: Hades) | `sgb` |
 | DELTARUNE `deltarune.sav` (JSON of the game's text files) | `deltarune` |
+| THEATRHYTHM FINAL BAR LINE `backup.inf` / `musicBackup.inf` (encrypted MessagePack) | `theatrhythm` + `"key_file": "theatrhythm.txt"` |
 | Nintendo BYML (`YB` / `BY` at the start or at 0x10) | `byml` |
 | anything else with values at fixed positions | `binary_le` (see the main README) |
 
 If the save is JSON scrambled with a repeating key (SIGNALIS does this), the Save Lab recovers the key: add it as
 `"xor_key": "..."`.
+
+Encrypted saves whose password is a text of the game itself (THEATRHYTHM FINAL BAR LINE) never ship it: the
+definition names a file with `"key_file"`, and the app reads the password from `sdmc:/switch/TrophyNX/keys/<that file>`
+(one line). Without it the game shows "password file ... is missing" in its log (X) and only the play-time
+achievements count. In the Save Lab, paste the password in *Captures → Encrypted saves*; it stays in your browser.
+How to get it: [tools/theatrhythm/README.md](../tools/theatrhythm/README.md).
 
 ### Point at a value (paths)
 

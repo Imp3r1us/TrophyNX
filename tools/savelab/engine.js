@@ -278,6 +278,18 @@ function identify(buf, path = '') {
       r.format = (gv ? T('Unreal save (GVAS)', 'Sauvegarde Unreal (GVAS)') : T('.NET data (NRBF)', 'Données .NET (NRBF)')) + T(' unreadable: ', ' illisible : ') + e.message;
     }
   }
+  if (!bh && !r.known && F.isTheatrhythm(buf, path)) {   // encrypted: needs the password typed in the page
+    let d = null;
+    try { d = F.parseTheatrhythm(buf); } catch (e) { r.treeError = e.message; }
+    if (d) {
+      r.known = r.reader = 'theatrhythm'; r.meta = d.meta;
+      r.format = T('THEATRHYTHM FINAL BAR LINE save (', 'Sauvegarde THEATRHYTHM FINAL BAR LINE (') + (d.meta.ps4 ? 'PS4' : 'Switch') + ', MessagePack ' + Math.round(d.meta.size / 1024) + ' KB, v' + d.meta.version + ')';
+      notes.push(T('AES-128-CBC + raw DEFLATE + MessagePack. Values identified by path (e.g. MusicStageInfo/TotalAbilityCount). App reader “theatrhythm”; the console needs the password in sdmc:/switch/TrophyNX/keys/theatrhythm.txt.', 'AES-128-CBC + DEFLATE brut + MessagePack. Valeurs identifiées par chemin (ex. MusicStageInfo/TotalAbilityCount). Lecteur « theatrhythm » de l\'app ; la console a besoin du mot de passe dans sdmc:/switch/TrophyNX/keys/theatrhythm.txt.'));
+    } else if (path) {
+      r.known = 'theatrhythm'; r.format = T('THEATRHYTHM FINAL BAR LINE save (encrypted)', 'Sauvegarde THEATRHYTHM FINAL BAR LINE (chiffrée)');
+      notes.push(T('Enter the save password (Theatrhythm field, step 1) to decode it: it is not bundled with the Save Lab.', 'Saisissez le mot de passe des sauvegardes (champ Theatrhythm, étape 1) pour la décoder : il n\'est pas fourni avec le Save Lab.'));
+    }
+  }
   if (!bh && !r.known && F.looksXorText(buf)) {
     let d = null;
     try { d = parseTree(buf); } catch (e) { d = null; }
@@ -465,6 +477,7 @@ const TREE_FORMATS = [
   { reader: 'nrbf', label: 'NRBF (.NET / Unity)', parse: (b) => F.parseNrbf(b) },
   { reader: 'sgb', label: 'Supergiant SGB1 (Hades)', parse: (b) => F.parseSgb(b) },
   { reader: 'deltarune', label: 'DELTARUNE (deltarune.sav)', parse: (b) => F.parseDeltarune(b) },
+  { reader: 'theatrhythm', label: 'THEATRHYTHM FINAL BAR LINE (AES + DEFLATE + MessagePack)', parse: (b) => F.parseTheatrhythm(b) },
   { reader: 'json', label: 'JSON', parse: parseJson },
 ];
 const TREE_READERS = TREE_FORMATS.map(f => f.reader);

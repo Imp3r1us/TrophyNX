@@ -66,6 +66,7 @@ struct Game {
     uint64_t fileSize = 0;              // binary_le: required file size (0 = any)
     std::string magic;                  // binary_le: required bytes at offset 0
     std::string xorKey;                 // tree readers: repeating-key XOR undone before parsing ("xor_key")
+    std::string keyFile;                // encrypted saves: password file in <data folder>/keys ("key_file")
     std::vector<Achievement> achs;
     SaveStatus saveStatus = SaveStatus::None;
     bool hasDefinition = false;

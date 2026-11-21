@@ -14,7 +14,8 @@ Step-by-step guide for players: [Making your own achievement list](../../docs/cu
 1. **Captures**: import several saves of the same game (files or JKSV .zip), in order, named after what you did
    in the game. A “control” capture (nothing done since the previous one) removes noise.
 2. **Structure**: recognised format (BotW/TotK/MK8D/Smash, BYML trees, JSON text saves of Unity games such as
-   Hollow Knight, Unreal Engine “GVAS” saves, .NET BinaryFormatter “NRBF” data of Unity games, repeating-key XOR),
+   Hollow Knight, Unreal Engine “GVAS” saves, .NET BinaryFormatter “NRBF” data of Unity games, repeating-key XOR,
+   THEATRHYTHM FINAL BAR LINE encrypted MessagePack saves once the password is entered),
    header, entropy (encrypted/compressed?), hash→value table, name dictionary (CRC32/Murmur3/FNV-1a), texts.
 3. **Differences**: every value that changes is classified (0→1 flag, counter, bit field, float, noise).
    Multiple selection → “count” / “sum” achievements; “Extend the series” finds the neighbouring flags of a collection.
@@ -45,3 +46,19 @@ A module turns a binary save into a tree (objects, lists, numbers, texts): every
 must produce **exactly** the same tree (checked by `test_formats.js` with `CPP_DUMP`).
 To add one: a `parseXxx(buf)` function in `formats.js` that returns `null` when the data isn't its format,
 an entry in `TREE_FORMATS` (`engine.js`), the matching C++ reader and a line in `evaluateSave`.
+
+`parseTree` is synchronous everywhere (differences, rules, ⚡ Auto), so a module cannot await WebCrypto or
+`DecompressionStream`: `formats.js` has small synchronous SHA-1 / PBKDF2 / AES-128-CBC / raw-inflate helpers
+(mirrored in `source/save_formats.cpp`) and a generic **MessagePack** decoder, `parseMsgpack(buf)` (C++:
+`msgpackToJson`), reusable by any game. Its tree: maps → objects (integer keys in decimal, listed first in
+ascending order exactly like a JavaScript object — the C++ side reorders the same way), arrays → lists,
+bin → hex, float32 → 6 decimals, ext −1 (timestamp) → seconds since 1970, other ext → `ext:<type>:<HEX>`.
+
+**theatrhythm** (THEATRHYTHM FINAL BAR LINE `backup.inf`, `musicBackup.inf`, `proficaBackup.inf`): `[u32 length, PS4]` +
+32-byte header q0‖q1‖q2‖q3 + AES-128-CBC (salt q0‖q3, IV q2‖q1, key PBKDF2-HMAC-SHA1(password, salt, 1000, 16)),
+plaintext = raw DEFLATE of a MessagePack map. The password is typed in the page (*Captures → Encrypted saves*,
+localStorage `savelab-key-theatrhythm`), never bundled; without it the files show as “encrypted”. The game's
+`[Key(n)]` records are labelled (`…/PlayStyleRecordDictionary/<style>/TotalPlayCount`, `ProficaInfo/MyProfica/…`).
+Tests: synthetic saves with a dummy password (`test/make_theatrhythm_fixtures.js` → `test/fixtures/theatrhythm/`).
+Same tree as the app on real saves: `test_formats --dump OUT --key local/theatrhythm.key <files>` then
+`CPP_DUMP=OUT THEATRHYTHM_KEY=local/theatrhythm.key node test/test_formats.js <files>`.

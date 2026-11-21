@@ -1,8 +1,10 @@
 // g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_formats.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_formats
-// /tmp/test_formats [--dump OUTDIR] [files...]
+// /tmp/test_formats [--dump OUTDIR] [--key PASSWORD_FILE] [files...]
 // Checks the "gvas" and "nrbf" readers on the Save Lab fixtures (tools/savelab/test/fixtures). With --dump, writes
 // each file's tree as OUTDIR/<file name>.json so that tools/savelab/test/test_formats.js can compare it with the
 // Save Lab's tree (CPP_DUMP=OUTDIR node tools/savelab/test/test_formats.js).
+// THEATRHYTHM saves (.inf) need the password: --key FILE (default: the fixtures' dummy one; the Save Lab side
+// takes the same file from THEATRHYTHM_KEY).
 #include "save_formats.h"
 #include "cJSON.h"
 #include <cstdio>
@@ -22,10 +24,11 @@ template <class Doc> static std::vector<BymlValue> q(const Doc& d, const char* p
 template <class Doc> static double one(const Doc& d, const char* p) { auto v = q(d, p); return v.size() == 1 ? v[0].num : -12345; }
 
 int main(int argc, char** argv) {
-    std::string dump;
+    std::string dump, keyFile = "tools/savelab/test/fixtures/theatrhythm/password.txt";
     std::vector<std::string> files;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--dump") && i + 1 < argc) dump = argv[++i];
+        else if (!strcmp(argv[i], "--key") && i + 1 < argc) keyFile = argv[++i];
         else files.push_back(argv[i]);
     }
     const std::string fx = "tools/savelab/test/fixtures/";
@@ -90,16 +93,24 @@ int main(int argc, char** argv) {
             check(v.size() == 1 && v[0].kind == BymlValue::String, "GVAS string stays a string");
         }
         const char* all[] = {"gvas/Slot1.sav", "gvas/assert_failed.sav", "gvas/tagcontainer.sav", "gvas/regression_01.bin", "gvas/vector2d.sav",
-                             "gvas/Options.sav", "nrbf/save0.dat", "nrbf/save1.dat", "nrbf/string.dat", "nrbf/list.dat"};
+                             "gvas/Options.sav", "nrbf/save0.dat", "nrbf/save1.dat", "nrbf/string.dat", "nrbf/list.dat",
+                             "theatrhythm/backup.inf", "theatrhythm/musicBackup.inf", "theatrhythm/proficaBackup.inf", "theatrhythm/edge.inf"};
         for (const char* f : all) files.push_back(fx + f);
         if (dump.empty()) files.clear();
+    }
+    std::string password;
+    {
+        std::vector<uint8_t> k = readFile(keyFile);
+        password.assign(k.begin(), k.end());
+        while (!password.empty() && (password.back() == '\n' || password.back() == '\r' || password.back() == ' ')) password.pop_back();
     }
     for (const std::string& f : files) {
         std::vector<uint8_t> d = readFile(f);
         std::string err;
         SaveFormatInfo info;
         cJSON* t = isGvas(d.data(), d.size()) ? gvasToJson(d.data(), d.size(), err, &info)
-                 : isNrbf(d.data(), d.size()) ? nrbfToJson(d.data(), d.size(), err, &info) : nullptr;
+                 : isNrbf(d.data(), d.size()) ? nrbfToJson(d.data(), d.size(), err, &info)
+                 : isTheatrhythm(d.data(), d.size()) ? theatrhythmToJson(d.data(), d.size(), password, err, &info) : nullptr;
         std::string name = f.substr(f.find_last_of('/') + 1);
         printf("     %s: %s\n", name.c_str(), t ? (info.summary + (info.skipped ? ", " + std::to_string(info.skipped) + " skipped" : "")).c_str() : ("ERROR " + err).c_str());
         if (t && !dump.empty()) {

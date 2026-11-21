@@ -32,3 +32,6 @@ samples/scan_bundle.json
 
 # copied from tools/savelab/index.html at build time (Wi-Fi share screen)
 romfs/savelab.html
+
+# local secrets (save passwords...): never commit
+local/

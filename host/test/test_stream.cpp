@@ -2,7 +2,7 @@
 // offset reads for binary_le, tree files skipped when too big. This test checks that it gives exactly
 // the same values as the app's whole-file mode.
 //   python3 host/test/gen_saves.py /tmp/r romfs/games    (synthetic saves)
-//   ./test_stream romfs/games /tmp/r/saves
+//   ./test_stream romfs/games /tmp/r/saves      (passwords of encrypted saves: /tmp/r/keys)
 #include "rules.h"
 #include <cstdio>
 #include <cstring>
@@ -48,6 +48,7 @@ int main(int argc, char** argv) {
     std::string errors;
     std::vector<std::string> loaded;
     loadGameDefs(argv[1], defs, errors, loaded);
+    setSaveKeyDir(std::string(argv[2]) + "/../keys");
     int fails = 0, games = 0, compared = 0, met = 0;
     for (auto& kv : defs) {
         Game full, st, tiny;
@@ -62,7 +63,7 @@ int main(int argc, char** argv) {
         evaluateSave(tiny, c);
         games++;
         bool tree = kv.second.reader == "json" || kv.second.reader == "byml" || kv.second.reader == "gvas" || kv.second.reader == "nrbf" || kv.second.reader == "sgb" ||
-                    kv.second.reader == "deltarune";
+                    kv.second.reader == "deltarune" || kv.second.reader == "theatrhythm";
         for (size_t i = 0; i < full.achs.size(); i++) {
             if (!isSaveRule(full.achs[i].rule.type)) continue;
             compared++;
