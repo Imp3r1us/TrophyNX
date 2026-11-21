@@ -1,0 +1,33 @@
+{
+ "commit": "8e4563082f5e533ba749b805de412261de68a810",
+ "date": "2026-11-21 10:57 UTC",
+ "message": "Merge pull request #12 from Imp3r1us/release-0.10.2",
+ "app_version": "0.10.2",
+ "module_version": "0.7.1",
+ "files": [
+  {
+   "path": "atmosphere/contents/420000000000AC01/exefs.nsp",
+   "asset": "sys-trophynx.nsp",
+   "size": 557150,
+   "sha256": "05ed982ea6cbda2c7ba64d0076ebb9b790a05ad7fa27f732dfef140712dae402"
+  },
+  {
+   "path": "atmosphere/contents/420000000000AC01/flags/boot2.flag",
+   "asset": "sys-trophynx-flags-boot2.flag",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "path": "atmosphere/contents/420000000000AC01/toolbox.json",
+   "asset": "sys-trophynx-toolbox.json",
+   "size": 92,
+   "sha256": "950061068b5fd9c554891f1e21538f2755dfd2c81073ef753fef0eadc9d7af49"
+  },
+  {
+   "path": "switch/TrophyNX.nro",
+   "asset": "TrophyNX.nro",
+   "size": 3215574,
+   "sha256": "07babdac8cb23a0953c43a480a5cc2be302ba9c81cbe25fec34761566aba0800"
+  }
+ ]
+}
