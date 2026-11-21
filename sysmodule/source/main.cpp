@@ -22,7 +22,7 @@
 #include "capture.h"
 #include "store.h"
 
-#define MODULE_VERSION "0.8.0"
+#define MODULE_VERSION "0.8.1"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {

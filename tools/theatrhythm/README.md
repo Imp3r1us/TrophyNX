@@ -95,6 +95,23 @@ Not tracked (10):
 | 999er | current stats are not saved (only `…GrownAmount`), the cap depends on the character table |
 | Grand Rhythmist, Ultimate Rhythmist | need the list of base-game songs (vs DX / DLC) and a per-song test across difficulties |
 
+## In-game feats: 19 more (`feat_*`)
+
+The game's own 100 feats ([list](https://www.thegamer.com/theatrhythm-final-bar-line-complete-feat-list/)). About 40 have the
+same condition as a trophy above, so they are not repeated. Added (19):
+first summon (`MusicStageInfo/TotalSummonCount`), ProfiCard edited (`proficaBackup.inf`: `ProficaInfo/MyProfica/EditedFlag`),
+24 h / 100 h played (TrophyNX play log), 200 / 500 Music Stages, one song 100 times, 300 Perfect Chains, 32 characters Lv99,
+4 characters Star Level 9 (assumes 9 is the top level), 5 / 20 Series Quest titles cleared, Perfect Chain streak of 1,500 in
+Endless World (`EndlessWorldUniqueInfo/BestFullChainContinuationCount`), every airship (15) and every moogle style (35) (counts
+of the save's entries: if some are DLC, they are needed too), 9,800,000+ on a Basic / Expert / Ultimate / Supreme score
+(best `Highscore` at difficulty 0 / 1 / 2 / 3).
+
+Not tracked: the 29 "Cleared first <series> song" feats and "Played a song from every Series Quest title" (the song → series
+table, `Table/MusicTable`, is in the Addressables bundles, which this game encrypts: `AssetBundleCryptProvider`), "Played /
+Cleared every song", "Filled 10 / 100 Critical Charts", the 5 "every rarity of ... CollectaCards" (card table), the 7 stat
+feats (current stats are not saved) and the 4 per-song feats (abilities, enemies, summons, summon damage in one song).
+With the score feats the live module keeps `Highscore` too: ~2.5 MB peak for musicBackup.inf.
+
 ## Files
 
 - `decrypt_saves.py`: saves → JSON (pure Python, used to confirm the format on real captures)

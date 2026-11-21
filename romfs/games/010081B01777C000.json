@@ -5,9 +5,10 @@
  "key_file": "theatrhythm.txt",
  "save_files": [
   "backup.inf",
-  "musicBackup.inf"
+  "musicBackup.inf",
+  "proficaBackup.inf"
  ],
- "_note": "The 42 PS4 trophies, read from the encrypted save (reader \"theatrhythm\": AES-128-CBC + raw DEFLATE + MessagePack). The save password is not shipped: put it in sdmc:/switch/TrophyNX/keys/theatrhythm.txt (see tools/theatrhythm/README.md). Scan on close (popups): the live module builds only the values the rules use (~2.3 MB peak instead of ~11 MB). Not tracked: THEATRHYTHM Maestro (platinum: no rule type for \"every other\"), A Musical Journey Begins (which world is the THEATRHYTHM series is unknown), Overflowing Gold (a filled Critical Chart is not stored as such), Show of Finesse, Unstoppable Force, Summon Tamer and Summon's True Power (per-song / per-attack values, not saved), 999er (current stats are not saved, only growth), Grand Rhythmist and Ultimate Rhythmist (need the list of base-game songs and a per-song test across difficulties).",
+ "_note": "The 42 PS4 trophies, read from the encrypted save (reader \"theatrhythm\": AES-128-CBC + raw DEFLATE + MessagePack). The save password is not shipped: put it in sdmc:/switch/TrophyNX/keys/theatrhythm.txt (see tools/theatrhythm/README.md). Scan on close (popups): the live module builds only the values the rules use (~2.3 MB peak instead of ~11 MB). Not tracked: THEATRHYTHM Maestro (platinum: no rule type for \"every other\"), A Musical Journey Begins (which world is the THEATRHYTHM series is unknown), Overflowing Gold (a filled Critical Chart is not stored as such), Show of Finesse, Unstoppable Force, Summon Tamer and Summon's True Power (per-song / per-attack values, not saved), 999er (current stats are not saved, only growth), Grand Rhythmist and Ultimate Rhythmist (need the list of base-game songs and a per-song test across difficulties). Feats (in-game achievements, ids feat_*): the ones that are not already a trophy. Not tracked: the 29 \"Cleared first <series> song\" feats and \"Played a song from every Series Quest title\" (which song belongs to which series is in the game's MusicTable, inside encrypted asset bundles), \"Played/Cleared every song\", \"Filled 10/100 Critical Charts\", the 5 \"every rarity of ... CollectaCards\" feats (card table), the 7 stat feats (current stats are not saved) and the 4 per-song feats.",
  "achievements": [
   {
    "id": "first_series_clear",
@@ -452,6 +453,240 @@
     "target": 5
    },
    "_source": "MusicSelectInfo/PickupFullChainCount (Top Hits = \"Pickup\"; reset each day): unlocks if a scan sees 5 before the day changes"
+  },
+  {
+   "id": "feat_first_summon",
+   "name": "Called forth first summon",
+   "desc": "In-game feat: Called forth first summon!",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "MusicStageInfo/TotalSummonCount",
+    "target": 1
+   },
+   "_source": "MusicStageInfo/TotalSummonCount"
+  },
+  {
+   "id": "feat_proficard_edit",
+   "name": "Edited ProfiCard for the first time",
+   "desc": "In-game feat: Edited ProfiCard for the first time!",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "ProficaInfo/MyProfica/EditedFlag",
+    "target": 1
+   },
+   "_source": "proficaBackup.inf: ProficaInfo/MyProfica/EditedFlag"
+  },
+  {
+   "id": "feat_hours_24",
+   "name": "Played for 24 hours",
+   "desc": "In-game feat: Played for 24 hours!",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 24
+   },
+   "_source": "TrophyNX play log"
+  },
+  {
+   "id": "feat_hours_100",
+   "name": "Played for 100 hours",
+   "desc": "In-game feat: Played for 100 hours!",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 100
+   },
+   "_source": "TrophyNX play log"
+  },
+  {
+   "id": "feat_played_200",
+   "name": "Played 200 Music Stages",
+   "desc": "In-game feat: Played 200 Music Stages!",
+   "points": 10,
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount"
+    ],
+    "target": 200
+   },
+   "_source": "sum of TotalPlayCount of every song record"
+  },
+  {
+   "id": "feat_played_500",
+   "name": "Played 500 Music Stages",
+   "desc": "In-game feat: Played 500 Music Stages!",
+   "points": 25,
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount"
+    ],
+    "target": 500
+   },
+   "_source": "same counter"
+  },
+  {
+   "id": "feat_song_100",
+   "name": "Played one song 100 times",
+   "desc": "In-game feat: Played one song 100 times!",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount",
+    "target": 100
+   },
+   "_source": "largest TotalPlayCount of one song at one difficulty and style (may unlock later than in the game)"
+  },
+  {
+   "id": "feat_chains_300",
+   "name": "Achieved 300 Perfect Chains",
+   "desc": "In-game feat: Achieved 300 Perfect Chains!",
+   "points": 25,
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalFullChainClearCount"
+    ],
+    "target": 300
+   },
+   "_source": "sum of TotalFullChainClearCount"
+  },
+  {
+   "id": "feat_lv99_x32",
+   "name": "Thirty-two characters reached Lv99",
+   "desc": "In-game feat: Thirty-two characters reached Lv99!",
+   "points": 50,
+   "rule": {
+    "type": "count",
+    "path": "CharacterInfo/Characters[*]/Level",
+    "target": 32,
+    "equals": 99
+   },
+   "_source": "characters whose Level is 99"
+  },
+  {
+   "id": "feat_star9_x4",
+   "name": "Four characters reached Star Level 9",
+   "desc": "In-game feat: Four characters reached Star Level 9!",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "CharacterInfo/Characters[*]/StarLevel",
+    "target": 4,
+    "equals": 9
+   },
+   "_source": "characters whose StarLevel is 9 (assumes 9 is the highest Star Level)"
+  },
+  {
+   "id": "feat_quests_5",
+   "name": "Cleared 5 Series Quest titles",
+   "desc": "In-game feat: Cleared 5 Series Quest titles!",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "SeriesQuestInfo/WorldDictionary[*]/Cleared",
+    "target": 5
+   },
+   "_source": "Series Quest worlds with Cleared = true"
+  },
+  {
+   "id": "feat_quests_20",
+   "name": "Cleared 20 Series Quest titles",
+   "desc": "In-game feat: Cleared 20 Series Quest titles!",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "SeriesQuestInfo/WorldDictionary[*]/Cleared",
+    "target": 20
+   },
+   "_source": "same flags"
+  },
+  {
+   "id": "feat_endless_chain_1500",
+   "name": "Achieved a Perfect Chain streak of 1,500 in Endless World",
+   "desc": "In-game feat: Achieved a Perfect Chain streak of 1,500 in Endless World!",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "SeriesQuestInfo/EndlessWorldUniqueInfo/BestFullChainContinuationCount",
+    "target": 1500
+   },
+   "_source": "SeriesQuestInfo/EndlessWorldUniqueInfo/BestFullChainContinuationCount"
+  },
+  {
+   "id": "feat_airships",
+   "name": "Acquired every airship",
+   "desc": "In-game feat: Acquired every airship!",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "AirShipInfo/AirShips[*]/UnlockedFlag",
+    "target": 15
+   },
+   "_source": "the 15 airships of the save with UnlockedFlag (if some are DLC, it needs those too)"
+  },
+  {
+   "id": "feat_moogles",
+   "name": "Acquired every moogle style",
+   "desc": "In-game feat: Acquired every moogle style!",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "MyMoogleInfo/MyMoogles[*]/UnlockedFlag",
+    "target": 35
+   },
+   "_source": "the 35 moogle styles of the save with UnlockedFlag (if some are DLC, it needs those too)"
+  },
+  {
+   "id": "feat_score_basic",
+   "name": "Achieved 9800000 points or higher on a Basic Score",
+   "desc": "In-game feat: Achieved 9800000 points or higher on a Basic Score!",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary/0/PlayStyleRecordDictionary[*]/Highscore",
+    "target": 9800000
+   },
+   "_source": "best Highscore of any song at difficulty 0 (Basic), any play style"
+  },
+  {
+   "id": "feat_score_expert",
+   "name": "Achieved 9800000 points or higher on an Expert Score",
+   "desc": "In-game feat: Achieved 9800000 points or higher on an Expert Score!",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary/1/PlayStyleRecordDictionary[*]/Highscore",
+    "target": 9800000
+   },
+   "_source": "best Highscore of any song at difficulty 1 (Expert), any play style"
+  },
+  {
+   "id": "feat_score_ultimate",
+   "name": "Achieved 9800000 points or higher on an Ultimate Score",
+   "desc": "In-game feat: Achieved 9800000 points or higher on an Ultimate Score!",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary/2/PlayStyleRecordDictionary[*]/Highscore",
+    "target": 9800000
+   },
+   "_source": "best Highscore of any song at difficulty 2 (Ultimate), any play style"
+  },
+  {
+   "id": "feat_score_supreme",
+   "name": "Achieved 9800000 points or higher on a Supreme Score",
+   "desc": "In-game feat: Achieved 9800000 points or higher on a Supreme Score!",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary/3/PlayStyleRecordDictionary[*]/Highscore",
+    "target": 9800000
+   },
+   "_source": "best Highscore of any song at difficulty 3 (Supreme), any play style"
   },
   {
    "id": "t_launch",

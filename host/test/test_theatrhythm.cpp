@@ -111,7 +111,7 @@ int main() {
     check(one(bk, "SeriesQuestInfo/WorldDictionary/50000003/Cleared") == 1 && q(bk, "SeriesQuestInfo/WorldDictionary[*]/Completed").size() == 13, "int-keyed Dictionary -> object");
     check(one(mu, "MusicInfo/MusicRecordDictionary/160000005/DifficultyRecordDictionary/1/PlayStyleRecordDictionary/0/TotalPlayCount") == 11 &&
           one(mu, "MusicInfo/MusicRecordDictionary/160000005/DifficultyRecordDictionary/1/PlayStyleRecordDictionary/0/CriticalBarZones[1]") == 0.05 &&
-          q(mu, "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalFullChainClearCount").size() == 27,
+          q(mu, "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalFullChainClearCount").size() == 30,
           "PlayStyleRecord fields labelled");
     check(one(pr, "ProficaInfo/MyProfica/ProficaIllustID") == 150000031 && str1(pr, "ProficaInfo/MyProfica/MyGuid") == "2f911e53-c980-40ff-8394-4047f5b8cf27", "MyProfica labelled");
     check(str1(ed, "4294967295") == "max u32 key" && str1(ed, "12345678901234567890") == "u64 key" && str1(ed, "-1") == "neg key" && str1(ed, "null") == "nil key" &&
@@ -127,7 +127,7 @@ int main() {
         p.password = pw;
         p.keepPaths = keep;
         p.memoryBudget = 1 << 20;
-        check(p.parse(slurp(FX + "musicBackup.inf")) && q(p, "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount").size() == 27 &&
+        check(p.parse(slurp(FX + "musicBackup.inf")) && q(p, "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount").size() == 30 &&
               one(p, "MusicInfo/MusicRecordDictionary/160000005/DifficultyRecordDictionary/1/PlayStyleRecordDictionary/0/TotalPlayCount") == 11 &&
               one(p, "MusicInfo/MusicRecordDictionary/160000005/DifficultyRecordDictionary/1/PlayStyleRecordDictionary/0/CriticalBarZones[1]") == 0.05 &&
               q(p, "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/Highscore").empty() &&
@@ -171,6 +171,9 @@ int main() {
         bool all = true;
         for (const char* w : want) if (!met[w]) { all = false; printf("     not met: %s\n", w); }
         check(all && !met["cards_1000"] && !met["quest_complete_20"] && !met["quest_complete_all"], "THEATRHYTHM rules (same results as the Save Lab)");
+        check(met["feat_first_summon"] && met["feat_played_200"] && met["feat_quests_5"] && met["feat_endless_chain_1500"] && met["feat_moogles"] &&
+              met["feat_score_expert"] && !met["feat_airships"] && !met["feat_score_basic"] && !met["feat_score_supreme"] && !met["feat_played_500"] &&
+              !met["feat_proficard_edit"] && !met["feat_star9_x4"], "THEATRHYTHM feats (same results as the Save Lab)");
         setSaveKeyDir("");
 
         // ---- password search in a global-metadata.dat (fake one: magic, literal table, literal data)

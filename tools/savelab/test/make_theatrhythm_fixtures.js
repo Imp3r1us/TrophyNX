@@ -73,10 +73,12 @@ const backup = {
   RhythpoInfo: { TotalRhythpoValue: 123456, AlreadyRewardRhythpoValue: 0, LastRewardID: 4294967295, EverydayPlayBonus: { Days: 3, LastDateTime: MIN_DATE }, Version: '1.00' },
   MusicSelectInfo: { LastSelectedMusicID: 4294967295, PickupLastLottedDateUniversal: ts12(1795262771, 500), TotalPickupClearCount: 12, PickupFullChainCount: 5, Version: '1.00' },
   SeriesQuestInfo: { KeyCount: 2, WorldDictionary: M([...Array.from({ length: 12 }, (_, i) => [50000000 + i, world(true, i < 11)]), [50000029, world(false, false)]]),
-    EndlessWorldUniqueInfo: { BestStageClearCount: 21, PickedupFlags: M([[70000002, true], [70000001, false]]) },
+    EndlessWorldUniqueInfo: { BestStageClearCount: 21, BestFullChainContinuationCount: 1600, PickedupFlags: M([[70000002, true], [70000001, false]]) },
     LookedEndingWorldUnlock: true, PlayedStaffCredit: true, TotalPlayTime: 33.5, TotalMSClearCount: 300, Version: '1.00' },
   CharacterInfo: { Characters: M([230000003, 230000004, 230000005, 230000006, 230000007].map((id, i) => [id, { UnlockedFlag: true, Level: i < 4 ? 99 : 50, StarLevel: i === 0 ? 9 : 2,
     AbilityData: M([[240000229, { UnlockedFlag: true }], [4294967295, { UnlockedFlag: false }]]), LastSetAbilities: [4294967295, 4294967295, 4294967295], UsedCount: 7 }])), Version: '1.00' },
+  AirShipInfo: { AirShips: M(Array.from({ length: 15 }, (_, i) => [370000000 + i, { UnlockedFlag: i !== 3, CursorSelectedFlag: false }])), Version: '1.00' },
+  MyMoogleInfo: { MyMoogles: M(Array.from({ length: 35 }, (_, i) => [360000000 + i, { UnlockedFlag: true, CursorSelectedFlag: false }])), Version: '1.00' },
   SummonStoneInfo: { TotalGetCount: 31, GetCountFromRivalProfica: 1, Version: '1.00', SummonStones: [] },
   ItemInfo: { Items: M(Array.from({ length: 4 }, (_, i) => [270000000 + i, { PossessionNumber: 1, ObtainedFlag: true, TotalUseCount: 30 }])), Version: '1.00' },
   CollecaInfo: { Collecas: M(Array.from({ length: 320 }, (_, i) => [300000000 + i, { ObtainedFlag: i % 16 !== 0, PossessionNumber: 1, CursorSelectedFlag: false }])), Version: '1.00' },
@@ -84,7 +86,7 @@ const backup = {
 };
 const music = { MusicInfo: { MusicRecordDictionary: M([160000005, 160000000, 160000001].map((id, n) => [id, { Unlocked: true, LookedMusicSelect: true,
   Playlist: { Playlist1SortOrder: -1, Playlist2SortOrder: -1, Playlist3SortOrder: -1 }, TotalMultiBattleSelectCount: 0,
-  DifficultyRecordDictionary: M([0, 1, 2].map(d => [d, { PlayStyleRecordDictionary: M([0, 1, 2].map(s => [s, n === 0 && d === 1 && s === 0 ? playStyle(987654, 11, 10, 6, 0, 3456) : playStyle(1000 * d, 15, 14, 4, 1, 100)])) }])) }])),
+  DifficultyRecordDictionary: M((n === 0 ? [0, 1, 2, 3] : [0, 1, 2]).map(d => [d, { PlayStyleRecordDictionary: M([0, 1, 2].map(s => [s, n === 0 && d === 1 && s === 0 ? playStyle(9900000, 11, 10, 6, 0, 3456) : playStyle(1000 * d, 15, 14, 4, 1, 100)])) }])) }])),
   Version: '1.00' }, Version: '1.00' };
 const profica = { ProficaInfo: { TotalProficaCount: 1, GivenCount: 0, GivenCountWithSummonStone: 0,
   MyProfica: ['2f911e53-c980-40ff-8394-4047f5b8cf27', 150000031, 140000004, 2, -1, [160000005], false], RivalProficaList: [], Version: '1.00' }, Version: '1.00' };

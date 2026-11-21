@@ -1636,20 +1636,26 @@ void moveKey(cJSON* from, cJSON* to) {
 // skipped without allocating. State = the (path, atom) pairs still alive at a node; `full` = some path ends at or
 // above this node (it is kept whole: a rule may count its children). Arrays keep their length (skipped elements
 // become null) so that "[n]" indexes stay right; "[Field=value]" elements are kept whole.
+// Fixed size (no heap): in the live module, running out of memory must end in a clean error, so the pruned
+// path only allocates through cJSON (which returns NULL) and short strings (no heap with the small-string buffer).
+const size_t MP_MAX_PATHS = 128;
 struct MpFilter {
-    std::vector<std::pair<uint16_t, uint16_t>> at;
+    std::pair<uint16_t, uint16_t> at[MP_MAX_PATHS];
+    size_t count = 0;
     bool full = false;
-    bool dead() const { return !full && at.empty(); }
+    bool dead() const { return !full && count == 0; }
 };
 typedef std::vector<std::vector<std::string>> MpPaths;
 
 void mpAdvance(const MpPaths& paths, MpFilter& out, size_t p, size_t i) {
     if (i >= paths[p].size()) out.full = true;
-    else out.at.push_back({(uint16_t)p, (uint16_t)i});
+    else if (out.count < MP_MAX_PATHS) out.at[out.count++] = {(uint16_t)p, (uint16_t)i};
+    else out.full = true;   // (cannot happen: at most MP_MAX_PATHS paths) keep everything rather than lose a value
 }
 MpFilter mpChildKey(const MpPaths& paths, const MpFilter& f, const std::string& key) {
     MpFilter c;
-    for (auto& pi : f.at) {
+    for (size_t k = 0; k < f.count; k++) {
+        const auto& pi = f.at[k];
         const std::string& a = paths[pi.first][pi.second];
         if (a[0] != '[') { if (a == key) mpAdvance(paths, c, pi.first, pi.second + 1u); }
         else if (a == "[*]") mpAdvance(paths, c, pi.first, pi.second + 1u);   // every value of an object
@@ -1659,7 +1665,8 @@ MpFilter mpChildKey(const MpPaths& paths, const MpFilter& f, const std::string& 
 }
 MpFilter mpChildIndex(const MpPaths& paths, const MpFilter& f, uint64_t j) {
     MpFilter c;
-    for (auto& pi : f.at) {
+    for (size_t k = 0; k < f.count; k++) {
+        const auto& pi = f.at[k];
         const std::string& a = paths[pi.first][pi.second];
         if (a[0] != '[') continue;
         if (a == "[*]") mpAdvance(paths, c, pi.first, pi.second + 1u);
@@ -1794,17 +1801,21 @@ struct MpReader {
             cJSON* v = value(depth + 1, nullptr, f && !cf.full ? &cf : nullptr);
             if (f) keys.pop_back();
             if (!v) { cJSON_Delete(m); return nullptr; }
-            auto it = seen.find(k);
-            if (it != seen.end()) {   // repeated key: first place, last value (JavaScript object semantics)
-                moveKey(it->second, v);
-                cJSON_ReplaceItemViaPointer(m, it->second, v);
-                it->second = v;
+            // repeated key: first place, last value (JavaScript object semantics). Pruned mode (live module): looked up
+            // in the object itself, no hash map (no allocation that could abort when the heap is full).
+            cJSON* prev = nullptr;
+            if (paths) prev = cJSON_GetObjectItemCaseSensitive(m, k.c_str());
+            else { auto it = seen.find(k); if (it != seen.end()) prev = it->second; }
+            if (prev) {
+                moveKey(prev, v);
+                cJSON_ReplaceItemViaPointer(m, prev, v);
+                if (!paths) seen[k] = v;
             } else {
-                cJSON_AddItemToObject(m, k.c_str(), v);
-                seen[k] = v;
+                if (!cJSON_AddItemToObject(m, k.c_str(), v)) { cJSON_Delete(v); cJSON_Delete(m); fail("out of memory"); return nullptr; }
+                if (!paths) seen[k] = v;
             }
         }
-        jsKeyOrder(m);
+        if (!paths) jsKeyOrder(m);   // only the full tree is compared with the Save Lab's
         return m;
     }
 };
@@ -1981,7 +1992,8 @@ cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_
     MpPaths paths;
     MpFilter root;
     bool pruned = splitPaths(keepPaths, paths);
-    if (pruned) { r.paths = &paths; for (size_t p = 0; p < paths.size(); p++) root.at.push_back({(uint16_t)p, 0}); }
+    if (pruned && paths.size() <= MP_MAX_PATHS) { r.paths = &paths; r.keys.reserve(MP_MAX_DEPTH + 2); for (size_t p = 0; p < paths.size(); p++) root.at[root.count++] = {(uint16_t)p, 0}; }
+    else pruned = false;
     cJSON* t = r.value(0, nullptr, pruned ? &root : nullptr);
     if (!t) { error = r.err.empty() ? "MessagePack: invalid data" : r.err; return nullptr; }
     if (used) *used = r.o;
@@ -2017,7 +2029,7 @@ cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& pa
     if (!pt) { error = "out of memory"; return nullptr; }
     aes128CbcDecrypt(key, iv, ct, clen, pt);
     size_t maxOut = 64u << 20;
-    if (memoryBudget) maxOut = std::min(maxOut, memoryBudget > clen ? (memoryBudget - clen) * 2 / 7 : 0);   // room left for the tree (x2.5)
+    if (memoryBudget) maxOut = std::min(maxOut, memoryBudget > clen ? (memoryBudget - clen) / 4 : 0);   // room left for the tree (x3)
     Inflater inf(pt, clen - (size_t)pad, maxOut, std::min(maxOut, clen * 80));   // ~x75 on real saves: one allocation
     bool inflated = inf.run();
     free(pt);
@@ -2026,17 +2038,18 @@ cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& pa
                                                                           : "wrong password or damaged file (" + inf.err + ")";
         return nullptr;
     }
-    if (memoryBudget && inf.on + inf.on * 5 / 2 + 65536 > memoryBudget) {   // decoded MessagePack + its (pruned) tree
-        error = "not enough memory (needs ~" + std::to_string((inf.on * 7 / 2 + 65536) >> 10) + " KB, " + std::to_string(memoryBudget >> 10) + " KB free)";
+    if (memoryBudget && inf.on * 4 + 65536 > memoryBudget) {   // decoded MessagePack + its pruned tree (measured x2.4 + malloc overhead)
+        error = "not enough memory (needs ~" + std::to_string((inf.on * 4 + 65536) >> 10) + " KB, " + std::to_string(memoryBudget >> 10) + " KB free)";
         return nullptr;
     }
     MpReader r(inf.ob, inf.on);
     MpPaths paths;
     MpFilter root;
-    if (splitPaths(keepPaths, paths)) {
+    if (splitPaths(keepPaths, paths) && paths.size() <= MP_MAX_PATHS) {   // else: whole tree (always right, just bigger)
         r.paths = &paths;
         r.labeler = theatrhythmLabeler;
-        for (size_t p = 0; p < paths.size(); p++) root.at.push_back({(uint16_t)p, 0});
+        r.keys.reserve(MP_MAX_DEPTH + 2);
+        for (size_t p = 0; p < paths.size(); p++) root.at[root.count++] = {(uint16_t)p, 0};
     }
     cJSON* t = r.value(0, nullptr, r.paths ? &root : nullptr);
     if (!t) { error = r.err.empty() ? "MessagePack: invalid data" : r.err; return nullptr; }

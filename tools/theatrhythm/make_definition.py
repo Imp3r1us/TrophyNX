@@ -117,9 +117,50 @@ NOTE = ('The 42 PS4 trophies, read from the encrypted save (reader "theatrhythm"
         "Summon Tamer and Summon's True Power (per-song / per-attack values, not saved), 999er (current stats are not saved, only growth), "
         'Grand Rhythmist and Ultimate Rhythmist (need the list of base-game songs and a per-song test across difficulties).')
 
+# In-game feats (the game's 100 "Achievements", list: thegamer.com/theatrhythm-final-bar-line-complete-feat-list).
+# Only the feats that are not already a trophy above (same condition) and that the save can prove.
+def feat(i, text, rule, src, points=10):
+    return {'id': 'feat_' + i, 'name': text, 'desc': 'In-game feat: ' + text + '!', 'points': points, 'rule': rule, '_source': src}
+
+
+DIFF = ['Basic', 'Expert', 'Ultimate', 'Supreme']   # Define.MSDifficulty Difficulty01..04
+FEATS = [
+    feat('first_summon', 'Called forth first summon', flag('MusicStageInfo/TotalSummonCount', 1), 'MusicStageInfo/TotalSummonCount'),
+    feat('proficard_edit', 'Edited ProfiCard for the first time', flag('ProficaInfo/MyProfica/EditedFlag'), 'proficaBackup.inf: ProficaInfo/MyProfica/EditedFlag'),
+    feat('hours_24', 'Played for 24 hours', {'type': 'playtime_hours', 'target': 24}, 'TrophyNX play log', 25),
+    feat('hours_100', 'Played for 100 hours', {'type': 'playtime_hours', 'target': 100}, 'TrophyNX play log', 50),
+    feat('played_200', 'Played 200 Music Stages', total(PS + 'TotalPlayCount', 200), 'sum of TotalPlayCount of every song record'),
+    feat('played_500', 'Played 500 Music Stages', total(PS + 'TotalPlayCount', 500), 'same counter', 25),
+    feat('song_100', 'Played one song 100 times', flag(PS + 'TotalPlayCount', 100),
+         'largest TotalPlayCount of one song at one difficulty and style (may unlock later than in the game)', 25),
+    feat('chains_300', 'Achieved 300 Perfect Chains', total(PS + 'TotalFullChainClearCount', 300), 'sum of TotalFullChainClearCount', 25),
+    feat('lv99_x32', 'Thirty-two characters reached Lv99', count('CharacterInfo/Characters[*]/Level', 32, equals=99), 'characters whose Level is 99', 50),
+    feat('star9_x4', 'Four characters reached Star Level 9', count('CharacterInfo/Characters[*]/StarLevel', 4, equals=9),
+         'characters whose StarLevel is 9 (assumes 9 is the highest Star Level)', 25),
+    feat('quests_5', 'Cleared 5 Series Quest titles', count(WORLD + 'Cleared', 5), 'Series Quest worlds with Cleared = true'),
+    feat('quests_20', 'Cleared 20 Series Quest titles', count(WORLD + 'Cleared', 20), 'same flags', 25),
+    feat('endless_chain_1500', 'Achieved a Perfect Chain streak of 1,500 in Endless World',
+         flag('SeriesQuestInfo/EndlessWorldUniqueInfo/BestFullChainContinuationCount', 1500), 'SeriesQuestInfo/EndlessWorldUniqueInfo/BestFullChainContinuationCount', 50),
+    feat('airships', 'Acquired every airship', count('AirShipInfo/AirShips[*]/UnlockedFlag', 15),
+         'the 15 airships of the save with UnlockedFlag (if some are DLC, it needs those too)', 25),
+    feat('moogles', 'Acquired every moogle style', count('MyMoogleInfo/MyMoogles[*]/UnlockedFlag', 35),
+         'the 35 moogle styles of the save with UnlockedFlag (if some are DLC, it needs those too)', 25),
+] + [
+    feat('score_' + d.lower(), 'Achieved 9800000 points or higher on a%s %s Score' % ('n' if d[0] in 'AEIOU' else '', d),
+         flag('MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary/%d/PlayStyleRecordDictionary[*]/Highscore' % i, 9800000),
+         'best Highscore of any song at difficulty %d (%s), any play style' % (i, d), 25)
+    for i, d in enumerate(DIFF)
+]
+
+FEATS_NOTE = ('Feats (in-game achievements, ids feat_*): the ones that are not already a trophy. Not tracked: the 29 "Cleared first '
+              '<series> song" feats and "Played a song from every Series Quest title" (which song belongs to which series is in the '
+              'game\'s MusicTable, inside encrypted asset bundles), "Played/Cleared every song", "Filled 10/100 Critical Charts", the 5 '
+              '"every rarity of ... CollectaCards" feats (card table), the 7 stat feats (current stats are not saved) and the 4 per-song feats.')
+
 DEF = {
     'title_id': '010081B01777C000', 'name': 'THEATRHYTHM FINAL BAR LINE', 'reader': 'theatrhythm', 'key_file': 'theatrhythm.txt',
-    'save_files': ['backup.inf', 'musicBackup.inf'], '_note': NOTE, 'achievements': TROPHIES + UNIVERSAL,
+    'save_files': ['backup.inf', 'musicBackup.inf', 'proficaBackup.inf'], '_note': NOTE + ' ' + FEATS_NOTE,
+    'achievements': TROPHIES + FEATS + UNIVERSAL,
 }
 
 if __name__ == '__main__':
@@ -127,4 +168,4 @@ if __name__ == '__main__':
     out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(here, '..', '..', 'romfs', 'games', '010081B01777C000.json')
     with open(out, 'w', encoding='utf-8', newline='\n') as f:
         f.write(json.dumps(DEF, ensure_ascii=False, indent=1) + '\n')
-    print(out, len(TROPHIES), 'trophies +', len(UNIVERSAL), 'universal')
+    print(out, len(TROPHIES), 'trophies +', len(FEATS), 'feats +', len(UNIVERSAL), 'universal')
