@@ -251,6 +251,7 @@ static bool gameDefFromJson(cJSON* root, GameDef& d, std::string& err) {
     d.reader = jstr(root, "reader");
     d.magic = jstr(root, "magic");
     d.xorKey = jstr(root, "xor_key");
+    d.keyFile = jstr(root, "key_file");
     d.fileSize = (uint64_t)jnum(root, "file_size", 0);
     d.closeScan = jbool(root, "close_scan", true);
     cJSON* sf = cJSON_GetObjectItemCaseSensitive(root, "save_files");
@@ -290,6 +291,7 @@ void applyGameDef(Game& g, const GameDef& d) {
     g.fileSize = d.fileSize;
     g.magic = d.magic;
     g.xorKey = d.xorKey;
+    g.keyFile = d.keyFile;
     g.saveFiles = d.saveFiles;
     g.achs = d.achs;
 }
@@ -448,6 +450,7 @@ static std::string describeDoc(const GvasDoc& d) {
 static std::string describeDoc(const NrbfDoc& d) { return "NRBF, " + d.info.summary; }
 static std::string describeDoc(const SgbDoc& d) { return d.info.summary; }
 static std::string describeDoc(const DeltaruneDoc& d) { return d.info.summary; }
+static std::string describeDoc(const TheatrhythmDoc& d) { return d.info.summary; }
 
 // Rough peak memory of a parsed document per byte of file (BymlDoc keeps the file; the others build
 // a cJSON tree, ~10 bytes of tree per byte of text, more for dense binary formats).
@@ -457,6 +460,13 @@ static size_t memoryFactor(const GvasDoc*) { return 16; }
 static size_t memoryFactor(const NrbfDoc*) { return 16; }
 static size_t memoryFactor(const SgbDoc*) { return 160; }   // LZ4 (x4..x40) then a Lua state tree
 static size_t memoryFactor(const DeltaruneDoc*) { return 3; }   // parsed JSON text (~1x) + a small tree (flags kept sparse)
+static size_t memoryFactor(const TheatrhythmDoc*) { return 1500; }   // AES + DEFLATE x75 (9.7 KB -> 727 KB of MessagePack) then a dense tree
+
+// Password of an encrypted save ("key_file"), given to the readers that need one.
+static std::string g_keyDir;
+void setSaveKeyDir(const std::string& dir) { g_keyDir = dir; }
+template <class Doc> static void giveKey(Doc&, const std::string&) {}
+static void giveKey(TheatrhythmDoc& d, const std::string& k) { d.password = k; }
 
 // Best value of each achievement over the save files (several slots), shared by every reader.
 // Files are read and evaluated one at a time, so only one document is in memory.
@@ -499,6 +509,25 @@ static void evaluateTree(Game& g, SaveSource& src) {
         return;
     }
     g.debug.push_back("Save mounted (read-only).");
+    std::string key;
+    if (!g.keyFile.empty()) {   // encrypted save: the password is never shipped, the player provides it
+        std::string kp = (g_keyDir.empty() ? std::string("keys") : g_keyDir) + "/" + g.keyFile;
+        std::vector<uint8_t> kb;
+        if (!g_keyDir.empty() && readFile(kp, kb)) key.assign(kb.begin(), kb.end());
+        auto blank = [](char c) { return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == 0; };
+        while (!key.empty() && blank(key.back())) key.pop_back();
+        size_t lead = 0;
+        while (lead < key.size() && blank(key[lead])) lead++;
+        key = key.substr(lead);
+        if (key.empty()) {
+            src.close();
+            g.saveStatus = SaveStatus::Unreadable;
+            g.debug.push_back("Encrypted save: password file " + kp + " is missing or empty.");
+            g.debug.push_back("  Put the game's save password in it (one line) to read this save; see the TrophyNX docs. Save skipped.");
+            return;
+        }
+        g.debug.push_back("Save password: " + kp + " (" + std::to_string(key.size()) + " characters).");
+    }
     BestValues bv;
     bv.init(g.achs.size());
     for (const std::string& f : g.saveFiles) {
@@ -521,6 +550,7 @@ static void evaluateTree(Game& g, SaveSource& src) {
             for (size_t i = 0; i < buf.size(); i++) buf[i] ^= (uint8_t)k[i % k.size()];
         }
         Doc d;
+        giveKey(d, key);
         if (!d.parse(std::move(buf))) {
             g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> NOT RECOGNISED (" + d.error + ")");
             continue;
@@ -600,6 +630,7 @@ void evaluateSave(Game& g, SaveSource& src) {
     else if (g.reader == "nrbf") evaluateTree<NrbfDoc>(g, src);
     else if (g.reader == "sgb") evaluateTree<SgbDoc>(g, src);
     else if (g.reader == "deltarune") evaluateTree<DeltaruneDoc>(g, src);
+    else if (g.reader == "theatrhythm") evaluateTree<TheatrhythmDoc>(g, src);
     else if (g.reader == "gamedata_hash" || g.reader == "totk_progress") evaluateHashSave(g, src);
     else {
         g.debug.push_back("ERROR: unknown reader");

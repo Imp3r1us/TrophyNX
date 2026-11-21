@@ -702,7 +702,333 @@ function parseDeltarune(buf) {
   return { deltarune: true, tree, meta };
 }
 
-const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor };
+// ================================================================== MessagePack (generic tree decoder)
+// Reusable by any game that stores MessagePack. Mirror: msgpackToJson in source/save_formats.cpp. Tree mapping:
+//   nil -> null · bool · integers (up to 64-bit) -> number · float32 -> number rounded to 6 decimals (like the
+//   other readers) · float64 -> number · non-finite -> null · str -> string (cut at NUL) · bin -> uppercase hex
+//   array -> list · map -> object: string keys as is, integer keys in decimal (exact, 64-bit), nil/true/false keys
+//   by name, other keys "<float>" / "<bin>" / "<array>" / "<map>" / "<ext>"; a repeated key keeps its first place
+//   and its last value · ext -1 (timestamp) -> whole seconds since 1970 (nanoseconds dropped) · other ext ->
+//   "ext:<type>:<HEX>". JavaScript lists integer-like object keys (0 .. 2^32-2) first in ascending order: the app
+//   orders its objects the same way so both trees compare equal.
+const MP_MAX_DEPTH = 64;
+const hexOf = (b) => { let s = ''; for (let i = 0; i < b.length; i++) s += (b[i] < 16 ? '0' : '') + b[i].toString(16); return s.toUpperCase(); };
+function parseMsgpack(buf) {
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+  let o = 0;
+  const meta = { maps: 0, arrays: 0, ext: 0, timestamps: 0 };
+  const need = (n) => { if (n < 0 || o + n > buf.length) throw new Error(T('MessagePack: unexpected end at 0x', 'MessagePack : fin inattendue à 0x') + o.toString(16).toUpperCase()); };
+  const u8 = () => { need(1); return buf[o++]; };
+  const be = (n, signed) => {
+    need(n); let v;
+    if (n === 1) v = signed ? dv.getInt8(o) : dv.getUint8(o);
+    else if (n === 2) v = signed ? dv.getInt16(o) : dv.getUint16(o);
+    else if (n === 4) v = signed ? dv.getInt32(o) : dv.getUint32(o);
+    else v = signed ? dv.getBigInt64(o) : dv.getBigUint64(o);
+    o += n; return v;
+  };
+  const bytes = (n) => { need(n); const b = buf.subarray(o, o + n); o += n; return b; };
+  const str = (n) => cut(utf8.decode(bytes(n)));
+  const count = (n) => { if (n > buf.length - o) throw new Error(T('MessagePack: bad length at 0x', 'MessagePack : longueur invalide à 0x') + o.toString(16).toUpperCase()); return n; };
+  const ext = (type, n) => {
+    const b = bytes(n); meta.ext++;
+    if (type === -1 && (n === 4 || n === 8 || n === 12)) {
+      meta.timestamps++;
+      const d = new DataView(b.buffer, b.byteOffset, n);
+      if (n === 4) return d.getUint32(0);
+      if (n === 8) return d.getUint32(0) % 4 * 4294967296 + d.getUint32(4);   // low 34 bits
+      return Number(d.getBigInt64(4));
+    }
+    return 'ext:' + type + ':' + hexOf(b);
+  };
+  // value(depth, asKey): asKey -> the key text (scalars) or a placeholder (containers, skipped)
+  const value = (depth, asKey) => {
+    if (depth > MP_MAX_DEPTH) throw new Error(T('MessagePack: nested too deep', 'MessagePack : imbrication trop profonde'));
+    const t = u8();
+    let n;
+    if (t <= 0x7f) return asKey ? String(t) : t;
+    if (t >= 0xe0) return asKey ? String(t - 256) : t - 256;
+    if (t >= 0x80 && t <= 0x8f) return map(t & 15, depth, asKey);
+    if (t >= 0x90 && t <= 0x9f) return arr(t & 15, depth, asKey);
+    if (t >= 0xa0 && t <= 0xbf) return str(t & 31);
+    switch (t) {
+      case 0xc0: return asKey ? 'null' : null;
+      case 0xc2: return asKey ? 'false' : false;
+      case 0xc3: return asKey ? 'true' : true;
+      case 0xc4: case 0xc5: case 0xc6: n = be(1 << (t - 0xc4), false); { const h = hexOf(bytes(n)); return asKey ? '<bin>' : h; }
+      case 0xc7: case 0xc8: case 0xc9: { n = be(1 << (t - 0xc7), false); const ty = be(1, true); const v = ext(ty, n); return asKey ? '<ext>' : v; }
+      case 0xca: { need(4); const v = dv.getFloat32(o); o += 4; return asKey ? '<float>' : fin(+v.toFixed(6)); }
+      case 0xcb: { need(8); const v = dv.getFloat64(o); o += 8; return asKey ? '<float>' : fin(v); }
+      case 0xcc: case 0xcd: case 0xce: case 0xcf: { const v = be(1 << (t - 0xcc), false); return asKey ? String(v) : Number(v); }
+      case 0xd0: case 0xd1: case 0xd2: case 0xd3: { const v = be(1 << (t - 0xd0), true); return asKey ? String(v) : Number(v); }
+      case 0xd4: case 0xd5: case 0xd6: case 0xd7: case 0xd8: { const ty = be(1, true); const v = ext(ty, 1 << (t - 0xd4)); return asKey ? '<ext>' : v; }
+      case 0xd9: case 0xda: case 0xdb: return str(be(1 << (t - 0xd9), false));
+      case 0xdc: case 0xdd: return arr(be(t === 0xdc ? 2 : 4, false), depth, asKey);
+      case 0xde: case 0xdf: return map(be(t === 0xde ? 2 : 4, false), depth, asKey);
+    }
+    throw new Error(T('MessagePack: invalid byte 0x', 'MessagePack : octet invalide 0x') + t.toString(16).toUpperCase() + T(' at 0x', ' à 0x') + (o - 1).toString(16).toUpperCase());
+  };
+  const arr = (n, depth, asKey) => {
+    count(n); meta.arrays++;
+    const a = [];
+    for (let i = 0; i < n; i++) { const v = value(depth + 1, false); if (!asKey) a.push(v); }
+    return asKey ? '<array>' : a;
+  };
+  const map = (n, depth, asKey) => {
+    count(n); meta.maps++;
+    const m = {};
+    for (let i = 0; i < n; i++) {
+      const k = value(depth + 1, true), v = value(depth + 1, false);
+      if (asKey) continue;
+      if (k === '__proto__') Object.defineProperty(m, k, { value: v, enumerable: true, writable: true, configurable: true });
+      else m[k] = v;
+    }
+    return asKey ? '<map>' : m;
+  };
+  const tree = value(0, false);
+  meta.size = buf.length; meta.trailing = buf.length - o;
+  return { tree, meta };
+}
+
+// ================================================================== small synchronous crypto + raw inflate
+// The Save Lab parses trees synchronously (differences, rules, ⚡ Auto all call parseTree), so WebCrypto and
+// DecompressionStream (asynchronous) cannot be used here. Same code in C++ (source/save_formats.cpp).
+function sha1(msg) {
+  const ml = msg.length, n = ((ml + 8) >> 6) + 1, w = new Uint32Array(80), b = new Uint8Array(n * 64);
+  b.set(msg); b[ml] = 0x80;
+  const bits = ml * 8; b[n * 64 - 4] = bits >>> 24; b[n * 64 - 3] = bits >>> 16; b[n * 64 - 2] = bits >>> 8; b[n * 64 - 1] = bits;
+  let h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
+  for (let c = 0; c < n; c++) {
+    for (let i = 0; i < 16; i++) { const p = c * 64 + i * 4; w[i] = (b[p] << 24) | (b[p + 1] << 16) | (b[p + 2] << 8) | b[p + 3]; }
+    for (let i = 16; i < 80; i++) { const x = w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16]; w[i] = (x << 1) | (x >>> 31); }
+    let a = h0, bb = h1, cc = h2, d = h3, e = h4;
+    for (let i = 0; i < 80; i++) {
+      const f = i < 20 ? ((bb & cc) | (~bb & d)) + 0x5A827999 : i < 40 ? (bb ^ cc ^ d) + 0x6ED9EBA1 : i < 60 ? ((bb & cc) | (bb & d) | (cc & d)) + 0x8F1BBCDC : (bb ^ cc ^ d) + 0xCA62C1D6;
+      const t = (((a << 5) | (a >>> 27)) + f + e + w[i]) | 0;
+      e = d; d = cc; cc = (bb << 30) | (bb >>> 2); bb = a; a = t;
+    }
+    h0 = (h0 + a) | 0; h1 = (h1 + bb) | 0; h2 = (h2 + cc) | 0; h3 = (h3 + d) | 0; h4 = (h4 + e) | 0;
+  }
+  const out = new Uint8Array(20);
+  [h0, h1, h2, h3, h4].forEach((h, i) => { out[i * 4] = h >>> 24; out[i * 4 + 1] = h >>> 16; out[i * 4 + 2] = h >>> 8; out[i * 4 + 3] = h; });
+  return out;
+}
+function hmacSha1(key, msg) {
+  if (key.length > 64) key = sha1(key);
+  const ip = new Uint8Array(64 + msg.length), op = new Uint8Array(84);
+  for (let i = 0; i < 64; i++) { const k = i < key.length ? key[i] : 0; ip[i] = k ^ 0x36; op[i] = k ^ 0x5c; }
+  ip.set(msg, 64); op.set(sha1(ip), 64);
+  return sha1(op);
+}
+// PBKDF2-HMAC-SHA1, dkLen <= 20 (one block)
+function pbkdf2Sha1(pw, salt, iter, dkLen) {
+  const s = new Uint8Array(salt.length + 4); s.set(salt); s[salt.length + 3] = 1;
+  let u = hmacSha1(pw, s); const t = u.slice();
+  for (let i = 1; i < iter; i++) { u = hmacSha1(pw, u); for (let j = 0; j < 20; j++) t[j] ^= u[j]; }
+  return t.subarray(0, dkLen);
+}
+const AES = (() => {
+  const xt = (a) => ((a << 1) ^ (a & 0x80 ? 0x11b : 0)) & 0xff;
+  const mul = (a, b) => { let r = 0; while (b) { if (b & 1) r ^= a; a = xt(a); b >>= 1; } return r; };
+  const sbox = new Uint8Array(256), inv = new Uint8Array(256);
+  for (let i = 0; i < 256; i++) {
+    let x = 0; if (i) for (let j = 1; j < 256; j++) if (mul(i, j) === 1) { x = j; break; }
+    let y = x; for (let k = 0; k < 4; k++) { x = ((x << 1) | (x >> 7)) & 0xff; y ^= x; }
+    sbox[i] = y ^ 0x63; inv[sbox[i]] = i;
+  }
+  const m = [9, 11, 13, 14].map(k => Uint8Array.from({ length: 256 }, (_, i) => mul(i, k)));
+  return { sbox, inv, m9: m[0], m11: m[1], m13: m[2], m14: m[3], xt };
+})();
+function aes128CbcDecrypt(key, iv, data) {
+  const { sbox, inv, m9, m11, m13, m14, xt } = AES;
+  const rk = new Uint8Array(176); rk.set(key);
+  for (let i = 16, rcon = 1; i < 176; i += 4) {
+    let t = rk.slice(i - 4, i);
+    if (i % 16 === 0) { t = Uint8Array.of(sbox[t[1]] ^ rcon, sbox[t[2]], sbox[t[3]], sbox[t[0]]); rcon = xt(rcon); }
+    for (let j = 0; j < 4; j++) rk[i + j] = rk[i - 16 + j] ^ t[j];
+  }
+  const out = new Uint8Array(data.length), s = new Uint8Array(16), u = new Uint8Array(16);
+  for (let off = 0; off < data.length; off += 16) {
+    for (let i = 0; i < 16; i++) s[i] = data[off + i] ^ rk[160 + i];
+    for (let r = 9; r >= 0; r--) {
+      for (let c = 0; c < 4; c++) for (let w = 0; w < 4; w++) u[w + 4 * c] = inv[s[w + 4 * ((c - w + 4) % 4)]];
+      for (let i = 0; i < 16; i++) u[i] ^= rk[r * 16 + i];
+      if (r) for (let c = 0; c < 4; c++) {
+        const a0 = u[4 * c], a1 = u[4 * c + 1], a2 = u[4 * c + 2], a3 = u[4 * c + 3];
+        s[4 * c] = m14[a0] ^ m11[a1] ^ m13[a2] ^ m9[a3]; s[4 * c + 1] = m9[a0] ^ m14[a1] ^ m11[a2] ^ m13[a3];
+        s[4 * c + 2] = m13[a0] ^ m9[a1] ^ m14[a2] ^ m11[a3]; s[4 * c + 3] = m11[a0] ^ m13[a1] ^ m9[a2] ^ m14[a3];
+      } else s.set(u);
+    }
+    for (let i = 0; i < 16; i++) out[off + i] = s[i] ^ (off ? data[off - 16 + i] : iv[i]);
+  }
+  return out;
+}
+// Raw DEFLATE (RFC 1951, no zlib header), after Mark Adler's puff.c. Throws on malformed data or > maxOut bytes.
+const INF_LBASE = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258];
+const INF_LEXT = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0];
+const INF_DBASE = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577];
+const INF_DEXT = [0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13];
+const INF_ORDER = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+function inflateRawSync(src, maxOut = 64 << 20) {
+  const bad = (m) => new Error(T('DEFLATE: ', 'DEFLATE : ') + m);
+  let pos = 0, bitbuf = 0, bitcnt = 0, out = new Uint8Array(Math.max(1024, src.length * 4)), n = 0;
+  const bits = (k) => {
+    while (bitcnt < k) { if (pos >= src.length) throw bad(T('unexpected end', 'fin inattendue')); bitbuf |= src[pos++] << bitcnt; bitcnt += 8; }
+    const v = bitbuf & ((1 << k) - 1); bitbuf >>>= k; bitcnt -= k; return v;
+  };
+  const put = (b) => {
+    if (n >= out.length) { if (n >= maxOut) throw bad(T('output too large', 'sortie trop grande')); const o2 = new Uint8Array(Math.min(maxOut, out.length * 2)); o2.set(out); out = o2; }
+    out[n++] = b;
+  };
+  const build = (lens) => {
+    const count = new Uint16Array(16), sym = new Uint16Array(lens.length), offs = new Uint16Array(16);
+    for (const l of lens) count[l]++;
+    let left = 1;
+    for (let l = 1; l < 16; l++) { left = left * 2 - count[l]; if (left < 0) throw bad(T('bad code lengths', 'longueurs de codes invalides')); }
+    for (let l = 1; l < 15; l++) offs[l + 1] = offs[l] + count[l];
+    for (let s = 0; s < lens.length; s++) if (lens[s]) sym[offs[lens[s]]++] = s;
+    return { count, sym };
+  };
+  const decode = (h) => {
+    let code = 0, first = 0, index = 0;
+    for (let l = 1; l < 16; l++) {
+      code |= bits(1);
+      const c = h.count[l];
+      if (code - c < first) return h.sym[index + code - first];
+      index += c; first = (first + c) << 1; code <<= 1;
+    }
+    throw bad(T('bad code', 'code invalide'));
+  };
+  let fixed = null;
+  for (;;) {
+    const last = bits(1), type = bits(2);
+    if (type === 0) {
+      bitbuf = 0; bitcnt = 0;
+      if (pos + 4 > src.length) throw bad(T('unexpected end', 'fin inattendue'));
+      const len = src[pos] | (src[pos + 1] << 8), nlen = src[pos + 2] | (src[pos + 3] << 8); pos += 4;
+      if (len !== (~nlen & 0xffff)) throw bad(T('bad stored block', 'bloc stocké invalide'));
+      if (pos + len > src.length) throw bad(T('unexpected end', 'fin inattendue'));
+      for (let i = 0; i < len; i++) put(src[pos++]);
+    } else if (type === 1 || type === 2) {
+      let lc, dc;
+      if (type === 1) {
+        if (!fixed) {
+          const l = new Uint8Array(288); l.fill(8, 0, 144); l.fill(9, 144, 256); l.fill(7, 256, 280); l.fill(8, 280, 288);
+          fixed = [build(l), build(new Uint8Array(30).fill(5))];
+        }
+        [lc, dc] = fixed;
+      } else {
+        const nlen = bits(5) + 257, ndist = bits(5) + 1, ncode = bits(4) + 4;
+        if (nlen > 286 || ndist > 30) throw bad(T('bad counts', 'comptes invalides'));
+        const cl = new Uint8Array(19);
+        for (let i = 0; i < ncode; i++) cl[INF_ORDER[i]] = bits(3);
+        const ch = build(cl), lens = new Uint8Array(nlen + ndist);
+        for (let i = 0; i < nlen + ndist;) {
+          const s = decode(ch);
+          if (s < 16) { lens[i++] = s; continue; }
+          let len = 0, rep;
+          if (s === 16) { if (!i) throw bad(T('repeat without length', 'répétition sans longueur')); len = lens[i - 1]; rep = 3 + bits(2); }
+          else if (s === 17) rep = 3 + bits(3);
+          else rep = 11 + bits(7);
+          if (i + rep > nlen + ndist) throw bad(T('too many lengths', 'trop de longueurs'));
+          while (rep--) lens[i++] = len;
+        }
+        if (!lens[256]) throw bad(T('no end-of-block code', 'pas de code de fin de bloc'));
+        lc = build(lens.subarray(0, nlen)); dc = build(lens.subarray(nlen));
+      }
+      for (;;) {
+        let s = decode(lc);
+        if (s < 256) { put(s); continue; }
+        if (s === 256) break;
+        s -= 257;
+        if (s >= 29) throw bad(T('bad length code', 'code de longueur invalide'));
+        const len = INF_LBASE[s] + bits(INF_LEXT[s]);
+        const d = decode(dc);
+        if (d >= 30) throw bad(T('bad distance code', 'code de distance invalide'));
+        const dist = INF_DBASE[d] + bits(INF_DEXT[d]);
+        if (dist > n) throw bad(T('distance too far back', 'distance trop grande'));
+        for (let i = 0; i < len; i++) put(out[n - dist]);
+      }
+    } else throw bad(T('bad block type', 'type de bloc invalide'));
+    if (last) break;
+  }
+  return out.slice(0, n);
+}
+
+// ================================================================== THEATRHYTHM FINAL BAR LINE (backup.inf, musicBackup.inf, proficaBackup.inf)
+// [u32 LE length, PS4 only] + 32-byte header q0 q1 q2 q3 + AES-128-CBC; salt = q0‖q3, iv = q2‖q1,
+// key = PBKDF2-HMAC-SHA1(password, salt, 1000, 16); plaintext = raw DEFLATE of a MessagePack map, PKCS#7 padded.
+// The password (a string of the game's global-metadata.dat) is never bundled: setPassword('theatrhythm', …)
+// (typed in the page, kept in localStorage); without it the module recognises nothing.
+// Tree = the MessagePack tree, with the int-keyed records ([Key(n)] classes of the game) given their field names:
+//   MusicInfo/MusicRecordDictionary/<music id>/DifficultyRecordDictionary/<0..3>/PlayStyleRecordDictionary/<0..2>
+//   ProficaInfo/MyProfica · ProficaInfo/RivalProficaList[*]
+const PASSWORDS = {};
+function setPassword(game, pw) { PASSWORDS[game] = typeof pw === 'string' ? pw.trim() : ''; }
+const TH_FILES = /(^|[\\/])(backup|musicBackup|proficaBackup)\.inf$/i;
+const TH_LABELS = {
+  playStyle: ['Highscore', 'UpdateDateUniversal', 'BestPlayRank', 'MaxChainCount', 'BestClearMark', 'CriticalBarZones', 'TotalPlayCount', 'TotalClearCount', 'TotalFullChainClearCount', 'MaxDamage'],
+  myProfica: ['MyGuid', 'ProficaIllustID', 'ProficaBaseDesignID', 'ProficaBaseColorType', 'SummonStoneIndex', 'LatestPlayedMusics', 'EditedFlag'],
+  rival: ['CursorSelectedFlag', 'LockedFlag', 'ObtainUniversalDateTime', 'LastPlayedMusic', '_4', 'ProficaIllustID', 'ProficaBaseDesignID', 'ProficaBaseColorType', 'MyMoogleID', 'SummonStone', 'AccountName', 'InternalAccountID', 'TotalRhythpo', 'TotalPlayTime', 'TotalAchievement', 'GameCompletion', 'PlayMusicRanking', 'PartySet', 'CharacterUseCount', 'CollecaCategory', 'SeriesCompleteCount', 'BestReachedEndlessStage', 'ClearMusicNumber', 'BestDamageRanking', 'TotalMusicPlayCount', 'TotalWinCount', 'CurrentRate', 'LatestPlayedMusics'],
+};
+function thLabel(a, names) {
+  if (!Array.isArray(a) || a.length !== names.length) return a;
+  const o = {}; names.forEach((k, i) => { o[k] = a[i]; }); return o;
+}
+function theatrhythmLabels(t) {
+  const isO = (x) => x && typeof x === 'object' && !Array.isArray(x);
+  const mr = isO(t.MusicInfo) && isO(t.MusicInfo.MusicRecordDictionary) ? t.MusicInfo.MusicRecordDictionary : null;
+  if (mr) for (const m of Object.values(mr)) {
+    if (!isO(m) || !isO(m.DifficultyRecordDictionary)) continue;
+    for (const d of Object.values(m.DifficultyRecordDictionary)) {
+      if (!isO(d) || !isO(d.PlayStyleRecordDictionary)) continue;
+      const ps = d.PlayStyleRecordDictionary;
+      for (const k of Object.keys(ps)) ps[k] = thLabel(ps[k], TH_LABELS.playStyle);
+    }
+  }
+  if (isO(t.ProficaInfo)) {
+    const p = t.ProficaInfo;
+    if ('MyProfica' in p) p.MyProfica = thLabel(p.MyProfica, TH_LABELS.myProfica);
+    if (Array.isArray(p.RivalProficaList)) p.RivalProficaList = p.RivalProficaList.map(x => thLabel(x, TH_LABELS.rival));
+  }
+}
+// Container check without the password: Switch = 32-byte header + AES blocks; PS4 = u32 LE length first.
+function theatrhythmBody(buf) {
+  if (buf.length >= 52 && (buf.length - 4) % 16 === 0 && (buf[0] | (buf[1] << 8) | (buf[2] << 16)) + buf[3] * 16777216 === buf.length - 4) return buf.subarray(4);
+  if (buf.length >= 48 && buf.length % 16 === 0) return buf;
+  return null;
+}
+function isTheatrhythm(buf, name) { return !!theatrhythmBody(buf) && (!name || TH_FILES.test(name)); }
+function decryptTheatrhythm(buf, password) {
+  const body = theatrhythmBody(buf);
+  if (!body) return null;
+  const q = (i) => body.subarray(8 * i, 8 * i + 8);
+  const salt = new Uint8Array(16), iv = new Uint8Array(16);
+  salt.set(q(0)); salt.set(q(3), 8); iv.set(q(2)); iv.set(q(1), 8);
+  const key = pbkdf2Sha1(new TextEncoder().encode(password), salt, 1000, 16);
+  const ct = body.subarray(32);
+  // cheap check on the last block first: valid PKCS#7 padding, else not this format / wrong password
+  const tail = aes128CbcDecrypt(key, ct.subarray(ct.length - 32, ct.length - 16), ct.subarray(ct.length - 16));
+  const pad = tail[15];
+  if (pad < 1 || pad > 16) return null;
+  for (let i = 16 - pad; i < 16; i++) if (tail[i] !== pad) return null;
+  const pt = aes128CbcDecrypt(key, iv, ct);
+  return { raw: inflateRawSync(pt.subarray(0, pt.length - pad)), ps4: body !== buf };
+}
+function parseTheatrhythm(buf) {
+  const pw = PASSWORDS.theatrhythm;
+  if (!pw || !theatrhythmBody(buf)) return null;
+  let dec;
+  try { dec = decryptTheatrhythm(buf, pw); } catch (e) { return null; }   // wrong key / not this format
+  if (!dec) return null;
+  const d = parseMsgpack(dec.raw);
+  if (!d.tree || typeof d.tree !== 'object' || Array.isArray(d.tree)) return null;
+  theatrhythmLabels(d.tree);
+  return { tree: d.tree, meta: Object.assign(d.meta, { ps4: dec.ps4, version: typeof d.tree.Version === 'string' ? d.tree.Version : '', top: Object.keys(d.tree).filter(k => k !== 'Version') }) };
+}
+
+const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor,
+  parseMsgpack, inflateRawSync, sha1, pbkdf2Sha1, aes128CbcDecrypt, setPassword, isTheatrhythm, parseTheatrhythm, decryptTheatrhythm, TH_FILES };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveFormats = api;
 })(typeof self !== 'undefined' ? self : this);

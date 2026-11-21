@@ -1,4 +1,4 @@
-// GVAS (Unreal) and NRBF (.NET BinaryFormatter) readers -> cJSON trees.
+// GVAS (Unreal), NRBF (.NET BinaryFormatter), SGB, DELTARUNE, MessagePack and THEATRHYTHM readers -> cJSON trees.
 // Mirror of tools/savelab/formats.js: any change here must be made there too (host/test/test_formats.cpp
 // compares both on the same files). Built without exceptions: errors are sticky in the Reader.
 #include "save_formats.h"
@@ -1316,6 +1316,570 @@ cJSON* deltaruneToJson(const uint8_t* data, size_t size, std::string& error, Sav
 
 bool DeltaruneDoc::parse(std::vector<uint8_t>&& data) {
     cJSON* t = deltaruneToJson(data.data(), data.size(), error, &info);
+    if (!t) return false;
+    adopt(t, false);
+    return true;
+}
+
+// ================================================================== MessagePack, raw DEFLATE, SHA-1 / AES (THEATRHYTHM)
+// Mirror of parseMsgpack / inflateRawSync / sha1 / aes128CbcDecrypt / parseTheatrhythm in tools/savelab/formats.js.
+// Self-contained (no zlib / mbedtls): the same file is built into the app, the live module and the host tests.
+namespace {
+
+// ---- SHA-1, HMAC, PBKDF2 (one 20-byte block)
+struct Sha1 {
+    uint32_t h[5] = {0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0};
+    uint8_t buf[64];
+    size_t n = 0;
+    uint64_t total = 0;
+    static uint32_t rol(uint32_t x, int k) { return (x << k) | (x >> (32 - k)); }
+    void block(const uint8_t* p) {
+        uint32_t w[80];
+        for (int i = 0; i < 16; i++) w[i] = (uint32_t)p[4 * i] << 24 | (uint32_t)p[4 * i + 1] << 16 | (uint32_t)p[4 * i + 2] << 8 | p[4 * i + 3];
+        for (int i = 16; i < 80; i++) w[i] = rol(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1);
+        uint32_t a = h[0], b = h[1], c = h[2], d = h[3], e = h[4];
+        for (int i = 0; i < 80; i++) {
+            uint32_t f = i < 20 ? ((b & c) | (~b & d)) + 0x5A827999 : i < 40 ? (b ^ c ^ d) + 0x6ED9EBA1
+                       : i < 60 ? ((b & c) | (b & d) | (c & d)) + 0x8F1BBCDC : (b ^ c ^ d) + 0xCA62C1D6;
+            uint32_t t = rol(a, 5) + f + e + w[i];
+            e = d; d = c; c = rol(b, 30); b = a; a = t;
+        }
+        h[0] += a; h[1] += b; h[2] += c; h[3] += d; h[4] += e;
+    }
+    void update(const uint8_t* p, size_t len) {
+        total += len;
+        while (len) {
+            size_t k = std::min(len, (size_t)64 - n);
+            memcpy(buf + n, p, k);
+            n += k; p += k; len -= k;
+            if (n == 64) { block(buf); n = 0; }
+        }
+    }
+    void final(uint8_t out[20]) {
+        uint64_t bits = total * 8;
+        uint8_t pad = 0x80, zero = 0;
+        update(&pad, 1);
+        while (n != 56) update(&zero, 1);
+        uint8_t len[8];
+        for (int i = 0; i < 8; i++) len[i] = (uint8_t)(bits >> (56 - 8 * i));
+        update(len, 8);
+        for (int i = 0; i < 20; i++) out[i] = (uint8_t)(h[i / 4] >> (24 - 8 * (i % 4)));
+    }
+};
+
+void hmacSha1(const uint8_t* key, size_t klen, const uint8_t* msg, size_t mlen, uint8_t out[20]) {
+    uint8_t k[64] = {0}, hk[20];
+    if (klen > 64) { Sha1 s; s.update(key, klen); s.final(hk); key = hk; klen = 20; }
+    memcpy(k, key, klen);
+    uint8_t ip[64], op[64], inner[20];
+    for (int i = 0; i < 64; i++) { ip[i] = k[i] ^ 0x36; op[i] = k[i] ^ 0x5c; }
+    Sha1 a; a.update(ip, 64); a.update(msg, mlen); a.final(inner);
+    Sha1 b; b.update(op, 64); b.update(inner, 20); b.final(out);
+}
+
+void pbkdf2Sha1(const std::string& pw, const uint8_t* salt, size_t slen, int iter, uint8_t* out, size_t dkLen) {
+    std::vector<uint8_t> s(salt, salt + slen);
+    s.insert(s.end(), {0, 0, 0, 1});
+    uint8_t u[20], t[20];
+    hmacSha1((const uint8_t*)pw.data(), pw.size(), s.data(), s.size(), u);
+    memcpy(t, u, 20);
+    for (int i = 1; i < iter; i++) {
+        uint8_t v[20];
+        hmacSha1((const uint8_t*)pw.data(), pw.size(), u, 20, v);
+        memcpy(u, v, 20);
+        for (int j = 0; j < 20; j++) t[j] ^= u[j];
+    }
+    memcpy(out, t, std::min<size_t>(dkLen, 20));
+}
+
+// ---- AES-128 decryption (CBC)
+struct AesTables {
+    uint8_t sbox[256], inv[256], m9[256], m11[256], m13[256], m14[256];
+    static uint8_t xt(uint8_t a) { return (uint8_t)((a << 1) ^ (a & 0x80 ? 0x1b : 0)); }
+    static uint8_t mul(uint8_t a, uint8_t b) { uint8_t r = 0; while (b) { if (b & 1) r ^= a; a = xt(a); b >>= 1; } return r; }
+    AesTables() {
+        for (int i = 0; i < 256; i++) {
+            uint8_t x = 0;
+            if (i) for (int j = 1; j < 256; j++) if (mul((uint8_t)i, (uint8_t)j) == 1) { x = (uint8_t)j; break; }
+            uint8_t y = x;
+            for (int k = 0; k < 4; k++) { x = (uint8_t)((x << 1) | (x >> 7)); y ^= x; }
+            sbox[i] = y ^ 0x63;
+        }
+        for (int i = 0; i < 256; i++) {
+            inv[sbox[i]] = (uint8_t)i;
+            m9[i] = mul((uint8_t)i, 9); m11[i] = mul((uint8_t)i, 11); m13[i] = mul((uint8_t)i, 13); m14[i] = mul((uint8_t)i, 14);
+        }
+    }
+};
+const AesTables& aesTables() { static AesTables t; return t; }
+
+void aes128CbcDecrypt(const uint8_t key[16], const uint8_t iv[16], const uint8_t* in, size_t len, uint8_t* out) {
+    const AesTables& T = aesTables();
+    uint8_t rk[176];
+    memcpy(rk, key, 16);
+    uint8_t rcon = 1;
+    for (int i = 16; i < 176; i += 4) {
+        uint8_t t[4] = {rk[i - 4], rk[i - 3], rk[i - 2], rk[i - 1]};
+        if (i % 16 == 0) {
+            uint8_t t0 = t[0];
+            t[0] = T.sbox[t[1]] ^ rcon; t[1] = T.sbox[t[2]]; t[2] = T.sbox[t[3]]; t[3] = T.sbox[t0];
+            rcon = AesTables::xt(rcon);
+        }
+        for (int j = 0; j < 4; j++) rk[i + j] = rk[i - 16 + j] ^ t[j];
+    }
+    uint8_t s[16], u[16];
+    for (size_t off = 0; off + 16 <= len; off += 16) {
+        for (int i = 0; i < 16; i++) s[i] = in[off + i] ^ rk[160 + i];
+        for (int r = 9; r >= 0; r--) {
+            for (int c = 0; c < 4; c++) for (int w = 0; w < 4; w++) u[w + 4 * c] = T.inv[s[w + 4 * ((c - w + 4) % 4)]];
+            for (int i = 0; i < 16; i++) u[i] ^= rk[r * 16 + i];
+            if (r) for (int c = 0; c < 4; c++) {
+                uint8_t a0 = u[4 * c], a1 = u[4 * c + 1], a2 = u[4 * c + 2], a3 = u[4 * c + 3];
+                s[4 * c] = T.m14[a0] ^ T.m11[a1] ^ T.m13[a2] ^ T.m9[a3];
+                s[4 * c + 1] = T.m9[a0] ^ T.m14[a1] ^ T.m11[a2] ^ T.m13[a3];
+                s[4 * c + 2] = T.m13[a0] ^ T.m9[a1] ^ T.m14[a2] ^ T.m11[a3];
+                s[4 * c + 3] = T.m11[a0] ^ T.m13[a1] ^ T.m9[a2] ^ T.m14[a3];
+            } else memcpy(s, u, 16);
+        }
+        const uint8_t* prev = off ? in + off - 16 : iv;
+        for (int i = 0; i < 16; i++) out[off + i] = s[i] ^ prev[i];
+    }
+}
+
+// ---- raw DEFLATE (after Mark Adler's puff.c)
+const uint16_t INF_LBASE[29] = {3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258};
+const uint8_t INF_LEXT[29] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0};
+const uint16_t INF_DBASE[30] = {1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577};
+const uint8_t INF_DEXT[30] = {0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13};
+const uint8_t INF_ORDER[19] = {16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
+
+struct Huff { uint16_t count[16]; uint16_t sym[320]; };
+
+struct Inflater {
+    const uint8_t* src; size_t len, pos = 0;
+    uint32_t bitbuf = 0; int bitcnt = 0;
+    std::vector<uint8_t>& out; size_t maxOut;
+    std::string err;
+    Inflater(const uint8_t* s, size_t l, std::vector<uint8_t>& o, size_t m) : src(s), len(l), out(o), maxOut(m) {}
+    bool fail(const char* m) { if (err.empty()) err = std::string("DEFLATE: ") + m; return false; }
+    bool bits(int k, int& v) {
+        while (bitcnt < k) { if (pos >= len) return fail("unexpected end"); bitbuf |= (uint32_t)src[pos++] << bitcnt; bitcnt += 8; }
+        v = (int)(bitbuf & ((1u << k) - 1)); bitbuf >>= k; bitcnt -= k; return true;
+    }
+    bool put(uint8_t b) { if (out.size() >= maxOut) return fail("output too large"); out.push_back(b); return true; }
+    bool build(Huff& h, const uint8_t* lens, int n) {
+        uint16_t offs[16] = {0};
+        memset(h.count, 0, sizeof h.count);
+        for (int s = 0; s < n; s++) h.count[lens[s]]++;
+        int left = 1;
+        for (int l = 1; l < 16; l++) { left = left * 2 - h.count[l]; if (left < 0) return fail("bad code lengths"); }
+        for (int l = 1; l < 15; l++) offs[l + 1] = offs[l] + h.count[l];
+        for (int s = 0; s < n; s++) if (lens[s]) h.sym[offs[lens[s]]++] = (uint16_t)s;
+        return true;
+    }
+    bool decode(const Huff& h, int& sym) {
+        int code = 0, first = 0, index = 0, b;
+        for (int l = 1; l < 16; l++) {
+            if (!bits(1, b)) return false;
+            code |= b;
+            int c = h.count[l];
+            if (code - c < first) { sym = h.sym[index + code - first]; return true; }
+            index += c; first = (first + c) << 1; code <<= 1;
+        }
+        return fail("bad code");
+    }
+    bool codes(const Huff& lc, const Huff& dc) {
+        for (;;) {
+            int s, e, d;
+            if (!decode(lc, s)) return false;
+            if (s < 256) { if (!put((uint8_t)s)) return false; continue; }
+            if (s == 256) return true;
+            s -= 257;
+            if (s >= 29) return fail("bad length code");
+            if (!bits(INF_LEXT[s], e)) return false;
+            int n = INF_LBASE[s] + e;
+            if (!decode(dc, d)) return false;
+            if (d >= 30) return fail("bad distance code");
+            if (!bits(INF_DEXT[d], e)) return false;
+            size_t dist = (size_t)INF_DBASE[d] + e;
+            if (dist > out.size()) return fail("distance too far back");
+            while (n--) if (!put(out[out.size() - dist])) return false;
+        }
+    }
+    bool run() {
+        Huff fl, fd;
+        bool fixedReady = false;
+        for (;;) {
+            int last, type;
+            if (!bits(1, last) || !bits(2, type)) return false;
+            if (type == 0) {
+                bitbuf = 0; bitcnt = 0;
+                if (len - pos < 4) return fail("unexpected end");
+                unsigned n = src[pos] | src[pos + 1] << 8, nn = src[pos + 2] | src[pos + 3] << 8;
+                pos += 4;
+                if (n != (~nn & 0xffff)) return fail("bad stored block");
+                if (len - pos < n) return fail("unexpected end");
+                for (unsigned i = 0; i < n; i++) if (!put(src[pos++])) return false;
+            } else if (type == 1) {
+                if (!fixedReady) {
+                    uint8_t l[288], dl[30];
+                    for (int i = 0; i < 288; i++) l[i] = i < 144 ? 8 : i < 256 ? 9 : i < 280 ? 7 : 8;
+                    for (int i = 0; i < 30; i++) dl[i] = 5;
+                    if (!build(fl, l, 288) || !build(fd, dl, 30)) return false;
+                    fixedReady = true;
+                }
+                if (!codes(fl, fd)) return false;
+            } else if (type == 2) {
+                int nlen, ndist, ncode, v;
+                if (!bits(5, nlen) || !bits(5, ndist) || !bits(4, ncode)) return false;
+                nlen += 257; ndist += 1; ncode += 4;
+                if (nlen > 286 || ndist > 30) return fail("bad counts");
+                uint8_t cl[19] = {0}, lens[316] = {0};
+                for (int i = 0; i < ncode; i++) { if (!bits(3, v)) return false; cl[INF_ORDER[i]] = (uint8_t)v; }
+                Huff ch, lc, dc;
+                if (!build(ch, cl, 19)) return false;
+                for (int i = 0; i < nlen + ndist;) {
+                    int s;
+                    if (!decode(ch, s)) return false;
+                    if (s < 16) { lens[i++] = (uint8_t)s; continue; }
+                    int l = 0, rep;
+                    if (s == 16) { if (!i) return fail("repeat without length"); l = lens[i - 1]; if (!bits(2, rep)) return false; rep += 3; }
+                    else if (s == 17) { if (!bits(3, rep)) return false; rep += 3; }
+                    else { if (!bits(7, rep)) return false; rep += 11; }
+                    if (i + rep > nlen + ndist) return fail("too many lengths");
+                    while (rep--) lens[i++] = (uint8_t)l;
+                }
+                if (!lens[256]) return fail("no end-of-block code");
+                if (!build(lc, lens, nlen) || !build(dc, lens + nlen, ndist)) return false;
+                if (!codes(lc, dc)) return false;
+            } else return fail("bad block type");
+            if (last) return true;
+        }
+    }
+};
+
+// ---- MessagePack -> cJSON
+const int MP_MAX_DEPTH = 64;
+
+std::string hexUpper(const uint8_t* p, size_t n) {
+    static const char* H = "0123456789ABCDEF";
+    std::string s;
+    s.reserve(n * 2);
+    for (size_t i = 0; i < n; i++) { s += H[p[i] >> 4]; s += H[p[i] & 15]; }
+    return s;
+}
+
+// JavaScript lists object keys that are array indices (canonical decimal, 0 .. 2^32-2) first, ascending.
+bool jsIndexKey(const char* k, uint32_t& v) {
+    if (!k || !*k || (k[0] == '0' && k[1])) return false;
+    uint64_t x = 0;
+    for (const char* p = k; *p; p++) {
+        if (*p < '0' || *p > '9' || p - k >= 10) return false;
+        x = x * 10 + (uint64_t)(*p - '0');
+    }
+    if (x > 4294967294ull) return false;
+    v = (uint32_t)x;
+    return true;
+}
+void jsKeyOrder(cJSON* obj) {
+    std::vector<std::pair<uint32_t, cJSON*>> idx;
+    std::vector<cJSON*> rest;
+    for (cJSON* c = obj->child; c; c = c->next) {
+        uint32_t v;
+        if (jsIndexKey(c->string, v)) idx.push_back({v, c}); else rest.push_back(c);
+    }
+    if (idx.empty()) return;
+    std::stable_sort(idx.begin(), idx.end(), [](const std::pair<uint32_t, cJSON*>& a, const std::pair<uint32_t, cJSON*>& b) { return a.first < b.first; });
+    std::vector<cJSON*> all;
+    all.reserve(idx.size() + rest.size());
+    for (auto& p : idx) all.push_back(p.second);
+    all.insert(all.end(), rest.begin(), rest.end());
+    obj->child = all[0];
+    for (size_t i = 0; i < all.size(); i++) {
+        all[i]->prev = i ? all[i - 1] : all.back();
+        all[i]->next = i + 1 < all.size() ? all[i + 1] : nullptr;
+    }
+}
+
+// Moves the key of `from` to `to` (both detached or `from` about to be replaced by `to`).
+void moveKey(cJSON* from, cJSON* to) {
+    to->string = from->string;
+    from->string = nullptr;
+    if (from->type & cJSON_StringIsConst) { to->type |= cJSON_StringIsConst; from->type &= ~cJSON_StringIsConst; }
+}
+
+struct MpReader {
+    const uint8_t* b; size_t n, o = 0;
+    std::string err;
+    MpReader(const uint8_t* d, size_t s) : b(d), n(s) {}
+    bool fail(const std::string& m) { if (err.empty()) err = m; return false; }
+    bool need(size_t k) {
+        if (k > n - o) { char m[64]; snprintf(m, sizeof m, "MessagePack: unexpected end at 0x%zX", o); return fail(m); }
+        return true;
+    }
+    bool be(int k, uint64_t& v) {
+        if (!need((size_t)k)) return false;
+        v = 0;
+        for (int i = 0; i < k; i++) v = v << 8 | b[o + i];
+        o += (size_t)k;
+        return true;
+    }
+    bool count(uint64_t c) {
+        if (c > n - o) { char m[64]; snprintf(m, sizeof m, "MessagePack: bad length at 0x%zX", o); return fail(m); }
+        return true;
+    }
+    static std::string cutStr(const uint8_t* p, size_t k) { size_t z = 0; while (z < k && p[z]) z++; return std::string((const char*)p, z); }
+    cJSON* ext(int8_t type, size_t k) {
+        if (!need(k)) return nullptr;
+        const uint8_t* p = b + o;
+        o += k;
+        if (type == -1 && (k == 4 || k == 8 || k == 12)) {   // timestamp -> whole seconds
+            auto rd = [&](int at, int len) { uint64_t v = 0; for (int i = 0; i < len; i++) v = v << 8 | p[at + i]; return v; };
+            if (k == 4) return cJSON_CreateNumber((double)rd(0, 4));
+            if (k == 8) return cJSON_CreateNumber((double)(rd(0, 8) & 0x3FFFFFFFFull));
+            return cJSON_CreateNumber((double)(int64_t)rd(4, 8));
+        }
+        return cJSON_CreateString(("ext:" + std::to_string((int)type) + ":" + hexUpper(p, k)).c_str());
+    }
+    // One value. With `key`, the value is read as a map key: *key receives its text and a dummy node is returned.
+    cJSON* value(int depth, std::string* key);
+    cJSON* array(uint64_t c, int depth, std::string* key) {
+        if (!count(c)) return nullptr;
+        cJSON* a = cJSON_CreateArray();
+        for (uint64_t i = 0; i < c; i++) {
+            cJSON* v = value(depth + 1, nullptr);
+            if (!v) { cJSON_Delete(a); return nullptr; }
+            cJSON_AddItemToArray(a, v);
+        }
+        if (key) { cJSON_Delete(a); *key = "<array>"; return cJSON_CreateNull(); }
+        return a;
+    }
+    cJSON* map(uint64_t c, int depth, std::string* key) {
+        if (!count(c)) return nullptr;
+        cJSON* m = cJSON_CreateObject();
+        std::unordered_map<std::string, cJSON*> seen;
+        for (uint64_t i = 0; i < c; i++) {
+            std::string k;
+            cJSON* kd = value(depth + 1, &k);
+            if (!kd) { cJSON_Delete(m); return nullptr; }
+            cJSON_Delete(kd);
+            cJSON* v = value(depth + 1, nullptr);
+            if (!v) { cJSON_Delete(m); return nullptr; }
+            auto it = seen.find(k);
+            if (it != seen.end()) {   // repeated key: first place, last value (JavaScript object semantics)
+                moveKey(it->second, v);
+                cJSON_ReplaceItemViaPointer(m, it->second, v);
+                it->second = v;
+            } else {
+                cJSON_AddItemToObject(m, k.c_str(), v);
+                seen[k] = v;
+            }
+        }
+        if (key) { cJSON_Delete(m); *key = "<map>"; return cJSON_CreateNull(); }
+        jsKeyOrder(m);
+        return m;
+    }
+};
+
+cJSON* MpReader::value(int depth, std::string* key) {
+    if (depth > MP_MAX_DEPTH) { fail("MessagePack: nested too deep"); return nullptr; }
+    if (!need(1)) return nullptr;
+    uint8_t t = b[o++];
+    uint64_t c;
+    // scalar: node, and its text when it is a map key
+    auto ret = [&](cJSON* node, const std::string& asKey) -> cJSON* {
+        if (node && key) *key = asKey;
+        return node;
+    };
+    auto str = [&](uint64_t k) -> cJSON* {
+        if (!need((size_t)k)) return nullptr;
+        std::string s = cutStr(b + o, (size_t)k);
+        o += (size_t)k;
+        return ret(cJSON_CreateString(s.c_str()), s);
+    };
+    if (t <= 0x7f) return ret(cJSON_CreateNumber(t), std::to_string(t));
+    if (t >= 0xe0) return ret(cJSON_CreateNumber((int)t - 256), std::to_string((int)t - 256));
+    if (t >= 0x80 && t <= 0x8f) return map(t & 15, depth, key);
+    if (t >= 0x90 && t <= 0x9f) return array(t & 15, depth, key);
+    if (t >= 0xa0 && t <= 0xbf) return str(t & 31);
+    switch (t) {
+        case 0xc0: return ret(cJSON_CreateNull(), "null");
+        case 0xc2: return ret(cJSON_CreateFalse(), "false");
+        case 0xc3: return ret(cJSON_CreateTrue(), "true");
+        case 0xc4: case 0xc5: case 0xc6: {
+            if (!be(1 << (t - 0xc4), c) || !need((size_t)c)) return nullptr;
+            std::string h = hexUpper(b + o, (size_t)c);
+            o += (size_t)c;
+            return ret(cJSON_CreateString(h.c_str()), "<bin>");
+        }
+        case 0xc7: case 0xc8: case 0xc9: {
+            uint64_t ty;
+            if (!be(1 << (t - 0xc7), c) || !be(1, ty)) return nullptr;
+            return ret(ext((int8_t)(uint8_t)ty, (size_t)c), "<ext>");
+        }
+        case 0xca: {
+            uint64_t v;
+            if (!be(4, v)) return nullptr;
+            uint32_t u = (uint32_t)v;
+            float f;
+            memcpy(&f, &u, 4);
+            double d = f;
+            return ret(std::isfinite(d) ? cJSON_CreateNumber(Reader::fixed6(d)) : cJSON_CreateNull(), "<float>");
+        }
+        case 0xcb: {
+            uint64_t v;
+            if (!be(8, v)) return nullptr;
+            double d;
+            memcpy(&d, &v, 8);
+            return ret(num(d), "<float>");
+        }
+        case 0xcc: case 0xcd: case 0xce: case 0xcf: {
+            if (!be(1 << (t - 0xcc), c)) return nullptr;
+            return ret(cJSON_CreateNumber((double)c), std::to_string(c));
+        }
+        case 0xd0: case 0xd1: case 0xd2: case 0xd3: {
+            int k = 1 << (t - 0xd0);
+            if (!be(k, c)) return nullptr;
+            int64_t v = k == 8 ? (int64_t)c : (int64_t)(c << (64 - 8 * k)) >> (64 - 8 * k);
+            return ret(cJSON_CreateNumber((double)v), std::to_string(v));
+        }
+        case 0xd4: case 0xd5: case 0xd6: case 0xd7: case 0xd8: {
+            uint64_t ty;
+            if (!be(1, ty)) return nullptr;
+            return ret(ext((int8_t)(uint8_t)ty, (size_t)1 << (t - 0xd4)), "<ext>");
+        }
+        case 0xd9: case 0xda: case 0xdb:
+            if (!be(1 << (t - 0xd9), c)) return nullptr;
+            return str(c);
+        case 0xdc: case 0xdd:
+            if (!be(t == 0xdc ? 2 : 4, c)) return nullptr;
+            return array(c, depth, key);
+        case 0xde: case 0xdf:
+            if (!be(t == 0xde ? 2 : 4, c)) return nullptr;
+            return map(c, depth, key);
+    }
+    char m[80];
+    snprintf(m, sizeof m, "MessagePack: invalid byte 0x%02X at 0x%zX", t, o - 1);
+    fail(m);
+    return nullptr;
+}
+
+// ---- THEATRHYTHM FINAL BAR LINE
+const char* const TH_PLAYSTYLE[] = {"Highscore", "UpdateDateUniversal", "BestPlayRank", "MaxChainCount", "BestClearMark", "CriticalBarZones",
+                                    "TotalPlayCount", "TotalClearCount", "TotalFullChainClearCount", "MaxDamage"};
+const char* const TH_MYPROFICA[] = {"MyGuid", "ProficaIllustID", "ProficaBaseDesignID", "ProficaBaseColorType", "SummonStoneIndex", "LatestPlayedMusics", "EditedFlag"};
+const char* const TH_RIVAL[] = {"CursorSelectedFlag", "LockedFlag", "ObtainUniversalDateTime", "LastPlayedMusic", "_4", "ProficaIllustID", "ProficaBaseDesignID",
+                                "ProficaBaseColorType", "MyMoogleID", "SummonStone", "AccountName", "InternalAccountID", "TotalRhythpo", "TotalPlayTime",
+                                "TotalAchievement", "GameCompletion", "PlayMusicRanking", "PartySet", "CharacterUseCount", "CollecaCategory",
+                                "SeriesCompleteCount", "BestReachedEndlessStage", "ClearMusicNumber", "BestDamageRanking", "TotalMusicPlayCount",
+                                "TotalWinCount", "CurrentRate", "LatestPlayedMusics"};
+
+// [Key(n)] array -> object with the game's field names, in place (only when the length matches).
+void thLabelIn(cJSON* parent, cJSON* item, const char* const* names, int n) {
+    if (!cJSON_IsArray(item) || cJSON_GetArraySize(item) != n) return;
+    cJSON* o = cJSON_CreateObject();
+    for (int i = 0; i < n; i++) cJSON_AddItemToObject(o, names[i], cJSON_DetachItemFromArray(item, 0));
+    moveKey(item, o);
+    cJSON_ReplaceItemViaPointer(parent, item, o);
+}
+void theatrhythmLabels(cJSON* t) {
+    cJSON* mi = cJSON_GetObjectItemCaseSensitive(t, "MusicInfo");
+    cJSON* mr = cJSON_IsObject(mi) ? cJSON_GetObjectItemCaseSensitive(mi, "MusicRecordDictionary") : nullptr;
+    if (cJSON_IsObject(mr)) for (cJSON* m = mr->child; m; m = m->next) {
+        cJSON* dr = cJSON_IsObject(m) ? cJSON_GetObjectItemCaseSensitive(m, "DifficultyRecordDictionary") : nullptr;
+        if (!cJSON_IsObject(dr)) continue;
+        for (cJSON* d = dr->child; d; d = d->next) {
+            cJSON* ps = cJSON_IsObject(d) ? cJSON_GetObjectItemCaseSensitive(d, "PlayStyleRecordDictionary") : nullptr;
+            if (!cJSON_IsObject(ps)) continue;
+            for (cJSON* s = ps->child; s;) { cJSON* next = s->next; thLabelIn(ps, s, TH_PLAYSTYLE, 10); s = next; }
+        }
+    }
+    cJSON* pi = cJSON_GetObjectItemCaseSensitive(t, "ProficaInfo");
+    if (cJSON_IsObject(pi)) {
+        cJSON* my = cJSON_GetObjectItemCaseSensitive(pi, "MyProfica");
+        if (my) thLabelIn(pi, my, TH_MYPROFICA, 7);
+        cJSON* rl = cJSON_GetObjectItemCaseSensitive(pi, "RivalProficaList");
+        if (cJSON_IsArray(rl)) for (cJSON* r = rl->child; r;) { cJSON* next = r->next; thLabelIn(rl, r, TH_RIVAL, 28); r = next; }
+    }
+}
+
+// Ciphertext body (after the PS4 length prefix, if any), or nullptr.
+const uint8_t* theatrhythmBody(const uint8_t* d, size_t n, size_t& bodyLen, bool& ps4) {
+    ps4 = false;
+    if (n >= 52 && (n - 4) % 16 == 0 && ((uint32_t)d[0] | (uint32_t)d[1] << 8 | (uint32_t)d[2] << 16 | (uint32_t)d[3] << 24) == n - 4) {
+        ps4 = true;
+        bodyLen = n - 4;
+        return d + 4;
+    }
+    if (n >= 48 && n % 16 == 0) { bodyLen = n; return d; }
+    return nullptr;
+}
+
+}  // namespace
+
+bool inflateRaw(const uint8_t* in, size_t inSize, std::vector<uint8_t>& out, size_t maxOut, std::string* error) {
+    out.clear();
+    out.reserve(std::min(maxOut, inSize * 4 + 1024));
+    Inflater f(in, inSize, out, maxOut);
+    bool ok = f.run();
+    if (!ok && error) *error = f.err;
+    return ok;
+}
+
+cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_t* used) {
+    MpReader r(data, size);
+    cJSON* t = r.value(0, nullptr);
+    if (!t) { error = r.err.empty() ? "MessagePack: invalid data" : r.err; return nullptr; }
+    if (used) *used = r.o;
+    return t;
+}
+
+bool isTheatrhythm(const uint8_t* data, size_t size) {
+    size_t bl;
+    bool ps4;
+    return theatrhythmBody(data, size, bl, ps4) != nullptr;
+}
+
+cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info) {
+    size_t bl = 0;
+    bool ps4 = false;
+    const uint8_t* body = theatrhythmBody(data, size, bl, ps4);
+    if (!body) { error = "size " + std::to_string(size) + " is not a 32-byte header + AES blocks"; return nullptr; }
+    if (password.empty()) { error = "no password"; return nullptr; }
+    uint8_t salt[16], iv[16], key[16];
+    memcpy(salt, body, 8); memcpy(salt + 8, body + 24, 8);    // q0 || q3
+    memcpy(iv, body + 16, 8); memcpy(iv + 8, body + 8, 8);     // q2 || q1
+    pbkdf2Sha1(password, salt, 16, 1000, key, 16);
+    const uint8_t* ct = body + 32;
+    size_t clen = bl - 32;
+    uint8_t tail[16];
+    aes128CbcDecrypt(key, ct + clen - 32, ct + clen - 16, 16, tail);   // padding check on the last block first
+    int pad = tail[15];
+    bool padOk = pad >= 1 && pad <= 16;
+    for (int i = 16 - pad; padOk && i < 16; i++) if (tail[i] != pad) padOk = false;
+    if (!padOk) { error = "wrong password or not a THEATRHYTHM save (bad padding)"; return nullptr; }
+    std::vector<uint8_t> pt(clen);
+    aes128CbcDecrypt(key, iv, ct, clen, pt.data());
+    std::vector<uint8_t> raw;
+    std::string e;
+    bool inflated = inflateRaw(pt.data(), clen - (size_t)pad, raw, 64u << 20, &e);
+    std::vector<uint8_t>().swap(pt);
+    if (!inflated) { error = "wrong password or damaged file (" + e + ")"; return nullptr; }
+    cJSON* t = msgpackToJson(raw.data(), raw.size(), error);
+    if (!t) return nullptr;
+    if (!cJSON_IsObject(t)) { cJSON_Delete(t); error = "MessagePack root is not a map"; return nullptr; }
+    theatrhythmLabels(t);
+    if (info) {
+        cJSON* v = cJSON_GetObjectItemCaseSensitive(t, "Version");
+        info->summary = std::string("THEATRHYTHM save (") + (ps4 ? "PS4" : "Switch") + ", MessagePack " + std::to_string(raw.size() / 1024) +
+                        " KB" + (cJSON_IsString(v) ? std::string(", v") + v->valuestring : std::string()) + ")";
+    }
+    return t;
+}
+
+bool TheatrhythmDoc::parse(std::vector<uint8_t>&& data) {
+    cJSON* t = theatrhythmToJson(data.data(), data.size(), password, error, &info);
+    std::vector<uint8_t>().swap(data);
     if (!t) return false;
     adopt(t, false);
     return true;

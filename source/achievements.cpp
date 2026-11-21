@@ -206,6 +206,7 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
 void buildLibrary(Library& lib, plat::ProgressFn progress, void* ctx) {
     lib = Library();
     std::map<uint64_t, GameDef> defs;
+    setSaveKeyDir(plat::dataDir() + "/keys");   // passwords of encrypted saves (keys/theatrhythm.txt...), never shipped
     loadGameDefs(plat::romfsDir() + "/games", defs, lib.loadErrors, lib.defsLoaded);
     loadGameDefs(plat::dataDir() + "/games", defs, lib.loadErrors, lib.defsLoaded);   // SD card overrides/additions
     std::vector<Achievement> perGame, global;

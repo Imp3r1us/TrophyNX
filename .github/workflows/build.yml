@@ -30,6 +30,9 @@ jobs:
           apt-get install -y -qq python3 >/dev/null
           python3 tools/deltarune/make_test_save.py /tmp/drsave
           /tmp/test_deltarune /tmp/drsave
+          # THEATRHYTHM reader (AES + raw DEFLATE + MessagePack) on synthetic saves (dummy password), with sanitizers
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_theatrhythm.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_theatrhythm
+          /tmp/test_theatrhythm
       - name: Host test (scan on close = same values as the app)
         run: |
           apt-get install -y -qq python3 >/dev/null

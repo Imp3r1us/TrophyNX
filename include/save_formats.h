@@ -5,6 +5,7 @@
 //   "nrbf" reader: .NET BinaryFormatter streams (Unity games)
 //   "sgb" reader: Supergiant Games saves (Hades: "SGB1" header + LZ4 block + luabins Lua state)
 //   "deltarune" reader: DELTARUNE deltarune.sav (JSON of GameMaker text files; see deltaruneToJson below)
+//   "theatrhythm" reader: THEATRHYTHM FINAL BAR LINE (AES + raw DEFLATE + MessagePack; see theatrhythmToJson below)
 // Mapping, in short: properties / class members -> object keys; arrays, sets, List<T>, HashSet<T> -> lists;
 // maps and Dictionary<K,V> -> lists of {"Key","Value"}; enums -> number (NRBF) or name (GVAS);
 // GUIDs -> 32 hex digits; dates -> ticks; values that cannot be decoded -> null.
@@ -51,6 +52,24 @@ bool isDeltarune(const uint8_t* data, size_t size);
 cJSON* deltaruneToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info = nullptr);
 // LZ4 block format (no frame). false if the input is malformed or the output would exceed maxOut.
 bool lz4BlockDecompress(const uint8_t* in, size_t inSize, std::vector<uint8_t>& out, size_t maxOut);
+// Raw DEFLATE (RFC 1951, no zlib header). false (+ error) if malformed or the output would exceed maxOut.
+bool inflateRaw(const uint8_t* in, size_t inSize, std::vector<uint8_t>& out, size_t maxOut, std::string* error = nullptr);
+// Generic MessagePack -> tree, reusable by any game (same tree as parseMsgpack in tools/savelab/formats.js):
+// nil -> null, bool, integers -> number, float32 -> number rounded to 6 decimals, float64, str (cut at NUL),
+// bin -> uppercase hex, array -> list, map -> object (integer keys in decimal; nil/true/false keys by name;
+// other keys "<float>" "<bin>" "<array>" "<map>" "<ext>"; a repeated key keeps its first place and its last value;
+// integer-like keys 0..2^32-2 first in ascending order, like a JavaScript object), ext -1 (timestamp) -> whole
+// seconds since 1970, other ext -> "ext:<type>:<HEX>". `used` = bytes read (data may have trailing bytes).
+cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_t* used = nullptr);
+// THEATRHYTHM FINAL BAR LINE backup.inf / musicBackup.inf / proficaBackup.inf:
+// [u32 LE length, PS4 only] + 32-byte header q0..q3 + AES-128-CBC (salt q0||q3, iv q2||q1,
+// key = PBKDF2-HMAC-SHA1(password, salt, 1000, 16)) of raw DEFLATE of MessagePack. The password is never
+// built in: the app reads it from sdmc:/switch/TrophyNX/keys/theatrhythm.txt ("key_file" of the definition).
+// Tree = msgpackToJson, with the [Key(n)] records labelled: MusicInfo/MusicRecordDictionary/<id>/
+// DifficultyRecordDictionary/<d>/PlayStyleRecordDictionary/<s>/{Highscore, ..., TotalPlayCount, TotalClearCount,
+// TotalFullChainClearCount, MaxDamage}, ProficaInfo/MyProfica, ProficaInfo/RivalProficaList[*].
+bool isTheatrhythm(const uint8_t* data, size_t size);   // size check only (the content needs the password)
+cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info = nullptr);
 
 class GvasDoc : public JsonDoc {
 public:
@@ -73,5 +92,12 @@ public:
 class DeltaruneDoc : public JsonDoc {
 public:
     bool parse(std::vector<uint8_t>&& data);
+    SaveFormatInfo info;
+};
+
+class TheatrhythmDoc : public JsonDoc {
+public:
+    bool parse(std::vector<uint8_t>&& data);   // needs `password` set first
+    std::string password;
     SaveFormatInfo info;
 };

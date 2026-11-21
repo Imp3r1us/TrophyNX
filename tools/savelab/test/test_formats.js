@@ -80,10 +80,75 @@ ok(ido.xorKey === 'Sup3rSecretKey!' && ido.reader === 'json', 'XOR: unknown key 
 const noise = new Uint8Array(4000).map((_, i) => (i * 2654435761 >>> 24) & 0x7F);
 ok(!E.identify(noise).xorKey, 'no XOR false positive on 7-bit noise');
 
+// ---- THEATRHYTHM FINAL BAR LINE (AES-128-CBC + raw DEFLATE + MessagePack), synthetic saves with a DUMMY password
+// (tools/savelab/test/make_theatrhythm_fixtures.js). The game's password is never in the repo.
+{
+  const zlib = require('zlib'), crypto = require('crypto');
+  const TH = (f) => load('theatrhythm/' + f);
+  const PW = fs.readFileSync(path.join(fx, 'theatrhythm/password.txt'), 'utf8').trim();
+  // primitives against Node's own implementations
+  const rnd = Buffer.from(Array.from({ length: 3000 }, (_, i) => (i * 2654435761 >>> 13) & 0xff));
+  ok(Buffer.from(F.sha1(rnd)).equals(crypto.createHash('sha1').update(rnd).digest()) && Buffer.from(F.sha1(new Uint8Array(55))).equals(crypto.createHash('sha1').update(Buffer.alloc(55)).digest()), 'SHA-1');
+  const salt = Buffer.from('0123456789abcdef'), longPw = Buffer.alloc(100, 7);
+  ok(Buffer.from(F.pbkdf2Sha1(Buffer.from(PW), salt, 1000, 16)).equals(crypto.pbkdf2Sync(PW, salt, 1000, 16, 'sha1')) &&
+     Buffer.from(F.pbkdf2Sha1(longPw, salt, 3, 16)).equals(crypto.pbkdf2Sync(longPw, salt, 3, 16, 'sha1')), 'PBKDF2-HMAC-SHA1 (short and > 64-byte password)');
+  const k = Buffer.alloc(16, 3), iv = Buffer.alloc(16, 9), c = crypto.createCipheriv('aes-128-cbc', k, iv).setAutoPadding(false);
+  const ct = Buffer.concat([c.update(rnd.subarray(0, 1024)), c.final()]);
+  ok(Buffer.from(F.aes128CbcDecrypt(k, iv, ct)).equals(rnd.subarray(0, 1024)), 'AES-128-CBC decryption');
+  const words = Buffer.from(Array.from({ length: 4000 }, (_, i) => 'lorem ipsum dolor sit amet '[i % 27]).join('') + rnd.toString('latin1'), 'latin1');
+  const inf = [0, 1, 6, 9].every(l => Buffer.from(F.inflateRawSync(zlib.deflateRawSync(words, { level: l }))).equals(words));
+  ok(inf && Buffer.from(F.inflateRawSync(zlib.deflateRawSync(Buffer.from('short text short text')))).toString() === 'short text short text', 'raw inflate: stored, fixed and dynamic blocks');
+  let bad = 0;
+  for (const junk of [Buffer.from([0xff, 0xff]), zlib.deflateRawSync(words).subarray(0, 100), Buffer.from([0x07])]) { try { F.inflateRawSync(junk); } catch (e) { bad++; } }
+  ok(bad === 3, 'raw inflate rejects malformed / truncated data');
+  threw = false; try { F.inflateRawSync(zlib.deflateRawSync(Buffer.alloc(100000)), 5000); } catch (e) { threw = /too large/.test(e.message); }
+  ok(threw, 'raw inflate output limit');
+
+  // without the password nothing is recognised; with it, every file decodes
+  F.setPassword('theatrhythm', '');
+  ok(E.parseTree(TH('backup.inf')) === null && /encrypted|chiffr/.test(E.identify(TH('backup.inf'), 'backup.inf').format), 'no password: not decoded, identified as encrypted');
+  F.setPassword('theatrhythm', 'wrong password');
+  ok(E.parseTree(TH('backup.inf')) === null, 'wrong password: not decoded');
+  F.setPassword('theatrhythm', PW + '\n');
+  const bk = E.parseTree(TH('backup.inf')), mu = E.parseTree(TH('musicBackup.inf')), pr = E.parseTree(TH('proficaBackup.inf'));
+  ok(bk.reader === 'theatrhythm' && mu.reader === 'theatrhythm' && pr.reader === 'theatrhythm', 'parseTree picks the theatrhythm module (Switch + PS4 layouts)');
+  ok(mu.meta.ps4 && !bk.meta.ps4 && /Switch/.test(E.identify(TH('backup.inf'), 'backup.inf').format), 'PS4 length prefix detected');
+  const b = bk.tree, one1 = (t, p) => one(t, p);
+  ok(one1(b, 'MusicStageInfo/TotalScore') === 5000000123 && one1(b, 'RhythpoInfo/TotalRhythpoValue') === 123456 && one1(b, 'UserInfo/PlayTimeDouble') === 3600.25, '64-bit int, int, double');
+  ok(one1(b, 'MusicSelectInfo/PickupLastLottedDateUniversal') === 1795262771 && one1(b, 'RhythpoInfo/EverydayPlayBonus/LastDateTime') === -62135596800, 'timestamps -> seconds');
+  ok(one1(b, 'SeriesQuestInfo/WorldDictionary/50000003/Cleared') === true && E.queryByml(b, 'SeriesQuestInfo/WorldDictionary[*]/Completed').filter(Boolean).length === 11, 'int-keyed Dictionary -> object');
+  ok(Object.keys(b.CharacterInfo.Characters['230000003'].AbilityData).join() === '240000229,4294967295', 'key order: integer-like keys, then 4294967295');
+  const ps = mu.tree.MusicInfo.MusicRecordDictionary['160000005'].DifficultyRecordDictionary['1'].PlayStyleRecordDictionary['0'];
+  ok(ps.Highscore === 987654 && ps.TotalPlayCount === 11 && ps.TotalFullChainClearCount === 6 && ps.BestClearMark === 0 && ps.CriticalBarZones[1] === 0.05, 'PlayStyleRecord fields labelled');
+  ok(Object.keys(mu.tree.MusicInfo.MusicRecordDictionary).join() === '160000000,160000001,160000005', 'music ids in ascending order');
+  ok(one1(pr.tree, 'ProficaInfo/MyProfica/ProficaIllustID') === 150000031 && one1(pr.tree, 'ProficaInfo/MyProfica/LatestPlayedMusics[0]') === 160000005, 'MyProfica labelled');
+  const ed = F.parseTheatrhythm(TH('edge.inf')).tree;
+  ok(Object.keys(ed).slice(0, 3).join() === '2,5,10' && ed.dup === 2 && Object.keys(ed).indexOf('dup') < Object.keys(ed).indexOf('ts4'), 'MessagePack keys: order, duplicates');
+  ok(ed['4294967295'] === 'max u32 key' && ed['12345678901234567890'] === 'u64 key' && ed['-1'] === 'neg key' && ed.null === 'nil key' && ed['<float>'] === 'float key' && ed['<map>'] === 'map key', 'MessagePack keys of every type');
+  ok(ed.nul === 'a' && ed.bin === '0001ABFF' && ed.f32 === 0.1 && ed.nan === null && ed.inf === null && ed.ts4 === 1700000000 && ed.ts8 === 1700000001 && ed.ext === 'ext:7:DEAD', 'MessagePack values: NUL, bin, float, non-finite, ext');
+  ok(Object.getPrototypeOf(ed) === Object.prototype && ed.__proto__ && !({}).polluted, '__proto__ key stored as data');
+  threw = false; try { F.parseMsgpack(new Uint8Array([0xdd, 0xff, 0xff, 0xff, 0xff])); } catch (e) { threw = true; }
+  ok(threw, 'MessagePack: absurd length rejected');
+  // the definition, evaluated on the synthetic saves
+  const defT = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../romfs/games/010081B01777C000.json'), 'utf8'));
+  ok(!E.validate(defT).length && defT.reader === 'theatrhythm', 'THEATRHYTHM definition validates');
+  const rt = E.evaluate(defT, [{ path: 'backup.inf', data: TH('backup.inf') }, { path: 'musicBackup.inf', data: TH('musicBackup.inf') }]).results.filter(x => !x.skip);
+  const met = rt.filter(x => x.met).map(x => x.id);
+  const notFound = rt.filter(x => /not found/.test(x.note || '')).map(x => x.id);
+  ok(!notFound.length, 'every rule path exists in the synthetic saves' + (notFound.length ? ' (missing: ' + notFound + ')' : ''));
+  ok(['first_perfect_chain', 'all_critical', 'ending', 'played_300', 'encore', 'chains_100', 'points_5b', 'items_100', 'abilities_1000', 'enemies_5000', 'lv99_x4', 'star9',
+      'rhythmia_100k', 'cards_300', 'drops_1000', 'summonstones_30', 'quests_10', 'quest_complete_10', 'endless_20', 'top_hits_5'].every(i => met.includes(i)) &&
+     !met.includes('cards_1000') && !met.includes('quest_complete_20'), 'THEATRHYTHM rules on the synthetic saves (met: ' + met.length + ')');
+  F.setPassword('theatrhythm', '');
+}
+
 // ---- same tree as the app (C++), on the fixtures and any extra files given
 if (process.env.CPP_DUMP) {
+  // THEATRHYTHM files need a password: THEATRHYTHM_KEY=<file> (default: the dummy one of the fixtures)
+  F.setPassword('theatrhythm', fs.readFileSync(process.env.THEATRHYTHM_KEY || path.join(fx, 'theatrhythm/password.txt'), 'utf8'));
   const files = process.argv.slice(2).length ? process.argv.slice(2) : ['gvas/Slot1.sav', 'gvas/assert_failed.sav', 'gvas/tagcontainer.sav', 'gvas/regression_01.bin',
-    'gvas/vector2d.sav', 'gvas/Options.sav', 'nrbf/save0.dat', 'nrbf/save1.dat', 'nrbf/string.dat', 'nrbf/list.dat'].map(f => path.join(fx, f));
+    'gvas/vector2d.sav', 'gvas/Options.sav', 'nrbf/save0.dat', 'nrbf/save1.dat', 'nrbf/string.dat', 'nrbf/list.dat',
+    'theatrhythm/backup.inf', 'theatrhythm/musicBackup.inf', 'theatrhythm/proficaBackup.inf', 'theatrhythm/edge.inf'].map(f => path.join(fx, f));
   const same = (x, y, p) => {
     if (typeof x === 'number' && typeof y === 'number') return x === y || Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x)) ? null : p + ': ' + x + ' ≠ ' + y;
     if (x === null || y === null || typeof x !== 'object' || typeof y !== 'object') return x === y ? null : p + ': ' + JSON.stringify(x) + ' ≠ ' + JSON.stringify(y);

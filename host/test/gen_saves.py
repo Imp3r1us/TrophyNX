@@ -74,3 +74,7 @@ import importlib.util
 spec=importlib.util.spec_from_file_location('drsave', os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','tools','deltarune','make_test_save.py'))
 drsave=importlib.util.module_from_spec(spec); spec.loader.exec_module(drsave)
 w('0100A0D022A68000','Deltarune/deltarune.sav',drsave.encode(drsave.save_partial()))
+# THEATRHYTHM FINAL BAR LINE: the encrypted fixtures of the Save Lab (DUMMY password -> <root>/keys/theatrhythm.txt)
+fx=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','tools','savelab','test','fixtures','theatrhythm')
+for f in ('backup.inf','musicBackup.inf'): w('010081B01777C000',f,open(os.path.join(fx,f),'rb').read())
+os.makedirs(f'{R}/keys', exist_ok=True); open(f'{R}/keys/theatrhythm.txt','wb').write(open(os.path.join(fx,'password.txt'),'rb').read())

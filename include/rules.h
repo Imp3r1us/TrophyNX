@@ -31,6 +31,7 @@ public:
 struct GameDef {
     uint64_t id = 0;
     std::string name, reader, magic, xorKey;
+    std::string keyFile;     // "key_file": password of an encrypted save, read from <key dir>/<key_file> (never shipped)
     uint64_t fileSize = 0;
     bool closeScan = true;   // "close_scan": false -> the background module doesn't scan it when the game closes
     std::vector<std::string> saveFiles;
@@ -45,6 +46,9 @@ void loadGameDefs(const std::string& dir, std::map<uint64_t, GameDef>& defs, std
 void loadUniversal(const std::string& path, std::vector<Achievement>& perGame, std::vector<Achievement>& global, std::string& errors);
 // Copies the reader settings and achievements of a definition into a game.
 void applyGameDef(Game& g, const GameDef& d);
+
+// Folder of the save passwords ("key_file" of a definition), e.g. sdmc:/switch/TrophyNX/keys. Empty = none.
+void setSaveKeyDir(const std::string& dir);
 
 // Reads the save of g (g.reader, g.saveFiles...) and sets a.value of its save-based achievements,
 // g.saveStatus and g.debug.

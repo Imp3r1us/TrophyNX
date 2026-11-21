@@ -166,6 +166,12 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
       <label><span class="l-en">File to analyse</span><span class="l-fr">Fichier à analyser</span></label>
       <select id="targetSel"></select>
     </div>
+    <details id="keyBox" style="margin-top:10px">
+      <summary class="small"><span class="l-en">Encrypted saves: THEATRHYTHM FINAL BAR LINE password</span><span class="l-fr">Saves chiffrées : mot de passe THEATRHYTHM FINAL BAR LINE</span></summary>
+      <p class="mute small l-en">backup.inf / musicBackup.inf / proficaBackup.inf are AES-encrypted. The password is a text of the game's own files (global-metadata.dat) and is not shipped with the Save Lab: paste it here. It stays in this browser (localStorage) and is never sent anywhere.</p>
+      <p class="mute small l-fr">backup.inf / musicBackup.inf / proficaBackup.inf sont chiffrés en AES. Le mot de passe est un texte des fichiers du jeu (global-metadata.dat), non fourni avec le Save Lab : collez-le ici. Il reste dans ce navigateur (localStorage) et n'est envoyé nulle part.</p>
+      <div class="row"><input id="thKey" type="password" autocomplete="off" spellcheck="false" style="flex:1"><button class="btn sm fix" id="thKeySave"><span class="l-en">Save and reload</span><span class="l-fr">Enregistrer et recharger</span></button></div>
+    </details>
   </div>
 
   <div class="card">
@@ -333,6 +339,9 @@ const PCDATA = /*PCDATA*/;
 (() => {
 'use strict';
 const E = SaveLab;
+// save passwords typed by the user (never bundled): set before anything is parsed
+const TH_KEY = 'savelab-key-theatrhythm';
+(() => { let k = ''; try { k = localStorage.getItem(TH_KEY) || ''; } catch (e) { } SaveFormats.setPassword('theatrhythm', k); })();
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -342,6 +351,8 @@ const LOC = T('en-US', 'fr-FR');
 // static texts: French options / placeholders, language switch
 if (SL_LANG === 'fr') { $$('[data-fr]').forEach(el => { el.textContent = el.dataset.fr; }); $$('[data-fr-ph]').forEach(el => { el.placeholder = el.dataset.frPh; }); }
 $('#langBtn').textContent = SL_LANG === 'fr' ? 'EN' : 'FR';
+try { if (localStorage.getItem(TH_KEY)) $('#thKey').placeholder = T('(saved)', '(enregistré)'); } catch (e) { }
+$('#thKeySave').addEventListener('click', () => { try { const v = $('#thKey').value.trim(); if (v) localStorage.setItem(TH_KEY, v); else localStorage.removeItem(TH_KEY); } catch (e) { } location.reload(); });
 $('#langBtn').addEventListener('click', () => { try { localStorage.setItem('savelab-lang', SL_LANG === 'fr' ? 'en' : 'fr'); } catch (e) { } location.reload(); });
 $('#clearAll').textContent = T('Clear all', 'Tout effacer');
 $('#askClaude').textContent = T('✦ Claude suggestions', '✦ Suggestions de Claude');

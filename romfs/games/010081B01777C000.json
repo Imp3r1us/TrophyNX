@@ -1,0 +1,498 @@
+{
+ "title_id": "010081B01777C000",
+ "name": "THEATRHYTHM FINAL BAR LINE",
+ "reader": "theatrhythm",
+ "key_file": "theatrhythm.txt",
+ "close_scan": false,
+ "save_files": [
+  "backup.inf",
+  "musicBackup.inf"
+ ],
+ "_note": "The 42 PS4 trophies, read from the encrypted save (reader \"theatrhythm\": AES-128-CBC + raw DEFLATE + MessagePack). The save password is not shipped: put it in sdmc:/switch/TrophyNX/keys/theatrhythm.txt (see tools/theatrhythm/README.md). close_scan false: the decoded musicBackup.inf (~750 KB of MessagePack) does not fit in the live module heap; the app reads it. Not tracked: THEATRHYTHM Maestro (platinum: no rule type for \"every other\"), A Musical Journey Begins (which world is the THEATRHYTHM series is unknown), Overflowing Gold (a filled Critical Chart is not stored as such), Show of Finesse, Unstoppable Force, Summon Tamer and Summon's True Power (per-song / per-attack values, not saved), 999er (current stats are not saved, only growth), Grand Rhythmist and Ultimate Rhythmist (need the list of base-game songs and a per-song test across difficulties).",
+ "achievements": [
+  {
+   "id": "first_series_clear",
+   "name": "In Pursuit of Harmony",
+   "desc": "Cleared first series title",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "count",
+    "path": "SeriesQuestInfo/WorldDictionary[*]/Cleared",
+    "target": 1,
+    "show_progress": false
+   },
+   "_source": "Series Quest worlds with Cleared = true"
+  },
+  {
+   "id": "first_perfect_chain",
+   "name": "Unbroken Symphony",
+   "desc": "Achieved first Perfect Chain",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalFullChainClearCount"
+    ],
+    "target": 1
+   },
+   "_source": "song records: TotalFullChainClearCount ([Key(8)] of MusicInfo.PlayStyleRecord; Perfect Chain = \"FullChain\" in the code)"
+  },
+  {
+   "id": "all_critical",
+   "name": "Perfectionist",
+   "desc": "Achieved first All Critical",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "count",
+    "path": "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/BestClearMark",
+    "target": 1,
+    "equals": 0,
+    "show_progress": false
+   },
+   "_source": "a song record whose BestClearMark is ClearMark01 (0); 3 = never cleared. 0 = All Critical is inferred from the enum order: check on console"
+  },
+  {
+   "id": "ending",
+   "name": "Outro",
+   "desc": "Beat the game and watched the ending",
+   "points": 50,
+   "tier": "gold",
+   "rule": {
+    "type": "flag",
+    "path": "SeriesQuestInfo/PlayedStaffCredit",
+    "target": 1
+   },
+   "_source": "SeriesQuestInfo/PlayedStaffCredit (staff roll)"
+  },
+  {
+   "id": "played_100",
+   "name": "Battling Musicians",
+   "desc": "Played 100 Music Stages",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount"
+    ],
+    "target": 100
+   },
+   "_source": "sum of TotalPlayCount of every song record"
+  },
+  {
+   "id": "played_300",
+   "name": "Veteran Orchestra",
+   "desc": "Played 300 Music Stages",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount"
+    ],
+    "target": 300
+   },
+   "_source": "same counter"
+  },
+  {
+   "id": "encore",
+   "name": "Encore!",
+   "desc": "Played one song 10 times",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "flag",
+    "path": "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalPlayCount",
+    "target": 10
+   },
+   "_source": "largest TotalPlayCount of one song at one difficulty and style (if the trophy counts every difficulty of a song, it can unlock later than on PS4)"
+  },
+  {
+   "id": "chains_50",
+   "name": "Uniting Melody",
+   "desc": "Achieved 50 Perfect Chains",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalFullChainClearCount"
+    ],
+    "target": 50
+   },
+   "_source": "sum of TotalFullChainClearCount"
+  },
+  {
+   "id": "chains_100",
+   "name": "Eternal Harmony",
+   "desc": "Achieved 100 Perfect Chains",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicInfo/MusicRecordDictionary[*]/DifficultyRecordDictionary[*]/PlayStyleRecordDictionary[*]/TotalFullChainClearCount"
+    ],
+    "target": 100
+   },
+   "_source": "same counter"
+  },
+  {
+   "id": "points_500m",
+   "name": "Winding Rhapsody",
+   "desc": "Received five hundred million points",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "flag",
+    "path": "MusicStageInfo/TotalScore",
+    "target": 500000000
+   },
+   "_source": "MusicStageInfo/TotalScore (long)"
+  },
+  {
+   "id": "points_5b",
+   "name": "Remnant Träumerei",
+   "desc": "Received five billion points",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "flag",
+    "path": "MusicStageInfo/TotalScore",
+    "target": 5000000000
+   },
+   "_source": "MusicStageInfo/TotalScore (long)"
+  },
+  {
+   "id": "items_100",
+   "name": "Item Enthusiast",
+   "desc": "Used 100 stage items",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "ItemInfo/Items[*]/TotalUseCount"
+    ],
+    "target": 100
+   },
+   "_source": "sum of ItemInfo/Items/<id>/TotalUseCount"
+  },
+  {
+   "id": "abilities_500",
+   "name": "Skilled Combatant",
+   "desc": "Activated abilities 500 times",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "flag",
+    "path": "MusicStageInfo/TotalAbilityCount",
+    "target": 500
+   },
+   "_source": "MusicStageInfo/TotalAbilityCount"
+  },
+  {
+   "id": "abilities_1000",
+   "name": "Combat Artist",
+   "desc": "Activated abilities 1,000 times",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "flag",
+    "path": "MusicStageInfo/TotalAbilityCount",
+    "target": 1000
+   },
+   "_source": "MusicStageInfo/TotalAbilityCount"
+  },
+  {
+   "id": "enemies_500",
+   "name": "Seasoned Hunter",
+   "desc": "Defeated 500 enemies",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicStageInfo/StandardPlayInfo/TotalMonsterKillCount",
+     "MusicStageInfo/SimplePlayInfo/TotalMonsterKillCount",
+     "MusicStageInfo/PairPlayInfo/TotalMonsterKillCount"
+    ],
+    "target": 500
+   },
+   "_source": "TotalMonsterKillCount of the Standard, Simple and Pair play records"
+  },
+  {
+   "id": "enemies_5000",
+   "name": "Unparalleled Hunter",
+   "desc": "Defeated 5,000 enemies",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicStageInfo/StandardPlayInfo/TotalMonsterKillCount",
+     "MusicStageInfo/SimplePlayInfo/TotalMonsterKillCount",
+     "MusicStageInfo/PairPlayInfo/TotalMonsterKillCount"
+    ],
+    "target": 5000
+   },
+   "_source": "same counters"
+  },
+  {
+   "id": "lv99_x4",
+   "name": "Indomitable Band",
+   "desc": "Four characters reached Lv99",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "count",
+    "path": "CharacterInfo/Characters[*]/Level",
+    "target": 4,
+    "equals": 99
+   },
+   "_source": "characters whose Level is 99"
+  },
+  {
+   "id": "star9",
+   "name": "Beyond the Stars",
+   "desc": "One character reached Star Level 9",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "flag",
+    "path": "CharacterInfo/Characters[*]/StarLevel",
+    "target": 9
+   },
+   "_source": "largest CharacterInfo/Characters/<id>/StarLevel"
+  },
+  {
+   "id": "rhythmia_10k",
+   "name": "Making Sound Waves",
+   "desc": "Obtained 10,000 Rhythmia",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "flag",
+    "path": "RhythpoInfo/TotalRhythpoValue",
+    "target": 10000
+   },
+   "_source": "RhythpoInfo/TotalRhythpoValue (Rhythmia = \"Rhythpo\" in the code)"
+  },
+  {
+   "id": "rhythmia_100k",
+   "name": "Riding the Symphonic Tide",
+   "desc": "Obtained 100,000 Rhythmia",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "flag",
+    "path": "RhythpoInfo/TotalRhythpoValue",
+    "target": 100000
+   },
+   "_source": "RhythpoInfo/TotalRhythpoValue"
+  },
+  {
+   "id": "cards_300",
+   "name": "CollectaCard Buff",
+   "desc": "Got 300 different CollectaCards",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "count",
+    "path": "CollecaInfo/Collecas[*]/ObtainedFlag",
+    "target": 300
+   },
+   "_source": "CollectaCards (\"Colleca\") with ObtainedFlag"
+  },
+  {
+   "id": "cards_1000",
+   "name": "CollectaCard Master",
+   "desc": "Got 1,000 different CollectaCards",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "count",
+    "path": "CollecaInfo/Collecas[*]/ObtainedFlag",
+    "target": 1000
+   },
+   "_source": "same flags"
+  },
+  {
+   "id": "drops_1000",
+   "name": "Renowned Treasure Hunter",
+   "desc": "Got 1,000 dropped items",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "sum",
+    "paths": [
+     "MusicStageInfo/StandardPlayInfo/TotalItemGetCount",
+     "MusicStageInfo/SimplePlayInfo/TotalItemGetCount",
+     "MusicStageInfo/PairPlayInfo/TotalItemGetCount"
+    ],
+    "target": 1000
+   },
+   "_source": "TotalItemGetCount of the Standard, Simple and Pair play records"
+  },
+  {
+   "id": "summonstones_30",
+   "name": "An Excess of Summonstones",
+   "desc": "Got 30 dropped Summonstones",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "flag",
+    "path": "SummonStoneInfo/TotalGetCount",
+    "target": 30
+   },
+   "_source": "SummonStoneInfo/TotalGetCount (may include the ones received from rival ProfiCards: GetCountFromRivalProfica)"
+  },
+  {
+   "id": "quests_10",
+   "name": "Path of the Harmonist",
+   "desc": "Cleared 10 Series Quest titles",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "count",
+    "path": "SeriesQuestInfo/WorldDictionary[*]/Cleared",
+    "target": 10
+   },
+   "_source": "Series Quest worlds with Cleared = true"
+  },
+  {
+   "id": "quest_complete_10",
+   "name": "A Deeper Harmony",
+   "desc": "Completed quests from 10 Series Quest titles",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "count",
+    "path": "SeriesQuestInfo/WorldDictionary[*]/Completed",
+    "target": 10
+   },
+   "_source": "Series Quest worlds with Completed = true"
+  },
+  {
+   "id": "quest_complete_20",
+   "name": "Harmonic Enlightenment",
+   "desc": "Completed quests from 20 Series Quest titles",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "count",
+    "path": "SeriesQuestInfo/WorldDictionary[*]/Completed",
+    "target": 20
+   },
+   "_source": "same flags"
+  },
+  {
+   "id": "quest_complete_all",
+   "name": "Complete Harmony",
+   "desc": "Completed all Series Quests",
+   "points": 50,
+   "tier": "gold",
+   "rule": {
+    "type": "count",
+    "path": "SeriesQuestInfo/WorldDictionary[*]/Completed",
+    "target": 29
+   },
+   "_source": "29 worlds with Completed = true: the save has 30 worlds and 50000029 has no stage (Endless World). Check on console"
+  },
+  {
+   "id": "endless_5",
+   "name": "Endless Challenger",
+   "desc": "Finished at least 5 stages in an Endless World run",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "flag",
+    "path": "SeriesQuestInfo/EndlessWorldUniqueInfo/BestStageClearCount",
+    "target": 5
+   },
+   "_source": "SeriesQuestInfo/EndlessWorldUniqueInfo/BestStageClearCount"
+  },
+  {
+   "id": "endless_10",
+   "name": "Endless Walker",
+   "desc": "Finished at least 10 stages in an Endless World run",
+   "points": 25,
+   "tier": "silver",
+   "rule": {
+    "type": "flag",
+    "path": "SeriesQuestInfo/EndlessWorldUniqueInfo/BestStageClearCount",
+    "target": 10
+   },
+   "_source": "same value"
+  },
+  {
+   "id": "endless_20",
+   "name": "Endless Ruler",
+   "desc": "Finished at least 20 stages in an Endless World run",
+   "points": 50,
+   "tier": "gold",
+   "rule": {
+    "type": "flag",
+    "path": "SeriesQuestInfo/EndlessWorldUniqueInfo/BestStageClearCount",
+    "target": 20
+   },
+   "_source": "same value"
+  },
+  {
+   "id": "top_hits_5",
+   "name": "Master of the Moment",
+   "desc": "Perfect Chained 5 Top Hits in one day",
+   "points": 10,
+   "tier": "bronze",
+   "rule": {
+    "type": "flag",
+    "path": "MusicSelectInfo/PickupFullChainCount",
+    "target": 5
+   },
+   "_source": "MusicSelectInfo/PickupFullChainCount (Top Hits = \"Pickup\"; reset each day): unlocks if a scan sees 5 before the day changes"
+  },
+  {
+   "id": "t_launch",
+   "name": "Curtain Call",
+   "desc": "Launch THEATRHYTHM FINAL BAR LINE 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Opening Number",
+   "desc": "Play THEATRHYTHM FINAL BAR LINE for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Season Ticket",
+   "desc": "Play THEATRHYTHM FINAL BAR LINE for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Grand Finale",
+   "desc": "Play THEATRHYTHM FINAL BAR LINE for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}
