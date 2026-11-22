@@ -24,7 +24,7 @@
 #include "capture.h"
 #include "store.h"
 
-#define MODULE_VERSION "0.8.2"
+#define MODULE_VERSION "0.8.3"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -305,7 +305,9 @@ static Handle g_resLimit = INVALID_HANDLE;
 static bool readUsage(s64 cur[5], s64 lim[5]) {
     if (g_resLimit == INVALID_HANDLE) {
         u64 h = 0;
-        if (R_FAILED(svcGetInfo(&h, InfoType_ResourceLimit, CUR_PROCESS_HANDLE, 0)) || h == 0) return false;
+        // InfoType_ResourceLimit takes INVALID_HANDLE (the kernel rejects any process handle, even the
+        // pseudo-handle CUR_PROCESS_HANDLE, with InvalidHandle): it always means the current process.
+        if (R_FAILED(svcGetInfo(&h, InfoType_ResourceLimit, INVALID_HANDLE, 0)) || h == 0) return false;
         g_resLimit = (Handle)h;   // kept for the whole run: one handle, opened once
     }
     for (int i = 0; i < 5; i++) {
@@ -434,6 +436,7 @@ int main(int, char**) {
         if (!running) {
             if (curPid) {
                 logf("game closed (pid %llu)", (unsigned long long)curPid);
+                healthCheck("game closed", true);
                 if (curReal) gameEnded(curTid, now);
             }
             if (attached) dmntchtForceCloseCheatProcess();   // never leave dmnt pointing at a dead process
@@ -460,6 +463,7 @@ int main(int, char**) {
             logf("game started: %016llX%s", (unsigned long long)tid,
                  watching ? " -> watching (live achievements)"
                  : curReal ? "" : hbl ? " (homebrew through this game: ignored)" : " (homebrew/forwarder: ignored)");
+            healthCheck("game started", true);   // system group usage at each launch: where crashes happen
         }
         // Save-image probe (opt-in, real games only): once after 60 s, again after 5 min.
         if (probesOn && curReal && !safe && ((probes == 0 && now - startedAt >= 60) || (probes == 1 && now - startedAt >= 300))) {
