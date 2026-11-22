@@ -25,7 +25,7 @@
 #include "store.h"
 #include "heap.h"
 
-#define MODULE_VERSION "0.8.4"
+#define MODULE_VERSION "0.8.5"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -318,7 +318,10 @@ static size_t heapFree() {
     return (size_t)mi.fordblks + ((top && fake_heap_end > top) ? (size_t)(fake_heap_end - top) : 0);
 }
 
-// Returns true when the system is close to a limit (>= 90 % of threads/events/transfer/sessions).
+// Returns true when the system is close to a limit (>= 90 %) on something the module's tasks use:
+// sessions, events, transfer memory (popup layer: vi/nv; save reads: fs). Threads are logged but don't
+// count: after start the module creates none (the popup thread exists from boot). Memory is checked by
+// heapAcquire() right before each task that needs more of it.
 static bool healthCheck(const char* why, bool log) {
     s64 cur[5] = {}, lim[5] = {};
     bool ok = readUsage(cur, lim);
@@ -326,17 +329,20 @@ static bool healthCheck(const char* why, bool log) {
     std::string worst;
     if (ok) {
         for (int i = 1; i < 5; i++) {
-            if (lim[i] > 0 && cur[i] * 10 >= lim[i] * 9) { tight = true; worst += std::string(" ") + RES_NAMES[i]; }
+            if (lim[i] > 0 && cur[i] * 10 >= lim[i] * 9) {
+                worst += std::string(" ") + RES_NAMES[i];
+                if (i != 1) tight = true;   // 1 = threads: high, but the module never adds any
+            }
         }
     }
-    if (log || tight) {
+    if (log) {
         if (!ok) logf("health (%s): resource limit unreadable; heap free %u KB, popup layers open %d", why,
                       (unsigned)(heapFree() >> 10), popupLayersOpen());
         else logf("health (%s): sessions %lld/%lld, events %lld/%lld, threads %lld/%lld, transfer %lld/%lld, memory %lld/%lld MB "
                   "(system group); heap %u KB, free %u KB, popup layers open %d%s%s", why,
                   (long long)cur[4], (long long)lim[4], (long long)cur[2], (long long)lim[2], (long long)cur[1], (long long)lim[1],
                   (long long)cur[3], (long long)lim[3], (long long)(cur[0] >> 20), (long long)(lim[0] >> 20),
-                  (unsigned)(heapSize() >> 10), (unsigned)(heapFree() >> 10), popupLayersOpen(), tight ? " - LOW:" : "", worst.c_str());
+                  (unsigned)(heapSize() >> 10), (unsigned)(heapFree() >> 10), popupLayersOpen(), worst.empty() ? "" : " - high:", worst.c_str());
     }
     return tight;
 }
@@ -412,12 +418,17 @@ int main(int, char**) {
             if (s != safe) {
                 safe = s;
                 popupSetSafeMode(safe);
+                healthCheck(safe ? "safe mode on" : "safe mode off", true);
                 logf(safe ? "SAFE MODE: system resources low - no popups layers, captures, scans or probes until it recovers"
                           : "safe mode off: system resources back to normal");
             }
         }
-        if (closedTid && safe) { logf("close scan: %016llX skipped (safe mode)", (unsigned long long)closedTid); closedTid = 0; }
         if (closedTid && now >= closedAt && popupIdle()) {   // after any popup: its buffers share the heap
+            if (healthCheck("before close scan", true)) {   // fresh reading: the game that just closed freed a lot
+                logf("close scan: %016llX skipped (system resources low)", (unsigned long long)closedTid);
+                closedTid = 0;
+                continue;
+            }
             // 1) save capture (games the player records, see captures.h), 2) scan on close
             bool locked = false;
             if (!heapAcquire("scan on close")) { closedTid = 0; continue; }   // next close reads the save again
