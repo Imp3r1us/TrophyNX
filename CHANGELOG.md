@@ -10,6 +10,13 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.11.3
+
+Turning the live module off now really keeps it off, even when you open TrophyNX.
+
+### Fixed
+- The app started the live module every time it opened, even after you turned it off (Ultrahand, or by renaming/removing `flags/boot2.flag`). Now, without `boot2.flag`, the app never starts it, and an update installs the new module without starting it.
+
 ## 0.11.2
 
 Safer live module, a beginner guide for game files, and THEATRHYTHM's password found again.
