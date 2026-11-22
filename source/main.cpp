@@ -1588,7 +1588,9 @@ int main(int argc, char** argv) {
     g_ui = &ui;
     if (argc > 0 && argv[0]) plat::setSelfPath(argv[0]);   // hbloader passes the .nro path
     std::string err;
+    plat::trace("start");
     bool ok = plat::init(err);
+    plat::trace(ok ? "init: ok" : "init failed: " + err);
     const uint8_t *f0 = nullptr, *f1 = nullptr;
     size_t s0 = 0, s1 = 0;
     plat::fontData(0, &f0, &s0);
@@ -1606,8 +1608,10 @@ int main(int argc, char** argv) {
     std::string self = plat::selfPath(), oldNro = plat::sdRoot() + "switch/SwitchAchievements.nro";
     if (self.size() >= 12 && self.compare(self.size() - 12, 12, "TrophyNX.nro") == 0 && self != oldNro && pathExists(oldNro))
         remove(oldNro.c_str());   // installed by the old updater next to the old name: one app entry only
+    plat::trace("first frame");
     drawLoading(ui, 0, 0);
     buildLibrary(ui.lib, onProgress, &ui);
+    plat::trace("main screen");
     if (!moved.empty()) ui.toast = "Renamed to TrophyNX: your achievements were kept.";
     ui.popup = !ui.lib.newlyUnlocked.empty();
     loadLook(ui);

@@ -47,6 +47,9 @@ namespace plat {
     void closeSave();
     std::string lastError();
     // Checks the background module (sys-trophynx); starts it if it isn't running.
+    // Startup trace: one line per step in startup_log.txt, flushed and closed each time, so the last
+    // line still shows where the app stopped if it freezes or the console turns off.
+    void trace(const std::string& step);
     std::string liveModuleStatus();   // human-readable reason for the last failed openSave
 
     // Updates (update.cpp)

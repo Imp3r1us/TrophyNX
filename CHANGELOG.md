@@ -10,6 +10,16 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.18.2 (2026-11-27)
+
+The app can no longer freeze while reading your games, and a startup log shows where it stops if it ever does.
+
+### Fixed
+- The app could loop forever on "Reading your games" if the system kept returning the same page of installed games. The list now stops after the last page.
+
+### Changed
+- New `switch/TrophyNX/startup_log.txt`: each startup step with its time and your firmware version. If the app freezes or the console turns off while it starts, its last line shows where.
+
 ## 0.18.1 (2026-11-27)
 
 Encrypted saves (Heavenly Bodies, THEATRHYTHM) now unlock live, and a new page makes their password in a minute.
