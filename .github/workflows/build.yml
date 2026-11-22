@@ -15,6 +15,12 @@ jobs:
     container: devkitpro/devkita64:latest
     steps:
       - uses: actions/checkout@v4
+      - name: Changelog entry
+        # warning on branches; on main a new version without its CHANGELOG.md section fails the release
+        run: |
+          if ! command -v python3 >/dev/null; then apt-get update -qq && apt-get install -y -qq python3 >/dev/null; fi
+          v=$(sed -n 's/^#define APP_VERSION "\(.*\)"/\1/p' include/version.h)
+          python3 tools/release/changelog.py check "$v" || echo "::warning::CHANGELOG.md has no section for $v yet"
       - name: Host tests (BYML reader)
         run: |
           apt-get update -qq && apt-get install -y -qq g++ zip >/dev/null
@@ -99,12 +105,18 @@ jobs:
           if git ls-remote --exit-code --tags origin "refs/tags/v$v" >/dev/null; then
             echo "v$v already released: test build only"; echo "new=false" >> "$GITHUB_OUTPUT"
           else
+            # every release needs its CHANGELOG.md section (release notes + the app's update screen)
+            python3 tools/release/changelog.py check "$v"
             echo "new=true" >> "$GITHUB_OUTPUT"
             # assets: each SD file under its own name + version.json (in-app updater), the .nro and the SD zip
-            python3 tools/release/make_version.py sd /tmp/version.json "$GITHUB_SHA" "$(git log -1 --format=%s)" /tmp/rel
+            python3 tools/release/make_version.py sd /tmp/version.json "$GITHUB_SHA" @changelog /tmp/rel
             cp TrophyNX-sd.zip /tmp/rel/
+            # previous release's version.json: lists which files this update really replaces
+            python3 -c "import urllib.request,sys; open('/tmp/prev.json','wb').write(urllib.request.urlopen(sys.argv[1], timeout=30).read())" \
+              "https://github.com/${{ github.repository }}/releases/latest/download/version.json" || rm -f /tmp/prev.json
             module=$(sed -n 's/^#define MODULE_VERSION "\(.*\)"/\1/p' sysmodule/source/main.cpp)
-            printf 'App %s · live module %s\n\n**Install:** unzip `TrophyNX-sd.zip` at the root of the SD card (app + live module), or copy `TrophyNX.nro` to `sdmc:/switch/`.\n**Update:** press ZL in the app.\n' "$v" "$module" > /tmp/notes.md
+            { printf 'App %s · live module %s\n\n' "$v" "$module"; python3 tools/release/changelog.py notes "$v" /tmp/version.json /tmp/prev.json; } > /tmp/notes.md
+            cat /tmp/notes.md
           fi
       - name: Release
         if: steps.ver.outputs.new == 'true'

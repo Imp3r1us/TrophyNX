@@ -133,6 +133,9 @@ UpdateInfo checkForUpdate() {
     info.message = jstr(root, "message");
     info.appVersion = jstr(root, "app_version");
     info.moduleVersion = jstr(root, "module_version");
+    cJSON* n;
+    cJSON_ArrayForEach(n, cJSON_GetObjectItemCaseSensitive(root, "notes"))
+        if (cJSON_IsString(n) && n->valuestring[0] && info.notes.size() < 8) info.notes.push_back(n->valuestring);
     cJSON* files = cJSON_GetObjectItemCaseSensitive(root, "files");
     cJSON* f;
     std::string missing;
