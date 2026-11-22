@@ -23,8 +23,9 @@
 #include "closescan.h"
 #include "capture.h"
 #include "store.h"
+#include "heap.h"
 
-#define MODULE_VERSION "0.8.3"
+#define MODULE_VERSION "0.8.4"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -34,14 +35,7 @@ u32 __nx_applet_type = AppletType_None;
 u32 __nx_nv_transfermem_size = 0x15000;
 void __libnx_init_time(void);
 u32 __nx_fs_num_sessions = 1;
-#define INNER_HEAP_SIZE 0x400000   // 4 MB: flag scanner + popup layer (two 16-bit 1080p-scale buffers) + scan on close (one save file at a time)
-void __libnx_initheap(void) {
-    static char inner_heap[INNER_HEAP_SIZE];
-    extern char* fake_heap_start;
-    extern char* fake_heap_end;
-    fake_heap_start = inner_heap;
-    fake_heap_end = inner_heap + sizeof(inner_heap);
-}
+// Heap: __libnx_initheap is in heap.cpp (2 MB while idle, 4 MB only while a popup or a save read needs it).
 
 void __appInit(void) {
     if (R_FAILED(smInitialize())) diagAbortWithResult(MAKERESULT(Module_Libnx, LibnxError_InitFail_SM));
@@ -339,10 +333,10 @@ static bool healthCheck(const char* why, bool log) {
         if (!ok) logf("health (%s): resource limit unreadable; heap free %u KB, popup layers open %d", why,
                       (unsigned)(heapFree() >> 10), popupLayersOpen());
         else logf("health (%s): sessions %lld/%lld, events %lld/%lld, threads %lld/%lld, transfer %lld/%lld, memory %lld/%lld MB "
-                  "(system group); heap free %u KB, popup layers open %d%s%s", why,
+                  "(system group); heap %u KB, free %u KB, popup layers open %d%s%s", why,
                   (long long)cur[4], (long long)lim[4], (long long)cur[2], (long long)lim[2], (long long)cur[1], (long long)lim[1],
                   (long long)cur[3], (long long)lim[3], (long long)(cur[0] >> 20), (long long)(lim[0] >> 20),
-                  (unsigned)(heapFree() >> 10), popupLayersOpen(), tight ? " - LOW:" : "", worst.c_str());
+                  (unsigned)(heapSize() >> 10), (unsigned)(heapFree() >> 10), popupLayersOpen(), tight ? " - LOW:" : "", worst.c_str());
     }
     return tight;
 }
@@ -351,6 +345,7 @@ static bool healthCheck(const char* why, bool log) {
 int main(int, char**) {
     mkdir(dataDir().c_str(), 0777);
     logf("sys-trophynx " MODULE_VERSION " started");
+    heapSetLog(logf);
     finishPendingAppUpdate();
     popupStart(logf);
     Result rc;
@@ -425,11 +420,13 @@ int main(int, char**) {
         if (closedTid && now >= closedAt && popupIdle()) {   // after any popup: its buffers share the heap
             // 1) save capture (games the player records, see captures.h), 2) scan on close
             bool locked = false;
+            if (!heapAcquire("scan on close")) { closedTid = 0; continue; }   // next close reads the save again
             if (!closedCaptured) {
                 if (captureOnClose(closedTid, closedUid, closedMinutes, logf) == CAPSTEP_LOCKED) locked = true;
                 else closedCaptured = true;
             }
             if (!locked) locked = closeScan(closedTid, closedUid, logf) == CS_LOCKED;
+            heapRelease();
             if (locked && ++closedTries < 4) closedAt = now + 5;   // save still in use: try again
             else { closedTid = 0; healthCheck("after close scan", true); }
         }
