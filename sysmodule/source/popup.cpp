@@ -43,6 +43,10 @@ static volatile const char* g_stage = nullptr;
 static volatile u64 g_stageTick = 0;
 static volatile bool g_stuck = false;
 static void stage(const char* s) { g_stageTick = armGetSystemTick(); g_stage = s; }
+// Safety: layers currently open (must be 0 between popups) and "safe mode" (system close to its limits:
+// no display layer at all, Ultrahand toast only), set by the main loop's health check.
+static volatile int g_layersOpen = 0;
+static volatile bool g_safe = false;
 
 // ---------------------------------------------------------------- config
 struct PopupConfig {
@@ -193,8 +197,15 @@ struct Overlay {
         stage = 3;
         ::stage("create layer");
         if (R_FAILED(rc = viCreateManagedLayer(&display, (ViLayerFlags)0, 0, &__nx_vi_layer_id))) { PLOG("popup: managed layer 0x%X", rc); return false; }
-        if (R_FAILED(rc = viCreateLayer(&display, &layer))) { PLOG("popup: create layer 0x%X", rc); __nx_vi_layer_id = 0; return false; }
+        if (R_FAILED(rc = viCreateLayer(&display, &layer))) {
+            PLOG("popup: create layer 0x%X", rc);
+            layer.layer_id = __nx_vi_layer_id;   // the managed layer exists: destroy it, or vi keeps it forever
+            viDestroyManagedLayer(&layer);
+            __nx_vi_layer_id = 0;
+            return false;
+        }
         stage = 4;
+        g_layersOpen++;
         viSetLayerScalingMode(&layer, ViScalingMode_FitToLayer);
         s32 z = 0;
         if (R_SUCCEEDED(viGetZOrderCountMax(&display, &z)) && z > 0) viSetLayerZ(&layer, z);
@@ -220,7 +231,7 @@ struct Overlay {
     void close() {
         if (stage >= 6) framebufferClose(&fb);
         if (stage >= 5) nwindowClose(&win);
-        if (stage >= 4) { viDestroyManagedLayer(&layer); __nx_vi_layer_id = 0; }
+        if (stage >= 4) { viDestroyManagedLayer(&layer); __nx_vi_layer_id = 0; g_layersOpen--; }
         if (stage >= 3) viCloseDisplay(&display);
         if (stage >= 2) viExit();
         if (stage >= 1) nvExit();
@@ -301,7 +312,9 @@ static void worker(void*) {
         PLOG("popup: %s (style %s)", r.achId.c_str(), cfg.style.c_str());
         if (cfg.style == "off") { g_busy = false; continue; }
         if (cfg.style == "ultrahand") { ultrahandToast(r); g_busy = false; continue; }
+        if (g_safe && cfg.style != "both") { PLOG("popup: safe mode, toast instead of a display layer"); ultrahandToast(r); g_busy = false; continue; }
         if (cfg.style == "both") ultrahandToast(r);
+        if (g_safe) { g_busy = false; continue; }
         if (!showCustom(r, cfg)) {
             PLOG("popup: custom popup failed for %s - Ultrahand toast instead", r.achId.c_str());
             if (cfg.style != "both") ultrahandToast(r);
@@ -340,6 +353,9 @@ bool popupIdle() {
     mutexUnlock(&g_mtx);
     return idle;
 }
+
+int popupLayersOpen() { return g_layersOpen; }
+void popupSetSafeMode(bool on) { g_safe = on; }
 
 void popupEnqueue(const PopupRequest& r) {
     if (!g_threadOk || g_stuck) { ultrahandToast(r); return; }

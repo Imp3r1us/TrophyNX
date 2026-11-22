@@ -7,7 +7,9 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <malloc.h>
 #include <map>
+#include <unistd.h>
 #include <string>
 #include <sys/stat.h>
 #include <vector>
@@ -22,7 +24,7 @@
 #include "capture.h"
 #include "store.h"
 
-#define MODULE_VERSION "0.8.1"
+#define MODULE_VERSION "0.8.2"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -270,6 +272,79 @@ static void finishPendingAppUpdate() {
     }
 }
 
+// ---------------------------------------------------------------- safety
+// The module only touches real, installed games. Homebrew started "as a game" (hbmenu as an
+// application, forwarders, launchers like homeNX, title takeover with R) is ignored completely:
+// no live mode, no save probe, no capture, no scan on close.
+static bool isRealGameId(u64 tid) {
+    // base application ids: 0x01xxxxxxxxxxx000 with the low 13 bits clear (patches are +0x800,
+    // add-ons +0x1000...). Forwarders use other prefixes (0x05...), hbmenu ends in ...3000.
+    return (tid >> 56) == 0x01 && (tid & 0x1FFF) == 0;
+}
+
+// Atmosphère extension pm:dmnt 65000 (AtmosphereGetProcessInfo): its override status says whether the
+// application process is really hbloader (homebrew launched in place of / through a game).
+static bool isHomebrewProcess(u64 pid) {
+    struct { u64 program_id; u8 storage_id; u8 pad[7]; u64 keys_held; u64 flags; } out = {};
+    Handle h = INVALID_HANDLE;
+    Result rc = serviceDispatchInOut(pmdmntGetServiceSession(), 65000, pid, out,
+        .out_handle_attrs = { SfOutHandleAttr_HipcCopy },
+        .out_handles = &h,
+    );
+    if (R_SUCCEEDED(rc) && h != INVALID_HANDLE) svcCloseHandle(h);   // never keep the process handle
+    return R_SUCCEEDED(rc) && (out.flags & 1);                         // OverrideStatusFlag_Hbl
+}
+
+// Health check: usage of the "system" resource group (shared by every background module) read
+// from our own resource limit, plus our own heap and open popup layers. Logged regularly; when a
+// shared resource gets close to its limit the module goes into safe mode (no display layers, no
+// save mounts, no probes) until it drops again, so it can never be the one that tips it over.
+static const char* const RES_NAMES[5] = {"memory", "threads", "events", "transfer", "sessions"};
+static Handle g_resLimit = INVALID_HANDLE;
+
+static bool readUsage(s64 cur[5], s64 lim[5]) {
+    if (g_resLimit == INVALID_HANDLE) {
+        u64 h = 0;
+        if (R_FAILED(svcGetInfo(&h, InfoType_ResourceLimit, CUR_PROCESS_HANDLE, 0)) || h == 0) return false;
+        g_resLimit = (Handle)h;   // kept for the whole run: one handle, opened once
+    }
+    for (int i = 0; i < 5; i++) {
+        if (R_FAILED(svcGetResourceLimitCurrentValue(&cur[i], g_resLimit, (LimitableResource)i)) ||
+            R_FAILED(svcGetResourceLimitLimitValue(&lim[i], g_resLimit, (LimitableResource)i))) return false;
+    }
+    return true;
+}
+
+extern "C" char* fake_heap_end;   // end of the fixed heap (__libnx_initheap)
+static size_t heapFree() {
+    struct mallinfo mi = mallinfo();
+    char* top = (char*)sbrk(0);
+    return (size_t)mi.fordblks + ((top && fake_heap_end > top) ? (size_t)(fake_heap_end - top) : 0);
+}
+
+// Returns true when the system is close to a limit (>= 90 % of threads/events/transfer/sessions).
+static bool healthCheck(const char* why, bool log) {
+    s64 cur[5] = {}, lim[5] = {};
+    bool ok = readUsage(cur, lim);
+    bool tight = false;
+    std::string worst;
+    if (ok) {
+        for (int i = 1; i < 5; i++) {
+            if (lim[i] > 0 && cur[i] * 10 >= lim[i] * 9) { tight = true; worst += std::string(" ") + RES_NAMES[i]; }
+        }
+    }
+    if (log || tight) {
+        if (!ok) logf("health (%s): resource limit unreadable; heap free %u KB, popup layers open %d", why,
+                      (unsigned)(heapFree() >> 10), popupLayersOpen());
+        else logf("health (%s): sessions %lld/%lld, events %lld/%lld, threads %lld/%lld, transfer %lld/%lld, memory %lld/%lld MB "
+                  "(system group); heap free %u KB, popup layers open %d%s%s", why,
+                  (long long)cur[4], (long long)lim[4], (long long)cur[2], (long long)lim[2], (long long)cur[1], (long long)lim[1],
+                  (long long)cur[3], (long long)lim[3], (long long)(cur[0] >> 20), (long long)(lim[0] >> 20),
+                  (unsigned)(heapFree() >> 10), popupLayersOpen(), tight ? " - LOW:" : "", worst.c_str());
+    }
+    return tight;
+}
+
 // ---------------------------------------------------------------- main loop
 int main(int, char**) {
     mkdir(dataDir().c_str(), 0777);
@@ -292,6 +367,15 @@ int main(int, char**) {
     FlagScanner scanner;
     scanner.setWanted(wanted);
     DmntReader mem;
+
+    // Save-image probes (raw NAND reads, research for live save reading) are off unless probe.flag exists.
+    struct stat pst;
+    const bool probesOn = stat((dataDir() + "/probe.flag").c_str(), &pst) == 0;
+    if (probesOn) logf("save probes ON (probe.flag)");
+    bool safe = healthCheck("start", true);
+    popupSetSafeMode(safe);
+    u64 lastHealth = (u64)time(NULL);
+    bool curReal = false;
 
     u64 curPid = 0, curTid = 0;
     bool watching = false, ready = false;
@@ -322,6 +406,20 @@ int main(int, char**) {
         popupWatchdog();
         u64 pid = 0;
         bool running = R_SUCCEEDED(pmdmntGetApplicationProcessId(&pid)) && pid != 0;
+        // health: every 30 min in the log, checked every minute (safe mode on/off)
+        if (now - lastHealth >= 60 || now < lastHealth) {
+            static int minutes = 0;
+            bool log = (++minutes % 30) == 0;
+            lastHealth = now;
+            bool s = healthCheck("periodic", log);
+            if (s != safe) {
+                safe = s;
+                popupSetSafeMode(safe);
+                logf(safe ? "SAFE MODE: system resources low - no popups layers, captures, scans or probes until it recovers"
+                          : "safe mode off: system resources back to normal");
+            }
+        }
+        if (closedTid && safe) { logf("close scan: %016llX skipped (safe mode)", (unsigned long long)closedTid); closedTid = 0; }
         if (closedTid && now >= closedAt && popupIdle()) {   // after any popup: its buffers share the heap
             // 1) save capture (games the player records, see captures.h), 2) scan on close
             bool locked = false;
@@ -331,17 +429,23 @@ int main(int, char**) {
             }
             if (!locked) locked = closeScan(closedTid, closedUid, logf) == CS_LOCKED;
             if (locked && ++closedTries < 4) closedAt = now + 5;   // save still in use: try again
-            else closedTid = 0;
+            else { closedTid = 0; healthCheck("after close scan", true); }
         }
         if (!running) {
-            if (curPid) { logf("game closed (pid %llu)", (unsigned long long)curPid); gameEnded(curTid, now); }
+            if (curPid) {
+                logf("game closed (pid %llu)", (unsigned long long)curPid);
+                if (curReal) gameEnded(curTid, now);
+            }
             if (attached) dmntchtForceCloseCheatProcess();   // never leave dmnt pointing at a dead process
             ownDetach(); g_own = false;
             curPid = 0; curTid = 0; watching = ready = attached = false;
             continue;
         }
         if (pid != curPid) {
-            if (curPid) { logf("game changed (pid %llu -> %llu)", (unsigned long long)curPid, (unsigned long long)pid); gameEnded(curTid, now); }
+            if (curPid) {
+                logf("game changed (pid %llu -> %llu)", (unsigned long long)curPid, (unsigned long long)pid);
+                if (curReal) gameEnded(curTid, now);
+            }
             curPid = pid;
             u64 tid = 0;
             pminfoGetProgramId(&tid, pid);
@@ -349,12 +453,16 @@ int main(int, char**) {
             probes = 0; diagnosed = false; startedAt = now;
             if (attached) { dmntchtForceCloseCheatProcess(); attached = false; }
             ownDetach(); g_own = false;
-            watching = (tid == BOTW_ID) && dmnt && !achs.empty();
+            bool hbl = isHomebrewProcess(pid);
+            curReal = isRealGameId(tid) && !hbl;
+            watching = curReal && (tid == BOTW_ID) && dmnt && !achs.empty();
             ready = false; attempts = 0; seenAt = now; lastScan = 0;
-            logf("game started: %016llX%s", (unsigned long long)tid, watching ? " -> watching (live achievements)" : "");
+            logf("game started: %016llX%s", (unsigned long long)tid,
+                 watching ? " -> watching (live achievements)"
+                 : curReal ? "" : hbl ? " (homebrew through this game: ignored)" : " (homebrew/forwarder: ignored)");
         }
-        // Save-image probe (every game): once after 60 s, again after 5 min (the game has usually saved by then).
-        if ((probes == 0 && now - startedAt >= 60) || (probes == 1 && now - startedAt >= 300)) {
+        // Save-image probe (opt-in, real games only): once after 60 s, again after 5 min.
+        if (probesOn && curReal && !safe && ((probes == 0 && now - startedAt >= 60) || (probes == 1 && now - startedAt >= 300))) {
             probes++;
             probeRunningSave(curTid, logf);
         }

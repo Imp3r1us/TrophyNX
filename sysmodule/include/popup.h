@@ -18,3 +18,7 @@ void popupEnqueue(const PopupRequest& r);
 void popupWatchdog();
 // True when nothing is queued or on screen (the popup layer's buffers are free).
 bool popupIdle();
+// Display layers currently open (0 between popups; logged by the health check).
+int popupLayersOpen();
+// Safe mode: the system is close to its limits -> no display layer, Ultrahand toast only.
+void popupSetSafeMode(bool on);
