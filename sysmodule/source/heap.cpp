@@ -32,6 +32,11 @@ static void (*g_log)(const char*, ...) = nullptr;
 
 void heapSetLog(void (*logFn)(const char*, ...)) { g_log = logFn; }
 size_t heapSize() { return g_size; }
+size_t heapFree() {
+    struct mallinfo mi = mallinfo();
+    char* top = (char*)sbrk(0);
+    return (size_t)mi.fordblks + ((top && fake_heap_end > top) ? (size_t)(fake_heap_end - top) : 0);
+}
 
 // Free memory of the shared system group (InfoType_ResourceLimit only takes INVALID_HANDLE).
 static bool systemFree(s64& freeBytes) {
@@ -66,7 +71,8 @@ bool heapAcquire(const char* why) {
     size_t grow = HEAP_BIG_SIZE - g_size;
     if (systemFree(freeBytes) && freeBytes - (s64)grow < MIN_FREE_AFTER) {
         mutexUnlock(&g_mtx);
-        if (g_log) g_log("memory: %s skipped - system memory too low (%lld KB free, needs %u KB + %lld KB spare)", why,
+        if (g_log) g_log("memory: %s in the %u KB heap - system memory too low to grow (%lld KB free, needs %u KB + %lld KB spare)", why,
+                         (unsigned)(g_size >> 10),
                          (long long)(freeBytes >> 10), (unsigned)(grow >> 10), (long long)(MIN_FREE_AFTER >> 10));
         return false;
     }
@@ -75,7 +81,7 @@ bool heapAcquire(const char* why) {
     __malloc_unlock(_REENT);
     if (ok) g_leases++;
     mutexUnlock(&g_mtx);
-    if (!ok && g_log) g_log("memory: %s skipped - heap could not grow to %u KB", why, (unsigned)(HEAP_BIG_SIZE >> 10));
+    if (!ok && g_log) g_log("memory: %s in the %u KB heap - could not grow to %u KB", why, (unsigned)(g_size >> 10), (unsigned)(HEAP_BIG_SIZE >> 10));
     return ok;
 }
 

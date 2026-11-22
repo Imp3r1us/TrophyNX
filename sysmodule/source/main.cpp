@@ -25,7 +25,7 @@
 #include "store.h"
 #include "heap.h"
 
-#define MODULE_VERSION "0.8.5"
+#define MODULE_VERSION "0.8.6"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -311,12 +311,6 @@ static bool readUsage(s64 cur[5], s64 lim[5]) {
     return true;
 }
 
-extern "C" char* fake_heap_end;   // end of the fixed heap (__libnx_initheap)
-static size_t heapFree() {
-    struct mallinfo mi = mallinfo();
-    char* top = (char*)sbrk(0);
-    return (size_t)mi.fordblks + ((top && fake_heap_end > top) ? (size_t)(fake_heap_end - top) : 0);
-}
 
 // Returns true when the system is close to a limit (>= 90 %) on something the module's tasks use:
 // sessions, events, transfer memory (popup layer: vi/nv; save reads: fs). Threads are logged but don't
@@ -431,13 +425,13 @@ int main(int, char**) {
             }
             // 1) save capture (games the player records, see captures.h), 2) scan on close
             bool locked = false;
-            if (!heapAcquire("scan on close")) { closedTid = 0; continue; }   // next close reads the save again
+            bool big = heapAcquire("scan on close");   // without it: files that don't fit are skipped (logged)
             if (!closedCaptured) {
                 if (captureOnClose(closedTid, closedUid, closedMinutes, logf) == CAPSTEP_LOCKED) locked = true;
                 else closedCaptured = true;
             }
             if (!locked) locked = closeScan(closedTid, closedUid, logf) == CS_LOCKED;
-            heapRelease();
+            if (big) heapRelease();
             if (locked && ++closedTries < 4) closedAt = now + 5;   // save still in use: try again
             else { closedTid = 0; healthCheck("after close scan", true); }
         }
