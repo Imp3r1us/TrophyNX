@@ -447,7 +447,12 @@ static void drawUpdate(UI& ui) {
     Canvas& c = ui.cv;
     const UpdateInfo& u = ui.updInfo;
     c.fillRect(0, 0, 1280, 720, 0xB0000000);
-    int w = 860, h = 380, x = (1280 - w) / 2, y = (720 - h) / 2 - 20;
+    // room for "What's new" (CHANGELOG.md bullets) when an update is available
+    size_t notes = (ui.upd != 2 && u.state == UpdateInfo::Available) ? u.notes.size() : 0;
+    if (notes > 7) notes = 7;
+    int w = 960, h = 380 + (notes ? 34 + 34 * (int)notes : 0), x = (1280 - w) / 2, y = (720 - h) / 2 - 20;
+    if (h > 680) h = 680;
+    if (y < 10) y = 10;
     c.fillRound(x, y, w, h, 18, C_PANEL);
     std::string title;
     uint32_t accent = C_GOLD;
@@ -483,6 +488,10 @@ static void drawUpdate(UI& ui) {
         if (!u.appVersion.empty()) vers = "App " + u.appVersion;
         if (!u.moduleVersion.empty()) vers += (vers.empty() ? "" : "  ·  ") + std::string("Live module ") + u.moduleVersion;
         if (!vers.empty()) lines.push_back({vers, C_SUB});
+        if (notes) {
+            lines.push_back({"What's new:", C_GOLD});
+            for (size_t i = 0; i < notes; i++) lines.push_back({"\xC2\xB7 " + u.notes[i], C_TEXT});
+        }
         std::string ch;
         for (const UpdateFile& f : u.files)
             if (f.changed) ch += (ch.empty() ? "" : ", ") + fileLabel(f.path) + " (" + fmtSize(f.size) + ")";

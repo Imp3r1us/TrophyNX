@@ -65,6 +65,17 @@ How it works:
   version (cheat codes, by contrast, only exist for v1.6.0).
 - Unlocks go into the same unlock file as the app, so they show up there too.
 
+Safety (module 0.8.2+):
+- Only real installed games are touched. Homebrew started like a game (hbmenu as an application,
+  forwarders, launchers such as homeNX, title takeover with R) is logged as "ignored": no live mode,
+  no capture, no scan on close.
+- The raw NAND save probes (research for reading saves while a game runs) are off. Create an empty
+  `sdmc:/switch/TrophyNX/probe.flag` to turn them on again.
+- Health check: every minute the module reads how much of the shared "system" resources (sessions,
+  events, threads, transfer memory) all background modules use, and logs it every 30 minutes and after
+  each scan on close (`health:` lines in `live_log.txt`). Above 90 % of a limit it switches to **safe mode**:
+  no display layer (popups become Ultrahand toasts), no save mounts, no probes, until usage drops again.
+
 Install: copy `atmosphere/contents/420000000000AC01/` to the SD card. The `boot2.flag` starts it at boot;
 opening the app also starts it if it isn't running (the Overview status line shows "Live module: running",
 or the exact system error code if it couldn't start). It can also be started from ovl-sysmodules without rebooting.
@@ -73,10 +84,11 @@ It can be toggled with ovl-sysmodules (`toolbox.json` included).
 ### Updating from the app (ZL)
 
 Press **ZL** on the main screen: the app asks GitHub for the **latest release** (one per version, `vX.Y.Z`,
-created by CI when `include/version.h` changes), compares every file with what is installed (SHA-256) and offers
+created by CI when `include/version.h` changes; its notes come from `CHANGELOG.md`), compares every file with what is installed (SHA-256) and offers
 to download the changed ones: the app itself and/or the live module (restarted right away). Downloads go to
 `<file>.new` and are checked against the release's `version.json`; nothing is replaced unless every file arrived
 intact. Then A restarts the app.
+The update screen shows the new version's summary and its "What's new" list (the `CHANGELOG.md` section).
 
 No setup is needed. Optional `sdmc:/switch/TrophyNX/update.json`:
 `{ "channel": "builds" }` to get every build of `main` (test builds, from the `builds` branch) instead of
@@ -85,7 +97,8 @@ GitHub allows 60 checks per hour.
 
 Releases: https://github.com/Imp3r1us/TrophyNX/releases — `TrophyNX-sd.zip` (SD card layout), `TrophyNX.nro`,
 and the files used by the updater (`sys-trophynx.nsp`, `version.json`...). To publish a version, bump
-`APP_VERSION` in `include/version.h` and the `Makefile`.
+`APP_VERSION` in `include/version.h` and the `Makefile`, and add its section to `CHANGELOG.md`
+(summary line + bullets for players; CI refuses to release a version without one).
 
 Network calls use libcurl from devkitPro (`switch-curl`, TLS through the system). On PC (`platform_host.cpp`)
 `ACH_UPDATE_DIR=<dir>` replaces GitHub (`<dir>/release/latest.json` + assets, or a copy of the builds branch), e.g. `ACH_SCRIPT="B,ZL,A"`.

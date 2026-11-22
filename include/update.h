@@ -23,6 +23,7 @@ struct UpdateInfo {
     enum State { Error, UpToDate, Available } state = Error;
     std::string error;
     std::string commit, date, message, appVersion, moduleVersion;
+    std::vector<std::string> notes;   // what this version changes (CHANGELOG.md bullets, version.json "notes")
     std::string source;          // "release v0.9.1" or "builds branch"
     bool fromRelease = false;
     std::vector<UpdateFile> files;
