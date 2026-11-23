@@ -17,12 +17,31 @@ static const uint32_t C_BG = 0xFF12141A, C_PANEL = 0xFF1B1E26, C_PANEL_HI = 0xFF
 static const uint32_t C_TEXT = 0xFFEDEFF4, C_SUB = 0xFF9BA1AF, C_DIM = 0xFF5B6170;
 static const uint32_t C_GOLD = 0xFFF2C14E, C_GREEN = 0xFF4CD08A, C_RED = 0xFFE5676B, C_TRACK = 0xFF2C303B;
 
-static uint32_t tierColor(int points) {
-    if (points <= 10) return 0xFFCD8B4E;   // bronze
-    if (points <= 25) return 0xFFC3CAD4;   // silver
-    if (points <= 50) return 0xFFF2C14E;   // gold
-    return 0xFF8FE3F5;                     // platinum
+static const uint32_t TIER_COLORS[4] = {0xFFCD8B4E, 0xFFC3CAD4, 0xFFF2C14E, 0xFF8FE3F5};
+static const char* TIER_NAMES[4] = {"Bronze", "Silver", "Gold", "Platinum"};
+
+// 0 bronze .. 3 platinum: the definition's "tier" if it has one, else from the points (same as the popup medal)
+static int tierOf(const Achievement& a) {
+    if (a.tier == "bronze") return 0;
+    if (a.tier == "silver") return 1;
+    if (a.tier == "gold") return 2;
+    if (a.tier == "platinum") return 3;
+    if (a.points <= 10) return 0;
+    if (a.points <= 25) return 1;
+    if (a.points <= 50) return 2;
+    return 3;
 }
+static uint32_t tierColor(const Achievement& a) { return TIER_COLORS[tierOf(a)]; }
+
+static uint32_t mixColor(uint32_t a, uint32_t b, float t) {   // t = 0 -> a, 1 -> b (opaque result)
+    auto ch = [&](int s) { return (uint32_t)(((a >> s) & 255) * (1 - t) + ((b >> s) & 255) * t + 0.5f) << s; };
+    return 0xFF000000u | ch(16) | ch(8) | ch(0);
+}
+
+enum { SCR_LIBRARY = 0, SCR_GAME = 1 };
+enum { SORT_FEATURED, SORT_RECENT, SORT_PROGRESS, SORT_PLAYTIME, SORT_NAME, SORT_COUNT };
+static const char* SORT_NAMES[SORT_COUNT] = {"Featured", "Recent", "Progress", "Playtime", "A-Z"};
+enum { FILT_ALL, FILT_UNLOCKED, FILT_LOCKED, FILT_COUNT };
 
 struct UI {
     Canvas cv;
@@ -30,9 +49,21 @@ struct UI {
     Library lib;
     std::vector<Image> icons;
     std::vector<bool> iconTried;
-    int sel = 0, gameScroll = 0;
-    int achSel = 0, achScroll = 0;
-    bool focusAch = false;
+    bool classic = false;     // the original layout (game list + details side by side), saved in theme.txt
+    int iconSize = 68;        // grid icons (new look) or list icons (classic look)
+    int listScroll = 0;       // classic look: first visible game in the list
+    int screen = SCR_LIBRARY; // classic look: SCR_GAME = focus on the achievement list
+    int sel = 0;              // index in lib.games of the selected game
+    int sortMode = SORT_FEATURED;
+    std::vector<int> order;   // lib.games indices in grid order (Overview first)
+    int gridPos = 0, gridScroll = 0;   // position in `order`, first visible row
+    int achFilter = FILT_ALL;
+    std::vector<int> achView; // achievement indices of the selected game shown with the current filter
+    int achSel = 0, achScroll = 0;     // position in achView
+    int relockAch = -1;       // achievement index for confirm == 1
+    int heroGi = -1;          // game whose large icon is in heroIcon
+    Image heroIcon;
+    uint32_t heroTint = 0;
     bool popup = false;
     bool debug = false;
     int confirm = 0;          // 0 none, 1 one achievement, 2 whole game, 3 everything
@@ -114,12 +145,43 @@ static void progressBar(Canvas& c, int x, int y, int w, int h, double frac, uint
 
 static void buttonHint(UI& ui, int& x, int y, const char* btn, const char* label) {
     Canvas& c = ui.cv;
-    c.fillCircle(x + 13.f, y + 13.f, 13.f, C_TEXT);
     int tw = ui.font.measure(15, btn);
-    ui.font.draw(c, x + 13 - tw / 2, y + 4, 15, btn, C_BG);
-    x += 32;
+    int bw = std::max(26, tw + 14);   // round for one letter, a pill for "ZR", "L/R"...
+    c.fillRound((float)x, (float)y, (float)bw, 26.f, 13.f, C_TEXT);
+    ui.font.draw(c, x + bw / 2 - tw / 2, y + 4, 15, btn, C_BG);
+    x += bw + 6;
     x += ui.font.draw(c, x, y + 2, 19, label, C_SUB) + 26;
 }
+
+// Clockwise arc from 12 o'clock covering `frac` of a ring, with round ends.
+static void progressRing(Canvas& c, float cx, float cy, float r, float thick, double frac, uint32_t col) {
+    c.ring(cx, cy, r, thick, C_TRACK);
+    frac = std::max(0.0, std::min(1.0, frac));
+    if (frac <= 0) return;
+    const float PI2 = 6.2831853f;
+    float end = (float)frac * PI2;
+    int x0 = (int)floorf(cx - r - 1), x1 = (int)ceilf(cx + r + 1), y0 = (int)floorf(cy - r - 1), y1 = (int)ceilf(cy + r + 1);
+    for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
+        float dx = x + 0.5f - cx, dy = y + 0.5f - cy, d = sqrtf(dx * dx + dy * dy);
+        float cov = std::min(r - d + 0.5f, d - (r - thick) + 0.5f);
+        if (cov <= 0) continue;
+        float a = atan2f(dx, -dy);
+        if (a < 0) a += PI2;
+        if (a <= end) c.blend(x, y, col, cov);
+    }
+    float mr = r - thick / 2;
+    c.fillCircle(cx, cy - mr, thick / 2, col);
+    c.fillCircle(cx + mr * sinf(end), cy - mr * cosf(end), thick / 2, col);
+}
+
+static std::string fmtHours(uint64_t ns) {
+    double h = ns / 3.6e12;
+    if (h < 1) return std::to_string((int)(ns / 6e10)) + " min";
+    if (h < 10) return fmtNum(floor(h * 10) / 10) + " h";
+    return fmtInt((long long)h) + " h";
+}
+
+static const int ICON = 68;   // game icon size in the library grid
 
 static const Image* gameIcon(UI& ui, int gi) {
     if (gi <= 0) return nullptr;
@@ -129,17 +191,489 @@ static const Image* gameIcon(UI& ui, int gi) {
     }
     if (!ui.iconTried[gi]) {
         ui.iconTried[gi] = true;
-        decodeIcon(ui.lib.games[gi].iconJpeg, 56, ui.icons[gi]);
+        decodeIcon(ui.lib.games[gi].iconJpeg, ui.iconSize, ui.icons[gi]);
     }
     return ui.icons[gi].valid() ? &ui.icons[gi] : nullptr;
 }
 
+// Large icon of the game page (one at a time) and its average colour, used to tint the page header.
+static const Image* heroIcon(UI& ui, int gi) {
+    if (gi <= 0) return nullptr;
+    if (ui.heroGi != gi) {
+        ui.heroGi = gi;
+        ui.heroIcon = Image();
+        ui.heroTint = 0;
+        if (decodeIcon(ui.lib.games[gi].iconJpeg, 136, ui.heroIcon)) {
+            uint64_t r = 0, g = 0, b = 0;
+            for (uint32_t p : ui.heroIcon.px) { r += p & 255; g += (p >> 8) & 255; b += (p >> 16) & 255; }
+            uint64_t n = ui.heroIcon.px.size();
+            ui.heroTint = 0xFF000000u | (uint32_t)(r / n) << 16 | (uint32_t)(g / n) << 8 | (uint32_t)(b / n);
+        }
+    }
+    return ui.heroIcon.valid() ? &ui.heroIcon : nullptr;
+}
+
+static void drawIconTile(UI& ui, int gi, int x, int y, int size, const Image* img) {
+    Canvas& c = ui.cv;
+    const Game& g = ui.lib.games[gi];
+    float rad = size * 0.16f;
+    if (gi == 0) {
+        c.fillRound(x, y, size, size, rad, 0xFF3A3220);
+        drawTrophy(c, x + size / 2.f, y + size * 0.54f, size * 0.58f, C_GOLD);
+    } else if (img) {
+        c.blitRounded(*img, x, y, rad, g.stats.launches == 0);
+    } else {
+        c.fillRound(x, y, size, size, rad, 0xFF343A4A);
+        size_t i = 0;
+        if (!g.name.empty()) decodeUtf8(g.name, i);
+        std::string ch = g.name.substr(0, i);
+        int fs = size * 4 / 10;
+        ui.font.draw(c, x + size / 2 - ui.font.measure(fs, ch) / 2, y + size / 2 - fs * 6 / 10, fs, ch, C_SUB);
+    }
+}
+
+struct TierCount { int got[4] = {0, 0, 0, 0}, all[4] = {0, 0, 0, 0}; };
+static void addTiers(TierCount& t, const Game& g) {
+    for (const Achievement& a : g.achs) {
+        int k = tierOf(a);
+        t.all[k]++;
+        if (a.unlocked) t.got[k]++;
+    }
+}
+
+static bool isComplete(const Game& g) { return !g.achs.empty() && g.unlocked == (int)g.achs.size(); }
+
+// ---------------------------------------------------------------- lists
+// Grid order for the current sort tab (Overview always first); keeps the selected game selected.
+static void buildOrder(UI& ui) {
+    const Library& lib = ui.lib;
+    ui.order.clear();
+    for (int i = 1; i < (int)lib.games.size(); i++) ui.order.push_back(i);
+    auto frac = [&](int i) { const Game& g = lib.games[i]; return g.achs.empty() ? 0.0 : (double)g.unlocked / g.achs.size(); };
+    auto lower = [](std::string s) { for (char& ch : s) if (ch >= 'A' && ch <= 'Z') ch += 32; return s; };
+    std::vector<int>& o = ui.order;
+    switch (ui.sortMode) {
+        case SORT_RECENT:
+            std::stable_sort(o.begin(), o.end(), [&](int a, int b) { return lib.games[a].stats.lastPlayed > lib.games[b].stats.lastPlayed; });
+            break;
+        case SORT_PROGRESS:
+            std::stable_sort(o.begin(), o.end(), [&](int a, int b) {
+                double fa = frac(a), fb = frac(b);
+                if (fa != fb) return fa > fb;
+                return lib.games[a].unlocked > lib.games[b].unlocked;
+            });
+            break;
+        case SORT_PLAYTIME:
+            std::stable_sort(o.begin(), o.end(), [&](int a, int b) { return lib.games[a].stats.playtimeNs > lib.games[b].stats.playtimeNs; });
+            break;
+        case SORT_NAME:
+            std::stable_sort(o.begin(), o.end(), [&](int a, int b) { return lower(lib.games[a].name) < lower(lib.games[b].name); });
+            break;
+        default: break;   // featured: the library's own order (games with a set first, then recently played)
+    }
+    o.insert(o.begin(), 0);
+    ui.gridPos = 0;
+    for (size_t i = 0; i < o.size(); i++) if (o[i] == ui.sel) ui.gridPos = (int)i;
+}
+
+// Achievements of the selected game shown with the current filter (unlocked: most recent first).
+static void buildAchView(UI& ui) {
+    const Game& g = ui.lib.games[ui.sel];
+    ui.achView.clear();
+    for (int i = 0; i < (int)g.achs.size(); i++) {
+        if (ui.achFilter == FILT_ALL || (ui.achFilter == FILT_UNLOCKED) == g.achs[i].unlocked) ui.achView.push_back(i);
+    }
+    if (ui.achFilter == FILT_UNLOCKED)
+        std::stable_sort(ui.achView.begin(), ui.achView.end(), [&](int a, int b) { return g.achs[a].unlockTime > g.achs[b].unlockTime; });
+}
+
+// ---------------------------------------------------------------- look (theme)
+static std::string themePath() { return plat::dataDir() + "/theme.txt"; }
+
+static void setLook(UI& ui, bool classic) {
+    ui.classic = classic;
+    ui.iconSize = classic ? 56 : 68;
+    ui.icons.clear();   // decoded again at the new size
+    ui.achFilter = FILT_ALL;   // the classic look has no filters
+    ui.achSel = ui.achScroll = 0;
+    buildAchView(ui);
+    buildOrder(ui);     // new look: put the grid cursor on the selected game
+}
+
+static void loadLook(UI& ui) {
+    std::vector<uint8_t> d;
+    bool classic = readFile(themePath(), d) && std::string(d.begin(), d.end()).find("classic") == 0;
+    setLook(ui, classic);
+}
+
+static bool saveLook(UI& ui) {
+    makeDirs(plat::dataDir());
+    return writeFile(themePath(), ui.classic ? "classic" : "new");
+}
+
+// Header chip that says how to switch look (press either stick)
+static void themeChip(UI& ui, int x, int y) {
+    Canvas& c = ui.cv;
+    const char* label = ui.classic ? "New look" : "Classic look";
+    int bw = ui.font.measure(13, "LS") + 12, lw = ui.font.measure(15, label);
+    int w = 6 + bw + 8 + lw + 12;
+    c.fillRound(x, y, w, 28, 14, C_PANEL_HI);
+    c.fillRound(x + 4, y + 4, bw, 20, 10, C_SUB);
+    ui.font.draw(c, x + 4 + 6, y + 6, 13, "LS", C_BG);
+    ui.font.draw(c, x + 6 + bw + 8, y + 5, 15, label, C_TEXT);
+}
+
+// ---------------------------------------------------------------- screens
 static void drawHeader(UI& ui) {
+    Canvas& c = ui.cv;
+    c.gradientV(0, 0, 1280, 76, 0xFF1F2330, C_BG);
+    c.fillCircle(48, 38, 24, 0xFF2A2F3D);
+    drawTrophy(c, 48, 40, 28, C_GOLD);
+    int tw = ui.font.draw(c, 84, 18, 28, "TrophyNX", C_TEXT);
+    themeChip(ui, 84 + tw + 24, 24);
+    std::string user = ui.font.ellipsize(20, plat::userName(), 300);
+    int uw = ui.font.measure(20, user);
+    ui.font.draw(c, 1256 - uw, 24, 20, user, C_TEXT);
+    // avatar: first letter of the user name
+    float ax = 1256 - uw - 28;
+    c.fillCircle(ax, 38, 18, C_PANEL_HI);
+    size_t i = 0;
+    std::string ini = user.empty() ? "?" : (decodeUtf8(user, i), user.substr(0, i));
+    ui.font.draw(c, (int)ax - ui.font.measure(18, ini) / 2, 26, 18, ini, C_GOLD);
+    c.fillRect(0, 76, 1280, 1, C_LINE);
+}
+
+// L [tab][tab][tab] R
+static void drawTabs(UI& ui, int x, int y, const std::vector<std::string>& tabs, int sel) {
+    Canvas& c = ui.cv;
+    auto shoulder = [&](const char* t) {
+        int tw = ui.font.measure(14, t);
+        c.fillRound(x, y + 6, 30, 22, 7, C_LINE);
+        ui.font.draw(c, x + 15 - tw / 2, y + 8, 14, t, C_SUB);
+        x += 40;
+    };
+    shoulder("L");
+    for (size_t i = 0; i < tabs.size(); i++) {
+        int tw = ui.font.measure(17, tabs[i]), w = tw + 32;
+        bool on = (int)i == sel;
+        if (on) c.fillRound(x, y, w, 34, 17, C_GOLD);
+        ui.font.draw(c, x + 16, y + 6, 17, tabs[i], on ? C_BG : C_SUB);
+        x += w + 4;
+    }
+    x += 6;
+    shoulder("R");
+}
+
+static const int GRID_X = 24, GRID_Y = 256, COLS = 3, CARD_W = 402, CARD_H = 92, GAP_X = 13, GAP_Y = 10, GRID_ROWS = 4;
+
+static void drawProfile(UI& ui) {
+    Canvas& c = ui.cv;
+    Library& lib = ui.lib;
+    int x = 24, y = 88, w = 1232, h = 108;
+    c.fillRound(x, y, w, h, 14, C_PANEL);
+
+    // points and overall completion
+    int pw = ui.font.draw(c, x + 24, y + 10, 40, fmtInt(lib.totalPoints), C_GOLD);
+    ui.font.draw(c, x + 24 + pw + 8, y + 30, 18, "points", C_SUB);
+    double frac = lib.totalCount ? (double)lib.totalUnlocked / lib.totalCount : 0;
+    ui.font.draw(c, x + 24, y + 62, 16, fmtInt(lib.totalUnlocked) + " / " + fmtInt(lib.totalCount) + " achievements", C_SUB);
+    std::string pct = std::to_string((int)floor(frac * 100)) + "%";
+    ui.font.draw(c, x + 354 - ui.font.measure(16, pct), y + 62, 16, pct, C_TEXT);
+    progressBar(c, x + 24, y + 88, 330, 6, frac, C_GOLD);
+
+    // medals by tier
+    c.fillRect(x + 380, y + 20, 1, h - 40, C_LINE);
+    TierCount t;
+    for (const Game& g : lib.games) addTiers(t, g);
+    for (int k = 0; k < 4; k++) {
+        float mx = x + 424 + k * 104, my = y + h / 2.f;
+        c.fillCircle(mx, my, 22, TIER_COLORS[k]);
+        c.fillCircle(mx, my, 18, C_PANEL);
+        drawTrophy(c, mx, my + 2, 22, TIER_COLORS[k]);
+        ui.font.draw(c, (int)mx + 30, y + 28, 24, fmtInt(t.got[k]), C_TEXT);
+        ui.font.draw(c, (int)mx + 30, y + 60, 14, TIER_NAMES[k], C_SUB);
+    }
+
+    // latest unlocks
+    int lx = x + 846;
+    c.fillRect(lx - 20, y + 20, 1, h - 40, C_LINE);
+    ui.font.draw(c, lx, y + 12, 14, "LATEST UNLOCKS", C_DIM);
+    std::vector<std::pair<uint64_t, std::pair<int, int>>> rec;
+    for (int gi = 0; gi < (int)lib.games.size(); gi++)
+        for (int ai = 0; ai < (int)lib.games[gi].achs.size(); ai++) {
+            const Achievement& a = lib.games[gi].achs[ai];
+            if (a.unlocked && a.unlockTime) rec.push_back({a.unlockTime, {gi, ai}});
+        }
+    size_t shown = std::min<size_t>(2, rec.size());
+    std::partial_sort(rec.begin(), rec.begin() + shown, rec.end(), [](const auto& a, const auto& b) { return a.first > b.first; });
+    if (!shown) ui.font.draw(c, lx, y + 46, 17, "Nothing yet - keep playing!", C_SUB);
+    for (size_t i = 0; i < shown; i++) {
+        const Game& g = lib.games[rec[i].second.first];
+        const Achievement& a = g.achs[rec[i].second.second];
+        int ey = y + 38 + (int)i * 32;
+        uint32_t tc = tierColor(a);
+        c.fillCircle(lx + 11, ey + 13, 11, tc);
+        c.fillCircle(lx + 11, ey + 13, 8.5f, C_PANEL);
+        drawTrophy(c, lx + 11, ey + 14, 11, tc);
+        int nw = ui.font.draw(c, lx + 30, ey + 2, 17, a.name, C_TEXT, 200);
+        ui.font.draw(c, lx + 30 + nw + 10, ey + 5, 14, g.name, C_DIM, x + w - 20 - (lx + 30 + nw + 10));
+    }
+}
+
+static void drawLibrary(UI& ui) {
+    Canvas& c = ui.cv;
+    Library& lib = ui.lib;
+    drawProfile(ui);
+    drawTabs(ui, GRID_X, 208, std::vector<std::string>(SORT_NAMES, SORT_NAMES + SORT_COUNT), ui.sortMode);
+    int played = 0, completed = 0;
+    uint64_t ns = 0;
+    for (size_t i = 1; i < lib.games.size(); i++) {
+        if (lib.games[i].stats.launches > 0) played++;
+        if (isComplete(lib.games[i])) completed++;
+        ns += lib.games[i].stats.playtimeNs;
+    }
+    std::string st = std::to_string(lib.games.size() - 1) + " games  \xC2\xB7  " + std::to_string(played) + " played  \xC2\xB7  " +
+                     fmtHours(ns) + "  \xC2\xB7  " + std::to_string(completed) + " completed";
+    ui.font.draw(c, 1256 - ui.font.measure(16, st), 216, 16, st, C_SUB);
+
+    int n = (int)ui.order.size();
+    for (int r = 0; r < GRID_ROWS; r++) for (int col = 0; col < COLS; col++) {
+        int p = (ui.gridScroll + r) * COLS + col;
+        if (p >= n) break;
+        int gi = ui.order[p];
+        const Game& g = lib.games[gi];
+        int x = GRID_X + col * (CARD_W + GAP_X), y = GRID_Y + r * (CARD_H + GAP_Y);
+        bool selected = p == ui.gridPos;
+        if (selected) {
+            c.fillRound(x - 3, y - 3, CARD_W + 6, CARD_H + 6, 15, C_GOLD);
+            c.fillRound(x, y, CARD_W, CARD_H, 12, C_PANEL_HI);
+        } else c.fillRound(x, y, CARD_W, CARD_H, 12, C_PANEL);
+        int ix = x + 12, iy = y + 12;
+        drawIconTile(ui, gi, ix, iy, ICON, gameIcon(ui, gi));
+        bool complete = isComplete(g);
+        if (complete) {
+            float bx = ix + ICON - 3, by = iy + ICON - 3;
+            c.fillCircle(bx, by, 12, selected ? C_PANEL_HI : C_PANEL);
+            c.fillCircle(bx, by, 9.5f, C_GREEN);
+            drawCheck(c, bx, by, 15, C_BG);
+        }
+        int tx = ix + ICON + 14, tw = x + CARD_W - 16 - tx;
+        bool played = gi == 0 || g.stats.launches > 0;
+        ui.font.draw(c, tx, y + 11, 19, g.name, played ? C_TEXT : C_SUB, tw - (g.hasDefinition ? 26 : 0));
+        if (g.hasDefinition) {   // has its own achievement set (not only play time)
+            float bx = x + CARD_W - 24, by = y + 24;
+            c.fillCircle(bx, by, 11, 0xFF3A3220);
+            drawTrophy(c, bx, by + 1, 13, C_GOLD);
+        }
+        std::string sub;
+        if (gi == 0) sub = "Your whole library";
+        else if (!g.stats.valid || g.stats.launches == 0) sub = "Not played yet";
+        else sub = fmtHours(g.stats.playtimeNs) + " played" + (g.stats.lastPlayed ? "  \xC2\xB7  " + fmtDate(g.stats.lastPlayed) : "");
+        ui.font.draw(c, tx, y + 38, 15, sub, C_SUB, tw);
+        double frac = g.achs.empty() ? 0 : (double)g.unlocked / g.achs.size();
+        std::string cnt = std::to_string(g.unlocked) + " / " + std::to_string(g.achs.size());
+        int cw = ui.font.measure(15, cnt);
+        progressBar(c, tx, y + 70, tw - cw - 12, 6, frac, complete ? C_GREEN : C_GOLD);
+        ui.font.draw(c, tx + tw - cw, y + 62, 15, cnt, complete ? C_GREEN : C_SUB);
+    }
+    int rows = (n + COLS - 1) / COLS;
+    if (rows > GRID_ROWS) {
+        int track = GRID_ROWS * (CARD_H + GAP_Y) - GAP_Y;
+        int th = std::max(30, track * GRID_ROWS / rows);
+        int ty = GRID_Y + (track - th) * ui.gridScroll / std::max(1, rows - GRID_ROWS);
+        c.fillRound(1266, GRID_Y, 4, track, 2, C_TRACK);
+        c.fillRound(1266, ty, 4, th, 2, C_DIM);
+    }
+}
+
+static const int ACH_X = 24, ACH_W = 1232, ACH_Y = 320, ACH_H = 66, ACH_ROWS = 5;
+
+static void drawGamePage(UI& ui) {
+    Canvas& c = ui.cv;
+    Library& lib = ui.lib;
+    const Game& g = lib.games[ui.sel];
+    bool complete = isComplete(g);
+    double frac = g.achs.empty() ? 0 : (double)g.unlocked / g.achs.size();
+
+    // header card: icon, name, play stats, save status, medals, completion ring
+    int x = 24, y = 88, w = 1232, h = 172;
+    const Image* img = heroIcon(ui, ui.sel);
+    c.fillRound(x, y, w, h, 16, img ? mixColor(C_PANEL, ui.heroTint, 0.22f) : C_PANEL);
+    drawIconTile(ui, ui.sel, x + 18, y + 18, 136, img);
+    int tx = x + 18 + 136 + 24, textW = x + w - 190 - tx;
+    ui.font.draw(c, tx, y + 14, 30, g.name, C_TEXT, textW);
+
+    std::string meta;
+    const std::string dot = "  \xC2\xB7  ";
+    if (ui.sel == 0) {
+        int played = 0, completed = 0;
+        uint64_t ns = 0;
+        for (size_t i = 1; i < lib.games.size(); i++) {
+            if (lib.games[i].stats.launches > 0) played++;
+            if (isComplete(lib.games[i])) completed++;
+            ns += lib.games[i].stats.playtimeNs;
+        }
+        meta = std::to_string(played) + " games played" + dot + fmtHours(ns) + dot + std::to_string(completed) + " completed";
+    } else if (!g.stats.valid || g.stats.launches == 0) {
+        meta = "Not played yet";
+    } else {
+        meta = fmtHours(g.stats.playtimeNs) + " played" + dot + std::to_string(g.stats.launches) + (g.stats.launches == 1 ? " launch" : " launches");
+        if (g.stats.lastPlayed) meta += dot + "last played " + fmtDate(g.stats.lastPlayed);
+    }
+    ui.font.draw(c, tx, y + 56, 17, meta, C_SUB, textW);
+
+    std::string status;
+    uint32_t scol = C_SUB;
+    if (ui.sel == 0) {
+        if (!lib.loadErrors.empty()) { status = "Some definition files have errors (press X)"; scol = C_RED; }
+        else if (lib.liveStatus.find("running") == 0 || lib.liveStatus.find("started now") != std::string::npos) { status = "Live module: " + lib.liveStatus; scol = C_GREEN; }
+        else { status = "Live module: " + lib.liveStatus; scol = lib.liveStatus.find("not installed") == 0 ? C_SUB : C_RED; }
+    } else if (g.hasDefinition && g.reader.empty()) {
+        status = "Themed play-time set (save format not supported yet)";
+    } else if (g.hasDefinition) {
+        switch (g.saveStatus) {
+            case SaveStatus::Ok: status = "Save data read"; scol = C_GREEN; break;
+            case SaveStatus::NoSave: status = "No save data for this user yet (if the game is suspended, close it and press Y)"; scol = C_GOLD; break;
+            case SaveStatus::Unreadable: status = "Save found but not readable (unsupported version?)"; scol = C_RED; break;
+            default: break;
+        }
+    } else {
+        status = "Play-time achievements only (no game-specific set yet)";
+    }
+    ui.font.draw(c, tx, y + 84, 16, status, scol, textW);
+
+    TierCount t;
+    addTiers(t, g);
+    int px = tx;
+    for (int k = 0; k < 4; k++) {
+        if (!t.all[k]) continue;
+        float mx = px + 13, my = y + 136;
+        c.fillCircle(mx, my, 13, TIER_COLORS[k]);
+        c.fillCircle(mx, my, 10, img ? mixColor(C_PANEL, ui.heroTint, 0.22f) : C_PANEL);
+        drawTrophy(c, mx, my + 1, 13, TIER_COLORS[k]);
+        std::string s = std::to_string(t.got[k]) + "/" + std::to_string(t.all[k]);
+        px += 32 + ui.font.draw(c, px + 32, y + 125, 17, s, t.got[k] == t.all[k] ? TIER_COLORS[k] : C_TEXT) + 22;
+    }
+    ui.font.draw(c, px + 6, y + 126, 16, fmtInt(g.points) + " / " + fmtInt(g.maxPoints) + " pts", C_GOLD);
+
+    float rcx = x + w - 96, rcy = y + h / 2.f;
+    uint32_t rc = complete ? C_GREEN : C_GOLD;
+    progressRing(c, rcx, rcy, 64, 10, frac, rc);
+    std::string pct = std::to_string((int)floor(frac * 100)) + "%";
+    ui.font.draw(c, (int)rcx - ui.font.measure(30, pct) / 2, (int)rcy - 26, 30, pct, rc);
+    std::string cnt = std::to_string(g.unlocked) + " / " + std::to_string(g.achs.size());
+    ui.font.draw(c, (int)rcx - ui.font.measure(15, cnt) / 2, (int)rcy + 12, 15, cnt, C_SUB);
+
+    // filter tabs
+    int nu = g.unlocked, na = (int)g.achs.size();
+    std::vector<std::string> tabs = {"All  " + std::to_string(na), "Unlocked  " + std::to_string(nu), "Locked  " + std::to_string(na - nu)};
+    drawTabs(ui, ACH_X, 272, tabs, ui.achFilter);
+    if (ui.achFilter == FILT_UNLOCKED && nu) ui.font.draw(c, 1256 - ui.font.measure(15, "most recent first"), 281, 15, "most recent first", C_DIM);
+
+    // achievement list
+    c.fillRound(ACH_X, ACH_Y - 6, ACH_W, ACH_H * ACH_ROWS + 12, 14, C_PANEL);
+    if (ui.achView.empty()) {
+        const char* e = na == 0 ? "No achievements here." : ui.achFilter == FILT_UNLOCKED ? "Nothing unlocked yet - keep playing!" : "Everything is unlocked. Well done!";
+        ui.font.draw(c, 640 - ui.font.measure(19, e) / 2, ACH_Y + ACH_H * ACH_ROWS / 2 - 12, 19, e, C_SUB);
+        return;
+    }
+    c.setClip(ACH_X, ACH_Y - 6, ACH_W, ACH_H * ACH_ROWS + 12);
+    for (int r = 0; r < ACH_ROWS; r++) {
+        int vi = ui.achScroll + r;
+        if (vi >= (int)ui.achView.size()) break;
+        const Achievement& a = g.achs[ui.achView[vi]];
+        int ry = ACH_Y + r * ACH_H;
+        bool selr = vi == ui.achSel;
+        uint32_t rowBg = selr ? C_PANEL_HI : C_PANEL;
+        if (selr) {
+            c.fillRound(ACH_X + 8, ry + 1, ACH_W - 26, ACH_H - 2, 10, C_PANEL_HI);
+            c.fillRound(ACH_X + 8, ry + 15, 4, ACH_H - 30, 2, C_GOLD);
+        } else if (r > 0) c.fillRect(ACH_X + 92, ry, ACH_W - 116, 1, C_LINE);
+        float bx = ACH_X + 50, by = ry + ACH_H / 2.f;
+        uint32_t tc = tierColor(a);
+        if (a.unlocked) {
+            c.fillCircle(bx, by, 23, tc);
+            c.fillCircle(bx, by, 19, rowBg);
+            drawTrophy(c, bx, by + 2, 22, tc);
+        } else {
+            c.fillCircle(bx, by, 23, 0xFF2C303B);
+            c.ring(bx, by, 23, 2, mixColor(rowBg, tc, 0.45f));   // which medal it will be
+            drawLock(c, bx, by + 2, 22, C_DIM);
+        }
+
+        // right side: points pill, then date / progress
+        int rx = ACH_X + ACH_W - 24;
+        std::string pts = std::to_string(a.points);
+        int ptw = std::max(54, ui.font.measure(15, pts) + 22);   // fixed width keeps the dates/progress aligned
+        c.fillRound(rx - ptw, by - 13, ptw, 26, 13, a.unlocked ? mixColor(rowBg, tc, 0.22f) : C_TRACK);
+        ui.font.draw(c, rx - ptw / 2 - ui.font.measure(15, pts) / 2, (int)by - 11, 15, pts, a.unlocked ? tc : C_DIM);
+        int rx2 = rx - ptw - 20;
+        int rightW = 230;
+        if (a.unlocked) {
+            std::string d = fmtDate(a.unlockTime);
+            int dw = ui.font.measure(16, d);
+            c.fillCircle(rx2 - dw - 14, by, 9, C_GREEN);
+            drawCheck(c, rx2 - dw - 14, by, 15, C_BG);
+            ui.font.draw(c, rx2 - dw, (int)by - 11, 16, d, C_GREEN);
+        } else if (a.rule.showProgress && !a.hidden && a.rule.target > 0) {
+            const Rule& rl = a.rule;
+            double cur = std::min(a.value, rl.target) / rl.divisor, tgt = rl.target / rl.divisor;
+            std::string p = fmtNum(floor(cur * 10) / 10) + " / " + fmtNum(tgt);
+            ui.font.draw(c, rx2 - ui.font.measure(15, p), ry + 12, 15, p, C_TEXT);
+            progressBar(c, rx2 - 170, ry + 40, 170, 6, a.value / rl.target, tc);
+        } else {
+            ui.font.draw(c, rx2 - ui.font.measure(16, "Locked"), (int)by - 11, 16, "Locked", C_DIM);
+        }
+
+        int ax = ACH_X + 90, aw = rx - ptw - rightW - ax;
+        std::string desc = (a.hidden && !a.unlocked) ? "Hidden achievement - keep playing!" : a.desc;
+        int nw = ui.font.draw(c, ax, ry + 9, 19, a.name, a.unlocked ? C_TEXT : 0xFFC4C8D2, aw - (a.isNew ? 56 : 0));
+        if (a.isNew) {
+            int nx = ax + nw + 10;
+            c.fillRound(nx, ry + 10, 46, 22, 11, C_GOLD);
+            ui.font.draw(c, nx + 8, ry + 12, 15, "NEW", C_BG);
+        }
+        ui.font.draw(c, ax, ry + 36, 16, desc, C_SUB, aw);
+    }
+    c.resetClip();
+    int n = (int)ui.achView.size();
+    if (n > ACH_ROWS) {
+        int track = ACH_H * ACH_ROWS - 16;
+        int th = std::max(30, track * ACH_ROWS / n);
+        int ty = ACH_Y + 8 + (track - th) * ui.achScroll / std::max(1, n - ACH_ROWS);
+        c.fillRound(ACH_X + ACH_W - 9, ty, 4, th, 2, C_DIM);
+    }
+}
+
+static void drawFooter(UI& ui) {
+    Canvas& c = ui.cv;
+    c.fillRect(0, 668, 1280, 1, C_LINE);
+    int x = 28;
+    if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "+", "Exit"); return; }
+    if (ui.upd || ui.cap) { buttonHint(ui, x, 680, "+", "Exit"); return; }
+    bool game = ui.screen == SCR_GAME;
+    if (ui.popup) buttonHint(ui, x, 680, "A", "Close");
+    else if (game) { buttonHint(ui, x, 680, "B", "Back"); buttonHint(ui, x, 680, "L/R", "Filter"); }
+    else { buttonHint(ui, x, 680, "A", "Open"); buttonHint(ui, x, 680, "L/R", "Sort"); }
+    buttonHint(ui, x, 680, "Y", "Rescan");
+    if (ui.sel != 0) buttonHint(ui, x, 680, "ZR", "Save captures");
+    else if (!game) buttonHint(ui, x, 680, "ZR", "Compatibility scan");
+    buttonHint(ui, x, 680, "X", "Debug");
+    buttonHint(ui, x, 680, "-", game ? "Re-lock" : (ui.sel == 0 ? "Re-lock all" : "Re-lock game"));
+    buttonHint(ui, x, 680, "ZL", "Update");
+    buttonHint(ui, x, 680, "+", "Exit");
+    std::string v = "v" APP_VERSION;
+    ui.font.draw(c, 1256 - ui.font.measure(16, v), 684, 16, v, C_DIM);
+}
+
+// ---------------------------------------------------------------- classic look (the original layout, kept as an option)
+static void classicHeader(UI& ui) {
     Canvas& c = ui.cv;
     c.gradientV(0, 0, 1280, 84, 0xFF1F2330, C_BG);
     c.fillCircle(52, 42, 26, 0xFF2A2F3D);
     drawTrophy(c, 52, 44, 30, C_GOLD);
-    ui.font.draw(c, 92, 22, 30, "TrophyNX", C_TEXT);
+    int tw = ui.font.draw(c, 92, 22, 30, "TrophyNX", C_TEXT);
+    themeChip(ui, 92 + tw + 24, 24);
     std::string user = ui.font.ellipsize(22, plat::userName(), 300);
     int uw = ui.font.measure(22, user);
     ui.font.draw(c, 1256 - uw, 16, 22, user, C_TEXT);
@@ -150,22 +684,22 @@ static void drawHeader(UI& ui) {
 }
 
 static const int LIST_X = 24, LIST_Y = 100, LIST_W = 420, ROW_H = 78, LIST_ROWS = 7;
-static const int DET_X = 464, DET_W = 792, ACH_Y = 236, ACH_H = 84, ACH_ROWS = 5;
+static const int DET_X = 464, DET_W = 792, CL_ACH_Y = 236, CL_ACH_H = 84, CL_ACH_ROWS = 5;
 
-static void drawGameList(UI& ui) {
+static void classicGameList(UI& ui) {
     Canvas& c = ui.cv;
     Library& lib = ui.lib;
     c.fillRound(LIST_X, LIST_Y - 4, LIST_W, ROW_H * LIST_ROWS + 8, 14, C_PANEL);
     c.setClip(LIST_X, LIST_Y - 4, LIST_W, ROW_H * LIST_ROWS + 8);
     for (int r = 0; r < LIST_ROWS; r++) {
-        int gi = ui.gameScroll + r;
+        int gi = ui.listScroll + r;
         if (gi >= (int)lib.games.size()) break;
         const Game& g = lib.games[gi];
         int y = LIST_Y + r * ROW_H;
         bool selected = gi == ui.sel;
         if (selected) {
             c.fillRound(LIST_X + 6, y + 2, LIST_W - 12, ROW_H - 4, 10, C_PANEL_HI);
-            if (!ui.focusAch) c.fillRound(LIST_X + 6, y + 14, 4, ROW_H - 28, 2, C_GOLD);
+            if (!(ui.screen == SCR_GAME)) c.fillRound(LIST_X + 6, y + 14, 4, ROW_H - 28, 2, C_GOLD);
         }
         int ix = LIST_X + 18, iy = y + 11;
         if (gi == 0) {
@@ -196,12 +730,12 @@ static void drawGameList(UI& ui) {
     if (n > LIST_ROWS) {
         int track = ROW_H * LIST_ROWS - 16;
         int th = std::max(30, track * LIST_ROWS / n);
-        int ty = LIST_Y + 4 + (track - th) * ui.gameScroll / std::max(1, n - LIST_ROWS);
+        int ty = LIST_Y + 4 + (track - th) * ui.listScroll / std::max(1, n - LIST_ROWS);
         c.fillRound(LIST_X + LIST_W - 7, ty, 4, th, 2, C_DIM);
     }
 }
 
-static void drawDetails(UI& ui) {
+static void classicDetails(UI& ui) {
     Canvas& c = ui.cv;
     Library& lib = ui.lib;
     const Game& g = lib.games[ui.sel];
@@ -251,20 +785,20 @@ static void drawDetails(UI& ui) {
         status = "Play-time achievements only (no game-specific set yet)";
     }
     ui.font.draw(c, x, LIST_Y + 104, 16, status, scol, DET_W - 48);
-    c.fillRect(DET_X + 16, ACH_Y - 8, DET_W - 32, 1, C_LINE);
+    c.fillRect(DET_X + 16, CL_ACH_Y - 8, DET_W - 32, 1, C_LINE);
 
-    c.setClip(DET_X, ACH_Y - 6, DET_W, ACH_H * ACH_ROWS + 6);
-    for (int r = 0; r < ACH_ROWS; r++) {
+    c.setClip(DET_X, CL_ACH_Y - 6, DET_W, CL_ACH_H * CL_ACH_ROWS + 6);
+    for (int r = 0; r < CL_ACH_ROWS; r++) {
         int ai = ui.achScroll + r;
-        if (ai >= (int)g.achs.size()) break;
-        const Achievement& a = g.achs[ai];
-        int y = ACH_Y + r * ACH_H;
-        if (ui.focusAch && ai == ui.achSel) {
-            c.fillRound(DET_X + 10, y, DET_W - 20, ACH_H - 6, 10, C_PANEL_HI);
-            c.fillRound(DET_X + 10, y + 14, 4, ACH_H - 34, 2, C_GOLD);
+        if (ai >= (int)ui.achView.size()) break;
+        const Achievement& a = g.achs[ui.achView[ai]];
+        int y = CL_ACH_Y + r * CL_ACH_H;
+        if ((ui.screen == SCR_GAME) && ai == ui.achSel) {
+            c.fillRound(DET_X + 10, y, DET_W - 20, CL_ACH_H - 6, 10, C_PANEL_HI);
+            c.fillRound(DET_X + 10, y + 14, 4, CL_ACH_H - 34, 2, C_GOLD);
         }
         float bx = DET_X + 52, by = y + 38;
-        uint32_t tc = tierColor(a.points);
+        uint32_t tc = tierColor(a);
         if (a.unlocked) {
             c.fillCircle(bx, by, 27, tc);
             c.fillCircle(bx, by, 22, 0xFF1B1E26);
@@ -311,28 +845,28 @@ static void drawDetails(UI& ui) {
     }
     c.resetClip();
     int n = (int)g.achs.size();
-    if (n > ACH_ROWS) {
-        int track = ACH_H * ACH_ROWS - 12;
-        int th = std::max(30, track * ACH_ROWS / n);
-        int ty = ACH_Y + (track - th) * ui.achScroll / std::max(1, n - ACH_ROWS);
+    if (n > CL_ACH_ROWS) {
+        int track = CL_ACH_H * CL_ACH_ROWS - 12;
+        int th = std::max(30, track * CL_ACH_ROWS / n);
+        int ty = CL_ACH_Y + (track - th) * ui.achScroll / std::max(1, n - CL_ACH_ROWS);
         c.fillRound(DET_X + DET_W - 7, ty, 4, th, 2, C_DIM);
     }
 }
 
-static void drawFooter(UI& ui) {
+static void classicFooter(UI& ui) {
     Canvas& c = ui.cv;
     c.fillRect(0, 668, 1280, 1, C_LINE);
     int x = 28;
     if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "+", "Exit"); return; }
     if (ui.upd || ui.cap) { buttonHint(ui, x, 680, "+", "Exit"); return; }
     if (ui.popup) buttonHint(ui, x, 680, "A", "Close");
-    else if (ui.focusAch) buttonHint(ui, x, 680, "B", "Back to games");
+    else if (ui.screen == SCR_GAME) buttonHint(ui, x, 680, "B", "Back to games");
     else buttonHint(ui, x, 680, "A", "Open");
     buttonHint(ui, x, 680, "Y", "Rescan saves");
-    if (ui.sel == 0 && !ui.focusAch) buttonHint(ui, x, 680, "ZR", "Compatibility scan");
+    if (ui.sel == 0 && !(ui.screen == SCR_GAME)) buttonHint(ui, x, 680, "ZR", "Compatibility scan");
     if (ui.sel != 0) buttonHint(ui, x, 680, "ZR", "Save captures");
     buttonHint(ui, x, 680, "X", "Debug");
-    buttonHint(ui, x, 680, "-", ui.focusAch ? "Re-lock" : (ui.sel == 0 ? "Re-lock all" : "Re-lock game"));
+    buttonHint(ui, x, 680, "-", (ui.screen == SCR_GAME) ? "Re-lock" : (ui.sel == 0 ? "Re-lock all" : "Re-lock game"));
     buttonHint(ui, x, 680, "ZL", "Update");
     buttonHint(ui, x, 680, "+", "Exit");
     std::string v = "v" APP_VERSION;
@@ -356,7 +890,7 @@ static void drawPopup(UI& ui) {
         const Game& g = lib.games[lib.newlyUnlocked[i].first];
         const Achievement& a = g.achs[lib.newlyUnlocked[i].second];
         int ry = y + 96 + i * 62;
-        uint32_t tc = tierColor(a.points);
+        uint32_t tc = tierColor(a);
         c.fillCircle(x + 48, ry + 24, 20, tc);
         c.fillCircle(x + 48, ry + 24, 16, C_PANEL);
         drawTrophy(c, x + 48, ry + 26, 19, tc);
@@ -412,7 +946,7 @@ static void drawConfirm(UI& ui) {
     std::string title, line1, line2;
     if (ui.confirm == 1) {
         title = "Re-lock this achievement?";
-        line1 = g.achs[ui.achSel].name + "  (" + (ui.sel == 0 ? std::string("Overview") : g.name) + ")";
+        line1 = g.achs[ui.relockAch].name + "  (" + (ui.sel == 0 ? std::string("Overview") : g.name) + ")";
     } else if (ui.confirm == 2) {
         title = "Re-lock every achievement of this game?";
         line1 = g.name + "  (" + std::to_string(g.unlocked) + " unlocked)";
@@ -601,15 +1135,19 @@ static void drawAll(UI& ui) {
     ui.cv.stride = stride;
     ui.cv.resetClip();
     ui.cv.clear(C_BG);
-    drawHeader(ui);
-    drawGameList(ui);
-    drawDetails(ui);
+    if (ui.classic) { classicHeader(ui); classicGameList(ui); classicDetails(ui); }
+    else {
+        drawHeader(ui);
+        if (ui.screen == SCR_GAME) drawGamePage(ui);
+        else drawLibrary(ui);
+    }
     if (ui.popup) drawPopup(ui);
     if (ui.debug) drawDebug(ui);
     if (ui.confirm) drawConfirm(ui);
     if (ui.upd) drawUpdate(ui);
     if (ui.cap) drawCaptures(ui);
-    drawFooter(ui);
+    if (ui.classic) classicFooter(ui);
+    else drawFooter(ui);
     if (!ui.toast.empty()) {
         int tw = ui.font.measure(18, ui.toast) + 40;
         ui.cv.fillRound(640 - tw / 2, 616, tw, 40, 20, 0xFF2F3545);
@@ -661,11 +1199,26 @@ static void showFatal(UI& ui, const std::string& msg) {
 }
 
 static void clampScroll(UI& ui) {
-    int n = (int)ui.lib.games.size();
-    ui.sel = std::max(0, std::min(ui.sel, n - 1));
-    if (ui.sel < ui.gameScroll) ui.gameScroll = ui.sel;
-    if (ui.sel >= ui.gameScroll + LIST_ROWS) ui.gameScroll = ui.sel - LIST_ROWS + 1;
-    int na = (int)ui.lib.games[ui.sel].achs.size();
+    if (ui.classic) {
+        int n = (int)ui.lib.games.size();
+        ui.sel = std::max(0, std::min(ui.sel, n - 1));
+        if (ui.sel < ui.listScroll) ui.listScroll = ui.sel;
+        if (ui.sel >= ui.listScroll + LIST_ROWS) ui.listScroll = ui.sel - LIST_ROWS + 1;
+        int na = (int)ui.achView.size();
+        ui.achSel = std::max(0, std::min(ui.achSel, std::max(0, na - 1)));
+        if (ui.achSel < ui.achScroll) ui.achScroll = ui.achSel;
+        if (ui.achSel >= ui.achScroll + CL_ACH_ROWS) ui.achScroll = ui.achSel - CL_ACH_ROWS + 1;
+        ui.achScroll = std::max(0, std::min(ui.achScroll, std::max(0, na - CL_ACH_ROWS)));
+        return;
+    }
+    int n = (int)ui.order.size();
+    ui.gridPos = std::max(0, std::min(ui.gridPos, n - 1));
+    ui.sel = ui.order[ui.gridPos];
+    int row = ui.gridPos / COLS, rows = (n + COLS - 1) / COLS;
+    if (row < ui.gridScroll) ui.gridScroll = row;
+    if (row >= ui.gridScroll + GRID_ROWS) ui.gridScroll = row - GRID_ROWS + 1;
+    ui.gridScroll = std::max(0, std::min(ui.gridScroll, std::max(0, rows - GRID_ROWS)));
+    int na = (int)ui.achView.size();
     ui.achSel = std::max(0, std::min(ui.achSel, std::max(0, na - 1)));
     if (ui.achSel < ui.achScroll) ui.achScroll = ui.achSel;
     if (ui.achSel >= ui.achScroll + ACH_ROWS) ui.achScroll = ui.achSel - ACH_ROWS + 1;
@@ -698,6 +1251,8 @@ int main(int argc, char** argv) {
     buildLibrary(ui.lib, onProgress, &ui);
     if (!moved.empty()) ui.toast = "Renamed to TrophyNX: your achievements were kept.";
     ui.popup = !ui.lib.newlyUnlocked.empty();
+    loadLook(ui);
+    clampScroll(ui);
     if (!ui.lib.loadErrors.empty()) {
         makeDirs(plat::dataDir());
         writeFile(plat::dataDir() + "/definition_errors.txt", ui.lib.loadErrors);
@@ -709,7 +1264,7 @@ int main(int argc, char** argv) {
     while (plat::poll()) {
         uint32_t down = plat::buttonsDown(), held = plat::buttonsHeld();
         // key repeat for up/down
-        uint32_t dirs = held & (plat::BTN_UP | plat::BTN_DOWN);
+        uint32_t dirs = held & (plat::BTN_UP | plat::BTN_DOWN | plat::BTN_LEFT | plat::BTN_RIGHT);
         if (dirs && dirs == lastHeld) {
             if (++holdFrames > 24 && holdFrames % 5 == 0) down |= dirs;
         } else holdFrames = 0;
@@ -755,11 +1310,13 @@ int main(int argc, char** argv) {
         } else if (ui.confirm) {
             if (down & plat::BTN_A) {
                 int n = 0;
-                if (ui.confirm == 1) n = relockAchievements(ui.lib, ui.sel, ui.achSel);
+                if (ui.confirm == 1) n = relockAchievements(ui.lib, ui.sel, ui.relockAch);
                 else if (ui.confirm == 2) n = relockAchievements(ui.lib, ui.sel, -1);
                 else n = relockAchievements(ui.lib, -1, -1);
                 ui.toast = std::to_string(n) + (n == 1 ? " achievement" : " achievements") + " re-locked. Press Y to rescan.";
                 ui.confirm = 0;
+                buildAchView(ui);
+                clampScroll(ui);
                 dirty = true;
             } else if (down & plat::BTN_B) { ui.confirm = 0; dirty = true; }
         } else if (ui.popup) {
@@ -783,18 +1340,23 @@ int main(int argc, char** argv) {
                 uint64_t keepId = ui.lib.games[ui.sel].id;
                 rescanLibrary(ui.lib, onProgress, &ui);
                 ui.icons.clear();   // order may have changed
+                ui.heroGi = -1;
                 for (size_t i = 0; i < ui.lib.games.size(); i++) if (ui.lib.games[i].id == keepId) ui.sel = (int)i;
+                buildOrder(ui);
+                buildAchView(ui);
                 ui.popup = !ui.lib.newlyUnlocked.empty();
             }
-            if ((down & plat::BTN_ZR) && ui.sel != 0) openCaptures(ui);
-            if ((down & plat::BTN_ZR) && ui.sel == 0 && !ui.focusAch) {
-                ui.loadingLabel = "Checking every save";
-                ui.lastProgress = -1;
-                ScanSummary sum;
-                if (runCompatibilityScan(ui.lib, onProgress, &ui, sum)) {
-                    ui.toast = std::to_string(sum.withSave) + " saves checked: " + std::to_string(sum.draftable) + " draftable, " +
-                               std::to_string(sum.text) + " text, " + std::to_string(sum.binary) + " binary. Upload scan_bundle.json.";
-                } else ui.toast = "Scan failed: " + sum.error;
+            if (down & plat::BTN_ZR) {
+                if (ui.sel != 0) openCaptures(ui);
+                else if (ui.screen == SCR_LIBRARY) {
+                    ui.loadingLabel = "Checking every save";
+                    ui.lastProgress = -1;
+                    ScanSummary sum;
+                    if (runCompatibilityScan(ui.lib, onProgress, &ui, sum)) {
+                        ui.toast = std::to_string(sum.withSave) + " saves checked: " + std::to_string(sum.draftable) + " draftable, " +
+                                   std::to_string(sum.text) + " text, " + std::to_string(sum.binary) + " binary. Upload scan_bundle.json.";
+                    } else ui.toast = "Scan failed: " + sum.error;
+                }
             }
             if (down & plat::BTN_ZL) {
                 ui.loadingLabel = "Checking for updates";
@@ -804,24 +1366,68 @@ int main(int argc, char** argv) {
             }
             if (down & plat::BTN_MINUS) {
                 const Game& g = ui.lib.games[ui.sel];
-                if (ui.focusAch) {
-                    if (!g.achs.empty() && g.achs[ui.achSel].unlocked) ui.confirm = 1;
-                    else ui.toast = "This achievement is still locked.";
+                if (ui.screen == SCR_GAME) {
+                    if (ui.achView.empty()) ui.toast = "Nothing to re-lock here.";
+                    else if (!g.achs[ui.achView[ui.achSel]].unlocked) ui.toast = "This achievement is still locked.";
+                    else { ui.relockAch = ui.achView[ui.achSel]; ui.confirm = 1; }
                 } else ui.confirm = ui.sel == 0 ? 3 : 2;
             } else if (down & plat::BTN_X) { ui.debug = true; ui.debugScroll = 0; }
-            else if (!ui.focusAch) {
-                if (down & plat::BTN_UP) ui.sel--;
-                if (down & plat::BTN_DOWN) ui.sel++;
-                if (down & plat::BTN_L) ui.sel -= LIST_ROWS;
-                if (down & plat::BTN_R) ui.sel += LIST_ROWS;
-                if (down & (plat::BTN_UP | plat::BTN_DOWN | plat::BTN_L | plat::BTN_R)) { ui.achSel = 0; ui.achScroll = 0; }
-                if (down & (plat::BTN_A | plat::BTN_RIGHT)) ui.focusAch = true;
-            } else if (!(down & plat::BTN_X)) {
+            else if (down & plat::BTN_STICK) {
+                setLook(ui, !ui.classic);
+                ui.screen = SCR_LIBRARY;
+                ui.toast = std::string(ui.classic ? "Classic look" : "New look") + " (press a stick to switch back).";
+                if (!saveLook(ui)) ui.toast = "Could not write theme.txt (the look resets at the next launch).";
+            } else if (ui.classic) {
+                bool moved = false;
+                if (ui.screen != SCR_GAME) {
+                    int before = ui.sel;
+                    if (down & plat::BTN_UP) ui.sel--;
+                    if (down & plat::BTN_DOWN) ui.sel++;
+                    if (down & plat::BTN_L) ui.sel -= LIST_ROWS;
+                    if (down & plat::BTN_R) ui.sel += LIST_ROWS;
+                    ui.sel = std::max(0, std::min(ui.sel, (int)ui.lib.games.size() - 1));
+                    moved = ui.sel != before;
+                    if (down & (plat::BTN_A | plat::BTN_RIGHT)) ui.screen = SCR_GAME;
+                } else {
+                    if (down & plat::BTN_UP) ui.achSel--;
+                    if (down & plat::BTN_DOWN) ui.achSel++;
+                    if (down & plat::BTN_L) ui.achSel -= CL_ACH_ROWS;
+                    if (down & plat::BTN_R) ui.achSel += CL_ACH_ROWS;
+                    if (down & (plat::BTN_B | plat::BTN_LEFT)) ui.screen = SCR_LIBRARY;
+                }
+                if (moved) { ui.achSel = ui.achScroll = 0; buildAchView(ui); }
+            } else if (ui.screen == SCR_LIBRARY) {
+                int n = (int)ui.order.size(), p = ui.gridPos;
+                if ((down & plat::BTN_LEFT) && p > 0) p--;
+                if ((down & plat::BTN_RIGHT) && p < n - 1) p++;
+                if ((down & plat::BTN_UP) && p >= COLS) p -= COLS;
+                if (down & plat::BTN_DOWN) {
+                    if (p + COLS < n) p += COLS;
+                    else if (p / COLS < (n - 1) / COLS) p = n - 1;   // last row is shorter: go to its last game
+                }
+                if (p != ui.gridPos) { ui.gridPos = p; ui.sel = ui.order[p]; }
+                if (down & (plat::BTN_L | plat::BTN_R)) {
+                    ui.sortMode = (ui.sortMode + ((down & plat::BTN_R) ? 1 : SORT_COUNT - 1)) % SORT_COUNT;
+                    buildOrder(ui);
+                    ui.gridScroll = 0;
+                }
+                if (down & plat::BTN_A) {
+                    ui.screen = SCR_GAME;
+                    ui.achFilter = FILT_ALL;
+                    ui.achSel = ui.achScroll = 0;
+                    buildAchView(ui);
+                }
+            } else {
                 if (down & plat::BTN_UP) ui.achSel--;
                 if (down & plat::BTN_DOWN) ui.achSel++;
-                if (down & plat::BTN_L) ui.achSel -= ACH_ROWS;
-                if (down & plat::BTN_R) ui.achSel += ACH_ROWS;
-                if (down & (plat::BTN_B | plat::BTN_LEFT)) ui.focusAch = false;
+                if (down & plat::BTN_LEFT) ui.achSel -= ACH_ROWS;
+                if (down & plat::BTN_RIGHT) ui.achSel += ACH_ROWS;
+                if (down & (plat::BTN_L | plat::BTN_R)) {
+                    ui.achFilter = (ui.achFilter + ((down & plat::BTN_R) ? 1 : FILT_COUNT - 1)) % FILT_COUNT;
+                    ui.achSel = ui.achScroll = 0;
+                    buildAchView(ui);
+                }
+                if (down & plat::BTN_B) ui.screen = SCR_LIBRARY;
             }
             clampScroll(ui);
         }

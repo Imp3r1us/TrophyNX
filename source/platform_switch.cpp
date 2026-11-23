@@ -34,6 +34,7 @@ static uint32_t mapButtons(uint64_t k) {
     if (k & HidNpadButton_ZL) b |= plat::BTN_ZL;
     if (k & HidNpadButton_R) b |= plat::BTN_R;
     if (k & HidNpadButton_ZR) b |= plat::BTN_ZR;
+    if (k & (HidNpadButton_StickL | HidNpadButton_StickR)) b |= plat::BTN_STICK;
     return b;
 }
 

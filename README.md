@@ -11,6 +11,20 @@ and remembers them on the SD card. A background module shows a popup when you un
 
 ![Achievement popup in Breath of the Wild](docs/popup-botw.jpg)
 
+### The app
+
+| Library | Game page |
+|---|---|
+| ![Library: profile card, medals by tier, latest unlocks and the game grid](docs/ui-library.png) | ![Game page: completion ring, medals by tier, filters and the achievement list](docs/ui-game.png) |
+| Your points, medals by tier and latest unlocks, then every game as a card. **L / R** sorts the grid. | **A** on a game: play stats, save status, completion ring, and its achievements filtered with **L / R** (All, Unlocked, Locked). |
+
+Prefer the original layout? **Press either stick** (the *LS* chip in the header) to switch to the classic look
+and back. The app remembers your choice.
+
+![Classic look: game list on the left, achievements on the right](docs/ui-classic.png)
+
+*Screenshots from the PC preview build (placeholder icons and play times).*
+
 **Want achievements for a game that isn't supported?** See [Making your own achievement list](docs/custom-achievements.md)
 and the online **[Save Lab](https://imp3r1us.github.io/TrophyNX/)**.
 **THEATRHYTHM FINAL BAR LINE or DELTARUNE?** They need a file from your own copy of the game: see the beginner guide
@@ -225,16 +239,19 @@ they are mounted with the system's read-only save API.
 
 | Button | Action |
 |---|---|
-| Up / Down (D-pad or stick) | Move |
-| A or Right | Open a game's achievements |
-| B or Left | Back to the game list |
-| L / R | Page up / down |
+| D-pad (or stick) | Move in the game grid / the achievement list (Left / Right: page up / down in a list) |
+| A | Open a game's page: completion ring, medals by tier, play stats and its achievements |
+| B | Back to the library |
+| L / R | Library: sort the games (Featured, Recent, Progress, Playtime, A-Z). Game page: show All / Unlocked (most recent first) / Locked |
 | ZR (on a game) | Save captures: record the game's save each time it closes, share captures over Wi-Fi |
 | ZR (on Overview) | Compatibility scan: checks every game's save format and writes `scan_bundle.json` (see PC → Switch) |
 | Y | Rescan saves (after playing) |
 | X | Debug view for the selected game (what was read, values, errors) |
-| − | Re-lock: the selected achievement, the whole game (from the game list) or everything (on Overview), with confirmation |
+| − | Re-lock: the selected achievement (on a game page), the whole game (in the library) or everything (Overview in the library), with confirmation |
+| Press a stick (LS or RS) | Switch between the new look and the classic look (remembered in `theme.txt`) |
 | + | Exit |
+
+In the classic look, Up / Down move, A or Right opens the achievement list, B or Left goes back and L / R page up / down.
 
 **Tip:** a game that is suspended in the background keeps its save locked. Close it before scanning.
 
@@ -245,6 +262,7 @@ sdmc:/switch/TrophyNX/
   unlocks/<user-id>.json        your unlocked achievements (with unlock dates)
   games/<TITLEID>.json          optional: your own achievement sets (override the built-in ones)
   universal.json                optional: replace the play-time achievements
+  theme.txt                     the look you picked with a stick press ("new" or "classic")
   definition_errors.txt         written only if one of your JSON files has a problem
   log.txt                       full report of the last scan (same content as the X debug view)
   update_log.txt                last in-app update: each file replaced (or why not) and the live module restart

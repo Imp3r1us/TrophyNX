@@ -70,6 +70,7 @@ namespace plat {
     enum Button : uint32_t {
         BTN_A = 1, BTN_B = 2, BTN_X = 4, BTN_Y = 8, BTN_UP = 16, BTN_DOWN = 32,
         BTN_LEFT = 64, BTN_RIGHT = 128, BTN_PLUS = 256, BTN_MINUS = 512, BTN_L = 1024, BTN_R = 2048, BTN_ZR = 4096, BTN_ZL = 8192,
+        BTN_STICK = 16384,   // either stick pressed in (switches the look)
     };
     bool poll();                          // false = app should quit; updates buttons
     uint32_t* beginDraw(int& stride);     // 1280x720 RGBA8888 buffer

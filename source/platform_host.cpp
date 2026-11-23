@@ -27,7 +27,8 @@ bool plat::init(std::string& err) {
         std::string t;
         while (std::getline(ss, t, ',')) g_script.push_back(t);
     }
-    if (!readFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", g_font)) { err = "no host font"; return false; }
+    const char* fp = getenv("ACH_FONT");   // any .ttf (e.g. on Windows: C:/Windows/Fonts/segoeui.ttf)
+    if (!readFile(fp ? fp : "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", g_font)) { err = "no host font"; return false; }
     return true;
 }
 void plat::exit() {}
@@ -148,6 +149,7 @@ bool plat::poll() {
     else if (t == "Y") g_down = BTN_Y; else if (t == "UP") g_down = BTN_UP; else if (t == "DOWN") g_down = BTN_DOWN;
     else if (t == "LEFT") g_down = BTN_LEFT; else if (t == "RIGHT") g_down = BTN_RIGHT; else if (t == "PLUS") g_down = BTN_PLUS;
     else if (t == "R") g_down = BTN_R; else if (t == "ZR") g_down = BTN_ZR; else if (t == "ZL") g_down = BTN_ZL; else if (t == "L") g_down = BTN_L; else if (t == "MINUS") g_down = BTN_MINUS;
+    else if (t == "LS") g_down = BTN_STICK;
     return true;
 }
 uint32_t* plat::beginDraw(int& stride) { stride = 1280; return g_px.data(); }
