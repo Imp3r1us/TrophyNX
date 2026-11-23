@@ -10,6 +10,20 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.12.0 (2026-11-23)
+
+A new look for the app, and achievement popups while you play, right after the game saves.
+
+### New
+- New library: your points, medals by tier and latest unlocks at the top, then every game as a card with its progress. L / R sorts the games (Recent, Progress, Playtime, A-Z...).
+- New game page: big icon, play stats, medals by tier and a completion ring. L / R shows All, Unlocked (most recent first) or Locked achievements.
+- Prefer the old layout? Press either stick to switch to the classic look and back. The app remembers your choice.
+- Memory achievements: definitions can now watch a value in the game's memory (money, level...) per game version, and unlock it the moment it's reached. See docs/custom-achievements.md.
+
+### Live module 0.9.0
+- Live save: for every game with a save reader, the module reads the game's latest save while it runs (read-only, without touching the game's own save files) and shows popups a few seconds after the game saves. Turn it off for a game with "live_save": false.
+- Runs the new memory achievements while you play.
+
 ## 0.11.4 (2026-11-23)
 
 Fixes the console shutting down (error 2001-0132) when a game or sphaira starts.
