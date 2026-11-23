@@ -1,0 +1,506 @@
+{
+ "title_id": "01008DD013200000",
+ "name": "Ori and the Will of the Wisps",
+ "reader": "nrbf",
+ "save_files": [
+  "cacheForsteamUser-76861434133628145PlayFabAchievements.bindata"
+ ],
+ "_steam_appid": 1057090,
+ "_generated": "pc2switch (review before use)",
+ "achievements": [
+  {
+   "id": "1",
+   "name": "Close Call",
+   "desc": "Close Call",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=1]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "1",
+   "hidden": true
+  },
+  {
+   "id": "3",
+   "name": "Take the Bug by the Horn",
+   "desc": "Take the Bug by the Horn",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=3]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "3",
+   "hidden": true
+  },
+  {
+   "id": "4",
+   "name": "Laser Brain",
+   "desc": "Laser Brain",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=4]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "4",
+   "hidden": true
+  },
+  {
+   "id": "7",
+   "name": "Home Sweet Home",
+   "desc": "Home Sweet Home",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=7]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "7",
+   "hidden": true
+  },
+  {
+   "id": "8",
+   "name": "Let the Waters Flow",
+   "desc": "Let the Waters Flow",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=8]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "8",
+   "hidden": true
+  },
+  {
+   "id": "9",
+   "name": "Icy Escape",
+   "desc": "Icy Escape",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=9]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "9",
+   "hidden": true
+  },
+  {
+   "id": "10",
+   "name": "Dark Triumph",
+   "desc": "Dark Triumph",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=10]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "10",
+   "hidden": true
+  },
+  {
+   "id": "11",
+   "name": "Guardian's Rest",
+   "desc": "Guardian's Rest",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=11]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "11",
+   "hidden": true
+  },
+  {
+   "id": "12",
+   "name": "Quick Sand",
+   "desc": "Quick Sand",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=12]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "12",
+   "hidden": true
+  },
+  {
+   "id": "13",
+   "name": "Stone Cold",
+   "desc": "Stone Cold",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=13]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "13",
+   "hidden": true
+  },
+  {
+   "id": "14",
+   "name": "Destiny",
+   "desc": "Complete the Game",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=14]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "14"
+  },
+  {
+   "id": "15",
+   "name": "Hardcore Fan",
+   "desc": "Complete Hard Mode",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=15]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "15"
+  },
+  {
+   "id": "16",
+   "name": "Tools of the Trade",
+   "desc": "Unlock all Abilities",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=16]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "16"
+  },
+  {
+   "id": "17",
+   "name": "Mad Skills",
+   "desc": "Upgrade all Abilities",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=17]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "17"
+  },
+  {
+   "id": "18",
+   "name": "Fully Slotted",
+   "desc": "Upgrade all Shard Slots",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=18]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "18"
+  },
+  {
+   "id": "19",
+   "name": "Shard Hunter",
+   "desc": "Unlock all Shards",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=19]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "19"
+  },
+  {
+   "id": "20",
+   "name": "Shard Specialist",
+   "desc": "Upgrade all Shards",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=20]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "20"
+  },
+  {
+   "id": "22",
+   "name": "Powerful",
+   "desc": "Max out Energy",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=22]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "22"
+  },
+  {
+   "id": "23",
+   "name": "Cartographer's Protégé",
+   "desc": "Buy all Maps from Lupo",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=23]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "23"
+  },
+  {
+   "id": "24",
+   "name": "Shrine Bright",
+   "desc": "Complete all Spirit Shrines",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=24]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "24"
+  },
+  {
+   "id": "25",
+   "name": "Lost and Found",
+   "desc": "Find all Collectibles",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=25]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "25"
+  },
+  {
+   "id": "26",
+   "name": "Mark of the Trader",
+   "desc": "Complete the Trade Sequence Quest",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=26]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "26"
+  },
+  {
+   "id": "27",
+   "name": "Completionist",
+   "desc": "Complete every Side Quest",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=27]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "27"
+  },
+  {
+   "id": "28",
+   "name": "Fixer Upper",
+   "desc": "Complete all Wellspring Glades Projects",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=28]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "28"
+  },
+  {
+   "id": "29",
+   "name": "Speed Demon",
+   "desc": "Complete all Spirit Trials",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=29]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "29"
+  },
+  {
+   "id": "21",
+   "name": "Healthy",
+   "desc": "Max out Life",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=21]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "21"
+  },
+  {
+   "id": "30",
+   "name": "Untouchable",
+   "desc": "Untouchable",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=30]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "30",
+   "hidden": true
+  },
+  {
+   "id": "31",
+   "name": "Timely Demise",
+   "desc": "Timely Demise",
+   "points": 25,
+   "rule": {
+    "type": "count",
+    "path": "[Name=31]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "31",
+   "hidden": true
+  },
+  {
+   "id": "32",
+   "name": "Juggling Act",
+   "desc": "Juggle 3 or More Projectiles in the Air for Over 5 Seconds",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=32]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "32"
+  },
+  {
+   "id": "33",
+   "name": "Bring it On",
+   "desc": "Defeat 5 Enemies Without Touching the Ground",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=33]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "33"
+  },
+  {
+   "id": "34",
+   "name": "High and Dry",
+   "desc": "Avoid Touching any Corrupted Water",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=34]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "34"
+  },
+  {
+   "id": "35",
+   "name": "Damage Spike",
+   "desc": "Defeat 3 Enemies with a Single Spike",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=35]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "35"
+  },
+  {
+   "id": "37",
+   "name": "Did I Do That?",
+   "desc": "Defeat 10 Enemies using Environmental Hazards",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=37]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "37"
+  },
+  {
+   "id": "38",
+   "name": "Shardless",
+   "desc": "Beat the Game Without Equipping a Shard",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=38]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "38"
+  },
+  {
+   "id": "39",
+   "name": "Lightless",
+   "desc": "Beat the Game Without Spending any Spirit Light",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=39]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "39"
+  },
+  {
+   "id": "40",
+   "name": "Look at the Time",
+   "desc": "Complete the Game in Under 4 Hours",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=40]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "40"
+  },
+  {
+   "id": "41",
+   "name": "Immortal",
+   "desc": "Complete the Game without Dying",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "[Name=41]/SortingOrder",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "41"
+  }
+ ],
+ "_compat": "pc-only"
+}

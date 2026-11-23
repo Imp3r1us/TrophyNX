@@ -1,0 +1,2613 @@
+{
+ "title_id": "01002EF01A316000",
+ "name": "Brotato",
+ "reader": "json",
+ "save_files": [
+  "save_v2_02.json.bak"
+ ],
+ "_steam_appid": 1942280,
+ "_generated": "pc2switch (review before use)",
+ "achievements": [
+  {
+   "id": "chal_survivor_1",
+   "name": "Survivor 1",
+   "desc": "Kill 300 enemies",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_survivor_1]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_survivor_1"
+  },
+  {
+   "id": "chal_survivor_2",
+   "name": "Survivor 2",
+   "desc": "Kill 2000 enemies",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_survivor_2]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_survivor_2"
+  },
+  {
+   "id": "chal_survivor_3",
+   "name": "Survivor 3",
+   "desc": "Kill 5000 enemies",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_survivor_3]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_survivor_3"
+  },
+  {
+   "id": "chal_survivor_4",
+   "name": "Survivor 4",
+   "desc": "Kill 10000 enemies",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_survivor_4]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_survivor_4"
+  },
+  {
+   "id": "chal_survivor_5",
+   "name": "Survivor 5",
+   "desc": "Kill 20000 enemies",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_survivor_5]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_survivor_5"
+  },
+  {
+   "id": "chal_difficulty_0",
+   "name": "Danger 0",
+   "desc": "Win a run in Danger 0",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_difficulty_0]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_difficulty_0"
+  },
+  {
+   "id": "chal_difficulty_1",
+   "name": "Danger 1",
+   "desc": "Win a run in Danger 1",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_difficulty_1]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_difficulty_1"
+  },
+  {
+   "id": "chal_difficulty_2",
+   "name": "Danger 2",
+   "desc": "Win a run in Danger 2",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_difficulty_2]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_difficulty_2"
+  },
+  {
+   "id": "chal_difficulty_3",
+   "name": "Danger 3",
+   "desc": "Win a run in Danger 3",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_difficulty_3]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_difficulty_3"
+  },
+  {
+   "id": "chal_difficulty_4",
+   "name": "Danger 4",
+   "desc": "Win a run in Danger 4",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_difficulty_4]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_difficulty_4"
+  },
+  {
+   "id": "chal_difficulty_5",
+   "name": "Danger 5",
+   "desc": "Win a run in Danger 5",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_difficulty_5]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_difficulty_5"
+  },
+  {
+   "id": "chal_gatherer_1",
+   "name": "Gatherer 1",
+   "desc": "Collect 300 materials",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gatherer_1]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gatherer_1"
+  },
+  {
+   "id": "chal_gatherer_2",
+   "name": "Gatherer 2",
+   "desc": "Collect 2000 materials",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gatherer_2]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gatherer_2"
+  },
+  {
+   "id": "chal_gatherer_3",
+   "name": "Gatherer 3",
+   "desc": "Collect 5000 materials",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gatherer_3]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gatherer_3"
+  },
+  {
+   "id": "chal_gatherer_4",
+   "name": "Gatherer 4",
+   "desc": "Collect 10000 materials",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gatherer_4]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gatherer_4"
+  },
+  {
+   "id": "chal_gatherer_5",
+   "name": "Gatherer 5",
+   "desc": "Collect 20000 materials",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gatherer_5]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gatherer_5"
+  },
+  {
+   "id": "chal_agriculture",
+   "name": "Agriculture",
+   "desc": "Reach 200 Harvesting",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_agriculture]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_agriculture"
+  },
+  {
+   "id": "chal_dying",
+   "name": "Dying",
+   "desc": "Reach -5 HP Regeneration",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_dying]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_dying"
+  },
+  {
+   "id": "chal_fast",
+   "name": "Fast",
+   "desc": "Reach 50 % Speed",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_fast]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_fast"
+  },
+  {
+   "id": "chal_hoarder",
+   "name": "Hoarder",
+   "desc": "Hold 3000 materials",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_hoarder]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_hoarder"
+  },
+  {
+   "id": "chal_lumberjack",
+   "name": "Lumberjack",
+   "desc": "Kill 50 trees",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_lumberjack]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_lumberjack"
+  },
+  {
+   "id": "chal_medicine",
+   "name": "Medicine",
+   "desc": "Heal 200 HP in one wave",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_medicine]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_medicine"
+  },
+  {
+   "id": "chal_turrets",
+   "name": "Industrialization",
+   "desc": "Get 5 turrets on the map simultaneously",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_turrets]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_turrets"
+  },
+  {
+   "id": "chal_hallucination",
+   "name": "Hallucination",
+   "desc": "Reach 60 % Dodge",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_hallucination]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_hallucination"
+  },
+  {
+   "id": "chal_brawler",
+   "name": "Brawler - Crash Zone",
+   "desc": "Win a run with Brawler in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_brawler]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_brawler"
+  },
+  {
+   "id": "chal_bull",
+   "name": "Bull - Crash Zone",
+   "desc": "Win a run with Bull in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_bull]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_bull"
+  },
+  {
+   "id": "chal_chunky",
+   "name": "Chunky - Crash Zone",
+   "desc": "Win a run with Chunky in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_chunky]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_chunky"
+  },
+  {
+   "id": "chal_demon",
+   "name": "Demon - Crash Zone",
+   "desc": "Win a run with Demon in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_demon]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_demon"
+  },
+  {
+   "id": "chal_doctor",
+   "name": "Doctor - Crash Zone",
+   "desc": "Win a run with Doctor in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_doctor]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_doctor"
+  },
+  {
+   "id": "chal_engineer",
+   "name": "Engineer - Crash Zone",
+   "desc": "Win a run with Engineer in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_engineer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_engineer"
+  },
+  {
+   "id": "chal_entrepreneur",
+   "name": "Entrepreneur - Crash Zone",
+   "desc": "Win a run with Entrepreneur in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_entrepreneur]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_entrepreneur"
+  },
+  {
+   "id": "chal_explorer",
+   "name": "Explorer - Crash Zone",
+   "desc": "Win a run with Explorer in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_explorer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_explorer"
+  },
+  {
+   "id": "chal_farmer",
+   "name": "Farmer - Crash Zone",
+   "desc": "Win a run with Farmer in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_farmer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_farmer"
+  },
+  {
+   "id": "chal_ghost",
+   "name": "Ghost - Crash Zone",
+   "desc": "Win a run with Ghost in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_ghost]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_ghost"
+  },
+  {
+   "id": "chal_gladiator",
+   "name": "Gladiator - Crash Zone",
+   "desc": "Win a run with Gladiator in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gladiator]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gladiator"
+  },
+  {
+   "id": "chal_knight",
+   "name": "Knight - Crash Zone",
+   "desc": "Win a run with Knight in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_knight]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_knight"
+  },
+  {
+   "id": "chal_loud",
+   "name": "Loud - Crash Zone",
+   "desc": "Win a run with Loud in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_loud]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_loud"
+  },
+  {
+   "id": "chal_lucky",
+   "name": "Lucky - Crash Zone",
+   "desc": "Win a run with Lucky in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_lucky]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_lucky"
+  },
+  {
+   "id": "chal_mage",
+   "name": "Mage - Crash Zone",
+   "desc": "Win a run with Mage in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_mage]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_mage"
+  },
+  {
+   "id": "chal_masochist",
+   "name": "Masochist - Crash Zone",
+   "desc": "Win a run with Masochist in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_masochist]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_masochist"
+  },
+  {
+   "id": "chal_multitasker",
+   "name": "Multitasker - Crash Zone",
+   "desc": "Win a run with Multitasker in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_multitasker]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_multitasker"
+  },
+  {
+   "id": "chal_mutant",
+   "name": "Mutant - Crash Zone",
+   "desc": "Win a run with Mutant in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_mutant]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_mutant"
+  },
+  {
+   "id": "chal_old",
+   "name": "Old - Crash Zone",
+   "desc": "Win a run with Old in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_old]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_old"
+  },
+  {
+   "id": "chal_one_arm",
+   "name": "One-Armed - Crash Zone",
+   "desc": "Win a run with One-Armed in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_one_arm]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_one_arm"
+  },
+  {
+   "id": "chal_pacifist",
+   "name": "Pacifist - Crash Zone",
+   "desc": "Win a run with Pacifist in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_pacifist]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_pacifist"
+  },
+  {
+   "id": "chal_ranger",
+   "name": "Ranger - Crash Zone",
+   "desc": "Win a run with Ranger in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_ranger]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_ranger"
+  },
+  {
+   "id": "chal_saver",
+   "name": "Saver - Crash Zone",
+   "desc": "Win a run with Saver in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_saver]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_saver"
+  },
+  {
+   "id": "chal_sick",
+   "name": "Sick - Crash Zone",
+   "desc": "Win a run with Sick in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_sick]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_sick"
+  },
+  {
+   "id": "chal_soldier",
+   "name": "Soldier - Crash Zone",
+   "desc": "Win a run with Soldier in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_soldier]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_soldier"
+  },
+  {
+   "id": "chal_speedy",
+   "name": "Speedy - Crash Zone",
+   "desc": "Win a run with Speedy in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_speedy]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_speedy"
+  },
+  {
+   "id": "chal_well_rounded",
+   "name": "Well-Rounded - Crash Zone",
+   "desc": "Win a run with Well-Rounded in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_well_rounded]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_well_rounded"
+  },
+  {
+   "id": "chal_wildling",
+   "name": "Wildling - Crash Zone",
+   "desc": "Win a run with Wildling in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_wildling]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_wildling"
+  },
+  {
+   "id": "chal_rookie",
+   "name": "Rookie",
+   "desc": "Die for the first time",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_rookie]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_rookie"
+  },
+  {
+   "id": "chal_crazy",
+   "name": "Crazy - Crash Zone",
+   "desc": "Win a run with Crazy in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_crazy]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_crazy"
+  },
+  {
+   "id": "chal_generalist",
+   "name": "Generalist - Crash Zone",
+   "desc": "Win a run with Generalist in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_generalist]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_generalist"
+  },
+  {
+   "id": "chal_artificer",
+   "name": "Artificer - Crash Zone",
+   "desc": "Win a run with Artificer in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_artificer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_artificer"
+  },
+  {
+   "id": "chal_hunter",
+   "name": "Hunter - Crash Zone",
+   "desc": "Win a run with Hunter in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_hunter]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_hunter"
+  },
+  {
+   "id": "chal_fireworks",
+   "name": "Fireworks",
+   "desc": "Kill 15 enemies with a single explosion",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_fireworks]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_fireworks"
+  },
+  {
+   "id": "chal_perfect_vision",
+   "name": "Perfect Vision",
+   "desc": "Reach 300 Range",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_perfect_vision]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_perfect_vision"
+  },
+  {
+   "id": "chal_recycling",
+   "name": "Recycling",
+   "desc": "Recycle 12 weapons during a run",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_recycling]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_recycling"
+  },
+  {
+   "id": "chal_slow",
+   "name": "Slow",
+   "desc": "Reach -20 % Speed",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_slow]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_slow"
+  },
+  {
+   "id": "chal_arms_dealer",
+   "name": "Arms Dealer - Crash Zone",
+   "desc": "Win a run with Arms Dealer in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_arms_dealer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_arms_dealer"
+  },
+  {
+   "id": "chal_streamer",
+   "name": "Streamer - Crash Zone",
+   "desc": "Win a run with Streamer in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_streamer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_streamer"
+  },
+  {
+   "id": "chal_advanced_technology",
+   "name": "Advanced Technology",
+   "desc": "Reach 10 Ranged Damage and get 3 structures at the same time",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_advanced_technology]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_advanced_technology"
+  },
+  {
+   "id": "chal_giant_slayer",
+   "name": "Giant Slayer",
+   "desc": "Kill a boss or an elite in less than 15 seconds",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_giant_slayer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_giant_slayer"
+  },
+  {
+   "id": "chal_hungry",
+   "name": "Hungry",
+   "desc": "Pick up 20 consumables during a run",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_hungry]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_hungry"
+  },
+  {
+   "id": "chal_robust",
+   "name": "Robust",
+   "desc": "Reach 100 Max HP",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_robust]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_robust"
+  },
+  {
+   "id": "chal_cyborg",
+   "name": "Cyborg - Crash Zone",
+   "desc": "Win a run with Cyborg in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_cyborg]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_cyborg"
+  },
+  {
+   "id": "chal_glutton",
+   "name": "Glutton - Crash Zone",
+   "desc": "Win a run with Glutton in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_glutton]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_glutton"
+  },
+  {
+   "id": "chal_jack",
+   "name": "Jack - Crash Zone",
+   "desc": "Win a run with Jack in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_jack]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_jack"
+  },
+  {
+   "id": "chal_lich",
+   "name": "Lich - Crash Zone",
+   "desc": "Win a run with Lich in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_lich]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_lich"
+  },
+  {
+   "id": "chal_baited",
+   "name": "Baited",
+   "desc": "Get 2 Bait during a run",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_baited]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_baited"
+  },
+  {
+   "id": "chal_forest",
+   "name": "Forest",
+   "desc": "Finish a wave with 10 or more living trees",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_forest]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_forest"
+  },
+  {
+   "id": "chal_bourgeoisie",
+   "name": "Bourgeoisie",
+   "desc": "Get 3 tier IV weapons at once",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_bourgeoisie]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_bourgeoisie"
+  },
+  {
+   "id": "chal_student",
+   "name": "Student",
+   "desc": "Reach level 20",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_student]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_student"
+  },
+  {
+   "id": "chal_reckless",
+   "name": "Reckless",
+   "desc": "Finish a wave with 1 HP",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_reckless]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_reckless"
+  },
+  {
+   "id": "chal_scavenger",
+   "name": "Scavenger",
+   "desc": "Get 10 different tier I items during a run",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_scavenger]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_scavenger"
+  },
+  {
+   "id": "chal_apprentice",
+   "name": "Apprentice - Crash Zone",
+   "desc": "Win a run with Apprentice in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_apprentice]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_apprentice"
+  },
+  {
+   "id": "chal_cryptid",
+   "name": "Cryptid - Crash Zone",
+   "desc": "Win a run with Cryptid in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_cryptid]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_cryptid"
+  },
+  {
+   "id": "chal_fisherman",
+   "name": "Fisherman - Crash Zone",
+   "desc": "Win a run with Fisherman in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_fisherman]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_fisherman"
+  },
+  {
+   "id": "chal_golem",
+   "name": "Golem - Crash Zone",
+   "desc": "Win a run with Golem in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_golem]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_golem"
+  },
+  {
+   "id": "chal_king",
+   "name": "King - Crash Zone",
+   "desc": "Win a run with King in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_king]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_king"
+  },
+  {
+   "id": "chal_renegade",
+   "name": "Renegade - Crash Zone",
+   "desc": "Win a run with Renegade in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_renegade]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_renegade"
+  },
+  {
+   "id": "chal_vampire",
+   "name": "Vampire - Crash Zone",
+   "desc": "Win a run with Vampire in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_vampire]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_vampire"
+  },
+  {
+   "id": "chal_vagabond",
+   "name": "Vagabond - Crash Zone",
+   "desc": "Win a run with Vagabond in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_vagabond]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_vagabond"
+  },
+  {
+   "id": "chal_baby",
+   "name": "Baby - Crash Zone",
+   "desc": "Win a run with Baby in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_baby]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_baby"
+  },
+  {
+   "id": "chal_blood_drinker",
+   "name": "Blood Drinker",
+   "desc": "Reach 40 % Life Steal",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_blood_drinker]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_blood_drinker"
+  },
+  {
+   "id": "chal_experimentation",
+   "name": "Experimentation",
+   "desc": "Have 6 different weapons at once",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_experimentation]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_experimentation"
+  },
+  {
+   "id": "chal_fast_learner",
+   "name": "Fast Learner",
+   "desc": "Reach level 10 before wave 6",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_fast_learner]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_fast_learner"
+  },
+  {
+   "id": "chal_magic_and_machinery",
+   "name": "Magic and Machinery",
+   "desc": "Reach 10 Elemental Damage and get 3 structures at the same time",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_magic_and_machinery]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_magic_and_machinery"
+  },
+  {
+   "id": "chal_technomage",
+   "name": "Technomage - Crash Zone",
+   "desc": "Win a run with Technomage in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_technomage]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_technomage"
+  },
+  {
+   "id": "chal_barbecue",
+   "name": "Barbecue",
+   "desc": "Have at least 25 enemies burning at the same time",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_barbecue]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_barbecue"
+  },
+  {
+   "id": "chal_blind_greed",
+   "name": "Blind Greed",
+   "desc": "Reach 100 % Pickup Range",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_blind_greed]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_blind_greed"
+  },
+  {
+   "id": "chal_buccaneer",
+   "name": "Buccaneer - Crash Zone",
+   "desc": "Win a run with Buccaneer in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_buccaneer]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_buccaneer"
+  },
+  {
+   "id": "chal_builder",
+   "name": "Builder - Crash Zone",
+   "desc": "Win a run with Builder in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_builder]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_builder"
+  },
+  {
+   "id": "chal_captain",
+   "name": "Captain - Crash Zone",
+   "desc": "Win a run with Captain in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_captain]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_captain"
+  },
+  {
+   "id": "chal_cautious",
+   "name": "Cautious",
+   "desc": "Kill 1000 enemies that are more than 700 range away from you",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_cautious]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_cautious"
+  },
+  {
+   "id": "chal_chef",
+   "name": "Chef - Crash Zone",
+   "desc": "Win a run with Chef in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_chef]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_chef"
+  },
+  {
+   "id": "chal_creature",
+   "name": "Creature - Crash Zone",
+   "desc": "Win a run with Creature in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_creature]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_creature"
+  },
+  {
+   "id": "chal_curious",
+   "name": "Curious - Crash Zone",
+   "desc": "Win a run with Curious in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_curious]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_curious"
+  },
+  {
+   "id": "chal_diver",
+   "name": "Diver - Crash Zone",
+   "desc": "Win a run with Diver in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_diver]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_diver"
+  },
+  {
+   "id": "chal_druid",
+   "name": "Druid - Crash Zone",
+   "desc": "Win a run with Druid in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_druid]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_druid"
+  },
+  {
+   "id": "chal_dwarf",
+   "name": "Dwarf - Crash Zone",
+   "desc": "Win a run with Dwarf in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_dwarf]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_dwarf"
+  },
+  {
+   "id": "chal_gangster",
+   "name": "Gangster - Crash Zone",
+   "desc": "Win a run with Gangster in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gangster]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gangster"
+  },
+  {
+   "id": "chal_herbalist",
+   "name": "Herbalist",
+   "desc": "Collect 250 consumables by the end of wave 20",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_herbalist]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_herbalist"
+  },
+  {
+   "id": "chal_hiker",
+   "name": "Hiker - Crash Zone",
+   "desc": "Win a run with Hiker in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_hiker]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_hiker"
+  },
+  {
+   "id": "chal_ogre",
+   "name": "Ogre - Crash Zone",
+   "desc": "Win a run with Ogre in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_ogre]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_ogre"
+  },
+  {
+   "id": "chal_overkill",
+   "name": "Overkill",
+   "desc": "Deal 1000 damage to an enemy in a single hit",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_overkill]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_overkill"
+  },
+  {
+   "id": "chal_romantic",
+   "name": "Romantic - Crash Zone",
+   "desc": "Win a run with Romantic in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_romantic]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_romantic"
+  },
+  {
+   "id": "chal_sailor",
+   "name": "Sailor - Crash Zone",
+   "desc": "Win a run with Sailor in Crash Zone",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_sailor]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_sailor"
+  },
+  {
+   "id": "chal_smelly_feet",
+   "name": "Smelly Feet",
+   "desc": "Walk a total of 20000 steps",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_smelly_feet]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_smelly_feet"
+  },
+  {
+   "id": "chal_uncorrupted",
+   "name": "Uncorrupted",
+   "desc": "Finish a run with 0 Curse",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_uncorrupted]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_uncorrupted"
+  },
+  {
+   "id": "chal_unlucky",
+   "name": "Unlucky",
+   "desc": "Reroll 10 times in a single shop",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_unlucky]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_unlucky"
+  },
+  {
+   "id": "chal_unstoppable_force",
+   "name": "Unstoppable Force",
+   "desc": "Hit at least 25 enemies with a single melee attack",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_unstoppable_force]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_unstoppable_force"
+  },
+  {
+   "id": "chal_well_rounded_abyss",
+   "name": "Well-Rounded - The Abyss",
+   "desc": "Win a run with Well-Rounded in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_well_rounded_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_well_rounded_abyss"
+  },
+  {
+   "id": "chal_brawler_abyss",
+   "name": "Brawler - The Abyss",
+   "desc": "Win a run with Brawler in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_brawler_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_brawler_abyss"
+  },
+  {
+   "id": "chal_crazy_abyss",
+   "name": "Crazy - The Abyss",
+   "desc": "Win a run with Crazy in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_crazy_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_crazy_abyss"
+  },
+  {
+   "id": "chal_ranger_abyss",
+   "name": "Ranger - The Abyss",
+   "desc": "Win a run with Ranger in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_ranger_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_ranger_abyss"
+  },
+  {
+   "id": "chal_mage_abyss",
+   "name": "Mage - The Abyss",
+   "desc": "Win a run with Mage in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_mage_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_mage_abyss"
+  },
+  {
+   "id": "chal_chunky_abyss",
+   "name": "Chunky - The Abyss",
+   "desc": "Win a run with Chunky in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_chunky_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_chunky_abyss"
+  },
+  {
+   "id": "chal_old_abyss",
+   "name": "Old - The Abyss",
+   "desc": "Win a run with Old in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_old_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_old_abyss"
+  },
+  {
+   "id": "chal_lucky_abyss",
+   "name": "Lucky - The Abyss",
+   "desc": "Win a run with Lucky in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_lucky_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_lucky_abyss"
+  },
+  {
+   "id": "chal_mutant_abyss",
+   "name": "Mutant - The Abyss",
+   "desc": "Win a run with Mutant in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_mutant_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_mutant_abyss"
+  },
+  {
+   "id": "chal_generalist_abyss",
+   "name": "Generalist - The Abyss",
+   "desc": "Win a run with Generalist in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_generalist_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_generalist_abyss"
+  },
+  {
+   "id": "chal_loud_abyss",
+   "name": "Loud - The Abyss",
+   "desc": "Win a run with Loud in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_loud_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_loud_abyss"
+  },
+  {
+   "id": "chal_multitasker_abyss",
+   "name": "Multitasker - The Abyss",
+   "desc": "Win a run with Multitasker in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_multitasker_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_multitasker_abyss"
+  },
+  {
+   "id": "chal_wildling_abyss",
+   "name": "Wildling - The Abyss",
+   "desc": "Win a run with Wildling in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_wildling_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_wildling_abyss"
+  },
+  {
+   "id": "chal_pacifist_abyss",
+   "name": "Pacifist - The Abyss",
+   "desc": "Win a run with Pacifist in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_pacifist_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_pacifist_abyss"
+  },
+  {
+   "id": "chal_gladiator_abyss",
+   "name": "Gladiator - The Abyss",
+   "desc": "Win a run with Gladiator in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gladiator_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gladiator_abyss"
+  },
+  {
+   "id": "chal_saver_abyss",
+   "name": "Saver - The Abyss",
+   "desc": "Win a run with Saver in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_saver_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_saver_abyss"
+  },
+  {
+   "id": "chal_sick_abyss",
+   "name": "Sick - The Abyss",
+   "desc": "Win a run with Sick in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_sick_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_sick_abyss"
+  },
+  {
+   "id": "chal_farmer_abyss",
+   "name": "Farmer - The Abyss",
+   "desc": "Win a run with Farmer in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_farmer_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_farmer_abyss"
+  },
+  {
+   "id": "chal_ghost_abyss",
+   "name": "Ghost - The Abyss",
+   "desc": "Win a run with Ghost in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_ghost_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_ghost_abyss"
+  },
+  {
+   "id": "chal_speedy_abyss",
+   "name": "Speedy - The Abyss",
+   "desc": "Win a run with Speedy in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_speedy_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_speedy_abyss"
+  },
+  {
+   "id": "chal_entrepreneur_abyss",
+   "name": "Entrepreneur - The Abyss",
+   "desc": "Win a run with Entrepreneur in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_entrepreneur_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_entrepreneur_abyss"
+  },
+  {
+   "id": "chal_engineer_abyss",
+   "name": "Engineer - The Abyss",
+   "desc": "Win a run with Engineer in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_engineer_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_engineer_abyss"
+  },
+  {
+   "id": "chal_explorer_abyss",
+   "name": "Explorer - The Abyss",
+   "desc": "Win a run with Explorer in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_explorer_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_explorer_abyss"
+  },
+  {
+   "id": "chal_doctor_abyss",
+   "name": "Doctor - The Abyss",
+   "desc": "Win a run with Doctor in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_doctor_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_doctor_abyss"
+  },
+  {
+   "id": "chal_hunter_abyss",
+   "name": "Hunter - The Abyss",
+   "desc": "Win a run with Hunter in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_hunter_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_hunter_abyss"
+  },
+  {
+   "id": "chal_artificer_abyss",
+   "name": "Artificer - The Abyss",
+   "desc": "Win a run with Artificer in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_artificer_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_artificer_abyss"
+  },
+  {
+   "id": "chal_arms_dealer_abyss",
+   "name": "Arms Dealer - The Abyss",
+   "desc": "Win a run with Arms Dealer in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_arms_dealer_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_arms_dealer_abyss"
+  },
+  {
+   "id": "chal_streamer_abyss",
+   "name": "Streamer - The Abyss",
+   "desc": "Win a run with Streamer in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_streamer_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_streamer_abyss"
+  },
+  {
+   "id": "chal_cyborg_abyss",
+   "name": "Cyborg - The Abyss",
+   "desc": "Win a run with Cyborg in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_cyborg_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_cyborg_abyss"
+  },
+  {
+   "id": "chal_glutton_abyss",
+   "name": "Glutton - The Abyss",
+   "desc": "Win a run with Glutton in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_glutton_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_glutton_abyss"
+  },
+  {
+   "id": "chal_jack_abyss",
+   "name": "Jack - The Abyss",
+   "desc": "Win a run with Jack in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_jack_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_jack_abyss"
+  },
+  {
+   "id": "chal_lich_abyss",
+   "name": "Lich - The Abyss",
+   "desc": "Win a run with Lich in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_lich_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_lich_abyss"
+  },
+  {
+   "id": "chal_apprentice_abyss",
+   "name": "Apprentice - The Abyss",
+   "desc": "Win a run with Apprentice in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_apprentice_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_apprentice_abyss"
+  },
+  {
+   "id": "chal_cryptid_abyss",
+   "name": "Cryptid - The Abyss",
+   "desc": "Win a run with Cryptid in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_cryptid_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_cryptid_abyss"
+  },
+  {
+   "id": "chal_fisherman_abyss",
+   "name": "Fisherman - The Abyss",
+   "desc": "Win a run with Fisherman in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_fisherman_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_fisherman_abyss"
+  },
+  {
+   "id": "chal_golem_abyss",
+   "name": "Golem - The Abyss",
+   "desc": "Win a run with Golem in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_golem_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_golem_abyss"
+  },
+  {
+   "id": "chal_king_abyss",
+   "name": "King - The Abyss",
+   "desc": "Win a run with King in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_king_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_king_abyss"
+  },
+  {
+   "id": "chal_renegade_abyss",
+   "name": "Renegade - The Abyss",
+   "desc": "Win a run with Renegade in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_renegade_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_renegade_abyss"
+  },
+  {
+   "id": "chal_one_arm_abyss",
+   "name": "One-Armed - The Abyss",
+   "desc": "Win a run with One-Armed in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_one_arm_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_one_arm_abyss"
+  },
+  {
+   "id": "chal_bull_abyss",
+   "name": "Bull - The Abyss",
+   "desc": "Win a run with Bull in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_bull_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_bull_abyss"
+  },
+  {
+   "id": "chal_soldier_abyss",
+   "name": "Soldier - The Abyss",
+   "desc": "Win a run with Soldier in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_soldier_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_soldier_abyss"
+  },
+  {
+   "id": "chal_masochist_abyss",
+   "name": "Masochist - The Abyss",
+   "desc": "Win a run with Masochist in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_masochist_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_masochist_abyss"
+  },
+  {
+   "id": "chal_knight_abyss",
+   "name": "Knight - The Abyss",
+   "desc": "Win a run with Knight in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_knight_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_knight_abyss"
+  },
+  {
+   "id": "chal_demon_abyss",
+   "name": "Demon - The Abyss",
+   "desc": "Win a run with Demon in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_demon_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_demon_abyss"
+  },
+  {
+   "id": "chal_baby_abyss",
+   "name": "Baby - The Abyss",
+   "desc": "Win a run with Baby in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_baby_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_baby_abyss"
+  },
+  {
+   "id": "chal_vagabond_abyss",
+   "name": "Vagabond - The Abyss",
+   "desc": "Win a run with Vagabond in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_vagabond_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_vagabond_abyss"
+  },
+  {
+   "id": "chal_technomage_abyss",
+   "name": "Technomage - The Abyss",
+   "desc": "Win a run with Technomage in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_technomage_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_technomage_abyss"
+  },
+  {
+   "id": "chal_vampire_abyss",
+   "name": "Vampire - The Abyss",
+   "desc": "Win a run with Vampire in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_vampire_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_vampire_abyss"
+  },
+  {
+   "id": "chal_sailor_abyss",
+   "name": "Sailor - The Abyss",
+   "desc": "Win a run with Sailor in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_sailor_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_sailor_abyss"
+  },
+  {
+   "id": "chal_curious_abyss",
+   "name": "Curious - The Abyss",
+   "desc": "Win a run with Curious in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_curious_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_curious_abyss"
+  },
+  {
+   "id": "chal_builder_abyss",
+   "name": "Builder - The Abyss",
+   "desc": "Win a run with Builder in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_builder_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_builder_abyss"
+  },
+  {
+   "id": "chal_captain_abyss",
+   "name": "Captain - The Abyss",
+   "desc": "Win a run with Captain in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_captain_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_captain_abyss"
+  },
+  {
+   "id": "chal_creature_abyss",
+   "name": "Creature - The Abyss",
+   "desc": "Win a run with Creature in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_creature_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_creature_abyss"
+  },
+  {
+   "id": "chal_chef_abyss",
+   "name": "Chef - The Abyss",
+   "desc": "Win a run with Chef in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_chef_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_chef_abyss"
+  },
+  {
+   "id": "chal_druid_abyss",
+   "name": "Druid - The Abyss",
+   "desc": "Win a run with Druid in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_druid_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_druid_abyss"
+  },
+  {
+   "id": "chal_dwarf_abyss",
+   "name": "Dwarf - The Abyss",
+   "desc": "Win a run with Dwarf in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_dwarf_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_dwarf_abyss"
+  },
+  {
+   "id": "chal_gangster_abyss",
+   "name": "Gangster - The Abyss",
+   "desc": "Win a run with Gangster in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_gangster_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_gangster_abyss"
+  },
+  {
+   "id": "chal_diver_abyss",
+   "name": "Diver - The Abyss",
+   "desc": "Win a run with Diver in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_diver_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_diver_abyss"
+  },
+  {
+   "id": "chal_hiker_abyss",
+   "name": "Hiker - The Abyss",
+   "desc": "Win a run with Hiker in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_hiker_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_hiker_abyss"
+  },
+  {
+   "id": "chal_buccaneer_abyss",
+   "name": "Buccaneer - The Abyss",
+   "desc": "Win a run with Buccaneer in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_buccaneer_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_buccaneer_abyss"
+  },
+  {
+   "id": "chal_ogre_abyss",
+   "name": "Ogre - The Abyss",
+   "desc": "Win a run with Ogre in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_ogre_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_ogre_abyss"
+  },
+  {
+   "id": "chal_romantic_abyss",
+   "name": "Romantic - The Abyss",
+   "desc": "Win a run with Romantic in The Abyss",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_romantic_abyss]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_romantic_abyss"
+  },
+  {
+   "id": "chal_beast_master",
+   "name": "Beast Master",
+   "desc": "Win a run with Beast Master",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_beast_master]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_beast_master"
+  },
+  {
+   "id": "chal_difficulty_6",
+   "name": "Nightmare",
+   "desc": "Win a run in Nightmare",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_difficulty_6]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_difficulty_6"
+  },
+  {
+   "id": "chal_wounded",
+   "name": "Wounded",
+   "desc": "Win a run with Wounded",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_wounded]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_wounded"
+  },
+  {
+   "id": "chal_dig_site",
+   "name": "It Belongs in a Museum!",
+   "desc": "Dig up 10 Dig Sites",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_dig_site]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_dig_site"
+  },
+  {
+   "id": "chal_flesh_and_steel",
+   "name": "Flesh and Steel",
+   "desc": "Win a run with Variant and a run with Droid",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_flesh_and_steel]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_flesh_and_steel"
+  },
+  {
+   "id": "chal_whip_it",
+   "name": "Whip It",
+   "desc": "Kill 200 enemies in the Jungle with the Whip",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_whip_it]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_whip_it"
+  },
+  {
+   "id": "chal_bone_collector",
+   "name": "Bone Collector",
+   "desc": "Equip 5 fossils in a single run",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_bone_collector]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_bone_collector"
+  },
+  {
+   "id": "chal_floor_is_lava",
+   "name": "The Floor is Lava",
+   "desc": "Have 12 fire puddles on the ground at the same time",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_floor_is_lava]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_floor_is_lava"
+  },
+  {
+   "id": "chal_crate_expectations",
+   "name": "Crate Expectations",
+   "desc": "Pick up 10 crates in a single run",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_crate_expectations]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_crate_expectations"
+  },
+  {
+   "id": "chal_trophy_hunter",
+   "name": "Trophy Hunter",
+   "desc": "Kill 20 different enemy types in the Jungle",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_trophy_hunter]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_trophy_hunter"
+  },
+  {
+   "id": "chal_clever_girl",
+   "name": "Clever Girl",
+   "desc": "Kill 100 raptors",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_clever_girl]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_clever_girl"
+  },
+  {
+   "id": "chal_well_done",
+   "name": "Well Done",
+   "desc": "Finish off an elite or a boss with burning damage",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_well_done]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_well_done"
+  },
+  {
+   "id": "chal_egg_hunt",
+   "name": "Egg Hunt",
+   "desc": "Destroy 25 enemy Dino Eggs before they hatch",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_egg_hunt]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_egg_hunt"
+  },
+  {
+   "id": "chal_petting_zoo",
+   "name": "Petting Zoo",
+   "desc": "Have 3 pets at the same time",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_petting_zoo]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_petting_zoo"
+  },
+  {
+   "id": "chal_archaeologist",
+   "name": "Archaeologist",
+   "desc": "Win a run with Archaeologist",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_archaeologist]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_archaeologist"
+  },
+  {
+   "id": "chal_arsonist",
+   "name": "Arsonist",
+   "desc": "Win a run with Arsonist",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_arsonist]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_arsonist"
+  },
+  {
+   "id": "chal_caveman",
+   "name": "Caveman",
+   "desc": "Win a run with Caveman",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_caveman]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_caveman"
+  },
+  {
+   "id": "chal_droid",
+   "name": "Droid",
+   "desc": "Win a run with Droid",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_droid]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_droid"
+  },
+  {
+   "id": "chal_mad_scientist",
+   "name": "Mad Scientist",
+   "desc": "Win a run with Mad Scientist",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_mad_scientist]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_mad_scientist"
+  },
+  {
+   "id": "chal_poacher",
+   "name": "Poacher",
+   "desc": "Win a run with Poacher",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_poacher]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_poacher"
+  },
+  {
+   "id": "chal_survivor",
+   "name": "Survivor",
+   "desc": "Win a run with Survivor",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_survivor]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_survivor"
+  },
+  {
+   "id": "chal_time_shifter",
+   "name": "Time Shifter",
+   "desc": "Win a run with Time Shifter",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_time_shifter]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_time_shifter"
+  },
+  {
+   "id": "chal_variant",
+   "name": "Variant",
+   "desc": "Win a run with Variant",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_variant]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_variant"
+  },
+  {
+   "id": "chal_veteran",
+   "name": "Veteran",
+   "desc": "Win a run with Veteran",
+   "points": 10,
+   "rule": {
+    "type": "count",
+    "path": "challenges_completed[=chal_veteran]",
+    "target": 1
+   },
+   "_draft": "sure",
+   "_api": "chal_veteran"
+  }
+ ],
+ "_compat": "pc-only"
+}

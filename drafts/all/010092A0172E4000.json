@@ -3,7 +3,9 @@
  "name": "It Takes Two",
  "reader": "json",
  "save_files": [
-  "ProfileData"
+  "SaveData.Nuts",
+  "Settings.Nuts",
+  "LocalSettings.Nuts"
  ],
  "_steam_appid": 1426210,
  "_generated": "pc2switch (review before use)",
@@ -16,13 +18,15 @@
    "rule": {
     "type": "count",
     "paths": [
-     "Profile/MinigameFlag.Whack-A-Cody_HaveDiscovered",
-     "Profile/MinigameFlag.Plunger_HaveDiscovered",
-     "Profile/MinigameFlag.Tug of War_HaveDiscovered",
-     "Profile/MinigameFlag.Tank Brothers_HaveDiscovered",
-     "Profile/MinigameFlag.Low Gravity Room_HaveDiscovered"
+     "MinigameFlag.Whack-A-Cody_HaveDiscovered",
+     "MinigameFlag.Plunger_HaveDiscovered",
+     "MinigameFlag.Tug of War_HaveDiscovered",
+     "MinigameFlag.The Nail Wheel_HaveDiscovered",
+     "MinigameFlag.Baseball_HaveDiscovered",
+     "MinigameFlag.Birdstar_HaveDiscovered",
+     "MinigameFlag.Garden Swing_HaveDiscovered"
     ],
-    "target": 5
+    "target": 7
    },
    "_draft": "maybe",
    "_api": "Achievement_GOSCC_2"
@@ -68,5 +72,5 @@
    }
   }
  ],
- "_compat": "switch"
+ "_compat": "pc-only"
 }

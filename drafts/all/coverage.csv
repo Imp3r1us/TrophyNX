@@ -716,7 +716,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100BF6021E78000,Ball Blast,3678910,Ball Blast,exact,24,,,,,,,,,needs a save
 0100C8B01546C000,Ball laB,780800,Ball laB,exact,20,,,,,,,,,needs a save
 01004C001B53A000,Ball laB II,622950,Ball laB II,exact,26,,,,,,,,,needs a save
-010086A022444000,BALL x PIT,2062430,BALL x PIT,exact,82,,,binary,,,,,,save not readable (binary)
+010086A022444000,BALL x PIT,2062430,BALL x PIT,exact,82,,,,,,,,,needs a save
 010064A020B74000,Ball-it Hell,1335940,Ball-it Hell,exact,40,,,,,,,,,needs a save
 0100BB702748C000,Balls vs. Tombs,4373120,Balls vs. Tombs,exact,14,,,,,,,,,needs a save
 0100BC400FB64000,Balthazar's Dream,583890,Balthazar's Dream,exact,20,,,,,,,,,needs a save
@@ -906,7 +906,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01004BA017CD6000,Biomutant,597820,BIOMUTANT,exact,46,,,,,,,,,needs a save
 01002620102C6000,BioShock 2 Remastered,409720,BioShock™ 2 Remastered,exact,53,,,,,,,,,needs a save
 0100D560102C8000,BioShock Infinite: The Complete Edition,8870,BioShock Infinite,main-title,80,,,,,,,,,needs a save
-0100AD10102B2000,BioShock Remastered,409710,BioShock™ Remastered,exact,65,,,encrypted+binary,,,,,,save not readable (encrypted+binary)
+0100AD10102B2000,BioShock Remastered,409710,BioShock™ Remastered,exact,65,,,,,,,,,needs a save
 010042A020F60000,Bioweaver,3177970,Bioweaver 血肉工匠,exact,37,,,,,,,,,needs a save
 010053B0117F8000,Biped,1071870,Biped,exact-short,15,,,,,,,,,needs a save
 01004240237F6000,Biped 2,2560240,Biped 2,exact,25,,,,,,,,,needs a save
@@ -960,7 +960,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01006CC01182C000,Blair Witch,1092660,Blair Witch,exact,25,,,,,,,,,needs a save
 010039501405E000,Blanc,1982340,Blanc,exact-short,13,,,,,,,,,needs a save
 0100AA201AF48000,Blankspace,1228600,Blankspace,exact,33,,,,,,,,,needs a save
-0100698009C6E000,Blasphemous,774361,Blasphemous,exact,45,,,nrbf,,switch,,0,0,"drafted, no rule found"
+0100698009C6E000,Blasphemous,774361,Blasphemous,exact,45,,,,,,,,,supported:nrbf
 010040801A4C8000,Blasphemous 2,2114740,Blasphemous 2,exact,60,,,,,,,,,needs a save
 01001E900EC04000,Blast Brawl 2,447980,Blast Brawl 2,exact,38,,,,,,,,,needs a save
 0100F76014D7C000,Blast Brigade vs. the Evil Legion of Dr. Cread,1550760,Blast Brigade vs. the Evil Legion of Dr. Cread,exact,52,,,,,,,,,needs a save
@@ -1159,7 +1159,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01001E60085E6000,Broken Sword 5 - the Serpent's Curse,262940,Broken Sword 5 - the Serpent's Curse,exact,35,,,,,,,,,needs a save
 0100BA8019546000,Broken Universe -  Tower Defense,1487680,Broken Universe - Tower Defense,exact,57,,,,,,,,,needs a save
 0100F4C01AA98000,BroodStar,1232100,BroodStar,exact,79,,,,,,,,,needs a save
-01002EF01A316000,Brotato,1942280,Brotato,exact,200,,,,,,,,,needs a save
+01002EF01A316000,Brotato,1942280,Brotato,exact,200,,,,json,pc-only,,200,0,drafted (self-recorded)
 0100E16025AC0000,Brotherhood,2635450,Brotherhood,exact,14,,,,,,,,,needs a save
 0100BCD010E88000,Brotherhood United,869030,Brotherhood United,exact,11,,,,,,,,,needs a save
 01003AC020C6C000,Brothers in Hell,2428990,Brothers in Hell,exact,20,,,,,,,,,needs a save
@@ -1291,7 +1291,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100C57018922000,Captain Velvet Meteor: The Jump+ Dimensions,2222950,Captain Velvet Meteor: The Jump+ Dimensions,exact,40,,,,,,,,,needs a save
 0100A6C0294D6000,Captive,802040,Captive,exact,13,,,,,,,,,needs a save
 010021602527C000,Caput Mortum,3555980,Caput Mortum,exact,15,,,,,,,,,needs a save
-0100235025E4A000,Car Dealer Simulator: Retro Car for Sale,2404880,Car Dealer Simulator,main-title,209,,,,,,,,,needs a save
+0100235025E4A000,Car Dealer Simulator: Retro Car for Sale,2404880,Car Dealer Simulator,main-title,212,,,,,,,,,needs a save
 0100D8B013D02000,Car Demolition Clicker,705740,Car Demolition Clicker,exact,22,,,,,,,,,needs a save
 010006B01BD9C000,Car Detailing Simulator,1433570,Car Detailing Simulator,exact,63,,,,,,,,,needs a save
 01001B7012A3E000,Car Driving School Simulator,3563700,Car Driving School Simulator,exact,10,,,,,,,,,needs a save
@@ -1596,7 +1596,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100BD9015B54000,Cobra Kai 2: Dojos Rising,1681870,Cobra Kai 2: Dojos Rising,exact,55,,,,,,,,,needs a save
 01005790110F0000,Cobra Kai: The Karate Kid Saga Continues,1279920,Cobra Kai: The Karate Kid Saga Continues,exact,47,,,,,,,,,needs a save
 0100645012C20000,Cobra Kai: The Karate Kid Saga Continues,1279920,Cobra Kai: The Karate Kid Saga Continues,exact,47,,,,,,,,,needs a save
-01002E700C366000,COCOON,1497440,COCOON,exact,17,,,json,,switch,,0,0,"drafted, no rule found"
+01002E700C366000,COCOON,1497440,COCOON,exact,17,,,,,,,,,needs a save
 010034E005C9C000,Code of Princess EX,711380,Code of Princess EX,exact,14,,,,,,,,,needs a save
 010086100CDCA000,CODE SHIFTER,976570,CODE SHIFTER,exact,28,,,,,,,,,needs a save
 01008BC0272EA000,Codename: Black Crow,3837230,Codename: Black Crow,exact,28,,,,,,,,,needs a save
@@ -1941,7 +1941,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100713011E92000,Date Night Bowling,1271250,Date Night Bowling,exact,29,,,,,,,,,needs a save
 010074301DABA000,Date Z,1567890,Date Z,exact,87,,,,,,,,,needs a save
 0100BB5015AA8000,Dating Life: Miley X Emily,1086030,Dating Life: Miley X Emily,exact,5,,,,,,,,,needs a save
-010097F018538000,DAVE THE DIVER,1868140,DAVE THE DIVER,exact,56,,,binary+text,,,,,,save not readable (binary+text)
+010097F018538000,DAVE THE DIVER,1868140,DAVE THE DIVER,exact,56,,,,,,,,,supported:json
 01006960155C4000,Dawn of the Monsters,1642170,Dawn of the Monsters,exact,35,,,,,,,,,needs a save
 010021702432A000,Dawnfolk,2308630,Dawnfolk,exact,99,,,,,,,,,needs a save
 010077401B6D6000,Dawngrown,871410,Dawngrown,exact,10,,,,,,,,,needs a save
@@ -1955,7 +1955,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 010034E00A114000,de Blob 2,563190,de Blob 2,exact,25,,,,,,,,,needs a save
 010061B01871C000,Dead Age: Zombie Adventure & Shooting Game,363930,Dead Age,main-title,77,,,,,,,,,needs a save
 01004C400CF96000,Dead by Daylight,381210,Dead by Daylight,exact,311,,,,,,,,,needs a save
-0100646009FBE000,Dead Cells,588650,Dead Cells,exact,121,,,,,,,,,needs a save
+0100646009FBE000,Dead Cells,588650,Dead Cells,exact,121,,,,json+encrypted,pc-only,,0,4,drafted
 0100A3902077A000,Dead Dragons,3155540,Dead Dragons,exact,25,,,,,,,,,needs a save
 01000D900E0F0000,Dead Dungeon,751640,Dead Dungeon,exact,20,,,,,,,,,needs a save
 010096C014BB2000,Dead Dust,816990,Dead Dust,exact,16,,,,,,,,,needs a save
@@ -2322,7 +2322,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 010008900705C000,Dragon Quest Builders™,2436570,DRAGON QUEST BUILDERS,exact,20,,,,,,,,,needs a save
 010042000A986000,DRAGON QUEST BUILDERS™ 2,1072420,DRAGON QUEST BUILDERS™ 2,exact,31,,,,,,,,,needs a save
 010040B0270A2000,Dragon Quest Heroes: Torneko‘s Mystery Dungeon -Classic HD-,4027450,Dragon Quest Heroes: Torneko's Mystery Dungeon -Classic HD-,exact,27,,,,,,,,,needs a save
-0100D7C01F254000,DRAGON QUEST I & II HD-2D Remake,2893570,DRAGON QUEST I & II HD-2D Remake,exact,48,,,binary,,,,,,save not readable (binary)
+0100D7C01F254000,DRAGON QUEST I & II HD-2D Remake,2893570,DRAGON QUEST I & II HD-2D Remake,exact,48,,,,,,,,,needs a save
 01003E601E324000,DRAGON QUEST III HD-2D Remake,2701660,DRAGON QUEST III HD-2D Remake,exact,42,,,,,,,,,needs a save
 0100A77018EA0000,DRAGON QUEST MONSTERS: The Dark Prince,2175540,DRAGON QUEST MONSTERS: The Dark Prince,exact,15,,,,,,,,,needs a save
 010049B017774000,DRAGON QUEST TREASURES,2021210,DRAGON QUEST TREASURES,exact,50,,,,,,,,,needs a save
@@ -3349,7 +3349,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100D84005AF6000,Grand Prix Rock 'N Racing,2505950,Grand Prix Rock 'N Racing,exact,22,,,,,,,,,needs a save
 0100BE600D07A000,Grand Prix Story,1978100,Grand Prix Story,exact,6,,,,,,,,,needs a save
 0100C3C012718000,Grand Theft Auto III – The Definitive Edition,1546970,Grand Theft Auto III – The Definitive Edition,exact,29,,,,,,,,,needs a save
-010065A014024000,Grand Theft Auto: San Andreas – The Definitive Edition,1547000,Grand Theft Auto: San Andreas – The Definitive Edition,exact,35,,,encrypted+text,,,,,,save not readable (encrypted+text)
+010065A014024000,Grand Theft Auto: San Andreas – The Definitive Edition,1547000,Grand Theft Auto: San Andreas – The Definitive Edition,exact,35,,,,,,,,,needs a save
 0100182014022000,Grand Theft Auto: Vice City – The Definitive Edition,1546990,Grand Theft Auto: Vice City – The Definitive Edition,exact,34,,,,,,,,,needs a save
 0100F7A0278C2000,Grand Vegas Casino,4445360,Grand Vegas Casino,exact,13,,,,,,,,,needs a save
 0100E0600BBC8000,GRANDIA HD Collection,1034860,GRANDIA HD Remaster,normalized,36,,,,,,,,,needs a save
@@ -3479,7 +3479,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100E3D013B28000,Habroxia 2,1473550,Habroxia 2,exact,93,,,,,,,,,needs a save
 01003B4026AAC000,Hack 'n' Stack,2228720,Hack 'n' Stack,exact,20,,,,,,,,,needs a save
 0100B2101A39A000,Hack and Shoot Heroes,2260260,Hack and Shoot Heroes,exact,17,,,,,,,,,needs a save
-0100535012974000,Hades,1145360,Hades,exact-short,49,,,,,,,,,needs a save
+0100535012974000,Hades,1145360,Hades,exact-short,49,,,,,,,,,supported:sgb
 0100A00019DE0000,Hades II,1145350,Hades II,exact,50,,,,,,,,,needs a save
 0100DA70137B6000,"Haiku, the Robot",1231880,"Haiku, the Robot",exact,40,,,,,,,,,needs a save
 01006B30092F0000,Halcyon 6: Starbase Commander,371200,Halcyon 6: Starbase Commander,exact,69,,,,,,,,,needs a save
@@ -3764,7 +3764,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100F210061E8000,Hollow,590970,Hollow,exact,27,,,,,,,,,needs a save
 01007DE016E9E000,Hollow 2,1055240,Hollow 2,exact,18,,,,,,,,,needs a save
 010083201F234000,Hollow Cocoon,2414630,Hollow Cocoon,exact,11,,,,,,,,,needs a save
-0100633007D48000,Hollow Knight,367520,Hollow Knight,exact,63,,,json,,switch,,,,supported:json
+0100633007D48000,Hollow Knight,367520,Hollow Knight,exact,63,,,,,,,,,supported:json
 010013C00E930000,Hollow Knight: Silksong,1030300,Hollow Knight: Silksong,exact,52,,,,,,,,,needs a save
 0100C0E01F41C000,hololive Holo's Hanafuda,3327640,hololive Holo's Hanafuda,exact,37,,,,,,,,,needs a save
 01000B8020BA0000,HoloParade: Deluxe Edition,2647230,HoloParade,normalized,94,,,,,,,,,needs a save
@@ -4061,7 +4061,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01008E700CAAC000,Istanbul: Digital Edition,943410,Istanbul: Digital Edition,exact,101,,,,,,,,,needs a save
 01002E501015A000,It came from space and ate our brains,342620,It came from space and ate our brains,exact,57,,,,,,,,,needs a save
 0100E1401FE8A000,It Could Happen to You,2859270,It Could Happen to You,exact,15,,,,,,,,,needs a save
-010092A0172E4000,It Takes Two,1426210,It Takes Two,exact,20,,,json,,switch,,0,1,drafted
+010092A0172E4000,It Takes Two,1426210,It Takes Two,exact,20,,,,json,pc-only,,0,1,drafted
 0100C12017BC8000,It's a Wrap!,1684270,It's a Wrap!,exact,14,,,,,,,,,needs a save
 01005100195B2000,It's Kooky,1842050,It's Kooky,exact,14,,,,,,,,,needs a save
 01001A6025290000,It’s Quiz Time: GUINNESS WORLD RECORDS™ Edition,648780,It's Quiz Time,main-title,38,,,,,,,,,needs a save
@@ -5058,7 +5058,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01006C100EC08000,Minecraft Dungeons,1672970,Minecraft Dungeons,exact,104,,,,,,,,,needs a save
 01007C6012CC8000,Minecraft Legends,1928870,Minecraft Legends,exact,40,,,,,,,,,needs a save
 0100BF800BA44000,Mineko's Night Market,762940,Mineko's Night Market,exact,24,,,,,,,,,needs a save
-0100829025D3A000,Mini Airways,2289650,Mini Airways,exact,65,,,,,,,,,needs a save
+0100829025D3A000,Mini Airways,2289650,Mini Airways,exact,77,,,,,,,,,needs a save
 01009E8021582000,Mini Madness,1603960,Mini Madness,exact,32,,,,,,,,,needs a save
 0100091008272000,Mini Metro,287980,Mini Metro,exact,73,,,,,,,,,needs a save
 01003560119A6000,Mini Motor Racing X,1303990,Mini Motor Racing X,exact,21,,,,,,,,,needs a save
@@ -5520,7 +5520,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01009FA01FF6C000,Nikoderiko: The Magical World - Director's Cut,2374190,Nikoderiko: The Magical World — Director’s Cut,exact,36,,,,,,,,,needs a save
 01005AF01F5A4000,Nimbusfall,2924040,Nimbusfall,exact,10,,,,,,,,,needs a save
 0100D03003F0E000,Nine Parchments,471550,Nine Parchments,exact,54,,,,,,,,,needs a save
-0100D810170D0000,Nine Sols,1809540,Nine Sols,exact,35,,,encrypted+binary,,,,,,save not readable (encrypted+binary)
+0100D810170D0000,Nine Sols,1809540,Nine Sols,exact,35,,,,,,,,,needs a save
 01006790101A2000,Nine Witches: Family Disruption,1272580,Nine Witches: Family Disruption,exact,18,,,,,,,,,needs a save
 010018B020D50000,Ninja 1987,3031130,Ninja 1987,exact,18,,,,,,,,,needs a save
 010066301E9E2000,Ninja Chowdown: Glaze of Glory,2698490,Ninja Chowdown: Glaze of Glory,exact,20,,,,,,,,,needs a save
@@ -5768,7 +5768,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100BFA0295DC000,Order Automatica,2105840,Order Automatica,exact,19,,,,,,,,,needs a save
 010055A0189B8000,Orebody: Binder's Tale,2124210,Orebody: Binder's Tale,exact,15,,,,,,,,,needs a save
 010061D00DB74000,Ori and the Blind Forest: Definitive Edition,387290,Ori and the Blind Forest: Definitive Edition,exact,57,,,,,,,,,needs a save
-01008DD013200000,Ori and the Will of the Wisps,1057090,Ori and the Will of the Wisps,exact,37,,,,,,,,,needs a save
+01008DD013200000,Ori and the Will of the Wisps,1057090,Ori and the Will of the Wisps,exact,37,,,,json+nrbf+text,pc-only,,37,0,drafted (self-recorded)
 01009B30226FA000,Orphans,2722400,Orphans,exact,18,,,,,,,,,needs a save
 0100F2B01CE56000,Orten Was The Case,1785420,Orten Was The Case,exact,17,,,,,,,,,needs a save
 0100BA401D284000,Ortheo,1540700,Ortheo,exact,4,,,,,,,,,needs a save
@@ -5812,7 +5812,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 010036B0113DA000,Over the Alps,1227400,Over the Alps,exact,49,,,,,,,,,needs a save
 0100BD301E8B0000,Overboss,2109390,Overboss,exact,15,,,,,,,,,needs a save
 01009B900401E000,Overcooked Special Edition,448510,Overcooked,normalized,12,,,,,,,,,needs a save
-01006FD0080B2000,Overcooked! 2,728880,Overcooked! 2,exact,54,,,json,,switch,,0,0,"drafted, no rule found"
+01006FD0080B2000,Overcooked! 2,728880,Overcooked! 2,exact,54,,,,,,,,,needs a save
 0100F28011892000,Overcooked! All You Can Eat,1243830,Overcooked! All You Can Eat,exact,42,,,,,,,,,needs a save
 0100EB301601A000,Overdriven Evolution,1943160,Overdriven Evolution,exact,75,,,,,,,,,needs a save
 010051A00ACAC000,Overdriven Reloaded: Special Edition,495680,Overdriven Reloaded,normalized,70,,,,,,,,,needs a save
@@ -5979,7 +5979,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100DCD01525A000,Persona 3 Portable,1809700,Persona 3 Portable,exact,36,,,,,,,,,needs a save
 010075A016A3A000,Persona 4 Arena Ultimax,1602010,Persona 4 Arena Ultimax,exact,51,,,,,,,,,needs a save
 010062B01525C000,Persona 4 Golden,1113000,Persona 4 Golden,exact,50,,,,,,,,,needs a save
-01005CA01580E000,Persona 5 Royal,1687950,Persona 5 Royal,exact,53,,,encrypted+binary,,,,,,save not readable (encrypted+binary)
+01005CA01580E000,Persona 5 Royal,1687950,Persona 5 Royal,exact,53,,,,,,,,,needs a save
 010087701B092000,Persona 5 Tactica,2254740,Persona 5 Tactica,exact,40,,,,,,,,,needs a save
 0100801011C3E000,Persona® 5 Strikers,1382330,Persona® 5 Strikers,exact,47,,,,,,,,,needs a save
 010094100A55A000,Petal Crash,1211110,Petal Crash,exact,27,,,,,,,,,needs a save
@@ -7153,7 +7153,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01007B5017A12000,Sifu,2138710,Sifu,exact-short,61,,,,,,,,,needs a save
 01007FC00B674000,Sigi - A Fart for Melusina,677280,Sigi - A Fart for Melusina,exact,17,,,,,,,,,needs a save
 010062B022528000,Sigma Star Saga DX,3281520,Sigma Star Saga DX,exact,13,,,,,,,,,needs a save
-0100307018934000,SIGNALIS,1262350,SIGNALIS,exact,13,,,json+binary+text,,switch,,,,supported:json
+0100307018934000,SIGNALIS,1262350,SIGNALIS,exact,13,,,,,,,,,supported:json
 0100E03012B3C000,Signs of the Sojourner,1058690,Signs of the Sojourner,exact,14,,,,,,,,,needs a save
 0100F1400B0D6000,Silence,314790,Silence,exact,46,,,,,,,,,needs a save
 0100440014A72000,Silenced: The House,807230,Silenced: The House,exact,11,,,,,,,,,needs a save
@@ -7242,7 +7242,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100623021594000,Slasher: Origins,2997110,Slasher: Origins,exact,55,,,,,,,,,needs a save
 0100ED0018898000,Slave Zero X,1903910,Slave Zero X,exact,35,,,,,,,,,needs a save
 010080501E80C000,Slay the Princess - The Pristine Cut,1989270,Slay the Princess — The Pristine Cut,exact,131,,,,,,,,,needs a save
-010026300BA4A000,Slay the Spire,646570,Slay the Spire,exact,46,,,json,,switch,,2,44,drafted (self-recorded)
+010026300BA4A000,Slay the Spire,646570,Slay the Spire,exact,46,,,,,,,,,supported:json
 0100501006494000,Slayaway Camp: Butcher's Cut,530390,Slayaway Camp,main-title,50,,,,,,,,,needs a save
 010024C017CF8000,Slaycation Paradise,1643850,Slaycation Paradise,exact,19,,,,,,,,,needs a save
 0100664019632000,Slayers X: Terminal Aftermath: Vengance of the Slayer,1931020,Slayers X: Terminal Aftermath: Vengance of the Slayer,exact,19,,,,,,,,,needs a save
@@ -8370,7 +8370,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100CE1004E72000,The Longest Five Minutes,504110,The Longest Five Minutes,exact,54,,,,,,,,,needs a save
 0100F3D0122C2000,The Longing,893850,THE LONGING,exact,25,,,,,,,,,needs a save
 010085A00C5E8000,The Lord of the Rings: Adventure Card Game - Definitive Edition,509580,The Lord of the Rings: Adventure Card Game - Definitive Edition,exact,73,,,,,,,,,needs a save
-01004D501F078000,The Lord of the Rings: War in the North™ - Legacy Edition,2523770,The Lord of the Rings: War in the North™ - Legacy Edition,exact,46,,,binary,,,,,,save not readable (binary)
+01004D501F078000,The Lord of the Rings: War in the North™ - Legacy Edition,2523770,The Lord of the Rings: War in the North™ - Legacy Edition,exact,46,,,,,,,,,needs a save
 010015601B0C2000,The Lost and The Wicked,1115610,The Lost and The Wicked,exact,16,,,,,,,,,needs a save
 01008A000A404000,The Lost Child,3540530,Lost Child,exact,6,,,,,,,,,needs a save
 01000F2013CF8000,The Lost Cube,1399280,The Lost Cube,exact,20,,,,,,,,,needs a save
@@ -8908,7 +8908,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100E64019EAE000,Ugly,1983220,Ugly,exact-short,52,,,,,,,,,needs a save
 0100E8D0175EC000,Ultimate ADOM - Caverns of Chaos,1266820,Ultimate ADOM - Caverns of Chaos,exact,59,,,,,,,,,needs a save
 01000BC01ABE2000,Ultimate Anime Jigsaw Puzzle,2319370,Ultimate Anime Jigsaw Puzzle,exact,100,,,,,,,,,needs a save
-0100FCF002A58000,Ultimate Chicken Horse,386940,Ultimate Chicken Horse,exact,31,,,binary,,,,,,save not readable (binary)
+0100FCF002A58000,Ultimate Chicken Horse,386940,Ultimate Chicken Horse,exact,31,,,,,,,,,needs a save
 010048901295C000,Ultimate Fishing Simulator,468920,Ultimate Fishing Simulator®,exact,142,,,,,,,,,needs a save
 010020301B6D4000,Ultimate General: Gettysburg,306660,Ultimate General: Gettysburg,exact,3,,,,,,,,,needs a save
 0100954025C84000,Ultimate Hentai Puzzle,914850,HENTAI PUZZLE,normalized,35,,,,,,,,,needs a save
@@ -9047,10 +9047,10 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 010042100BAA6000,Valthirian Arc: Hero School Story,785850,Valthirian Arc: Hero School Story,exact,30,,,,,,,,,needs a save
 01006E7018F8A000,Valthirian Arc: Hero School Story 2,1453640,Valthirian Arc: Hero School Story 2,exact,81,,,,,,,,,needs a save
 01000E000DD40000,Vambrace: Cold Soul,904380,Vambrace: Cold Soul,exact,54,,,,,,,,,needs a save
-010040502453E000,Vampire Crawlers: The Turbo Wildcard from Vampire Survivors,3265700,Vampire Crawlers: The Turbo Wildcard from Vampire Survivors,exact,161,,,json,,switch,,68,93,drafted (self-recorded)
+010040502453E000,Vampire Crawlers: The Turbo Wildcard from Vampire Survivors,3265700,Vampire Crawlers: The Turbo Wildcard from Vampire Survivors,exact,161,,,,,,,,,supported:json
 0100AA201F6C8000,Vampire Hunters,2206270,Vampire Hunters,exact,215,,,,,,,,,needs a save
 01007AE019B5A000,Vampire Slayer: The Resurrection,2188960,Vampire Slayer: The Resurrection,exact,18,,,,,,,,,needs a save
-010089A0197E4000,Vampire Survivors,1794680,Vampire Survivors,exact,243,,,json,,switch,,243,0,drafted (self-recorded)
+010089A0197E4000,Vampire Survivors,1794680,Vampire Survivors,exact,243,,,,,,,,,supported:json
 0100381025710000,Vampire Therapist,2481020,Vampire Therapist,exact,34,,,,,,,,,needs a save
 010020C00FFB6000,Vampire: The Masquerade - Coteries of New York,1096410,Vampire: The Masquerade - Coteries of New York,exact,28,,,,,,,,,needs a save
 010003301DD0C000,Vampire: The Masquerade - Reckoning of New York,2658720,Vampire: The Masquerade - Reckoning of New York,exact,24,,,,,,,,,needs a save
@@ -9370,7 +9370,7 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 01003C602309A000,Without a Voice,1262190,Without a Voice,exact,10,,,,,,,,,needs a save
 0100E8400FDCA000,Without Escape,720730,Without Escape,exact,9,,,,,,,,,needs a save
 0100522007AAA000,Wizard of Legend,445980,Wizard of Legend,exact,19,,,,,,,,,needs a save
-01006BB0203CA000,Wizard of Legend 2,2193540,Wizard of Legend 2,exact,41,,,binary+text,,,,,,save not readable (binary+text)
+01006BB0203CA000,Wizard of Legend 2,2193540,Wizard of Legend 2,exact,41,,,,,,,,,needs a save
 010033F01AD2E000,Wizardry: Proving Grounds of the Mad Overlord,2518960,Wizardry: Proving Grounds of the Mad Overlord,exact,28,,,,,,,,,needs a save
 010081900F9E2000,Wizards of Brandel,1117990,Wizards of Brandel,exact,32,,,,,,,,,needs a save
 010000201AF8E000,Wizards Tourney,725110,Wizards Tourney,exact,41,,,,,,,,,needs a save
@@ -9578,23 +9578,3 @@ The guardian owls",1614890,Baldo: The Guardian Owls,exact,45,,,,,,,,,needs a sav
 0100C38020DCE000,ZXC,2559550,ZXC,exact-short,46,,,,,,,,,needs a save
 0100F73013B54000,世界の中心で、AIは戦う,1173110,이 AI를 복구해주세요.,exact-short,64,,,,,,,,,needs a save
 010047F012BE2000,密室のサクリファイス／ABYSS OF THE SACRIFICE,1442160,ABYSS OF THE SACRIFICE,exact,23,,,,,,,,,needs a save
-01007EF00011E000,The Legend of Zelda: Breath of the Wild,,,,,,,binary,,,,,,no Steam version with achievements
-0100D870045B6000,Nintendo Entertainment System – Nintendo Switch Online,,,,,,,binary+encrypted+json,,,,,,no Steam version with achievements
-0100DCA0064A6000,Luigi's Mansion 3,,,,,,,encrypted+binary,,,,,,no Steam version with achievements
-010099C022B96000,Super Mario Galaxy,,,,,,,binary,,,,,,no Steam version with achievements
-01001F5010DFA000,Légendes Pokémon : Arceus,,,,,,,encrypted+binary,,,,,,no Steam version with achievements
-0100C9A00ECE6000,Nintendo 64 - Nintendo Switch Online,,,,,,,binary+json,,,,,,no Steam version with achievements
-01006A800016E000,Super Smash Bros. Ultimate,,,,,,,binary,,,,,,no Steam version with achievements
-0100152000022000,Mario Kart 8 Deluxe,,,,,,,binary,,,,,,no Steam version with achievements
-01006FE013472000,Mario Party Superstars,,,,,,,binary,,,,,,no Steam version with achievements
-0100A1C00359C000,TowerFall,,,,,,,text,,,,,,no Steam version with achievements
-0100965017338000,Super Mario Party Jamboree,,,,,,,binary,,,,,,no Steam version with achievements
-010019A01E2F2000,Metroid Prime 4: Beyond,,,,,,,binary,,,,,,no Steam version with achievements
-0100F43008C44000,Légendes Pokémon : Z-A,,,,,,,encrypted,,,,,,no Steam version with achievements
-01004D300C5AE000,Kirby et le monde oublié,,,,,,,binary,,,,,,no Steam version with achievements
-01008CF01BAAC000,The Legend of Zelda: Echoes of Wisdom,,,,,,,binary,,,,,,no Steam version with achievements
-010048701995E000,Luigi’s Mansion 2 HD,,,,,,,binary,,,,,,no Steam version with achievements
-0100A3900C3E2000,Paper Mario: The Origami King,,,,,,,json,,,,,,no Steam version with achievements
-0100000000010000,SUPER MARIO ODYSSEY,,,,,,,binary+byml,,,,,,no Steam version with achievements
-010093801237C000,Metroid Dread,,,,,,,binary,,,,,,no Steam version with achievements
-0100E66006406000,OCTOPATH TRAVELER,,,,,,,binary,,,,,,no Steam version with achievements

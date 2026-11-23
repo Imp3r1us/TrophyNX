@@ -1,0 +1,78 @@
+{
+ "title_id": "0100646009FBE000",
+ "name": "Dead Cells",
+ "reader": "json",
+ "save_files": [
+  "dc_options.json",
+  "customGameData_0.json",
+  "customGameData_0_customPreset_1.json",
+  "customGameData_0_customPreset_10.json",
+  "customGameData_0_customPreset_2.json",
+  "customGameData_0_customPreset_3.json",
+  "customGameData_0_customPreset_4.json",
+  "customGameData_0_customPreset_5.json",
+  "customGameData_0_customPreset_6.json",
+  "customGameData_0_customPreset_7.json",
+  "customGameData_0_customPreset_8.json",
+  "customGameData_0_customPreset_9.json"
+ ],
+ "_steam_appid": 588650,
+ "_generated": "pc2switch (review before use)",
+ "achievements": [
+  {
+   "id": "feat_killwith_elevator",
+   "name": "Going down!",
+   "desc": "Kill an enemy with an elevator.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "playElevatorMusic",
+    "target": 1
+   },
+   "_draft": "maybe",
+   "_api": "FEAT_KILLWITH_ELEVATOR"
+  },
+  {
+   "id": "feat_killyourself_elevator",
+   "name": "They came from behind!",
+   "desc": "They came from behind!",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "playElevatorMusic",
+    "target": 1
+   },
+   "_draft": "maybe",
+   "_api": "FEAT_KILLYOURSELF_ELEVATOR",
+   "hidden": true
+  },
+  {
+   "id": "feat_dive_spikes",
+   "name": "We've all been there before...",
+   "desc": "We've all been there before...",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "diveAttackBind",
+    "target": 2
+   },
+   "_draft": "maybe",
+   "_api": "FEAT_DIVE_SPIKES",
+   "hidden": true
+  },
+  {
+   "id": "biome_reached_dooku",
+   "name": "What is a man?",
+   "desc": "Reach the Master's Keep for the first time.",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "masterVolume",
+    "target": 1
+   },
+   "_draft": "maybe",
+   "_api": "BIOME_REACHED_DOOKU"
+  }
+ ],
+ "_compat": "pc-only"
+}

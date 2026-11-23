@@ -1,0 +1,1114 @@
+{
+ "games": {
+  "400": {
+   "name": "Portal",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:config.cfg path:\"cfg\"",
+    "path:\"portal/save\"",
+    "filename:bonus_maps_data.bmd"
+   ]
+  },
+  "620": {
+   "name": "Portal 2",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"portal2/SAVE\"",
+    "path:\"620/remote\""
+   ]
+  },
+  "8870": {
+   "name": "BioShock Infinite: The Complete Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"8870\"",
+    "path:\"XGame/SaveData\""
+   ]
+  },
+  "35140": {
+   "name": "Batman: Arkham Asylum",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Batman Arkham Asylum Game of the Year Edition\""
+   ]
+  },
+  "200260": {
+   "name": "Batman: Arkham City",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Batman Arkham City - Game of the Year Edition\""
+   ]
+  },
+  "203140": {
+   "name": "Hitman: Absolution",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"205930/remote\"",
+    "path:\"IO Interactive/HM5\""
+   ]
+  },
+  "204360": {
+   "name": "Castle Crashers Remastered",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"204360/Remote\""
+   ]
+  },
+  "208650": {
+   "name": "Batman: Arkham Knight",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"BMGame/SaveData\"",
+    "path:\"208650\""
+   ]
+  },
+  "214490": {
+   "name": "Alien: Isolation",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"214490/remote\"",
+    "path:\"My Games/Alien Isolation\"",
+    "path:\"The Creative Assembly/Alien Isolation\""
+   ]
+  },
+  "218620": {
+   "name": "PAYDAY 2",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"PAYDAY 2/saves\""
+   ]
+  },
+  "219150": {
+   "name": "Hotline Miami Collection",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:SaveData.sav path:\"HotlineMiami\""
+   ]
+  },
+  "233450": {
+   "name": "Prison Architect: Nintendo Switch™ Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Introversion/Prison Architect\""
+   ]
+  },
+  "239140": {
+   "name": "Dying Light: Definitive Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"239140/remote\"",
+    "path:\"out/save\""
+   ]
+  },
+  "246620": {
+   "name": "Plague Inc: Evolved",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Games-Gen/Saves\"",
+    "path:\"246620/remote\""
+   ]
+  },
+  "255710": {
+   "name": "Cities: Skylines - Nintendo Switch™ Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Cities_Skylines/Saves\""
+   ]
+  },
+  "262060": {
+   "name": "Darkest Dungeon",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Darkest Dungeon\""
+   ]
+  },
+  "265930": {
+   "name": "Goat Simulator: The GOATY",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"265930/remote\""
+   ]
+  },
+  "268910": {
+   "name": "Cuphead",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Studio MDHR/Cuphead\"",
+    "path:\"268910\"",
+    "path:\"Cuphead\""
+   ]
+  },
+  "274190": {
+   "name": "Broforce",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:.sav",
+    "filename:progress.sav"
+   ]
+  },
+  "275850": {
+   "name": "No Man's Sky",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"HelloGames/NMS\""
+   ]
+  },
+  "285900": {
+   "name": "Gang Beasts",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Gang Beasts\""
+   ]
+  },
+  "286690": {
+   "name": "Metro 2033 Redux",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"4A Games/Metro 2033\""
+   ]
+  },
+  "287390": {
+   "name": "Metro: Last Light Redux",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"4A Games/Metro Last Light\""
+   ]
+  },
+  "291550": {
+   "name": "Brawlhalla",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"BrawlhallaReplays\"",
+    "path:\"BrawlhallaAir\""
+   ]
+  },
+  "304430": {
+   "name": "INSIDE",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:Game2.sav",
+    "path:\"304430/remote\""
+   ]
+  },
+  "311690": {
+   "name": "Enter the Gungeon",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Dodge Roll/Enter the Gungeon\"",
+    "path:\"311690\""
+   ]
+  },
+  "346010": {
+   "name": "Besiege",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:CompletedLevels.txt",
+    "path:\"Besiege_Data/SavedMachines\""
+   ]
+  },
+  "346110": {
+   "name": "ARK: Survival Evolved",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Saved/SavedArksLocal\""
+   ]
+  },
+  "361420": {
+   "name": "ASTRONEER",
+   "found": false,
+   "date": "2026-11-23",
+   "why": "no query"
+  },
+  "363970": {
+   "name": "Clicker Heroes",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Playsaurus/Clicker Heroes\"",
+    "path:\"363970/remote\"",
+    "path:\"com.playsaurus.heroclicker/Local Store\""
+   ]
+  },
+  "379430": {
+   "name": "Kingdom Come Deliverance: Royal Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"kingdomcome/saves\""
+   ]
+  },
+  "379720": {
+   "name": "DOOM",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"base/savegame\"",
+    "filename:savegame.user path:\"base\""
+   ]
+  },
+  "380600": {
+   "name": "Fishing Planet",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Fishing Planet\""
+   ]
+  },
+  "381210": {
+   "name": "Dead by Daylight",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Dead by Daylight\""
+   ]
+  },
+  "383870": {
+   "name": "Firewatch",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Firewatch/saves\"",
+    "path:\"Firewatch/saves_xb1\""
+   ]
+  },
+  "387290": {
+   "name": "Ori and the Blind Forest: Definitive Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Ori and the Blind Forest DE\""
+   ]
+  },
+  "397540": {
+   "name": "Borderlands 3 Ultimate Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Borderlands 3\""
+   ]
+  },
+  "409710": {
+   "name": "BioShock Remastered",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Bioshock/SaveGames\""
+   ]
+  },
+  "414340": {
+   "name": "Hellblade: Senua's Sacrifice",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Hellblade Senua's Sacrifice\""
+   ]
+  },
+  "414700": {
+   "name": "Outlast 2",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"414700/remote\"",
+    "path:\"OLGame/SaveData\""
+   ]
+  },
+  "424840": {
+   "name": "Little Nightmares Complete Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Little Nightmares\""
+   ]
+  },
+  "427520": {
+   "name": "Factorio",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Factorio/saves\""
+   ]
+  },
+  "431240": {
+   "name": "Golf With Your Friends",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:gwyf.sav"
+   ]
+  },
+  "435150": {
+   "name": "Divinity: Original Sin 2 - Definitive Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"PlayerProfiles/Savegames\""
+   ]
+  },
+  "444090": {
+   "name": "Paladins",
+   "found": false,
+   "date": "2026-11-23",
+   "why": "no query"
+  },
+  "460950": {
+   "name": "Katana ZERO",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Katana_ZERO\""
+   ]
+  },
+  "466560": {
+   "name": "Northgard",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Northgard/save\""
+   ]
+  },
+  "477160": {
+   "name": "Human: Fall Flat",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"NoBrakesGames/Human\"",
+    "path:\"477160/remote\""
+   ]
+  },
+  "502500": {
+   "name": "ACE COMBAT™7: SKIES UNKNOWN DELUXE EDITION",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"ACE COMBAT 7/SaveGames\""
+   ]
+  },
+  "504230": {
+   "name": "Celeste",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Celeste/Saves\"",
+    "filename:debug.celeste"
+   ]
+  },
+  "570940": {
+   "name": "DARK SOULS™: REMASTERED",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"NBGI/DARK SOULS REMASTERED\""
+   ]
+  },
+  "588430": {
+   "name": "Fallout Shelter",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"FalloutShelter\""
+   ]
+  },
+  "588650": {
+   "name": "Dead Cells",
+   "tid": "0100646009FBE000",
+   "found": true,
+   "date": "2026-11-23",
+   "repo": "Aechewhy/config-files",
+   "dir": "Dead Cells/save",
+   "score": 4,
+   "why": "0 sure, 4 maybe",
+   "files": [
+    {
+     "name": "dc_options.json",
+     "sha": "8f1c5eddd952536743bd69e93cc7dabab3fac1ba",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/dc_options.json"
+    },
+    {
+     "name": "customGameData_0.json",
+     "sha": "32c07fb03d4786d17f84d87cece6732a42be76fa",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_8.json",
+     "sha": "fd75a9100d0e6edcc7ee62132e28780fa6fc9d74",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_8.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_7.json",
+     "sha": "c754715e64ec6e45c5f139ea1af516e350ea9d08",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_7.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_6.json",
+     "sha": "413d1a8b39238fb6f37f73c96e4b17a4b2d155b5",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_6.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_2.json",
+     "sha": "6652bae2d78d0cc05b4901f9b7358cc27d540581",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_2.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_5.json",
+     "sha": "f30d8f7c0ccfffda6170089e3e69136e2401123b",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_5.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_9.json",
+     "sha": "57207246fc3798a27fc345ee73b67afbcd491448",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_9.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_3.json",
+     "sha": "29241a2d94e80bf1a8a2398111d87d83b03136a7",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_3.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_4.json",
+     "sha": "3d6c9a326040dcb447f2928c39a8a1120890731b",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_4.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_1.json",
+     "sha": "a56afe41e302c389310f8e23c07d7a6a07b57962",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_1.json"
+    },
+    {
+     "name": "customGameData_0_customPreset_10.json",
+     "sha": "6ab4dec69de90ad64c4c948818eccd6122d9dbae",
+     "url": "https://github.com/Aechewhy/config-files/blob/a2a2a78703fdd78c563f73f559af2d6da0cb90db/Dead Cells/save/customGameData_0_customPreset_10.json"
+    },
+    {
+     "name": "user_0.dat",
+     "sha": "a60d8e2abe0487f82a8f8d3f5afde5486ea39213",
+     "url": "https://github.com/Aechewhy/config-files/blob/main/Dead%20Cells/save/user_0.dat"
+    },
+    {
+     "name": "user_1.dat",
+     "sha": "304384d6afb665e104c84c10c63e5f959204abdc",
+     "url": "https://github.com/Aechewhy/config-files/blob/main/Dead%20Cells/save/user_1.dat"
+    }
+   ]
+  },
+  "613100": {
+   "name": "House Flipper",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"House Flipper Game/Profiles\"",
+    "filename:Profiles.backup path:\"House Flipper Game\""
+   ]
+  },
+  "632470": {
+   "name": "Disco Elysium - The Final Cut",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Disco Elysium/SaveGames\""
+   ]
+  },
+  "635260": {
+   "name": "CarX Drift Racing Online",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Drift Racing Online/Cache\""
+   ]
+  },
+  "644560": {
+   "name": "Mirror",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Mirror/save\""
+   ]
+  },
+  "648350": {
+   "name": "Jurassic World Evolution: Complete Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Frontier Developments/Jurassic World Evolution\""
+   ]
+  },
+  "678950": {
+   "name": "DRAGON BALL FighterZ",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:REPLAY.sav",
+    "filename:SYSTEM.sav"
+   ]
+  },
+  "683320": {
+   "name": "GRIS",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"GRIS/Save01\""
+   ]
+  },
+  "728880": {
+   "name": "Overcooked! 2",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Team17/Overcooked2\"",
+    "path:\"Overcooked2/Saves\""
+   ]
+  },
+  "747660": {
+   "name": "Five Nights at Freddy's: Security Breach",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Five Nights at Freddy's Security Breach\""
+   ]
+  },
+  "753640": {
+   "name": "Outer Wilds",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Outer Wilds/Saves\"",
+    "path:\"Outer Wilds/SteamSaves\""
+   ]
+  },
+  "774171": {
+   "name": "Muse Dash",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Steam/MuseDash\""
+   ]
+  },
+  "782330": {
+   "name": "DOOM® Eternal",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"DOOMEternal/base\"",
+    "path:\"782330/remote\""
+   ]
+  },
+  "815370": {
+   "name": "Green Hell",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"815370/remote\""
+   ]
+  },
+  "860510": {
+   "name": "Little Nightmares II",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Little Nightmares II\""
+   ]
+  },
+  "870780": {
+   "name": "Control Ultimate Edition - Cloud Version",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"870780/remote\"",
+    "path:\"Control/Saves\"",
+    "path:\"Control/Default-Epic-User\""
+   ]
+  },
+  "945360": {
+   "name": "Among Us",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Among Us/playerStats3\""
+   ]
+  },
+  "960090": {
+   "name": "Bloons TD 6",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"960090\""
+   ]
+  },
+  "962130": {
+   "name": "Grounded",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Saved Games/Grounded\""
+   ]
+  },
+  "977950": {
+   "name": "A Dance of Fire and Ice",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"A Dance of Fire and Ice/User\"",
+    "path:\"7th Beat Games/A Dance of Fire and Ice\""
+   ]
+  },
+  "990080": {
+   "name": "Hogwarts Legacy",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Hogwarts Legacy\""
+   ]
+  },
+  "1030300": {
+   "name": "Hollow Knight: Silksong",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Team Cherry/Hollow Knight Silksong\""
+   ]
+  },
+  "1057090": {
+   "name": "Ori and the Will of the Wisps",
+   "tid": "01008DD013200000",
+   "found": true,
+   "date": "2026-11-23",
+   "repo": "pixingdaiyue051/apotheosis",
+   "dir": "Ori and the Will of The Wisps",
+   "score": 94,
+   "why": "records its own achievements (28 found)",
+   "files": [
+    {
+     "name": "ClockSkew.bindata",
+     "sha": "6704526df08de224e02e756ac48e8c787909f6e8",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/0b08f44a35076dde38f4bff8356c028ee6727954/Ori and the Will of The Wisps/ClockSkew.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861433536269625PlayFabAchievements.bindata",
+     "sha": "1b8b779e48182a7dbc9197d06355074d8f9ed96e",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861433536269625PlayFabAchievements.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861433536269625PlayFabStatistics.bindata",
+     "sha": "3c9a9daec391872cacb03e7c786629bae49add77",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861433536269625PlayFabStatistics.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861433536269625SteamAchievements.bindata",
+     "sha": "68d3c309902a14117bd7023f51f9bb0ea7a5f3c1",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861433536269625SteamAchievements.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861433536269625XalAchievements.bindata",
+     "sha": "f4afcf932092f971ca675de0ff3ccade3e42fae2",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861433536269625XalAchievements.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861434133628145PlayFabAchievements.bindata",
+     "sha": "923e89f865fa3ac5b73c735ef0da4fe281666836",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861434133628145PlayFabAchievements.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861434133628145PlayFabStatistics.bindata",
+     "sha": "f6a89509a072c632edb1450952aed34eefe5676b",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861434133628145PlayFabStatistics.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861434133628145SteamAchievements.bindata",
+     "sha": "923e89f865fa3ac5b73c735ef0da4fe281666836",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861434133628145SteamAchievements.bindata"
+    },
+    {
+     "name": "cacheForsteamUser-76861434133628145XalAchievements.bindata",
+     "sha": "5b0da49ac9ef43395083e715693b315c6704406b",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/cacheForsteamUser-76861434133628145XalAchievements.bindata"
+    },
+    {
+     "name": "race-avalanche1AdjacentFriends.bindata",
+     "sha": "3f01a958e37eae8ebf84c20c7db1284bcbdcede2",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-avalanche1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-desert1AdjacentMyScore.bindata",
+     "sha": "e07fec2c773cdb429d2908f29cfa32876f49048d",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-desert1AdjacentMyScore.bindata"
+    },
+    {
+     "name": "race-desertEscape1AdjacentFriends.bindata",
+     "sha": "2405cdeac72c2a2ff2eb096696c06b63894bf5e6",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-desertEscape1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-hornbugNormal1AdjacentFriends.bindata",
+     "sha": "54914f58671f1e74fcd1b64bf006e24a4c0843c3",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-hornbugNormal1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-kwolok1AdjacentFriends.bindata",
+     "sha": "166eb38457154a3b98fbc406777d4051ca6693dc",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-kwolok1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-kwolok1AdjacentFriendsOverall.bindata",
+     "sha": "1bfeee70a05a0d96b7bbca35557f3e3c0d5dd18e",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-kwolok1AdjacentFriendsOverall.bindata"
+    },
+    {
+     "name": "race-kwolok1AdjacentMyScore.bindata",
+     "sha": "b8a193e8e5f7f544a770b476c9417aa10df2063d",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-kwolok1AdjacentMyScore.bindata"
+    },
+    {
+     "name": "race-kwolok1AdjacentOverall.bindata",
+     "sha": "2b2d60d06e7545876c90aa85e8f4dc07987de56b",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-kwolok1AdjacentOverall.bindata"
+    },
+    {
+     "name": "race-kwolokBossNormal1AdjacentFriends.bindata",
+     "sha": "5ce9f152b62c8e38674d1128429f7c6ae185290d",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-kwolokBossNormal1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-laserMiniBossNormal1AdjacentFriends.bindata",
+     "sha": "9f1482d189f50f870a875bd7b80c53d1d42d6e2f",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-laserMiniBossNormal1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-lumaPools1AdjacentMyScore.bindata",
+     "sha": "c3413e551fd4687f644f01dabe791adaece93a17",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-lumaPools1AdjacentMyScore.bindata"
+    },
+    {
+     "name": "race-owlNormal1AdjacentFriends.bindata",
+     "sha": "60f810702c8309fc21cb8c9f38af941dc254b84c",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-owlNormal1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-spiderNormal1AdjacentFriends.bindata",
+     "sha": "7850e2c2d50a413757b36626ba7bde23784f22c3",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-spiderNormal1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-watermillEscape1AdjacentFriends.bindata",
+     "sha": "57f0b493d07d05ae32e8d4d4ceb2fc6027f7a5ab",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-watermillEscape1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-wind1AdjacentFriends.bindata",
+     "sha": "3c8fb8ede2d8a0ea6bd38f7a2ed7fad8161f8086",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-wind1AdjacentFriends.bindata"
+    },
+    {
+     "name": "race-wind1AdjacentFriendsOverall.bindata",
+     "sha": "cdc3a98480eaa65a40a27a1ae69a89fd5d94be3e",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-wind1AdjacentFriendsOverall.bindata"
+    },
+    {
+     "name": "race-wind1AdjacentMyScore.bindata",
+     "sha": "7e8512b45dfdde3e3948dcbcb7ce1b1876a40461",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-wind1AdjacentMyScore.bindata"
+    },
+    {
+     "name": "race-wind1AdjacentOverall.bindata",
+     "sha": "ca5d09ea87cae208cfe73b11cc11b9f509cba896",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/race-wind1AdjacentOverall.bindata"
+    },
+    {
+     "name": "saveFile0.uberstate",
+     "sha": "8d37783def7327c26f11e2b76bd89112f41ddcc0",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/saveFile0.uberstate"
+    },
+    {
+     "name": "saveFile0_bkup0.uberstate",
+     "sha": "65327afaec071e5edbf0bc4cf3a46938624a743b",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/saveFile0_bkup0.uberstate"
+    },
+    {
+     "name": "saveFile0_bkup1.uberstate",
+     "sha": "51163cd80c317bf86e4a817380c39f412277c61a",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Ori%20and%20the%20Will%20of%20The%20Wisps/saveFile0_bkup1.uberstate"
+    }
+   ]
+  },
+  "1092790": {
+   "name": "Inscryption",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:SaveFile.gwsave"
+   ]
+  },
+  "1113000": {
+   "name": "Persona 4 Golden",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"1113000/remote\""
+   ]
+  },
+  "1139900": {
+   "name": "Ghostrunner",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "filename:save.data path:\"Saved\""
+   ]
+  },
+  "1145350": {
+   "name": "Hades II",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Saved Games/Hades II\""
+   ]
+  },
+  "1150690": {
+   "name": "OMORI",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"www/save\""
+   ]
+  },
+  "1172470": {
+   "name": "Apex Legends™",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Apex Legends\""
+   ]
+  },
+  "1290000": {
+   "name": "PowerWash Simulator",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"PowerWash Simulator/SaveData\""
+   ]
+  },
+  "1313140": {
+   "name": "Cult of the Lamb",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Cult Of The Lamb/saves\""
+   ]
+  },
+  "1384160": {
+   "name": "Guilty Gear -Strive- Nintendo Switch Edition",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"GUILTY GEAR -STRIVE-\""
+   ]
+  },
+  "1426210": {
+   "name": "It Takes Two",
+   "tid": "010092A0172E4000",
+   "found": true,
+   "date": "2026-11-23",
+   "repo": "plantcraft94/My-save-game",
+   "dir": "ItTakesTwo",
+   "score": 1,
+   "why": "0 sure, 1 maybe",
+   "files": [
+    {
+     "name": "SaveData.Nuts",
+     "sha": "20969b19986b8765b2ce269fb2fbce024927c6d4",
+     "url": "https://github.com/plantcraft94/My-save-game/blob/a9bb68ab11d43c053d02f7258a6bd844797de795/ItTakesTwo/SaveData.Nuts"
+    },
+    {
+     "name": "Settings.Nuts",
+     "sha": "b841a19c464206ec079b1935aafe69007511924d",
+     "url": "https://github.com/plantcraft94/My-save-game/blob/a9bb68ab11d43c053d02f7258a6bd844797de795/ItTakesTwo/Settings.Nuts"
+    },
+    {
+     "name": "LocalSettings.Nuts",
+     "sha": "a6c26cb7d3bc326356e752f1340fd905661e103c",
+     "url": "https://github.com/plantcraft94/My-save-game/blob/a9bb68ab11d43c053d02f7258a6bd844797de795/ItTakesTwo/LocalSettings.Nuts"
+    }
+   ]
+  },
+  "1446780": {
+   "name": "Monster Hunter Rise",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"1446780/remote\""
+   ]
+  },
+  "1454400": {
+   "name": "Cookie Clicker",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"1454400/remote\""
+   ]
+  },
+  "1562430": {
+   "name": "DREDGE",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"eos/saves\"",
+    "path:\"gog_galaxy/saves\"",
+    "path:\"DREDGE/saves\""
+   ]
+  },
+  "1621690": {
+   "name": "Core Keeper",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Core Keeper/Steam\""
+   ]
+  },
+  "1687950": {
+   "name": "Persona 5 Royal",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Persona 5 Royal\""
+   ]
+  },
+  "1721470": {
+   "name": "Poppy Playtime: Chapter 1",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Poppy Playtime\""
+   ]
+  },
+  "1790600": {
+   "name": "DRAGON BALL: Sparking! ZERO",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"SaveGame/MainGameSaveData\"",
+    "path:\"SaveGame/SystemSaveData\""
+   ]
+  },
+  "1942280": {
+   "name": "Brotato",
+   "tid": "01002EF01A316000",
+   "found": true,
+   "date": "2026-11-23",
+   "repo": "pixingdaiyue051/apotheosis",
+   "dir": "Brotato/76561197960270388",
+   "score": 61,
+   "why": "records its own achievements (17 found)",
+   "files": [
+    {
+     "name": "save_v2_01.json.bak",
+     "sha": "39975833d92d2c2546034d3c2259c6f087459378",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/0b08f44a35076dde38f4bff8356c028ee6727954/Brotato/76561197960270388/save_v2_01.json.bak"
+    },
+    {
+     "name": "save_v2_03.json.bak",
+     "sha": "88d9ff3cae9f22a5ee62e6f7a7560cde42e72aea",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/0b08f44a35076dde38f4bff8356c028ee6727954/Brotato/76561197960270388/save_v2_03.json.bak"
+    },
+    {
+     "name": "save_v2_04.json.bak",
+     "sha": "4ba15ab4a5c2b861d7dc3049b81a78fdbf5becd8",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/0b08f44a35076dde38f4bff8356c028ee6727954/Brotato/76561197960270388/save_v2_04.json.bak"
+    },
+    {
+     "name": "save_v2_05.json.bak",
+     "sha": "78e0bf2aa4e4d9dfe5a2c1ee2f45bd47fbd362b7",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/0b08f44a35076dde38f4bff8356c028ee6727954/Brotato/76561197960270388/save_v2_05.json.bak"
+    },
+    {
+     "name": "save_v2_02.json.bak",
+     "sha": "a3def1d07f43f00fb13320f6f6f8dd147f8af8cd",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/0b08f44a35076dde38f4bff8356c028ee6727954/Brotato/76561197960270388/save_v2_02.json.bak"
+    },
+    {
+     "name": "save_v2.json",
+     "sha": "39975833d92d2c2546034d3c2259c6f087459378",
+     "url": "https://github.com/pixingdaiyue051/apotheosis/blob/master/Brotato/76561197960270388/save_v2.json"
+    }
+   ]
+  },
+  "1943950": {
+   "name": "ESCAPE THE BACKROOMS",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Escape the Backrooms\""
+   ]
+  },
+  "2231450": {
+   "name": "Pizza Tower",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"PizzaTower_GM2/saves\""
+   ]
+  },
+  "2379780": {
+   "name": "Balatro",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Balatro\""
+   ]
+  },
+  "2592160": {
+   "name": "Dispatch",
+   "found": false,
+   "date": "2026-11-23",
+   "why": "no query"
+  },
+  "2669320": {
+   "name": "EA SPORTS FC™ 25",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"EA SPORTS FC 25/settings\""
+   ]
+  },
+  "2881650": {
+   "name": "Content Warning",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"Landfall Games/Content Warning\""
+   ]
+  },
+  "3405690": {
+   "name": "EA SPORTS FC™ 26",
+   "found": false,
+   "date": "2026-11-23",
+   "queries": [
+    "path:\"EA SPORTS FC 26/settings\""
+   ]
+  }
+ }
+}

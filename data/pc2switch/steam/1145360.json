@@ -1,0 +1,300 @@
+{
+ "appid": 1145360,
+ "name": "Hades",
+ "achievements": [
+  {
+   "name": "AchClearTartarus",
+   "displayName": "Escaped Tartarus",
+   "description": "Clear Tartarus",
+   "hidden": 0
+  },
+  {
+   "name": "AchClearAsphodel",
+   "displayName": "Escaped Asphodel",
+   "description": "Clear Asphodel",
+   "hidden": 0
+  },
+  {
+   "name": "AchClearElysium",
+   "displayName": "Escaped Elysium",
+   "description": "Clear Elysium",
+   "hidden": 0
+  },
+  {
+   "name": "AchClearElysiumEM",
+   "displayName": "Champion of Elysium",
+   "description": "Clear Elysium with the 'Extreme Measures' Condition",
+   "hidden": 0
+  },
+  {
+   "name": "AchClearHeatGate",
+   "displayName": "Hold the Onions",
+   "description": "Clear an Infernal Gate without taking damage",
+   "hidden": 0
+  },
+  {
+   "name": "AchClearAnyRun",
+   "displayName": "Is There No Escape?",
+   "description": "Clear an escape attempt",
+   "hidden": 0
+  },
+  {
+   "name": "AchClearRun4thAspect",
+   "displayName": "Weapon of Fate",
+   "description": "Clear an escape attempt with a hidden Weapon Aspect",
+   "hidden": 0
+  },
+  {
+   "name": "AchBeatCharon",
+   "displayName": "To Charon's Credit",
+   "description": "Earn a Loyalty Card",
+   "hidden": 0
+  },
+  {
+   "name": "AchBronzeSkellyTrophy",
+   "displayName": "The Useless Trinket",
+   "description": "Earn the first of Skelly's prizes",
+   "hidden": 0
+  },
+  {
+   "name": "AchSilverSkellyTrophy",
+   "displayName": "Skelly's Last Lamentations",
+   "description": "Earn the second of Skelly's prizes",
+   "hidden": 0
+  },
+  {
+   "name": "AchFoundKeepsakes",
+   "displayName": "Something From Everyone",
+   "description": "Unlock each standard Keepsake",
+   "hidden": 0
+  },
+  {
+   "name": "AchLeveledKeepsakes",
+   "displayName": "Friends Forever",
+   "description": "Max-rank each standard Keepsake",
+   "hidden": 0
+  },
+  {
+   "name": "AchFoundSummon",
+   "displayName": "Rare Collectible",
+   "description": "Equip a Chthonic Companion",
+   "hidden": 0
+  },
+  {
+   "name": "AchFoundAllSummons",
+   "displayName": "Complete Set",
+   "description": "Earn all Chthonic Companions",
+   "hidden": 0
+  },
+  {
+   "name": "AchMaxedAnyAspect",
+   "displayName": "Blood Bound",
+   "description": "Max any Weapon Aspect",
+   "hidden": 0
+  },
+  {
+   "name": "ActUnlockedAllAspects",
+   "displayName": "Infernal Arms",
+   "description": "Unlock all Weapon Aspects",
+   "hidden": 0
+  },
+  {
+   "name": "AchPickedManyBoons",
+   "displayName": "Blessed by the Gods",
+   "description": "Choose 100 different Olympian Boon effects",
+   "hidden": 0
+  },
+  {
+   "name": "AchPurgedLegendBoon",
+   "displayName": "Thanks, But No Thanks",
+   "description": "Purge a Legendary Boon",
+   "hidden": 0
+  },
+  {
+   "name": "AchPickedManyHammers",
+   "displayName": "Tools of the Architect",
+   "description": "Choose 50 different Daedalus Hammer enchantments",
+   "hidden": 0
+  },
+  {
+   "name": "AchUnlockedAllWeapons",
+   "displayName": "Arms Collector",
+   "description": "Unlock each of the Infernal Arms",
+   "hidden": 0
+  },
+  {
+   "name": "AchForgedBond",
+   "displayName": "Grown Close",
+   "description": "Forge a bond with any character",
+   "hidden": 0
+  },
+  {
+   "name": "AchOlympiansCodex",
+   "displayName": "Well Versed",
+   "description": "Fully Unlock the Olympians' Codex entries",
+   "hidden": 0
+  },
+  {
+   "name": "AchManyBrokerTrades",
+   "displayName": "Day-or-Night Trader",
+   "description": "Trade 20 times with the Wretched Broker",
+   "hidden": 0
+  },
+  {
+   "name": "AchManyCosmetics",
+   "displayName": "Home Makeover",
+   "description": "Pay for 50 jobs from the House Contractor",
+   "hidden": 0
+  },
+  {
+   "name": "AchManyQuests",
+   "displayName": "Had to Happen",
+   "description": "Fulfill any 15 Prophecies",
+   "hidden": 0
+  },
+  {
+   "name": "AchFishFromEachBiome",
+   "displayName": "River Denizens",
+   "description": "Catch a fish from each region",
+   "hidden": 0
+  },
+  {
+   "name": "AchOrpheusSingsAgain",
+   "displayName": "Urge to Sing",
+   "description": "Compel Orpheus to sing again",
+   "hidden": 0
+  },
+  {
+   "name": "AchMirrorAllUnlocked",
+   "displayName": "Nyx's Mirror",
+   "description": "Have at least one rank in each Mirror of Night Talent",
+   "hidden": 0
+  },
+  {
+   "name": "AchNyxChaosReunion",
+   "displayName": "Night and Darkness",
+   "description": "Fulfill the 'Night and Darkness' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchMeetChthonicGods",
+   "displayName": "Chthonic Colleagues",
+   "description": "Fulfill the 'Chthonic Colleagues' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchAresKills",
+   "displayName": "War-God's Bloodlust",
+   "description": "Fulfill the 'War-God's Bloodlust' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchSisyphusLiberation",
+   "displayName": "End to Torment",
+   "description": "Fulfill the 'End to Torment' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchSingersReunion",
+   "displayName": "Musician and Muse",
+   "description": "Fulfill the 'Musician and Muse' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchMyrmidonReunion",
+   "displayName": "Divided by Death",
+   "description": "Fulfill the 'Divided by Death' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchMirrorUpgradeClears",
+   "displayName": "Dark Reflections",
+   "description": "Fulfill the 'Dark Reflections' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchPactUpgradesClears",
+   "displayName": "Harsh Conditions",
+   "description": "Fulfill the 'Harsh Conditions' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchWeaponClears",
+   "displayName": "Master of Arms",
+   "description": "Fulfill the 'Master of Arms' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchEliteAttributeKills",
+   "displayName": "Slashed Benefits",
+   "description": "Fulfill the 'Slashed Benefits' Prophecy",
+   "hidden": 0
+  },
+  {
+   "name": "AchAccessAdminChamber",
+   "displayName": "Back to Work",
+   "description": "Earn access to and enter the Administrative Chamber",
+   "hidden": 0
+  },
+  {
+   "name": "AchReachedEnding",
+   "displayName": "The Family Secret",
+   "description": "Complete the main quest in the story",
+   "hidden": 0
+  },
+  {
+   "name": "AchReachedEpilogue",
+   "displayName": "One for the Ages",
+   "description": "Reach the epilogue of the story",
+   "hidden": 0
+  },
+  {
+   "name": "AchWellShopItems",
+   "displayName": "Well Stocked",
+   "description": "Buy 9 'Well of Charon' items in one escape attempt",
+   "hidden": 0
+  },
+  {
+   "name": "AchBuffedButterfly",
+   "displayName": "Thorn of Thanatos",
+   "description": "Get 30% bonus damage with the Pierced Butterfly",
+   "hidden": 0
+  },
+  {
+   "name": "AchBuffedPlume",
+   "displayName": "Haste of Hermes",
+   "description": "Get 20% dodge chance with the Lambent Plume",
+   "hidden": 0
+  },
+  {
+   "name": "AchCrushedThanatos",
+   "displayName": "Death Dealer",
+   "description": "Beat Thanatos by 15 kills or more",
+   "hidden": 0
+  },
+  {
+   "name": "AchGreaterCall",
+   "displayName": "Friends in High Places",
+   "description": "Use Greater Call to invoke an Olympian's aid",
+   "hidden": 0
+  },
+  {
+   "name": "AchGreaterCallSpurned",
+   "displayName": "Bad Call",
+   "description": "Use an Olympian's Greater Call against them in a Trial",
+   "hidden": 0
+  },
+  {
+   "name": "AchSkellyKills",
+   "displayName": "Skelly Slayer",
+   "description": "Slay Skelly 15 times",
+   "hidden": 0
+  },
+  {
+   "name": "AchCerberusPets",
+   "displayName": "Three-Headed Boy",
+   "description": "Pet Cerberus 10 times",
+   "hidden": 0
+  }
+ ]
+}

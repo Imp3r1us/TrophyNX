@@ -1,33 +1,32 @@
 # PC → Switch catalogue
 
-Generated 2026-11-19 by `tools/pc2switch/catalog.js` (no AI). 19999 Switch games, 11152 also on Steam, **9578 with Steam achievements**.
+Generated 2026-11-23 by `tools/pc2switch/catalog.js` (no AI). 19999 Switch games, 11152 also on Steam, **9578 with Steam achievements**.
 
 ## Your games
 
 | Game | Steam | Achievements | Status | Save formats |
 |---|---|---|---|---|
-| BALL x PIT | [BALL x PIT](https://store.steampowered.com/app/2062430)  | 82 | scanned:binary | binary |
-| BioShock 2 Remastered | [BioShock™ 2 Remastered](https://store.steampowered.com/app/409720)  | 53 | scanned:no-save |  |
-| BioShock Remastered | [BioShock™ Remastered](https://store.steampowered.com/app/409710)  | 65 | scanned:text | encrypted, binary, text |
-| Blasphemous | [Blasphemous](https://store.steampowered.com/app/774361)  | 45 | scanned:text | text |
-| COCOON | [COCOON](https://store.steampowered.com/app/1497440)  | 17 | scanned:draftable | json |
-| DAVE THE DIVER | [DAVE THE DIVER](https://store.steampowered.com/app/1868140)  | 56 | scanned:text | binary, text |
-| Disney/Pixar Toy Story 3 Complete Edition | [Disney•Pixar Toy Story 3 Complete Edition](https://store.steampowered.com/app/4049180)  | 41 | scanned:no-save |  |
-| DRAGON QUEST I & II HD-2D Remake | [DRAGON QUEST I & II HD-2D Remake](https://store.steampowered.com/app/2893570)  | 48 | scanned:binary | binary |
-| Grand Theft Auto: San Andreas – The Definitive Edition | [Grand Theft Auto: San Andreas – The Definitive Edition](https://store.steampowered.com/app/1547000)  | 35 | scanned:text | encrypted, text |
-| Hollow Knight | [Hollow Knight](https://store.steampowered.com/app/367520)  | 63 | supported:json | json |
-| It Takes Two | [It Takes Two](https://store.steampowered.com/app/1426210)  | 20 | scanned:draftable | json |
-| Nine Sols | [Nine Sols](https://store.steampowered.com/app/1809540)  | 35 | scanned:binary | encrypted, binary |
-| OCTOPATH TRAVELER II | [OCTOPATH TRAVELER II](https://store.steampowered.com/app/1971650)  | 33 | scanned:no-save |  |
-| Overcooked! 2 | [Overcooked! 2](https://store.steampowered.com/app/728880)  | 54 | scanned:draftable | json |
-| Persona 5 Royal | [Persona 5 Royal](https://store.steampowered.com/app/1687950)  | 53 | scanned:binary | encrypted, binary |
-| SIGNALIS | [SIGNALIS](https://store.steampowered.com/app/1262350)  | 13 | supported:json | json, text, binary |
-| Slay the Spire | [Slay the Spire](https://store.steampowered.com/app/646570)  | 46 | scanned:draftable | json |
-| The Lord of the Rings: War in the North™ - Legacy Edition | [The Lord of the Rings: War in the North™ - Legacy Edition](https://store.steampowered.com/app/2523770)  | 46 | scanned:binary | binary |
-| Ultimate Chicken Horse | [Ultimate Chicken Horse](https://store.steampowered.com/app/386940)  | 31 | scanned:text | text |
-| Vampire Crawlers: The Turbo Wildcard from Vampire Survivors | [Vampire Crawlers: The Turbo Wildcard from Vampire Survivors](https://store.steampowered.com/app/3265700)  | 161 | scanned:draftable | json |
-| Vampire Survivors | [Vampire Survivors](https://store.steampowered.com/app/1794680)  | 243 | scanned:draftable | json |
-| Wizard of Legend 2 | [Wizard of Legend 2](https://store.steampowered.com/app/2193540)  | 41 | scanned:text | binary, text |
+| BALL x PIT | [BALL x PIT](https://store.steampowered.com/app/2062430)  | 82 | playtime-only |  |
+| BioShock Remastered | [BioShock™ Remastered](https://store.steampowered.com/app/409710)  | 65 | playtime-only |  |
+| Blasphemous | [Blasphemous](https://store.steampowered.com/app/774361)  | 45 | supported:nrbf |  |
+| COCOON | [COCOON](https://store.steampowered.com/app/1497440)  | 17 | playtime-only |  |
+| DAVE THE DIVER | [DAVE THE DIVER](https://store.steampowered.com/app/1868140)  | 56 | supported:json |  |
+| DELTARUNE | [DELTARUNE](https://store.steampowered.com/app/1671210)  | 0 | supported:deltarune |  |
+| DRAGON QUEST I & II HD-2D Remake | [DRAGON QUEST I & II HD-2D Remake](https://store.steampowered.com/app/2893570)  | 48 | playtime-only |  |
+| Grand Theft Auto: San Andreas – The Definitive Edition | [Grand Theft Auto: San Andreas – The Definitive Edition](https://store.steampowered.com/app/1547000)  | 35 | playtime-only |  |
+| Hades | [Hades](https://store.steampowered.com/app/1145360) (exact-short) | 49 | supported:sgb |  |
+| Hollow Knight | [Hollow Knight](https://store.steampowered.com/app/367520)  | 63 | supported:json |  |
+| It Takes Two | [It Takes Two](https://store.steampowered.com/app/1426210)  | 20 | playtime-only |  |
+| Nine Sols | [Nine Sols](https://store.steampowered.com/app/1809540)  | 35 | playtime-only |  |
+| Overcooked! 2 | [Overcooked! 2](https://store.steampowered.com/app/728880)  | 54 | playtime-only |  |
+| Persona 5 Royal | [Persona 5 Royal](https://store.steampowered.com/app/1687950)  | 53 | playtime-only |  |
+| SIGNALIS | [SIGNALIS](https://store.steampowered.com/app/1262350)  | 13 | supported:json |  |
+| Slay the Spire | [Slay the Spire](https://store.steampowered.com/app/646570)  | 46 | supported:json |  |
+| The Lord of the Rings: War in the North™ - Legacy Edition | [The Lord of the Rings: War in the North™ - Legacy Edition](https://store.steampowered.com/app/2523770)  | 46 | playtime-only |  |
+| Ultimate Chicken Horse | [Ultimate Chicken Horse](https://store.steampowered.com/app/386940)  | 31 | playtime-only |  |
+| Vampire Crawlers: The Turbo Wildcard from Vampire Survivors | [Vampire Crawlers: The Turbo Wildcard from Vampire Survivors](https://store.steampowered.com/app/3265700)  | 161 | supported:json |  |
+| Vampire Survivors | [Vampire Survivors](https://store.steampowered.com/app/1794680)  | 243 | supported:json |  |
+| Wizard of Legend 2 | [Wizard of Legend 2](https://store.steampowered.com/app/2193540)  | 41 | playtime-only |  |
 
 Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = readable save, run draft.js · `scanned:text` = text save, reader needed · `scanned:binary`/`encrypted` = manual work · `playtime-only` = only play-log achievements so far.
 
@@ -73,7 +72,7 @@ Status: `supported:<reader>` = save-based set exists · `scanned:draftable` = re
 | Rabi-Ribi | 400910 | 220 | exact |
 | Suzerain | 1207650 | 220 | exact |
 | Vampire Hunters | 2206270 | 215 | exact |
-| Car Dealer Simulator: Retro Car for Sale | 2404880 | 209 | main-title |
+| Car Dealer Simulator: Retro Car for Sale | 2404880 | 212 | main-title |
 | Risk of Rain 2 | 632360 | 205 | exact |
 | Book of Demons | 449960 | 202 | exact |
 | DC Universe™ Online | 24200 | 202 | exact |
