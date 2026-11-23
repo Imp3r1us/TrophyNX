@@ -1,0 +1,70 @@
+{
+ "title_id": "0100BC300CB48000",
+ "name": "FINAL FANTASY X/X-2 HD Remaster",
+ "achievements": [
+  {
+   "id": "mem_currency_gil_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 Gil",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "1CE9F39DDB8A1A93": "[[[[[[[[[[[[main+67B0CD0]+20]]+210]+7E10]+1C0]+1C0]+1C0]+1C0]+1C0]+A0]+40]+75EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gil FFX-2"
+   ]
+  },
+  {
+   "id": "mem_currency_gil_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 Gil",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "1CE9F39DDB8A1A93": "[[[[[[[[[[[[main+67B0CD0]+20]]+210]+7E10]+1C0]+1C0]+1C0]+1C0]+1C0]+A0]+40]+75EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gil FFX-2"
+   ]
+  },
+  {
+   "id": "mem_currency_gil_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 Gil",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "1CE9F39DDB8A1A93": "[[[[[[[[[[[[main+67B0CD0]+20]]+210]+7E10]+1C0]+1C0]+1C0]+1C0]+1C0]+A0]+40]+75EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gil FFX-2"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "FFx v 1.0.0 by Meko and skyqueen"
+ ]
+}

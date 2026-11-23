@@ -163,6 +163,15 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
     else if (t == "games_played") rule.type = RuleType::GamesPlayed;
     else if (t == "total_hours") rule.type = RuleType::TotalHours;
     else if (t == "unlocked_total") rule.type = RuleType::UnlockedTotal;
+    else if (t == "memory") {
+        // live only: the background module reads the game's memory; the app shows the unlocks it stored
+        rule.type = RuleType::Memory;
+        if (!mem::parseCondition(r, rule.mem, err)) return false;
+        rule.target = rule.mem.target;
+        rule.maxSane = rule.mem.max;
+        rule.showProgress = jbool(r, "show_progress", false);   // the app never sees the live value
+        return true;
+    }
     else { err = "unknown rule type '" + t + "'"; return false; }
 
     std::string single = jstr(r, "name");
@@ -254,6 +263,7 @@ static bool gameDefFromJson(cJSON* root, GameDef& d, std::string& err) {
     d.keyFile = jstr(root, "key_file");
     d.fileSize = (uint64_t)jnum(root, "file_size", 0);
     d.closeScan = jbool(root, "close_scan", true);
+    d.liveSave = jbool(root, "live_save", d.closeScan);   // same reasons to be off: wrong offsets...
     cJSON* sf = cJSON_GetObjectItemCaseSensitive(root, "save_files");
     cJSON* s;
     if (cJSON_IsArray(sf)) cJSON_ArrayForEach(s, sf) if (cJSON_IsString(s)) d.saveFiles.push_back(s->valuestring);

@@ -35,3 +35,8 @@ romfs/savelab.html
 
 # local secrets (save passwords...): never commit
 local/
+
+# local builds (CI packages the same layout)
+/sd/
+/TrophyNX-sd.zip
+/TrophyNX-sd*/

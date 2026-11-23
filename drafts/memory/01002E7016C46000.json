@@ -1,0 +1,85 @@
+{
+ "title_id": "01002E7016C46000",
+ "name": "Cult of the Lamb",
+ "achievements": [
+  {
+   "id": "mem_currency_spirit_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 spirit",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 1342177608.125,
+    "builds": {
+     "145EBD7448EA3C44": "[[[main+7506368]+B8]+B8]+868",
+     "197BC60165822F42": "[[[main+7FEE608]+B8]+B8]+890",
+     "256BA72170C0FD42": "[[[main+7A8B808]+B8]+B8]+890",
+     "810C3396125C2340": "[[[main+7433950]+B8]+B8]+878",
+     "9232F3A3E6E87E49": "[[[main+775B8C0]+B8]+B8]+878",
+     "B5DC69CED031D447": "[[[main+74F5E70]+B8]+B8]+808"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Spirit Hearts"
+   ]
+  },
+  {
+   "id": "mem_currency_spirit_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 spirit",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 1342177608.125,
+    "builds": {
+     "145EBD7448EA3C44": "[[[main+7506368]+B8]+B8]+868",
+     "197BC60165822F42": "[[[main+7FEE608]+B8]+B8]+890",
+     "256BA72170C0FD42": "[[[main+7A8B808]+B8]+B8]+890",
+     "810C3396125C2340": "[[[main+7433950]+B8]+B8]+878",
+     "9232F3A3E6E87E49": "[[[main+775B8C0]+B8]+B8]+878",
+     "B5DC69CED031D447": "[[[main+74F5E70]+B8]+B8]+808"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Spirit Hearts"
+   ]
+  },
+  {
+   "id": "mem_currency_spirit_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 spirit",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 1342177608.125,
+    "builds": {
+     "145EBD7448EA3C44": "[[[main+7506368]+B8]+B8]+868",
+     "197BC60165822F42": "[[[main+7FEE608]+B8]+B8]+890",
+     "256BA72170C0FD42": "[[[main+7A8B808]+B8]+B8]+890",
+     "810C3396125C2340": "[[[main+7433950]+B8]+B8]+878",
+     "9232F3A3E6E87E49": "[[[main+775B8C0]+B8]+B8]+878",
+     "B5DC69CED031D447": "[[[main+74F5E70]+B8]+B8]+808"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Spirit Hearts"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Cult of the Lamb"
+ ]
+}

@@ -1,0 +1,149 @@
+{
+ "title_id": "010014E00DB56000",
+ "name": "Digimon Story Cyber Sleuth: Complete Edition",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "92A6C699E4BAE7DA": "heap+D87C6A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "9999999 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "92A6C699E4BAE7DA": "heap+D87C6A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "9999999 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "92A6C699E4BAE7DA": "heap+D87C6A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "9999999 Money"
+   ]
+  },
+  {
+   "id": "mem_level_25",
+   "name": "Getting Stronger",
+   "desc": "Reach level 25 (any character or save slot)",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u8",
+    "cmp": ">=",
+    "target": 25,
+    "max": 990,
+    "builds": {
+     "92A6C699E4BAE7DA": [
+      "heap+D85F968",
+      "heap+D85FBA8",
+      "heap+D85FDE8"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Slot 1 Level 99",
+    "Slot 2 Level 99",
+    "Slot 3 Level 99"
+   ]
+  },
+  {
+   "id": "mem_level_50",
+   "name": "Seasoned",
+   "desc": "Reach level 50 (any character or save slot)",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u8",
+    "cmp": ">=",
+    "target": 50,
+    "max": 990,
+    "builds": {
+     "92A6C699E4BAE7DA": [
+      "heap+D85F968",
+      "heap+D85FBA8",
+      "heap+D85FDE8"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Slot 1 Level 99",
+    "Slot 2 Level 99",
+    "Slot 3 Level 99"
+   ]
+  },
+  {
+   "id": "mem_level_99",
+   "name": "Peak Form",
+   "desc": "Reach level 99 (any character or save slot)",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u8",
+    "cmp": ">=",
+    "target": 99,
+    "max": 990,
+    "builds": {
+     "92A6C699E4BAE7DA": [
+      "heap+D85F968",
+      "heap+D85FBA8",
+      "heap+D85FDE8"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Slot 1 Level 99",
+    "Slot 2 Level 99",
+    "Slot 3 Level 99"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Digimon hackers",
+  "Digimon Cyber Sleuth Story Hackers Memory by Stoned"
+ ]
+}

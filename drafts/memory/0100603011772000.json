@@ -1,0 +1,71 @@
+{
+ "title_id": "0100603011772000",
+ "name": "Azur Lane Crosswave",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 4294967254050327000,
+    "builds": {
+     "8003A997EAAD2A11": "[main+637F9F8]+D8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money/A Point Max"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 4294967254050327000,
+    "builds": {
+     "8003A997EAAD2A11": "[main+637F9F8]+D8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money/A Point Max"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 4294967254050327000,
+    "builds": {
+     "8003A997EAAD2A11": "[main+637F9F8]+D8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money/A Point Max"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Azur Lane Crosswave ver 1.0.0 by ZiT",
+  "Azur Lane Crosswave ver 1.0.0 by misaki4545"
+ ]
+}

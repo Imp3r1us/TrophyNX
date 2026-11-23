@@ -1,0 +1,70 @@
+{
+ "title_id": "010051D00E3A4000",
+ "name": "Rune Factory 4 Special",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "C03C9F6A862543F9": "heap+46C890D"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "[Gold max"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "C03C9F6A862543F9": "heap+46C890D"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "[Gold max"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "C03C9F6A862543F9": "heap+46C890D"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "[Gold max"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Rune Factory 4 Special ver 1.0.1 by silien3"
+ ]
+}

@@ -1,0 +1,82 @@
+{
+ "title_id": "01007430037F6000",
+ "name": "Monopoly",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "B3EFC64152BE0D27": [
+      "[[[[[[[main+248ECA0]+18]+40]+8]+20]+1B98]+C0]+180",
+      "[[[[main+248ECA0]+18]+1B98]+C0]+180"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Money MAX",
+    "P2 Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "B3EFC64152BE0D27": [
+      "[[[[[[[main+248ECA0]+18]+40]+8]+20]+1B98]+C0]+180",
+      "[[[[main+248ECA0]+18]+1B98]+C0]+180"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Money MAX",
+    "P2 Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "B3EFC64152BE0D27": [
+      "[[[[[[[main+248ECA0]+18]+40]+8]+20]+1B98]+C0]+180",
+      "[[[[main+248ECA0]+18]+1B98]+C0]+180"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Money MAX",
+    "P2 Money MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Monopoly ver 1.0.0"
+ ]
+}

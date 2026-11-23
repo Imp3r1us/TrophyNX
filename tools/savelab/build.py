@@ -20,7 +20,8 @@ if os.path.exists(cat_path):
     pcdata['catalog'] = [[g['id'], g['name'], g['appid'], g.get('ach'), g.get('how', ''), g.get('status', '')] for g in cat.get('games', [])]
 for f in sorted(glob.glob(os.path.join(root, 'data', 'pc2switch', 'steam', '*.json'))):
     d = json.load(open(f, encoding='utf-8'))
-    pcdata['steam'][str(d['appid'])] = {'name': d.get('name', ''), 'achievements': [{k: a.get(k, '') for k in ('name', 'displayName', 'description', 'hidden')} for a in d.get('achievements', [])]}
+    keep = lambda a: dict({k: a.get(k, '') for k in ('name', 'displayName', 'description', 'hidden')}, **({'percent': a['percent']} if isinstance(a.get('percent'), (int, float)) else {}))
+    pcdata['steam'][str(d['appid'])] = {'name': d.get('name', ''), 'achievements': [keep(a) for a in d.get('achievements', [])]}
 safe = lambda o: json.dumps(o, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 html = html.replace('/*FORMATS*/', formats).replace('/*ENGINE*/', engine).replace('/*BUILTINS*/', safe(games)).replace('/*PCDATA*/', safe(pcdata)).replace('/*PC2SWITCH*/', matcher)
 open(os.path.join(here, 'index.html'), 'w', encoding='utf-8').write(html)

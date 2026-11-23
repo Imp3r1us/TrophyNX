@@ -1,0 +1,71 @@
+{
+ "title_id": "0100EF0015A9A000",
+ "name": "Record of Lodoss War-Deedlit in Wonder Labyrinth-",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "667484A8F759B6FD": "[[main+2BDE888]+5500]",
+     "93A2A9A7C1BE5AA3": "[[main+2BCF848]+5500]"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "667484A8F759B6FD": "[[main+2BDE888]+5500]",
+     "93A2A9A7C1BE5AA3": "[[main+2BCF848]+5500]"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "667484A8F759B6FD": "[[main+2BDE888]+5500]",
+     "93A2A9A7C1BE5AA3": "[[main+2BCF848]+5500]"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

@@ -1,0 +1,70 @@
+{
+ "title_id": "01002B400873C000",
+ "name": "Samurai Defender Ninja Warfare",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 2684354560,
+    "builds": {
+     "E33E4CD60710AC4D": "[[[main+1F0B5A8]+A0]+70]+2C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "gold coins"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 2684354560,
+    "builds": {
+     "E33E4CD60710AC4D": "[[[main+1F0B5A8]+A0]+70]+2C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "gold coins"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 2684354560,
+    "builds": {
+     "E33E4CD60710AC4D": "[[[main+1F0B5A8]+A0]+70]+2C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "gold coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Samurai Defender Ninja Warfare by Zit866 and 1.0.2 by arismendy64"
+ ]
+}

@@ -1,0 +1,70 @@
+{
+ "title_id": "0100DF401249C000",
+ "name": "AstroWings: Space War",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "161D40765906024C": "[[[main+2A99F08]+80]+920]+D4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coins MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "161D40765906024C": "[[[main+2A99F08]+80]+920]+D4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coins MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "161D40765906024C": "[[[main+2A99F08]+80]+920]+D4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coins MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "AstroWings Space War by merlin555 and ZiT"
+ ]
+}

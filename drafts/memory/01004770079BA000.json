@@ -1,0 +1,70 @@
+{
+ "title_id": "01004770079BA000",
+ "name": "Bit Dungeon Plus",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "DFA48A2646766742": "[[main+1D902C8]+A0]+430"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "DFA48A2646766742": "[[main+1D902C8]+A0]+430"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "DFA48A2646766742": "[[main+1D902C8]+A0]+430"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Bit Dungeon Plus ver 1.0 by jericoss and ZiT"
+ ]
+}

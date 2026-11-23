@@ -1,0 +1,132 @@
+{
+ "title_id": "010017301007E000",
+ "name": "ITEM ID'S",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "1EA294AF01F90F4C": "[[[[[[main+4A1A568]+B10]+10]+90]+28]+70]+24"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money after Purchase"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "1EA294AF01F90F4C": "[[[[[[main+4A1A568]+B10]+10]+90]+28]+70]+24"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money after Purchase"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "1EA294AF01F90F4C": "[[[[[[main+4A1A568]+B10]+10]+90]+28]+70]+24"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money after Purchase"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "1EA294AF01F90F4C": "[[[[[[main+4A1A568]+B10]+10]+90]+28]+70]+28"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Sprite Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "1EA294AF01F90F4C": "[[[[[[main+4A1A568]+B10]+10]+90]+28]+70]+28"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Sprite Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "1EA294AF01F90F4C": "[[[[[[main+4A1A568]+B10]+10]+90]+28]+70]+28"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Sprite Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "ITEM ID'S",
+  "Readme",
+  "Story of Seasons Pioneers of Olive Town by delta123 and Bbhark"
+ ]
+}

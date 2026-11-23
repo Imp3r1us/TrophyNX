@@ -1,0 +1,83 @@
+{
+ "title_id": "01003F800CF5C000",
+ "name": "Naruto Shippuden Ultimate Ninja Storm 4 Road To Boruto",
+ "achievements": [
+  {
+   "id": "mem_currency_money_500",
+   "name": "Saving Up",
+   "desc": "Have 500 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 8888880,
+    "builds": {
+     "C6D310A3669A5742": [
+      "[[[[[main+3D263C0]+20]+A0]+90]+48]+250",
+      "[[[[[main+3E27C00]+B8]]+20]+48]+250"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 888888 arismendy64",
+    "Inf Money 888888 jericoss"
+   ]
+  },
+  {
+   "id": "mem_currency_money_5000",
+   "name": "Well Off",
+   "desc": "Have 5,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 8888880,
+    "builds": {
+     "C6D310A3669A5742": [
+      "[[[[[main+3D263C0]+20]+A0]+90]+48]+250",
+      "[[[[[main+3E27C00]+B8]]+20]+48]+250"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 888888 arismendy64",
+    "Inf Money 888888 jericoss"
+   ]
+  },
+  {
+   "id": "mem_currency_money_50000",
+   "name": "Rolling In It",
+   "desc": "Have 50,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50000,
+    "max": 8888880,
+    "builds": {
+     "C6D310A3669A5742": [
+      "[[[[[main+3D263C0]+20]+A0]+90]+48]+250",
+      "[[[[[main+3E27C00]+B8]]+20]+48]+250"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 888888 arismendy64",
+    "Inf Money 888888 jericoss"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Naruto Shippuden Ultimate Ninja Storm 4 Road To Boruto by 01wii shared by jericoos",
+  "It Came From Space And Ate Our Brains ver 1.0.0 by Jericoos and arysmensi64"
+ ]
+}

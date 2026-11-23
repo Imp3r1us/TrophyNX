@@ -1,6 +1,8 @@
-// sys-trophynx: background module that watches Breath of the Wild's memory while you play
-// (like RetroAchievements), unlocks achievements live and shows popups. For every game with a
-// save reader it also reads the save as soon as the game closes ("scan on close", closescan.cpp).
+// sys-trophynx: background module that watches games' memory while you play (like RetroAchievements),
+// unlocks achievements live and shows popups. BotW: flag objects found by their layout (flagscan.cpp).
+// Any game: "memory" rules, values at per-build addresses (include/memrules.h). For every game with a
+// save reader it also reads the save each time the game saves, from the save image in NAND ("live save",
+// livesave.cpp), and once more as soon as the game closes ("scan on close", closescan.cpp).
 #include <switch.h>
 #include <cmath>
 #include <cstdarg>
@@ -10,6 +12,7 @@
 #include <malloc.h>
 #include <map>
 #include <unistd.h>
+#include <set>
 #include <string>
 #include <sys/stat.h>
 #include <vector>
@@ -21,11 +24,13 @@
 #include "botw_json.h"
 #include "saveprobe.h"
 #include "closescan.h"
+#include "livesave.h"
 #include "capture.h"
 #include "store.h"
 #include "heap.h"
+#include "memrules.h"
 
-#define MODULE_VERSION "0.8.6"
+#define MODULE_VERSION "0.9.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -365,10 +370,6 @@ int main(int, char**) {
     scanner.setWanted(wanted);
     DmntReader mem;
 
-    // Save-image probes (raw NAND reads, research for live save reading) are off unless probe.flag exists.
-    struct stat pst;
-    const bool probesOn = stat((dataDir() + "/probe.flag").c_str(), &pst) == 0;
-    if (probesOn) logf("save probes ON (probe.flag)");
     bool safe = healthCheck("start", true);
     popupSetSafeMode(safe);
     u64 lastHealth = (u64)time(NULL);
@@ -377,7 +378,7 @@ int main(int, char**) {
     u64 curPid = 0, curTid = 0;
     bool watching = false, ready = false;
     u64 seenAt = 0, lastScan = 0, lastEval = 0;
-    int attempts = 0, probes = 0;
+    int attempts = 0;
     bool attached = false, diagnosed = false;
     std::string user;
     // scan on close: the save of the game that just closed is read a few seconds later
@@ -397,6 +398,52 @@ int main(int, char**) {
     char prefix[24];
     snprintf(prefix, sizeof(prefix), "%016llX/", (unsigned long long)BOTW_ID);
 
+    // ---- memory rules (any game with "type": "memory" achievements)
+    GameDef memDef;                 // definition of the running game (memWatch points into its rules)
+    mem::Watcher memWatch;
+    mem::Bases memBases;
+    std::string memBuild;
+    bool memMode = false, memReading = false, memLogged = false;
+    u64 memRetryAt = 0;
+    int memTries = 0, memFailRounds = 0;
+    const mem::Reader memRead = [](uint64_t addr, void* out, size_t size) {
+        return R_SUCCEEDED(dmntchtReadCheatProcessMemory(addr, out, size));
+    };
+    auto memStart = [&](u64 tid, u64 now) -> bool {
+        std::string src;
+        memDef = GameDef();
+        if (!findDef(tid, memDef, src, logf)) return false;
+        std::vector<mem::Watcher::Item> items;
+        for (const Achievement& a : memDef.achs)
+            if (a.rule.type == RuleType::Memory) items.push_back({a.id, &a.rule.mem});
+        if (items.empty()) return false;
+        user = userKey();
+        char pre[24];
+        snprintf(pre, sizeof(pre), "%016llX/", (unsigned long long)tid);
+        std::set<std::string> done;
+        if (!user.empty())
+            for (const auto& kv : loadStore(user))
+                if (kv.first.compare(0, 17, pre) == 0) done.insert(kv.first.substr(17));
+        memWatch.reset(items, done);
+        if (!memWatch.pending()) {
+            logf("memory: %s - all %u live achievements already unlocked", memDef.name.c_str(), (unsigned)items.size());
+            return false;
+        }
+        // Not during the game's first 20 s: attaching while Atmosphere sets the game up is what made
+        // dmnt crash for HomeNX (their issue #43).
+        memRetryAt = now + 20;
+        memTries = memFailRounds = 0;
+        memReading = memLogged = false;
+        logf("memory: %s (%s) - %u live achievements, %u to go; attaching in 20 s", memDef.name.c_str(), src.c_str(),
+             (unsigned)items.size(), (unsigned)memWatch.pending());
+        return true;
+    };
+    auto memStop = [&](const char* why) {
+        if (attached) dmntchtForceCloseCheatProcess();   // only when we opened it: never stop the player's cheats
+        attached = memReading = memMode = false;
+        logf("memory: stopped watching (%s)", why);
+    };
+
     while (true) {
         svcSleepThread(1000000000ULL);
         u64 now = (u64)time(NULL);
@@ -413,7 +460,7 @@ int main(int, char**) {
                 safe = s;
                 popupSetSafeMode(safe);
                 healthCheck(safe ? "safe mode on" : "safe mode off", true);
-                logf(safe ? "SAFE MODE: system resources low - no popups layers, captures, scans or probes until it recovers"
+                logf(safe ? "SAFE MODE: system resources low - no popup layers, scans, live save or new memory watches until it recovers"
                           : "safe mode off: system resources back to normal");
             }
         }
@@ -441,6 +488,8 @@ int main(int, char**) {
                 healthCheck("game closed", true);
                 if (curReal) gameEnded(curTid, now);
             }
+            liveSaveStop();
+            memMode = memReading = false;
             if (attached) dmntchtForceCloseCheatProcess();   // never leave dmnt pointing at a dead process
             ownDetach(); g_own = false;
             curPid = 0; curTid = 0; watching = ready = attached = false;
@@ -455,7 +504,7 @@ int main(int, char**) {
             u64 tid = 0;
             pminfoGetProgramId(&tid, pid);
             curTid = tid;
-            probes = 0; diagnosed = false; startedAt = now;
+            diagnosed = false; startedAt = now;
             if (attached) { dmntchtForceCloseCheatProcess(); attached = false; }
             ownDetach(); g_own = false;
             bool hbl = isHomebrewProcess(pid);
@@ -466,11 +515,93 @@ int main(int, char**) {
                  watching ? " -> watching (live achievements)"
                  : curReal ? "" : hbl ? " (homebrew through this game: ignored)" : " (homebrew/forwarder: ignored)");
             healthCheck("game started", true);   // system group usage at each launch: where crashes happen
+            memReading = false;
+            // homebrew / forwarders: no memory rules, no live save (same as the scan on close); not in safe mode
+            memMode = curReal && !watching && dmnt && !safe && memStart(tid, now);
+            if (curReal) liveSaveStart(tid, now, logf);
         }
-        // Save-image probe (opt-in, real games only): once after 60 s, again after 5 min.
-        if (probesOn && curReal && !safe && ((probes == 0 && now - startedAt >= 60) || (probes == 1 && now - startedAt >= 300))) {
-            probes++;
-            probeRunningSave(curTid, logf);
+        // Live save (every game with a save reader): reads the save image each time the game saves.
+        // Paused in safe mode: each look opens the raw NAND storage (an fs session) and reads the save in our heap.
+        if (!safe) liveSaveTick(now, popupIdle() && !closedTid, logf);
+        if (memMode) {
+            // 1) attach (dmnt:cht, read-only) and learn the build ID and region bases
+            if (!memReading) {
+                if (now < memRetryAt) continue;
+                memRetryAt = now + 15;
+                if (++memTries > 20) { memStop("dmnt never attached"); continue; }
+                bool had = false;
+                dmntchtHasCheatProcess(&had);   // the player's cheats already opened it: share it, never close it
+                if (!had) {
+                    if (R_FAILED(rc = dmntchtForceOpenCheatProcess())) {
+                        dmntchtForceCloseCheatProcess();
+                        svcSleepThread(2000000000ULL);
+                        rc = dmntchtForceOpenCheatProcess();
+                    }
+                    if (R_FAILED(rc)) { logf("memory: attach failed 0x%X (try %d), again in 15 s", rc, memTries); continue; }
+                    attached = true;
+                }
+                DmntCheatProcessMetadata md = {};
+                if (R_FAILED(rc = dmntchtGetCheatProcessMetadata(&md)) || md.process_id != pid) {
+                    logf("memory: metadata 0x%X / not the running game, again in 15 s", rc);
+                    if (attached) { dmntchtForceCloseCheatProcess(); attached = false; }
+                    continue;
+                }
+                memBuild = mem::buildHex(md.main_nso_build_id);
+                memBases.main = md.main_nso_extents.base;
+                memBases.heap = md.heap_extents.base;
+                memBases.alias = md.alias_extents.base;
+                size_t cov = memWatch.coverage(memBuild);
+                logf("memory: %s build %s%s: %u achievements have addresses for this version", memDef.name.c_str(),
+                     memBuild.c_str(), had ? " (sharing the player's cheats)" : "", (unsigned)cov);
+                if (!cov) {
+                    logf("memory: add this version under \"builds\" as \"%s\" to watch it", memBuild.c_str());
+                    memStop("no addresses for this version");
+                    continue;
+                }
+                memReading = true;
+                memFailRounds = 0;
+            }
+            // 2) every second: read, unlock what held 3 checks in a row
+            std::vector<std::string> got = memWatch.step(memBuild, memBases, memRead);
+            if (!memLogged) {   // first values, for definition authors
+                memLogged = true;
+                for (const auto& kv : memWatch.lastValues()) logf("  %s = %g", kv.first.c_str(), kv.second);
+            }
+            if (memWatch.lastReadFailed()) {
+                if (++memFailRounds == 30) logf("memory: some reads keep failing (loading screen, or an address that is wrong for this version)");
+                bool has = false;
+                if (memFailRounds % 10 == 0 && (R_FAILED(dmntchtHasCheatProcess(&has)) || !has)) {
+                    logf("memory: dmnt lost the game, attaching again");
+                    attached = memReading = false;
+                    memRetryAt = now + 5;
+                }
+            } else memFailRounds = 0;
+            if (!got.empty()) {
+                if (user.empty()) user = userKey();
+                if (!user.empty()) {
+                    char pre[24];
+                    snprintf(pre, sizeof(pre), "%016llX/", (unsigned long long)curTid);
+                    std::map<std::string, uint64_t> store = loadStore(user);   // re-read: the app may have re-locked things
+                    bool changed = false;
+                    for (const std::string& id : got) {
+                        const Achievement* a = nullptr;
+                        for (const Achievement& x : memDef.achs) if (x.id == id) { a = &x; break; }
+                        if (!a || store.count(pre + id)) continue;
+                        store[pre + id] = now;
+                        changed = true;
+                        auto it = memWatch.lastValues().find(id);
+                        logf("UNLOCKED %s (%s) value %g %s %g [memory]", id.c_str(), a->name.c_str(),
+                             it == memWatch.lastValues().end() ? 0.0 : it->second, mem::cmpName(a->rule.mem.cmp), a->rule.mem.target);
+                        PopupRequest pr;
+                        pr.titleId = curTid; pr.achId = id; pr.title = a->name; pr.desc = a->desc; pr.game = memDef.name;
+                        pr.points = a->points; pr.tier = popupTierFor(a->tier.empty() ? nullptr : a->tier.c_str(), a->points);
+                        popupEnqueue(pr);
+                    }
+                    if (changed) saveStore(user, store);
+                }
+            }
+            if (!memWatch.pending()) memStop("every live achievement is unlocked");
+            continue;
         }
         if (!watching) continue;
 

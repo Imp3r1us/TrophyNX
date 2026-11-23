@@ -1,0 +1,110 @@
+{
+ "title_id": "01006C100EC08000",
+ "name": "Minecraft Dungeons",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9850000000,
+    "builds": {
+     "5EE3F44479A972EA": "[[[[main+7CF3188]+218]]+108]+14"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9850000000,
+    "builds": {
+     "5EE3F44479A972EA": "[[[[main+7CF3188]+218]]+108]+14"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9850000000,
+    "builds": {
+     "5EE3F44479A972EA": "[[[[main+7CF3188]+218]]+108]+14"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_money_500",
+   "name": "Well Off",
+   "desc": "Have 500 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 888880,
+    "builds": {
+     "FD6B97411349DDB3": "[[[[[main+8016010]+30]+6B8]+F8]+F0]+8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 88888 Jericoss"
+   ]
+  },
+  {
+   "id": "mem_currency_money_5000",
+   "name": "Rolling In It",
+   "desc": "Have 5,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 888880,
+    "builds": {
+     "FD6B97411349DDB3": "[[[[[main+8016010]+30]+6B8]+F8]+F0]+8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 88888 Jericoss"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Minecraft Dungeons ver 10.10.0 by Tomtomfromage by TomSwitch and jericoss and ver 1.8.0 by Xtatu and 1.8.3 by xtatu and ver 1.8.8.0 tomtomfromage"
+ ]
+}

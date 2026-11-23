@@ -1,0 +1,70 @@
+{
+ "title_id": "01007550129B2000",
+ "name": "Monster Girls and the Mysterious Adventure 1.0.0",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "541EC1D423BC2D40": "[[main+49C0F58]+B8]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "541EC1D423BC2D40": "[[main+49C0F58]+B8]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "541EC1D423BC2D40": "[[main+49C0F58]+B8]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Monster Girls and the Mysterious Adventure 1.0.0 by ZiT"
+ ]
+}

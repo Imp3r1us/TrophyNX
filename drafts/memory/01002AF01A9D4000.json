@@ -1,0 +1,128 @@
+{
+ "title_id": "01002AF01A9D4000",
+ "name": "Harpoon Shooter! Nozomi",
+ "achievements": [
+  {
+   "id": "mem_currency_gems_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gems",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "EF84AAA96B690D2A": "[[main+3EA80B0]+310]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Gems(Quest)"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gems",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "EF84AAA96B690D2A": "[[main+3EA80B0]+310]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Gems(Quest)"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gems",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "EF84AAA96B690D2A": "[[main+3EA80B0]+310]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Gems(Quest)"
+   ]
+  },
+  {
+   "id": "mem_currency_medals_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 medals",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "EF84AAA96B690D2A": "[[main+3D6DED8]+B8]+D4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Medals(Arcade)"
+   ]
+  },
+  {
+   "id": "mem_currency_medals_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 medals",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "EF84AAA96B690D2A": "[[main+3D6DED8]+B8]+D4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Medals(Arcade)"
+   ]
+  },
+  {
+   "id": "mem_currency_medals_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 medals",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "EF84AAA96B690D2A": "[[main+3D6DED8]+B8]+D4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Medals(Arcade)"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

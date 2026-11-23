@@ -44,6 +44,21 @@ ok(by.GEMS_100.confidence === 'sure' && by.GEMS_100.rule.path === 'stats/gemsCol
 ok(by.BOSS_GOLEM.confidence === 'sure' && by.BOSS_GOLEM.rule.path === 'bosses/stoneGolemDefeated', 'boss flag');
 ok(by.FAST.confidence === 'skip' && by.FAST.rule === null, 'time limit skipped');
 ok(by.ALL_KEYS.rule && by.ALL_KEYS.rule.type === 'count' && by.ALL_KEYS.rule.paths.length === 4 && by.ALL_KEYS.rule.target === 4, 'collection of flags -> count rule');
+// points from Steam's unlock percentages (rarity), old heuristic without them
+{
+  const pts = M.draftRules([
+    { name: 'GEMS_100', displayName: 'Gem Hoarder', description: 'Collect 100 gems', percent: 42.5 },
+    { name: 'BOSS_GOLEM', displayName: 'Rock Bottom', description: 'Defeat the Stone Golem', percent: 12 },
+    { name: 'BOSS_DRAGON', displayName: 'Dragon Slayer', description: 'Defeat the Fire Dragon', percent: 3.1 }],
+    new Map([['stats/gemsCollected', 250], ['bosses/stoneGolemDefeated', 1], ['bosses/fireDragonDefeated', 1]]), null);
+  const def = M.buildDefinition({ title_id: '0100000000000000', name: 'T', reader: 'json' }, pts, { includeMaybe: true });
+  const p = Object.fromEntries(def.achievements.map(a => [a._api, a]));
+  ok(p.GEMS_100 && p.GEMS_100.points === 10 && p.BOSS_GOLEM.points === 25 && p.BOSS_DRAGON.points === 50, 'points: common 10, uncommon 25, rare (< 5 %) 50');
+  ok(p.BOSS_DRAGON._steam_percent === 3.1, 'points: unlock percentage kept for review');
+  ok(M.pointsFor({ rule: { target: 100 } }) === 25 && M.pointsFor({ rule: { target: 1 }, hidden: true }) === 25 && M.pointsFor({ rule: { target: 1 } }) === 10,
+    'points: target/hidden heuristic without percentages');
+  ok(M.pointsFor({ percent: 5 }) === 25 && M.pointsFor({ percent: 20 }) === 10 && M.pointsFor({ percent: 0 }) === 50, 'points: tier boundaries');
+}
 // games that record their own achievements under the Steam names
 {
   const ach = ['GHOST_GUARDIAN', 'SLIME_BOSS', 'PURITY', 'ADRENALINE', 'CATALYST', 'BARRICADED'].map(n => ({ name: n, displayName: n, description: 'x' }));

@@ -1,0 +1,70 @@
+{
+ "title_id": "0100A59012070000",
+ "name": "Valentina 1.0.0",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "56E1BE633E5B9F44": "[[[[[main+29640B8]+B8]+50]+28]+50]+90"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "56E1BE633E5B9F44": "[[[[[main+29640B8]+B8]+50]+28]+50]+90"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "56E1BE633E5B9F44": "[[[[[main+29640B8]+B8]+50]+28]+50]+90"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Valentina 1.0.0 by ZiT"
+ ]
+}

@@ -1,0 +1,70 @@
+{
+ "title_id": "0100D8800B87C000",
+ "name": "Cities: Skylines - Nintendo Switch™ Edition",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 85040352480600,
+    "builds": {
+     "9C010911589C624F": "[[[main+2BE6400]+A0]]+A0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 85040352480600,
+    "builds": {
+     "9C010911589C624F": "[[[main+2BE6400]+A0]]+A0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 85040352480600,
+    "builds": {
+     "9C010911589C624F": "[[[main+2BE6400]+A0]]+A0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Cities Skylines by merlin555"
+ ]
+}

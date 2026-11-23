@@ -1,0 +1,70 @@
+{
+ "title_id": "0100B1900E48E000",
+ "name": "DRAGON QUEST II",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "D84098833BF007C6": "heap+3EAC7F0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "D84098833BF007C6": "heap+3EAC7F0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "D84098833BF007C6": "heap+3EAC7F0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "DRAGON QUEST II by zit"
+ ]
+}

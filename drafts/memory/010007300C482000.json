@@ -1,0 +1,71 @@
+{
+ "title_id": "010007300C482000",
+ "name": "Sydney Hunter and the Curse of the Mayan",
+ "achievements": [
+  {
+   "id": "mem_currency_gems_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gems",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "70852B805BBF7B4A": "[main+1EF6138]+F680"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gems MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gems",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "70852B805BBF7B4A": "[main+1EF6138]+F680"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gems MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gems",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "70852B805BBF7B4A": "[main+1EF6138]+F680"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gems MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Sydney Hunter and the Curse of the Mayan v1.0.48 BY dAbLACKdEATH ver 1.2.3 by jhmiller",
+  "Sydney Hunter and the Curse of the Mayan v1.0.48 BY dAbLACKdEATH and merlin555"
+ ]
+}

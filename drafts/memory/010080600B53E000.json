@@ -1,0 +1,70 @@
+{
+ "title_id": "010080600B53E000",
+ "name": "Evil Defenders",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "F82F507FB0C82B4D": "[[[main+34D74C0]+B8]+8]+8C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "F82F507FB0C82B4D": "[[[main+34D74C0]+B8]+8]+8C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "F82F507FB0C82B4D": "[[[main+34D74C0]+B8]+8]+8C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Evil Defenders by arysmanedy64"
+ ]
+}

@@ -5,7 +5,8 @@
 //   [STEAM_API_KEY=...] node tools/pc2switch/catalog.js [--max-schemas 3000] [--cache .pc2switch-cache]
 //
 // The Steam key is optional. Without it (same idea as the Achievements app by PSerban93 / Achievement Watcher):
-//   achievement lists  IPlayerService/GetGameAchievements, a public endpoint (names, descriptions, hidden flag)
+//   achievement lists  IPlayerService/GetGameAchievements, a public endpoint (names, descriptions, hidden flag,
+//                      share of players who unlocked each one: used for the points of drafts)
 //   Steam app list     the legacy public ISteamApps/GetAppList, else the matches already in catalog.json
 //
 // Writes  data/pc2switch/catalog.json   compact list used by Save Lab and draft.js
@@ -93,11 +94,15 @@ async function steamApps() {
   if (apps.length) writeJson(path.join(CACHE, 'steam_apps.json'), apps);
   return apps;
 }
+// Steam sends unlock percentages as strings ("66.3") or numbers; undefined when missing
+function pct(v) { const n = parseFloat(v); return Number.isFinite(n) ? Math.round(n * 10) / 10 : undefined; }
+
 // Returns {n, achievements} from cache or Steam; null when it could not be fetched this run.
 async function schema(appid, budget) {
   const file = path.join(CACHE, 'schema', appid + '.json');
   const cached = readJson(file, null);
-  if (cached && !cached.keyless && fresh(file, 90 * DAY)) return cached;   // names-only lists of old keyless runs are fetched again
+  // names-only lists of old keyless runs, and lists from before unlock percentages were kept (no `pct`), are fetched again
+  if (cached && !cached.keyless && cached.pct && fresh(file, 90 * DAY)) return cached;
   if (budget.left <= 0) return cached;
   let achievements = null, keyless = false;
   if (KEY) {
@@ -106,6 +111,13 @@ async function schema(appid, budget) {
     if (r.status === 200 || r.status === 400 || r.status === 403) {
       achievements = ((g && g.availableGameStats && g.availableGameStats.achievements) || [])
         .map(a => ({ name: a.name, displayName: a.displayName || '', description: a.description || '', hidden: a.hidden ? 1 : 0 }));
+      // GetSchemaForGame has no unlock percentages: take them from the public global stats
+      if (achievements.length) try {
+        const p = await get(`https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}`, { tries: 2 });
+        const list = (p.body && p.body.achievementpercentages && p.body.achievementpercentages.achievements) || [];
+        const by = new Map(list.map(x => [x.name, pct(x.percent)]));
+        for (const a of achievements) if (by.get(a.name) !== undefined) a.percent = by.get(a.name);
+      } catch (e) { }
     }
   }
   if (!achievements) {
@@ -114,7 +126,7 @@ async function schema(appid, budget) {
       const r = await get(`https://api.steampowered.com/IPlayerService/GetGameAchievements/v1/?appid=${appid}&language=english`, { tries: 2 });
       const resp = r.body && r.body.response;
       if (r.status === 200 && resp) achievements = (resp.achievements || [])
-        .map(a => ({ name: a.internal_name, displayName: a.localized_name || '', description: a.localized_desc || '', hidden: a.hidden ? 1 : 0 }))
+        .map(a => ({ name: a.internal_name, displayName: a.localized_name || '', description: a.localized_desc || '', hidden: a.hidden ? 1 : 0, percent: pct(a.player_percent_unlocked) }))
         .filter(a => a.name);
     } catch (e) { }
   }
@@ -123,12 +135,13 @@ async function schema(appid, budget) {
     try {
       const r = await get(`https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appid}`, { tries: 2 });
       const list = r.body && r.body.achievementpercentages && r.body.achievementpercentages.achievements;
-      if (list) { achievements = list.map(a => ({ name: a.name, displayName: '', description: '', hidden: 0 })); keyless = true; }
+      if (list) { achievements = list.map(a => ({ name: a.name, displayName: '', description: '', hidden: 0, percent: pct(a.percent) })); keyless = true; }
     } catch (e) { }
   }
   budget.left--;
   if (!achievements) return cached;
-  const v = { appid, n: achievements.length, keyless, achievements };
+  for (const a of achievements) if (a.percent === undefined) delete a.percent;
+  const v = { appid, n: achievements.length, keyless, pct: true, achievements };
   writeJson(file, v);
   await sleep(60);
   return v;

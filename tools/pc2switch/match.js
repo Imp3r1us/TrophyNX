@@ -141,7 +141,7 @@ function draftRules(achievements, adv, fresh, opts = {}) {
   const out = [];
   for (const a of achievements) {
     const text = (a.displayName || '') + ' — ' + (a.description || '');
-    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden };
+    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden, percent: typeof a.percent === 'number' ? a.percent : undefined };
     if (NOT_SAVE.test(a.description || '') || /speedrun|steel_?soul/i.test(a.name || '')) { out.push({ ...base, confidence: 'skip', rule: null, why: 'needs a time limit, a mode or a condition not kept in saves' }); continue; }
     const at = achTokens(a);
     let totalW = 0;
@@ -289,7 +289,7 @@ function selfTracked(achievements, files) {
   for (const [t, g] of tpls) for (const [n, v] of g) if (!seenAll.has(n)) seenAll.set(n, { tpl: t, v });
   const strong = seenAll.size >= 5 && tpls.length === 1;
   const drafts = achievements.map(a => {
-    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden };
+    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden, percent: typeof a.percent === 'number' ? a.percent : undefined };
     const s = seenAll.get(a.name);
     const tpl = s ? s.tpl : best.tpl;
     const path = tpl.replace('{API}', a.name);
@@ -300,6 +300,13 @@ function selfTracked(achievements, files) {
       candidates: [{ path, score: strong ? 0.9 : 0.6, value: 0 }] };
   });
   return { file: best.file, drafts, found: seenAll.size };
+}
+
+// Points of a drafted achievement. With Steam's share of players who unlocked it: 20 % and more -> 10 (bronze),
+// 5 to 20 % -> 25 (silver), under 5 % -> 50 (gold). Without it (old caches, Save Lab lists): big targets and hidden ones 25, else 10.
+function pointsFor(d) {
+  if (typeof d.percent === 'number') return d.percent < 5 ? 50 : d.percent < 20 ? 25 : 10;
+  return (d.rule && d.rule.target >= 50) || d.hidden ? 25 : 10;
 }
 
 // Draft -> app definition (romfs/games format). Unknown keys (_draft, _api) are ignored by the app.
@@ -313,8 +320,9 @@ function buildDefinition(meta, drafts, opts = {}) {
     let id = slugId(d.api), k = 2;
     while (ids.has(id)) id = slugId(d.api) + '_' + k++;
     ids.add(id);
-    const a = { id, name: d.title, desc: d.desc || d.title, points: d.rule.target >= 50 || d.hidden ? 25 : 10, rule: d.rule, _draft: d.confidence, _api: d.api };
+    const a = { id, name: d.title, desc: d.desc || d.title, points: pointsFor(d), rule: d.rule, _draft: d.confidence, _api: d.api };
     if (d.hidden) a.hidden = true;
+    if (typeof d.percent === 'number') a._steam_percent = d.percent;
     achievements.push(a);
   }
   return { title_id: meta.title_id, name: meta.name, reader: meta.reader, save_files: meta.save_files || [], _steam_appid: meta.appid, _generated: 'pc2switch (review before use)', achievements };
@@ -325,7 +333,7 @@ function summary(drafts) {
   return c;
 }
 
-const api = { splitWords, stem, canon, tokens, titleKey, titleKeys, matchTitles, fieldsOf, draftRules, selfTracked, buildDefinition, summary, NOT_SAVE };
+const api = { pointsFor, splitWords, stem, canon, tokens, titleKey, titleKeys, matchTitles, fieldsOf, draftRules, selfTracked, buildDefinition, summary, NOT_SAVE };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.PC2Switch = api;
 })(typeof self !== 'undefined' ? self : this);

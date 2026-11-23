@@ -1,0 +1,128 @@
+{
+ "title_id": "0100646009FBE000",
+ "name": "Dead Cells",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "0328EBE57BE8C71B": "[[[main+20782E8]+30]+80]+48",
+     "0627F36D0AA2C229": "[[[main+1ECC338]+30]+80]+48",
+     "073E52946BD464A0": "[[[main+1DFF338]+30]+80]+48",
+     "26B80E50EB02B0DF": "[[[main+20F52F0]+30]+80]+48",
+     "324E785B5F3CEE68": "[[[main+1DE7338]+30]+80]+48",
+     "423B3DD5F30B5ABC": "[[[main+1FB1348]+30]+80]+48",
+     "4E539F27FF8B38EB": "[[[main+257A2E0]+30]+88]+48",
+     "62CD40CEE7D6E7B7": "[[[main+1B34338]+30]+80]+48",
+     "8953FA5BA3B144EF": "[[[main+1F632E8]+30]+80]+48",
+     "8E64FF9C9BA4E373": "[[[main+20F52F0]+30]+80]+48",
+     "985189E46F9CF34D": "[[[main+1A94338]+30]+80]+48",
+     "9D5E589420074B67": "[[[main+1FB1348]+30]+80]+48",
+     "A230E041CEE088A5": "[[[main+1EC8338]+30]+80]+48",
+     "AFCDD6EA85C05EDD": "[[[main+25822E0]+30]+88]+48",
+     "B55426966DD9AF30": "[[[main+20F3348]+30]+80]+48",
+     "D044A1DF442C10F3": "[[[main+1F632E8]+30]+80]+48",
+     "DA6049B1703BCB2C": "[[[main+1B33338]+30]+80]+48",
+     "DD93187B1B5E0CB5": "[[[main+1DFE338]+30]+80]+48",
+     "E1C82193CB1F076D": "[[[main+1E01338]+30]+80]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "0328EBE57BE8C71B": "[[[main+20782E8]+30]+80]+48",
+     "0627F36D0AA2C229": "[[[main+1ECC338]+30]+80]+48",
+     "073E52946BD464A0": "[[[main+1DFF338]+30]+80]+48",
+     "26B80E50EB02B0DF": "[[[main+20F52F0]+30]+80]+48",
+     "324E785B5F3CEE68": "[[[main+1DE7338]+30]+80]+48",
+     "423B3DD5F30B5ABC": "[[[main+1FB1348]+30]+80]+48",
+     "4E539F27FF8B38EB": "[[[main+257A2E0]+30]+88]+48",
+     "62CD40CEE7D6E7B7": "[[[main+1B34338]+30]+80]+48",
+     "8953FA5BA3B144EF": "[[[main+1F632E8]+30]+80]+48",
+     "8E64FF9C9BA4E373": "[[[main+20F52F0]+30]+80]+48",
+     "985189E46F9CF34D": "[[[main+1A94338]+30]+80]+48",
+     "9D5E589420074B67": "[[[main+1FB1348]+30]+80]+48",
+     "A230E041CEE088A5": "[[[main+1EC8338]+30]+80]+48",
+     "AFCDD6EA85C05EDD": "[[[main+25822E0]+30]+88]+48",
+     "B55426966DD9AF30": "[[[main+20F3348]+30]+80]+48",
+     "D044A1DF442C10F3": "[[[main+1F632E8]+30]+80]+48",
+     "DA6049B1703BCB2C": "[[[main+1B33338]+30]+80]+48",
+     "DD93187B1B5E0CB5": "[[[main+1DFE338]+30]+80]+48",
+     "E1C82193CB1F076D": "[[[main+1E01338]+30]+80]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "0328EBE57BE8C71B": "[[[main+20782E8]+30]+80]+48",
+     "0627F36D0AA2C229": "[[[main+1ECC338]+30]+80]+48",
+     "073E52946BD464A0": "[[[main+1DFF338]+30]+80]+48",
+     "26B80E50EB02B0DF": "[[[main+20F52F0]+30]+80]+48",
+     "324E785B5F3CEE68": "[[[main+1DE7338]+30]+80]+48",
+     "423B3DD5F30B5ABC": "[[[main+1FB1348]+30]+80]+48",
+     "4E539F27FF8B38EB": "[[[main+257A2E0]+30]+88]+48",
+     "62CD40CEE7D6E7B7": "[[[main+1B34338]+30]+80]+48",
+     "8953FA5BA3B144EF": "[[[main+1F632E8]+30]+80]+48",
+     "8E64FF9C9BA4E373": "[[[main+20F52F0]+30]+80]+48",
+     "985189E46F9CF34D": "[[[main+1A94338]+30]+80]+48",
+     "9D5E589420074B67": "[[[main+1FB1348]+30]+80]+48",
+     "A230E041CEE088A5": "[[[main+1EC8338]+30]+80]+48",
+     "AFCDD6EA85C05EDD": "[[[main+25822E0]+30]+88]+48",
+     "B55426966DD9AF30": "[[[main+20F3348]+30]+80]+48",
+     "D044A1DF442C10F3": "[[[main+1F632E8]+30]+80]+48",
+     "DA6049B1703BCB2C": "[[[main+1B33338]+30]+80]+48",
+     "DD93187B1B5E0CB5": "[[[main+1DFE338]+30]+80]+48",
+     "E1C82193CB1F076D": "[[[main+1E01338]+30]+80]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "dead cells ver  1.13.0 by Patjenova1.2.1 ZIT866",
+  "dead cells ver 1.14 by crazy_p, Patjenova, ZiT1.0.8 translated by felonious"
+ ],
+ "_notes": [
+  "currency coins: value 9999 too small or odd for tiers, skipped"
+ ]
+}

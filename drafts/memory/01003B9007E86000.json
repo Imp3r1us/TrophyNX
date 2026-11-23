@@ -1,0 +1,70 @@
+{
+ "title_id": "01003B9007E86000",
+ "name": "Hammerwatch",
+ "achievements": [
+  {
+   "id": "mem_currency_cash_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 cash",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "6EE12E07E6151A74": "[[[[[main+2F175F8]+A8]+28]+48]]+68"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Cash"
+   ]
+  },
+  {
+   "id": "mem_currency_cash_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 cash",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "6EE12E07E6151A74": "[[[[[main+2F175F8]+A8]+28]+48]]+68"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Cash"
+   ]
+  },
+  {
+   "id": "mem_currency_cash_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 cash",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "6EE12E07E6151A74": "[[[[[main+2F175F8]+A8]+28]+48]]+68"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Cash"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Hammerwatch ver 1.0.0 by ZiT"
+ ]
+}

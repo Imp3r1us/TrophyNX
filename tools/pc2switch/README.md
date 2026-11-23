@@ -99,6 +99,10 @@ app yet, and many games have no save on GitHub at all.
   rarer words weighing more, dialogue/UI flags weighing less. Numbers in descriptions become targets;
   "half"/"all" use the value in the reference save; a family of flags (`mapCrossroads`, `mapGreenpath`…)
   becomes a `count` rule. Time limits, "without…", difficulty modes and online play are skipped.
+- **Points**: from the share of Steam players who unlocked the achievement (kept by `catalog.js` as `percent`, and
+  copied to the draft as `_steam_percent`): 20 % and more → 10 (bronze), 5 to 20 % → 25 (silver), under 5 % → 50 (gold).
+  Lists without percentages (fetched before they were kept, or picked by hand in Save Lab) fall back to 25 for hidden
+  achievements and targets of 50 or more, else 10. Cached lists without percentages are fetched again on the next run.
 - **Confidence**: `sure` needs a strong, unambiguous match that the reference save actually meets.
   Measured on Hollow Knight (63 achievements, a hard case: its saves use internal code names):
   5 sure, all correct; the right field is among the 3 listed candidates for 25 more.

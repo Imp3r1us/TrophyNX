@@ -19,7 +19,8 @@ try {
 fs.mkdirSync(OUT, { recursive: true });
 const done = new Set();
 const write = (appid, name, achievements) => {
-  const list = achievements.map(a => ({ name: a.name, displayName: a.displayName || '', description: a.description || '', hidden: a.hidden ? 1 : 0 }));
+  const list = achievements.map(a => Object.assign({ name: a.name, displayName: a.displayName || '', description: a.description || '', hidden: a.hidden ? 1 : 0 },
+    typeof a.percent === 'number' ? { percent: a.percent } : {}));
   fs.writeFileSync(path.join(OUT, appid + '.json'), JSON.stringify({ appid: +appid, name: name || '', achievements: list }));
   done.add(appid);
 };

@@ -34,6 +34,7 @@ struct GameDef {
     std::string keyFile;     // "key_file": password of an encrypted save, read from <key dir>/<key_file> (never shipped)
     uint64_t fileSize = 0;
     bool closeScan = true;   // "close_scan": false -> the background module doesn't scan it when the game closes
+    bool liveSave = true;    // "live_save": false -> the background module doesn't read the save while the game runs
     std::vector<std::string> saveFiles;
     std::vector<Achievement> achs;
 };

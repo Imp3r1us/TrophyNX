@@ -1,0 +1,71 @@
+{
+ "title_id": "01002F0011DD4000",
+ "name": "HARDCORE MECHA",
+ "achievements": [
+  {
+   "id": "mem_currency_money_500",
+   "name": "Saving Up",
+   "desc": "Have 500 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 5000000,
+    "builds": {
+     "6100FC7C12FD8E47": "[[[[[main+7175D28]+A0]+18]+10]+18]+20"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "total money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_5000",
+   "name": "Well Off",
+   "desc": "Have 5,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 5000000,
+    "builds": {
+     "6100FC7C12FD8E47": "[[[[[main+7175D28]+A0]+18]+10]+18]+20"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "total money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_50000",
+   "name": "Rolling In It",
+   "desc": "Have 50,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 50000,
+    "max": 5000000,
+    "builds": {
+     "6100FC7C12FD8E47": "[[[[[main+7175D28]+A0]+18]+10]+18]+20"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "total money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "HARDCORE MECHA Figher Edition [v0] Eiffel2018",
+  "HARDCORE MECHA Figher Edition ver 1.0.0 by Patjenova ver 1.16.0 by merlin555"
+ ]
+}

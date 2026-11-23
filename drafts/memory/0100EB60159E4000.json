@@ -1,0 +1,75 @@
+{
+ "title_id": "0100EB60159E4000",
+ "name": "Aeterna Noctis",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "0CBD71E6D09C0C3E": "[[[main+4E91F28]+B8]]+DC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "0CBD71E6D09C0C3E": "[[[main+4E91F28]+B8]]+DC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "0CBD71E6D09C0C3E": "[[[main+4E91F28]+B8]]+DC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "9B5D77C2AA0D90D3",
+  "toggles",
+  "9B5D77C2AA0D90D3aob",
+  "hp fill",
+  "mj",
+  "Aeterna Noctis"
+ ]
+}

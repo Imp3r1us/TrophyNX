@@ -1,0 +1,73 @@
+{
+ "title_id": "0100F90010882000",
+ "name": "Ys Origin",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "11C2B5B0961CD855": "[main+42C398]+134",
+     "31FC374BE830F17E": "[main+42C398]+134"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "11C2B5B0961CD855": "[main+42C398]+134",
+     "31FC374BE830F17E": "[main+42C398]+134"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "11C2B5B0961CD855": "[main+42C398]+134",
+     "31FC374BE830F17E": "[main+42C398]+134"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Ys Origin ver 1.0.0 and ver 1.0.1 by Zit and matias3ds"
+ ]
+}

@@ -1,0 +1,71 @@
+{
+ "title_id": "010011600C946000",
+ "name": "Travis Strikes Again: No More Heroes",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "EF72A4B5BF1973F3": "[[[[main+5C3A5C8]+28]+70]+3C0]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "EF72A4B5BF1973F3": "[[[[main+5C3A5C8]+28]+70]+3C0]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "EF72A4B5BF1973F3": "[[[[main+5C3A5C8]+28]+70]+3C0]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "No more heroes Travis Strikes Again by wiitendo84",
+  "Travis Strikes Again No More Heroes ver 1.0.0 by xtatu"
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "title_id": "010007400FF24000",
+ "name": "Borderlands: The Pre-Sequel",
+ "achievements": [
+  {
+   "id": "mem_currency_money_100",
+   "name": "Saving Up",
+   "desc": "Have 100 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "090B1F7F7AF35D00": "[[main+4D5C6F0]+220]+480"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "090B1F7F7AF35D00": "[[main+4D5C6F0]+220]+480"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "090B1F7F7AF35D00": "[[main+4D5C6F0]+220]+480"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Borderlands The Pre-sequel ver1.0.1 by patjenova and reclaimerjhon"
+ ],
+ "_notes": [
+  "currency shards: value 500 too small or odd for tiers, skipped",
+  "currency coins: value 500 too small or odd for tiers, skipped",
+  "currency tokens: value 99 too small or odd for tiers, skipped"
+ ]
+}

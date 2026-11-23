@@ -1,0 +1,142 @@
+{
+ "title_id": "0100E0600BBC8002",
+ "name": "GRANDIA 2 HD",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "034886422B6F840B": "heap+909D6E24"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "034886422B6F840B": "heap+909D6E24"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "034886422B6F840B": "heap+909D6E24"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "034886422B6F840B": [
+      "heap+909D6E28",
+      "heap+909D6E2C"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Magic coin",
+    "Special coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "034886422B6F840B": [
+      "heap+909D6E28",
+      "heap+909D6E2C"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Magic coin",
+    "Special coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "034886422B6F840B": [
+      "heap+909D6E28",
+      "heap+909D6E2C"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Magic coin",
+    "Special coin"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "GRANDIA 2 HD by IMnoob"
+ ]
+}

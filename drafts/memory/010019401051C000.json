@@ -1,0 +1,86 @@
+{
+ "title_id": "010019401051C000",
+ "name": "010019401051C000",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "2E90F0815B1F92A1": "[[main+FFE2E8]]+4B0",
+     "3FC4CFE8CE9E67EE": "[[main+F52AA8]]+368",
+     "60FC2B0CA59B53A9": "[[main+FFE2E8]]+4B0",
+     "9787F3A18ADC1712": "[[main+FFE2E8]]+4B0",
+     "B5C0614D93E34A61": "[[main+F52AA8]]+368",
+     "DFBC95E3F21EE632": "[[main+F0BD68]]+2B8",
+     "E13BC924C62BD348": "[[main+FBF010]]+410"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "2E90F0815B1F92A1": "[[main+FFE2E8]]+4B0",
+     "3FC4CFE8CE9E67EE": "[[main+F52AA8]]+368",
+     "60FC2B0CA59B53A9": "[[main+FFE2E8]]+4B0",
+     "9787F3A18ADC1712": "[[main+FFE2E8]]+4B0",
+     "B5C0614D93E34A61": "[[main+F52AA8]]+368",
+     "DFBC95E3F21EE632": "[[main+F0BD68]]+2B8",
+     "E13BC924C62BD348": "[[main+FBF010]]+410"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "2E90F0815B1F92A1": "[[main+FFE2E8]]+4B0",
+     "3FC4CFE8CE9E67EE": "[[main+F52AA8]]+368",
+     "60FC2B0CA59B53A9": "[[main+FFE2E8]]+4B0",
+     "9787F3A18ADC1712": "[[main+FFE2E8]]+4B0",
+     "B5C0614D93E34A61": "[[main+F52AA8]]+368",
+     "DFBC95E3F21EE632": "[[main+F0BD68]]+2B8",
+     "E13BC924C62BD348": "[[main+FBF010]]+410"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

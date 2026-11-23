@@ -1,0 +1,68 @@
+{
+ "title_id": "0100C0D019F74000",
+ "name": "0100C0D019F74000",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "C3B4FBD6A558669C": "[[[[main+386F1A0]+B8]]+20]+2C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "C3B4FBD6A558669C": "[[[[main+386F1A0]+B8]]+20]+2C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "C3B4FBD6A558669C": "[[[[main+386F1A0]+B8]]+20]+2C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Coin"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

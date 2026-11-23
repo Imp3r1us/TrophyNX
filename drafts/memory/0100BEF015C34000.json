@@ -1,0 +1,48 @@
+{
+ "title_id": "0100BEF015C34000",
+ "name": "0100BEF015C34000",
+ "achievements": [
+  {
+   "id": "mem_currency_money_500",
+   "name": "Well Off",
+   "desc": "Have 500 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 666660,
+    "builds": {
+     "A83BDDAB8194FF40": "[[[main+239B4B0]+B8]+28]+84"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_5000",
+   "name": "Rolling In It",
+   "desc": "Have 5,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 666660,
+    "builds": {
+     "A83BDDAB8194FF40": "[[[main+239B4B0]+B8]+28]+84"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

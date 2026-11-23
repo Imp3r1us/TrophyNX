@@ -1,4 +1,4 @@
-// g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_theatrhythm.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_theatrhythm
+// g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_theatrhythm.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_theatrhythm
 // /tmp/test_theatrhythm            (run from the repository root)
 // "theatrhythm" reader (AES-128-CBC + raw DEFLATE + MessagePack) and generic MessagePack / inflate, on the synthetic
 // saves of tools/savelab/test/fixtures/theatrhythm (DUMMY password, made by make_theatrhythm_fixtures.js; the

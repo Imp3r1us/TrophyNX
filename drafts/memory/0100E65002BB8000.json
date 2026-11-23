@@ -1,0 +1,70 @@
+{
+ "title_id": "0100E65002BB8000",
+ "name": "Stardew Valley",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 100000000,
+    "builds": {
+     "C45898E4542ECCDA": "[[[[[[main+8AA5440]+E8]+50]+30]+58]+10]+58"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 100000000,
+    "builds": {
+     "C45898E4542ECCDA": "[[[[[[main+8AA5440]+E8]+50]+30]+58]+10]+58"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 100000000,
+    "builds": {
+     "C45898E4542ECCDA": "[[[[[[main+8AA5440]+E8]+50]+30]+58]+10]+58"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "stardew valley shared by jericoss ver 1.0.4 by merlin555"
+ ]
+}

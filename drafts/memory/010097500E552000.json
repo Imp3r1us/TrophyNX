@@ -1,0 +1,70 @@
+{
+ "title_id": "010097500E552000",
+ "name": "March to a Million",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "BA6922F2E506D442": "[[main+25A5468]+B8]+F90"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "BA6922F2E506D442": "[[main+25A5468]+B8]+F90"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "BA6922F2E506D442": "[[main+25A5468]+B8]+F90"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "March to a Million ver 1.0.0 by wiitendo84"
+ ]
+}

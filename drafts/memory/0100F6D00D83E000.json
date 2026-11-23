@@ -1,0 +1,70 @@
+{
+ "title_id": "0100F6D00D83E000",
+ "name": "SteamWorld Quest: Hand of Gilgamech",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "A3179FEF84570923": "heap+9429D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 Infinite Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "A3179FEF84570923": "heap+9429D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 Infinite Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "A3179FEF84570923": "heap+9429D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 Infinite Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "SteamWorldQuest"
+ ]
+}

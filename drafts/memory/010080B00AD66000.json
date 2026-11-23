@@ -1,0 +1,48 @@
+{
+ "title_id": "010080B00AD66000",
+ "name": "Undertale",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_100",
+   "name": "Well Off",
+   "desc": "Have 100 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u16",
+    "cmp": ">=",
+    "target": 100,
+    "max": 167520,
+    "builds": {
+     "24DB41FCD513D080": "[[main+DB0580]+2B0]+D6"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "#01# Inf Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u16",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 167520,
+    "builds": {
+     "24DB41FCD513D080": "[[main+DB0580]+2B0]+D6"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "#01# Inf Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

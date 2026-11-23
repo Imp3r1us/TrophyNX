@@ -1,0 +1,70 @@
+{
+ "title_id": "010011C00E636000",
+ "name": "Dusk Diver",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 25769803770,
+    "builds": {
+     "2D05E2FC4BED8CF5": "heap+5EA5B42B18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 25769803770,
+    "builds": {
+     "2D05E2FC4BED8CF5": "heap+5EA5B42B18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 25769803770,
+    "builds": {
+     "2D05E2FC4BED8CF5": "heap+5EA5B42B18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Dusk Diver by jericoss"
+ ]
+}

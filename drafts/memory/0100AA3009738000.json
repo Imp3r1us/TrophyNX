@@ -1,0 +1,70 @@
+{
+ "title_id": "0100AA3009738000",
+ "name": "Feudal Alloy",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_100",
+   "name": "Saving Up",
+   "desc": "Have 100 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "C317CAF34F49A74B": "[[[main+2B59020]+A0]]+204"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "C317CAF34F49A74B": "[[[main+2B59020]+A0]]+204"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "C317CAF34F49A74B": "[[[main+2B59020]+A0]]+204"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coin"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Feudal Alloy by ZiT866"
+ ]
+}

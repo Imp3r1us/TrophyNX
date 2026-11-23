@@ -1,0 +1,81 @@
+{
+ "title_id": "0100BD400DC52000",
+ "name": "Spiritfarer for",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "173156D7823BF145": "[[[main+531C640]+B8]+B0]+30",
+     "241262DA79EB9E4E": "[[[[main+4D82240]+8]+B8]+B0]+30",
+     "899AC6D046E76345": "[[[[main+5325780]+40]+B8]+B0]+30",
+     "D368BC1E9495514A": "[[[main+50926C8]+B8]+B0]+30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "173156D7823BF145": "[[[main+531C640]+B8]+B0]+30",
+     "241262DA79EB9E4E": "[[[[main+4D82240]+8]+B8]+B0]+30",
+     "899AC6D046E76345": "[[[[main+5325780]+40]+B8]+B0]+30",
+     "D368BC1E9495514A": "[[[main+50926C8]+B8]+B0]+30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "173156D7823BF145": "[[[main+531C640]+B8]+B0]+30",
+     "241262DA79EB9E4E": "[[[[main+4D82240]+8]+B8]+B0]+30",
+     "899AC6D046E76345": "[[[[main+5325780]+40]+B8]+B0]+30",
+     "D368BC1E9495514A": "[[[main+50926C8]+B8]+B0]+30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Spiritfarer for v1.0 & v1.1 by merlin555 and ZiT and patjenova",
+  "5C59F135645F9846",
+  "Spiritfarer"
+ ]
+}

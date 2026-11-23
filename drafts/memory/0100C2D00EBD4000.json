@@ -1,0 +1,70 @@
+{
+ "title_id": "0100C2D00EBD4000",
+ "name": "Friends of Mineral Town",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "1F27449539E34189": "[[main+60BFD790]+8]+CAD0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "1F27449539E34189": "[[main+60BFD790]+8]+CAD0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "1F27449539E34189": "[[main+60BFD790]+8]+CAD0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Friends of Mineral Town v1.0 by 91wii"
+ ]
+}

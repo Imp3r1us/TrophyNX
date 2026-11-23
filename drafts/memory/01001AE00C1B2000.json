@@ -1,0 +1,205 @@
+{
+ "title_id": "01001AE00C1B2000",
+ "name": "NBA 2K Playgrounds 2",
+ "achievements": [
+  {
+   "id": "mem_currency_bucks_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 bucks",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "0CF694C10AF10FA8": "[main+5929668]+1EC",
+     "689CA7B6CE68BF90": "[main+599EFF8]+1EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. 99.999.999 Bucks",
+    "999.999 Bucks"
+   ]
+  },
+  {
+   "id": "mem_currency_bucks_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 bucks",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "0CF694C10AF10FA8": "[main+5929668]+1EC",
+     "689CA7B6CE68BF90": "[main+599EFF8]+1EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. 99.999.999 Bucks",
+    "999.999 Bucks"
+   ]
+  },
+  {
+   "id": "mem_currency_bucks_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 bucks",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "0CF694C10AF10FA8": "[main+5929668]+1EC",
+     "689CA7B6CE68BF90": "[main+599EFF8]+1EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. 99.999.999 Bucks",
+    "999.999 Bucks"
+   ]
+  },
+  {
+   "id": "mem_level_25",
+   "name": "Getting Stronger",
+   "desc": "Reach level 25",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 25,
+    "max": 1270,
+    "builds": {
+     "BD81FEF7E65A788B": "[main+5A46AF8]+208",
+     "EBE7B75A6C67814A": "[main+5A42AF8]+208"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "#03# Player Max Level",
+    "Player Max Level 50+"
+   ]
+  },
+  {
+   "id": "mem_level_50",
+   "name": "Seasoned",
+   "desc": "Reach level 50",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50,
+    "max": 1270,
+    "builds": {
+     "BD81FEF7E65A788B": "[main+5A46AF8]+208",
+     "EBE7B75A6C67814A": "[main+5A42AF8]+208"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "#03# Player Max Level",
+    "Player Max Level 50+"
+   ]
+  },
+  {
+   "id": "mem_level_100",
+   "name": "Peak Form",
+   "desc": "Reach level 100",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 1270,
+    "builds": {
+     "BD81FEF7E65A788B": "[main+5A46AF8]+208",
+     "EBE7B75A6C67814A": "[main+5A42AF8]+208"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "#03# Player Max Level",
+    "Player Max Level 50+"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "C38678C1D242D6F5": "[[[[main+5A63860]+C0]+8]+278]+214"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coins MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "C38678C1D242D6F5": "[[[[main+5A63860]+C0]+8]+278]+214"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coins MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "C38678C1D242D6F5": "[[[[main+5A63860]+C0]+8]+278]+214"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coins MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "NBA 2K Playgrounds 2 by merlin555"
+ ],
+ "_notes": [
+  "currency gold: codes disagree on the value type (u64, u32), skipped"
+ ]
+}

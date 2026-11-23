@@ -1,0 +1,68 @@
+{
+ "title_id": "01005C301C4BA000",
+ "name": "01005C301C4BA000",
+ "achievements": [
+  {
+   "id": "mem_currency_credit_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 credits",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "C4C4B41B7BF05208": "heap+6925B830"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Credit"
+   ]
+  },
+  {
+   "id": "mem_currency_credit_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 credits",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "C4C4B41B7BF05208": "heap+6925B830"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Credit"
+   ]
+  },
+  {
+   "id": "mem_currency_credit_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 credits",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "C4C4B41B7BF05208": "heap+6925B830"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Credit"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

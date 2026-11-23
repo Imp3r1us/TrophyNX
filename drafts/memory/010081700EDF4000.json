@@ -1,0 +1,148 @@
+{
+ "title_id": "010081700EDF4000",
+ "name": "WWE 2K Battlegrounds",
+ "achievements": [
+  {
+   "id": "mem_currency_bucks_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 bucks",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "2FC6FF2EC90CEBC3": "[[[[[[[main+63DBF68]+40]+50]+6A8]+10]+28]+108]+27C",
+     "484F4AEAF4B9DBA0": "[[[[[[[main+6348E88]+10]+8]+10]+8]+28]+108]+27C",
+     "4FD0F117E250F4F9": "[[[[[[[main+6F3B228]+38]+5A0]+6A8]+10]+28]+108]+27C",
+     "5E0B2AB13F32AF9A": "[[[[[[[main+97A5EC8]+8]+90]+6348]+10]+8]+108]+27C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Golden Bucks MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_bucks_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 bucks",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "2FC6FF2EC90CEBC3": "[[[[[[[main+63DBF68]+40]+50]+6A8]+10]+28]+108]+27C",
+     "484F4AEAF4B9DBA0": "[[[[[[[main+6348E88]+10]+8]+10]+8]+28]+108]+27C",
+     "4FD0F117E250F4F9": "[[[[[[[main+6F3B228]+38]+5A0]+6A8]+10]+28]+108]+27C",
+     "5E0B2AB13F32AF9A": "[[[[[[[main+97A5EC8]+8]+90]+6348]+10]+8]+108]+27C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Golden Bucks MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_bucks_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 bucks",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "2FC6FF2EC90CEBC3": "[[[[[[[main+63DBF68]+40]+50]+6A8]+10]+28]+108]+27C",
+     "484F4AEAF4B9DBA0": "[[[[[[[main+6348E88]+10]+8]+10]+8]+28]+108]+27C",
+     "4FD0F117E250F4F9": "[[[[[[[main+6F3B228]+38]+5A0]+6A8]+10]+28]+108]+27C",
+     "5E0B2AB13F32AF9A": "[[[[[[[main+97A5EC8]+8]+90]+6348]+10]+8]+108]+27C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Golden Bucks MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_silver_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 silver",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "2FC6FF2EC90CEBC3": "[[[[[[[main+63DBF68]+40]+50]+6A8]+10]+28]+108]+278",
+     "484F4AEAF4B9DBA0": "[[[[[[[main+6348E88]+10]+8]+10]+8]+28]+108]+278",
+     "4FD0F117E250F4F9": "[[[[[[[main+6F3B228]+38]+5A0]+6A8]+10]+28]+108]+278",
+     "5E0B2AB13F32AF9A": "[[[[[[[main+97A5EC8]+8]+90]+6348]+10]+8]+108]+278"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Silver Bucks MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_silver_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 silver",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "2FC6FF2EC90CEBC3": "[[[[[[[main+63DBF68]+40]+50]+6A8]+10]+28]+108]+278",
+     "484F4AEAF4B9DBA0": "[[[[[[[main+6348E88]+10]+8]+10]+8]+28]+108]+278",
+     "4FD0F117E250F4F9": "[[[[[[[main+6F3B228]+38]+5A0]+6A8]+10]+28]+108]+278",
+     "5E0B2AB13F32AF9A": "[[[[[[[main+97A5EC8]+8]+90]+6348]+10]+8]+108]+278"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Silver Bucks MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_silver_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 silver",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "2FC6FF2EC90CEBC3": "[[[[[[[main+63DBF68]+40]+50]+6A8]+10]+28]+108]+278",
+     "484F4AEAF4B9DBA0": "[[[[[[[main+6348E88]+10]+8]+10]+8]+28]+108]+278",
+     "4FD0F117E250F4F9": "[[[[[[[main+6F3B228]+38]+5A0]+6A8]+10]+28]+108]+278",
+     "5E0B2AB13F32AF9A": "[[[[[[[main+97A5EC8]+8]+90]+6348]+10]+8]+108]+278"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Silver Bucks MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "WWE 2K Battlegrounds ver 1.6.0 and 1.05 by patjenova"
+ ]
+}

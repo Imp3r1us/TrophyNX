@@ -1,0 +1,78 @@
+{
+ "title_id": "01002B00111A2000",
+ "name": "Hyrule Warriors Age of Calamity",
+ "achievements": [
+  {
+   "id": "mem_currency_rupees_100",
+   "name": "Saving Up",
+   "desc": "Have 100 Rupees",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "0496D4B4C6AE1CF4": "heap+48954D64",
+     "908CD685037018E9": "[[[[[main+26558B8]+1C8]+8]+8]]+64"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Rupees (sets to 99,999)",
+    "Max Rupees @TheTwilightZone"
+   ]
+  },
+  {
+   "id": "mem_currency_rupees_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 Rupees",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "0496D4B4C6AE1CF4": "heap+48954D64",
+     "908CD685037018E9": "[[[[[main+26558B8]+1C8]+8]+8]]+64"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Rupees (sets to 99,999)",
+    "Max Rupees @TheTwilightZone"
+   ]
+  },
+  {
+   "id": "mem_currency_rupees_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 Rupees",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "0496D4B4C6AE1CF4": "heap+48954D64",
+     "908CD685037018E9": "[[[[[main+26558B8]+1C8]+8]+8]]+64"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite Rupees (sets to 99,999)",
+    "Max Rupees @TheTwilightZone"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Hyrule Warriors Age of Calamity ver 1.2.1 by xtatu 1.2.0 by ThetwilightZone1.1.0 by xtatu by CJB on gbatemp",
+  "Hyrule Warriors Age of Calamity ver 1.0.0 by CJB and arismendy64 on gbatemp",
+  "Hyrule Warriors Age of Calamity"
+ ]
+}

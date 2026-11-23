@@ -1,0 +1,71 @@
+{
+ "title_id": "01005FE01291A000",
+ "name": "Lost in Random™",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_100",
+   "name": "Saving Up",
+   "desc": "Have 100 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "416914C121775277": "[[[main+652C458]+40]+D8]+410"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "416914C121775277": "[[[main+652C458]+40]+D8]+410"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "416914C121775277": "[[[main+652C458]+40]+D8]+410"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Lost in Random ver 1.0.1 by xtatu and Tomswitch",
+  "Lost in Random"
+ ]
+}

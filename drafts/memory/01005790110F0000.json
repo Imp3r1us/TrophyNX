@@ -1,0 +1,74 @@
+{
+ "title_id": "01005790110F0000",
+ "name": "Cobra Kai: The Karate Kid Saga Continues",
+ "achievements": [
+  {
+   "id": "mem_currency_money_100",
+   "name": "Saving Up",
+   "desc": "Have 100 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "97E45918D2113640": "[[[[[[[[main+42ECA28]+1C48]+10]+110]+110]+110]+28]+28]+18",
+     "E8A03ACD481A0D48": "[[[[main+43E8C60]+B8]+10]+28]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "97E45918D2113640": "[[[[[[[[main+42ECA28]+1C48]+10]+110]+110]+110]+28]+28]+18",
+     "E8A03ACD481A0D48": "[[[[main+43E8C60]+B8]+10]+28]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "97E45918D2113640": "[[[[[[[[main+42ECA28]+1C48]+10]+110]+110]+110]+28]+28]+18",
+     "E8A03ACD481A0D48": "[[[[main+43E8C60]+B8]+10]+28]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Cobra Kai The Karate Kid Saga Continues ver 1.0.0 by ZiT and merlin555 ver 1.0.1 by merlin555",
+  "Cobra Kai The Karate Kid Saga Continues"
+ ]
+}

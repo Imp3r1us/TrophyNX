@@ -1,0 +1,70 @@
+{
+ "title_id": "0100581007068000",
+ "name": "Lost Castle",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_100",
+   "name": "Saving Up",
+   "desc": "Have 100 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "83F63A18C3490647": "[[[[[[main+2E0B9D8]+660]+B8]+30]+28]+20]+5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "MAX Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "83F63A18C3490647": "[[[[[[main+2E0B9D8]+660]+B8]+30]+28]+20]+5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "MAX Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "83F63A18C3490647": "[[[[[[main+2E0B9D8]+660]+B8]+30]+28]+20]+5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "MAX Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Lost Castle 91wii translate and shared by chefmario and Zit"
+ ]
+}

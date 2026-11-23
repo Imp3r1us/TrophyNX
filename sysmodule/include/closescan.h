@@ -5,10 +5,22 @@
 #include <switch.h>
 #include <cstdint>
 #include <string>
+#include "rules.h"
 
 enum CloseScanResult { CS_SKIPPED, CS_DONE, CS_LOCKED };
 
 // Definitions: built into the module (romfs/games, see make_data.sh), then
 // sdmc:/switch/TrophyNX/games/*.json overrides, like the app.
 // CS_LOCKED: the save couldn't be mounted (game started again?) - the caller may retry.
+// The definition of a title: built-in, then the SD card's games/*.json (later wins). source = where it came from.
+bool findDef(uint64_t titleId, GameDef& out, std::string& source, void (*logf)(const char* fmt, ...));
+
+// Unlocks the save achievements of g (already evaluated) that are met, with popups; writes the report to
+// <data dir>/<reportName>. tag: "on close" or "live" (log lines). Returns the number of new unlocks.
+int unlockMet(const Game& g, const GameDef& def, const std::string& defSource, const AccountUid& uid, const char* tag,
+              unsigned long long ms, const char* reportName, void (*logf)(const char* fmt, ...));
+
+// Free bytes in the module's fixed heap, minus a safety margin.
+size_t moduleMemoryAvailable();
+
 CloseScanResult closeScan(uint64_t titleId, const AccountUid& uid, void (*logf)(const char* fmt, ...));

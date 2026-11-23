@@ -1,0 +1,50 @@
+{
+ "title_id": "01004A2013ACE000",
+ "name": "Astalon: Tears of the Earth",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_500",
+   "name": "Well Off",
+   "desc": "Have 500 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u16",
+    "cmp": ">=",
+    "target": 500,
+    "max": 566870,
+    "builds": {
+     "09EB22EB60E85649": "[[[[main+4604FF0]+B8]]+228]+130"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_5000",
+   "name": "Rolling In It",
+   "desc": "Have 5,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u16",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 566870,
+    "builds": {
+     "09EB22EB60E85649": "[[[[main+4604FF0]+B8]]+228]+130"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Astalon Tears of the Earth 1.0.12 by TomSwitch"
+ ]
+}

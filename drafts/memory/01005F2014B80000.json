@@ -1,0 +1,74 @@
+{
+ "title_id": "01005F2014B80000",
+ "name": "Flynn: Son of Crimson",
+ "achievements": [
+  {
+   "id": "mem_currency_crystals_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 crystals",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 10000000,
+    "builds": {
+     "0570324E7DC2D797": "[[[[main+1F0D008]+58]+10]+960]+40",
+     "4B2DB08F6277D771": "[[[[main+1F44008]+58]+10]+460]",
+     "5730DCF4C2DD8EBA": "[[[[main+1F18008]+58]+10]+940]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Red Crystals"
+   ]
+  },
+  {
+   "id": "mem_currency_crystals_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 crystals",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 10000000,
+    "builds": {
+     "0570324E7DC2D797": "[[[[main+1F0D008]+58]+10]+960]+40",
+     "4B2DB08F6277D771": "[[[[main+1F44008]+58]+10]+460]",
+     "5730DCF4C2DD8EBA": "[[[[main+1F18008]+58]+10]+940]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Red Crystals"
+   ]
+  },
+  {
+   "id": "mem_currency_crystals_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 crystals",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "f64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 10000000,
+    "builds": {
+     "0570324E7DC2D797": "[[[[main+1F0D008]+58]+10]+960]+40",
+     "4B2DB08F6277D771": "[[[[main+1F44008]+58]+10]+460]",
+     "5730DCF4C2DD8EBA": "[[[[main+1F18008]+58]+10]+940]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Red Crystals"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

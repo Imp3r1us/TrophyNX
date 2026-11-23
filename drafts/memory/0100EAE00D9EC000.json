@@ -1,0 +1,70 @@
+{
+ "title_id": "0100EAE00D9EC000",
+ "name": "Ghostbusters: The Video Game Remastered",
+ "achievements": [
+  {
+   "id": "mem_currency_cash_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 cash",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "5AAA63BEF45A8C0A": "[main+5D8E778]+700"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "$999,999 Cash"
+   ]
+  },
+  {
+   "id": "mem_currency_cash_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 cash",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "5AAA63BEF45A8C0A": "[main+5D8E778]+700"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "$999,999 Cash"
+   ]
+  },
+  {
+   "id": "mem_currency_cash_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 cash",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "5AAA63BEF45A8C0A": "[main+5D8E778]+700"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "$999,999 Cash"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Ghostbusters ver. 1.1 by Lionheartwolf and 1.2 by patjenova"
+ ]
+}

@@ -1,0 +1,70 @@
+{
+ "title_id": "01002130136C0000",
+ "name": "Dungeonoid",
+ "achievements": [
+  {
+   "id": "mem_level_25",
+   "name": "Getting Stronger",
+   "desc": "Reach level 25",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 25,
+    "max": 990,
+    "builds": {
+     "F780A21406F4AA4E": "[main+2E48FF0]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Level 99"
+   ]
+  },
+  {
+   "id": "mem_level_50",
+   "name": "Seasoned",
+   "desc": "Reach level 50",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50,
+    "max": 990,
+    "builds": {
+     "F780A21406F4AA4E": "[main+2E48FF0]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Level 99"
+   ]
+  },
+  {
+   "id": "mem_level_99",
+   "name": "Peak Form",
+   "desc": "Reach level 99",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 99,
+    "max": 990,
+    "builds": {
+     "F780A21406F4AA4E": "[main+2E48FF0]+48"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Level 99"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Dungeonoid by TomSwitch"
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "title_id": "010078D000F88000",
+ "name": "DRAGON BALL XENOVERSE 2 for Nintendo Switch",
+ "achievements": [
+  {
+   "id": "mem_level_25",
+   "name": "Getting Stronger",
+   "desc": "Reach level 25",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 25,
+    "max": 990,
+    "builds": {
+     "0D0E5AAB66AD6795": "heap+54A2E954",
+     "0F4992D359C3B6DD": "heap+54A2E954",
+     "15F6AFFE27BC79DC": "heap+54C2E954",
+     "54C53BF518BEF0ED": "heap+54A2E954",
+     "5D6D051AEA5D556D": "heap+4CE2D954",
+     "867B51C287259559": "heap+54A2E954",
+     "F89026442C938F06": "heap+54A2E954",
+     "FFD194436F8D3D2D": "heap+54A2E954"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Level 99",
+    "Level MAX"
+   ]
+  },
+  {
+   "id": "mem_level_50",
+   "name": "Seasoned",
+   "desc": "Reach level 50",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50,
+    "max": 990,
+    "builds": {
+     "0D0E5AAB66AD6795": "heap+54A2E954",
+     "0F4992D359C3B6DD": "heap+54A2E954",
+     "15F6AFFE27BC79DC": "heap+54C2E954",
+     "54C53BF518BEF0ED": "heap+54A2E954",
+     "5D6D051AEA5D556D": "heap+4CE2D954",
+     "867B51C287259559": "heap+54A2E954",
+     "F89026442C938F06": "heap+54A2E954",
+     "FFD194436F8D3D2D": "heap+54A2E954"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Level 99",
+    "Level MAX"
+   ]
+  },
+  {
+   "id": "mem_level_99",
+   "name": "Peak Form",
+   "desc": "Reach level 99",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 99,
+    "max": 990,
+    "builds": {
+     "0D0E5AAB66AD6795": "heap+54A2E954",
+     "0F4992D359C3B6DD": "heap+54A2E954",
+     "15F6AFFE27BC79DC": "heap+54C2E954",
+     "54C53BF518BEF0ED": "heap+54A2E954",
+     "5D6D051AEA5D556D": "heap+4CE2D954",
+     "867B51C287259559": "heap+54A2E954",
+     "F89026442C938F06": "heap+54A2E954",
+     "FFD194436F8D3D2D": "heap+54A2E954"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Level 99",
+    "Level MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Dragon Ball Xenoverse 2 v1.13  v1.15 by merlin555",
+  "Dragon Ball Xenoverse 2 for ver 1.16.1 by Patjenova v1.13.01",
+  "Dragon Ball Xenoverse 2 Version 1.14.01 by Patjenova",
+  "DRAGON BALL Xenoverse 2 for Nintendo Switch"
+ ]
+}

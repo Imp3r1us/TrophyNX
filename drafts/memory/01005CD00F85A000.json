@@ -1,0 +1,76 @@
+{
+ "title_id": "01005CD00F85A000",
+ "name": "Underhero",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_100",
+   "name": "Saving Up",
+   "desc": "Have 100 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "4630FBC60041C444": "[[[[[main+3D8DA40]+B8]]+E8]+2C8]+18",
+     "4C43A24535E79D47": "[[[[[main+3D9EB68]+B8]]+E8]+2C8]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold Max",
+    "Gold Max @arismendy64"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "4630FBC60041C444": "[[[[[main+3D8DA40]+B8]]+E8]+2C8]+18",
+     "4C43A24535E79D47": "[[[[[main+3D9EB68]+B8]]+E8]+2C8]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold Max",
+    "Gold Max @arismendy64"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "4630FBC60041C444": "[[[[[main+3D8DA40]+B8]]+E8]+2C8]+18",
+     "4C43A24535E79D47": "[[[[[main+3D9EB68]+B8]]+E8]+2C8]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold Max",
+    "Gold Max @arismendy64"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Underhero ver 1.0.3 by arismendy64 and ver 1.0.0 by ZIT"
+ ]
+}

@@ -47,7 +47,13 @@ at the root of the SD card. Then update from the app with ZL.
 Unlocks are permanent: if you later delete or overwrite a save, what you unlocked stays unlocked.
 When a game has several save slots, the best slot counts.
 
-## Live achievements while playing (BotW, experimental)
+## Live achievements while playing (experimental)
+
+Any game: `memory` rules watch a value at a known address (money, level…) for each game version, the way cheat
+codes find it, and unlock the moment it's reached. See [docs/custom-achievements.md](docs/custom-achievements.md#5b-live-achievements-from-memory-any-game);
+[`drafts/memory/`](drafts/memory/README.md) has unverified drafts for about 300 games made from switch-cheats-db.
+
+### Breath of the Wild
 
 `sys-trophynx` is a background module that does what RetroAchievements does on emulators:
 it watches the game's memory while you play and unlocks Breath of the Wild achievements the moment
@@ -126,6 +132,24 @@ Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come fro
   offsets are fixed).
 - Report of the last scan on close: `sdmc:/switch/TrophyNX/close_log.txt`; one summary line per scan in
   `live_log.txt` (`close scan: <game> - save read in 120 ms, 12/37 met, 2 new`).
+
+### Live save: popups while you play (every game with a save reader, experimental)
+
+The same achievements also pop up **in the game**, a few seconds after it saves, without closing it.
+A running game keeps its save mounted (locked), but each time it saves, the system writes the new state to the
+save's image in NAND (`User:/save/<SaveDataId>`). The module reads that image from the partition's raw sectors
+(read-only, it never opens the file, so it can't get in the game's way), parses the save container like
+hactool does (`source/saveimage.cpp`, `source/rawfat.cpp`) and runs the same rules as the scan on close.
+
+- About 20 s after the game starts, the module finds its save image (`live save: <game> - save image ...` in
+  `live_log.txt`). Then it checks the image's header every 4 seconds (a 32 KB read); when the game has saved,
+  it reads the save and unlocks what is met (`live save: <game> - save read in 80 ms, 12/37 met, 1 new`).
+- Only values from one complete save are trusted: if the game saves again while the module reads, it reads again.
+- Popups follow the game's own saves: autosave games are close to instant, games with manual saves show them
+  when you save. The scan on close still runs, as before.
+- `"live_save": false` in a definition turns it off for that game (it follows `close_scan` by default).
+- Report of the last read: `sdmc:/switch/TrophyNX/live_save_log.txt`. If the image can't be found or read, the log
+  says why and that game only gets popups on close.
 
 ### Save captures (record a game, share over Wi-Fi)
 
@@ -409,14 +433,30 @@ changed and drafts the achievements for you. Its **🌐 Share with everyone** bu
 ## Roadmap
 
 - More games ported from PC: their Switch save often keeps the PC format (Hollow Knight: same JSON, unencrypted), and the PC game's own achievement checks can be reused. Then games with documented save formats: Pokémon (PKHeX), Animal Crossing (NHSE), Mario Kart 8 Deluxe, Smash Ultimate.
-- Live memory watching for more games (TotK next: same idea, different flag layout).
+- Live memory watching for more games: `memory` rules (pointer chains) work for any game; TotK's flag layout next.
 - Export your unlocks to a web profile page.
 
 ## Credits
 
+- Memory rules (live achievements for any game): the idea of watching cheat-code values per build ID, the
+  `[[main+X]+Y]+Z` address syntax, the 3-checks-in-a-row rule and the wait before attaching come from
+  [HomeNX's achievement packs](https://github.com/ad3333m/homenx/blob/master/docs/achievement-packs.md) by ad3333m
+  (reimplemented here, no HomeNX code copied). Imported addresses come from the codes in
+  [switch-cheats-db](https://github.com/HamletDuFromage/switch-cheats-db), written by their respective cheat authors.
 - Live mode: BotW flag layout from the zeldaret/botw decompilation; `dmntcht.c/h` client from Atmosphère/EdiZon (GPLv2); popup layer technique from Tesla (libtesla); fallback toasts via Ultrahand's `.notify` files.
 
 - Save layouts and flag names come from [Marc Robledo's savegame editors](https://github.com/marcrobledo/savegame-editors). The BotW names were datamined by MrCheeze, and the TotK hashes were compiled by MacSpazzy, MrCheeze, savage13 and others.
 - Smash Ultimate offsets: [Ultimate-Smasher](https://github.com/CapitanRetraso/Ultimate-Smasher) by CapitanRetraso; MK8D offsets: [EdiZon configs](https://github.com/WerWolv/EdiZon_CheatsConfigsAndScripts) by Ac_K.
 - Built with [libnx](https://github.com/switchbrew/libnx), [stb](https://github.com/nothings/stb) (truetype, image) and [cJSON](https://github.com/DaveGamble/cJSON).
 - Uses the console's own system font.
+
+## License
+
+TrophyNX is free software under the **GNU General Public License, version 2 or (at your option) any later
+version** (see [LICENSE](LICENSE)). You can use, change and share it, including in your own projects, as long as
+you keep it open source under the same license and keep the credits: please mention TrophyNX and link to this
+repository.
+
+Parts written by others keep their own license: `sysmodule/source/dmntcht.c` and `sysmodule/include/dmntcht.h`
+(Atmosphère-NX, GPL version 2 only, so the built module is distributed under GPLv2), cJSON (MIT), stb (public
+domain / MIT) and libnx (ISC).

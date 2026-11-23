@@ -2535,18 +2535,50 @@ function autoByml(trees, diff, opts = {}) {
   return out;
 }
 
+// "memory" rules (include/memrules.h): "[[main+2D21A90]+20]+1C0" -> { region, offsets } or null.
+const MEM_TYPES = ['u8', 'u16', 'u32', 'u64', 's8', 's16', 's32', 's64', 'i8', 'i16', 'i32', 'i64', 'f32', 'f64', 'float', 'double'];
+const MEM_CMPS = ['>=', '>', '<=', '<', '==', '=', '!=', '&'];
+function parseMemAddress(text) {
+  const m = /^\s*(\[\s*)*(main|heap|alias)\s*(?:([+-])\s*(?:0x)?([0-9a-f]{1,16}))?((?:\s*\]\s*(?:[+-]\s*(?:0x)?[0-9a-f]{1,16})?)*)\s*$/i.exec(String(text));
+  if (!m) return null;
+  const depth = (String(text).match(/\[/g) || []).length;
+  const tail = [...(m[5] || '').matchAll(/\]\s*(?:([+-])\s*(?:0x)?([0-9a-f]{1,16}))?/gi)];
+  if (tail.length !== depth || depth > 16) return null;
+  const off = (sg, h) => h ? (sg === '-' ? -1n : 1n) * BigInt('0x' + h) : 0n;
+  return { region: m[2].toLowerCase(), offsets: [off(m[3], m[4]), ...tail.map(t => off(t[1], t[2]))] };
+}
+function formatMemAddress(a) {
+  const o = v => (v < 0n ? '-' : '+') + (v < 0n ? -v : v).toString(16).toUpperCase();
+  let s = '['.repeat(a.offsets.length - 1) + a.region + o(a.offsets[0]);
+  for (const v of a.offsets.slice(1)) s += ']' + (v ? o(v) : '');
+  return s;
+}
+function validateMemRule(id, r, errs) {
+  if (r.value_type !== undefined && !MEM_TYPES.includes(String(r.value_type).toLowerCase())) errs.push(id + ': value_type must be u8…u64, s8…s64, f32 or f64');
+  if (r.cmp !== undefined && !MEM_CMPS.includes(r.cmp)) errs.push(id + ': cmp must be >=, >, <=, <, ==, != or &');
+  const b = r.builds;
+  if (!b || typeof b !== 'object' || Array.isArray(b) || !Object.keys(b).length) { errs.push(id + T(': memory rule needs "builds": { "<build id>": "<address>" }', ' : une règle memory a besoin de "builds": { "<build id>": "<adresse>" }')); return; }
+  for (const [k, v] of Object.entries(b)) {
+    if (!/^[0-9A-Fa-f]{1,64}$/.test(k)) errs.push(id + ': build id “' + k + '” is not hex');
+    const list = Array.isArray(v) ? v : [v];
+    if (!list.length) errs.push(id + ': build ' + k + ' has no address');
+    for (const a of list) if (typeof a !== 'string' || !parseMemAddress(a)) errs.push(id + T(': malformed address “', ' : adresse mal formée « ') + a + T('” (main/heap/alias+offset, [ ] for pointers)', ' » (main/heap/alias+offset, [ ] pour les pointeurs)'));
+  }
+}
+
 // Validation like the app's parser: catches what the console would silently drop.
 function validate(def) {
   const errs = [];
   if (!/^[0-9A-Fa-f]{16}$/.test(def.title_id || '')) errs.push(T('title_id must be 16 hexadecimal characters', 'title_id doit faire 16 caractères hexadécimaux'));
   const ids = new Set();
-  const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches'];
+  const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches', 'memory'];
   for (const a of def.achievements || []) {
     if (!a.id) errs.push(T('an achievement has no id', 'un succès n\'a pas d\'id'));
     else if (ids.has(a.id)) errs.push(T('duplicate id: ', 'id en double : ') + a.id);
     ids.add(a.id);
     const r = a.rule || {};
     if (!types.includes(r.type)) { errs.push(a.id + T(': unknown rule type “', ' : type de règle inconnu « ') + r.type + T('”', ' »')); continue; }
+    if (r.type === 'memory') validateMemRule(a.id, r, errs);
     if (SAVE_TYPES.includes(r.type)) {
       const hasSrc = r.name || r.hash || (r.names && r.names.length) || r.pattern || r.offset !== undefined || (r.offsets && r.offsets.length) || r.path || (r.paths && r.paths.length);
       if (!hasSrc) errs.push(a.id + T(': needs an offset, a hash or a name', ' : il faut un offset, un hash ou un nom'));
@@ -2566,7 +2598,7 @@ function validate(def) {
 
 const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, zipStore, stripCommonPrefix, identify,
   parseHashTable, classify, KIND_LABEL, diffBinary, diffHash, searchValue, searchValueHash, extendSeries,
-  matchDictionary, evaluate, validate, autoAchievements, findByml, parseByml, parseJson, parseTree, TREE_READERS, TREE_FORMATS, treeFormat, parseGvas: F.parseGvas, parseNrbf: F.parseNrbf, flattenByml, queryByml, diffByml, searchValueByml, bymlGroupRule, bymlRuleValue, patternOf, findFlagGroups, findHashGroups, niceNum, niceBelow, compileRule, cFormat, extractStrings, detectHashTable };
+  matchDictionary, evaluate, validate, parseMemAddress, formatMemAddress, MEM_TYPES, autoAchievements, findByml, parseByml, parseJson, parseTree, TREE_READERS, TREE_FORMATS, treeFormat, parseGvas: F.parseGvas, parseNrbf: F.parseNrbf, flattenByml, queryByml, diffByml, searchValueByml, bymlGroupRule, bymlRuleValue, patternOf, findFlagGroups, findHashGroups, niceNum, niceBelow, compileRule, cFormat, extractStrings, detectHashTable };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveLab = api;
 })(typeof self !== 'undefined' ? self : this);
@@ -2720,7 +2752,7 @@ function draftRules(achievements, adv, fresh, opts = {}) {
   const out = [];
   for (const a of achievements) {
     const text = (a.displayName || '') + ' — ' + (a.description || '');
-    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden };
+    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden, percent: typeof a.percent === 'number' ? a.percent : undefined };
     if (NOT_SAVE.test(a.description || '') || /speedrun|steel_?soul/i.test(a.name || '')) { out.push({ ...base, confidence: 'skip', rule: null, why: 'needs a time limit, a mode or a condition not kept in saves' }); continue; }
     const at = achTokens(a);
     let totalW = 0;
@@ -2868,7 +2900,7 @@ function selfTracked(achievements, files) {
   for (const [t, g] of tpls) for (const [n, v] of g) if (!seenAll.has(n)) seenAll.set(n, { tpl: t, v });
   const strong = seenAll.size >= 5 && tpls.length === 1;
   const drafts = achievements.map(a => {
-    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden };
+    const base = { api: a.name, title: a.displayName || a.name, desc: a.description || '', hidden: !!a.hidden, percent: typeof a.percent === 'number' ? a.percent : undefined };
     const s = seenAll.get(a.name);
     const tpl = s ? s.tpl : best.tpl;
     const path = tpl.replace('{API}', a.name);
@@ -2879,6 +2911,13 @@ function selfTracked(achievements, files) {
       candidates: [{ path, score: strong ? 0.9 : 0.6, value: 0 }] };
   });
   return { file: best.file, drafts, found: seenAll.size };
+}
+
+// Points of a drafted achievement. With Steam's share of players who unlocked it: 20 % and more -> 10 (bronze),
+// 5 to 20 % -> 25 (silver), under 5 % -> 50 (gold). Without it (old caches, Save Lab lists): big targets and hidden ones 25, else 10.
+function pointsFor(d) {
+  if (typeof d.percent === 'number') return d.percent < 5 ? 50 : d.percent < 20 ? 25 : 10;
+  return (d.rule && d.rule.target >= 50) || d.hidden ? 25 : 10;
 }
 
 // Draft -> app definition (romfs/games format). Unknown keys (_draft, _api) are ignored by the app.
@@ -2892,8 +2931,9 @@ function buildDefinition(meta, drafts, opts = {}) {
     let id = slugId(d.api), k = 2;
     while (ids.has(id)) id = slugId(d.api) + '_' + k++;
     ids.add(id);
-    const a = { id, name: d.title, desc: d.desc || d.title, points: d.rule.target >= 50 || d.hidden ? 25 : 10, rule: d.rule, _draft: d.confidence, _api: d.api };
+    const a = { id, name: d.title, desc: d.desc || d.title, points: pointsFor(d), rule: d.rule, _draft: d.confidence, _api: d.api };
     if (d.hidden) a.hidden = true;
+    if (typeof d.percent === 'number') a._steam_percent = d.percent;
     achievements.push(a);
   }
   return { title_id: meta.title_id, name: meta.name, reader: meta.reader, save_files: meta.save_files || [], _steam_appid: meta.appid, _generated: 'pc2switch (review before use)', achievements };
@@ -2904,7 +2944,7 @@ function summary(drafts) {
   return c;
 }
 
-const api = { splitWords, stem, canon, tokens, titleKey, titleKeys, matchTitles, fieldsOf, draftRules, selfTracked, buildDefinition, summary, NOT_SAVE };
+const api = { pointsFor, splitWords, stem, canon, tokens, titleKey, titleKeys, matchTitles, fieldsOf, draftRules, selfTracked, buildDefinition, summary, NOT_SAVE };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.PC2Switch = api;
 })(typeof self !== 'undefined' ? self : this);

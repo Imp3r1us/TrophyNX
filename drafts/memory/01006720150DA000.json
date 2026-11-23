@@ -1,0 +1,68 @@
+{
+ "title_id": "01006720150DA000",
+ "name": "Amazing Princess Sarah",
+ "achievements": [
+  {
+   "id": "mem_level_125",
+   "name": "Getting Stronger",
+   "desc": "Reach level 125",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 125,
+    "max": 9990,
+    "builds": {
+     "E266127F36B0F24C": "[[[[main+3A6B758]+990]+78]+120]+2E8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Level"
+   ]
+  },
+  {
+   "id": "mem_level_250",
+   "name": "Seasoned",
+   "desc": "Reach level 250",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 250,
+    "max": 9990,
+    "builds": {
+     "E266127F36B0F24C": "[[[[main+3A6B758]+990]+78]+120]+2E8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Level"
+   ]
+  },
+  {
+   "id": "mem_level_500",
+   "name": "Peak Form",
+   "desc": "Reach level 500",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 9990,
+    "builds": {
+     "E266127F36B0F24C": "[[[[main+3A6B758]+990]+78]+120]+2E8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Level"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

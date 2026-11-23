@@ -1,0 +1,94 @@
+{
+ "title_id": "01009DE014D6E000",
+ "name": "METALLIC CHILD",
+ "achievements": [
+  {
+   "id": "mem_level_25",
+   "name": "Getting Stronger",
+   "desc": "Reach level 25 (any character or save slot)",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 25,
+    "max": 990,
+    "builds": {
+     "0E8F4C919CF90AA2": [
+      "[[[[[main+4573D98]+B8]+298]+550]+20]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+28]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+30]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+38]+58"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Core 1 Max Lvl. after Upgrade",
+    "Core 2 Max Lvl. after Upgrade",
+    "Core 3 Max Lvl. after Upgrade",
+    "Core 4 Max Lvl. after Upgrade"
+   ]
+  },
+  {
+   "id": "mem_level_50",
+   "name": "Seasoned",
+   "desc": "Reach level 50 (any character or save slot)",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50,
+    "max": 990,
+    "builds": {
+     "0E8F4C919CF90AA2": [
+      "[[[[[main+4573D98]+B8]+298]+550]+20]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+28]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+30]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+38]+58"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Core 1 Max Lvl. after Upgrade",
+    "Core 2 Max Lvl. after Upgrade",
+    "Core 3 Max Lvl. after Upgrade",
+    "Core 4 Max Lvl. after Upgrade"
+   ]
+  },
+  {
+   "id": "mem_level_99",
+   "name": "Peak Form",
+   "desc": "Reach level 99 (any character or save slot)",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 99,
+    "max": 990,
+    "builds": {
+     "0E8F4C919CF90AA2": [
+      "[[[[[main+4573D98]+B8]+298]+550]+20]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+28]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+30]+58",
+      "[[[[[main+4573D98]+B8]+298]+550]+38]+58"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Core 1 Max Lvl. after Upgrade",
+    "Core 2 Max Lvl. after Upgrade",
+    "Core 3 Max Lvl. after Upgrade",
+    "Core 4 Max Lvl. after Upgrade"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Metallic Child"
+ ]
+}

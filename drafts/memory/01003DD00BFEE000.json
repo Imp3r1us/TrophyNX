@@ -1,0 +1,70 @@
+{
+ "title_id": "01003DD00BFEE000",
+ "name": "Airheart - Tales of broken Wings",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "803F74B0BC347D44": "[[[[[[main+33A8F98]+A0]]+18]+10]+18]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999 money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "803F74B0BC347D44": "[[[[[[main+33A8F98]+A0]]+18]+10]+18]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999 money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "803F74B0BC347D44": "[[[[[[main+33A8F98]+A0]]+18]+10]+18]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999 money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Airheart Tales of broken Wings by arismendy64"
+ ]
+}

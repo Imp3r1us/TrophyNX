@@ -1,0 +1,50 @@
+{
+ "title_id": "0100FD101186C000",
+ "name": "Life is Strange 2",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_100",
+   "name": "Well Off",
+   "desc": "Have 100 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 100000,
+    "builds": {
+     "BF0088C59D7E97C0": "[[[[[main+2AAAEC8]+1B8]+10]+20]+30]+D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 100000,
+    "builds": {
+     "BF0088C59D7E97C0": "[[[[[main+2AAAEC8]+1B8]+10]+20]+30]+D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Life is Strange 2"
+ ]
+}

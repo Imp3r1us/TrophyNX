@@ -1,0 +1,71 @@
+{
+ "title_id": "0100E95004038000",
+ "name": "Xenoblade Chronicles 2",
+ "achievements": [
+  {
+   "id": "mem_currency_crystals_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 crystals",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "D007651BC7C6A51E": "[main+C284D8]+10AD5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Ether crystals MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_crystals_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 crystals",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "D007651BC7C6A51E": "[main+C284D8]+10AD5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Ether crystals MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_crystals_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 crystals",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "D007651BC7C6A51E": "[main+C284D8]+10AD5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Ether crystals MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Xenoblade Chronicles 2 ver 2.1.0 by Marcus9",
+  "Xenoblade Chronicles 2"
+ ]
+}

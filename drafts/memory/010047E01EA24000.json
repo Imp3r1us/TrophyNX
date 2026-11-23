@@ -1,0 +1,70 @@
+{
+ "title_id": "010047E01EA24000",
+ "name": "Star Overdrive",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 100000000,
+    "builds": {
+     "C0D9B410A09A4ADD": "[[[[main+776E1E8]+30]+B0]+48]+2A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money/Crystal 10000000"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 100000000,
+    "builds": {
+     "C0D9B410A09A4ADD": "[[[[main+776E1E8]+30]+B0]+48]+2A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money/Crystal 10000000"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 100000000,
+    "builds": {
+     "C0D9B410A09A4ADD": "[[[[main+776E1E8]+30]+B0]+48]+2A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money/Crystal 10000000"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Star Overdrive"
+ ]
+}

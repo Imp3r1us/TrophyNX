@@ -1,0 +1,48 @@
+{
+ "title_id": "0100EFC00EFB2000",
+ "name": "0100EFC00EFB2000",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_500",
+   "name": "Well Off",
+   "desc": "Have 500 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 500000,
+    "builds": {
+     "4C1E8F555E6B88DA": "heap+25280F8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_5000",
+   "name": "Rolling In It",
+   "desc": "Have 5,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 500000,
+    "builds": {
+     "4C1E8F555E6B88DA": "heap+25280F8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

@@ -1,0 +1,113 @@
+{
+ "title_id": "01006FE013472000",
+ "name": "Mario Party Superstars",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Party Starter",
+   "desc": "Launch Mario Party Superstars 15 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_2",
+   "name": "Minigame Rookie",
+   "desc": "Play Mario Party Superstars for 2 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 2
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Star Hunter",
+   "desc": "Play Mario Party Superstars for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_30",
+   "name": "Superstar",
+   "desc": "Play Mario Party Superstars for 30 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 30
+   }
+  },
+  {
+   "id": "mem_currency_coins_100",
+   "name": "Saving Up",
+   "desc": "Have 100 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "0413A570BF2B3AA7": "[[[[main+1608760]+8B8]+328]+30]+10",
+     "2841E26D7FB8AA17": "[[[[main+1608760]+8B8]+328]+30]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "0413A570BF2B3AA7": "[[[[main+1608760]+8B8]+328]+30]+10",
+     "2841E26D7FB8AA17": "[[[[main+1608760]+8B8]+328]+30]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "0413A570BF2B3AA7": "[[[[main+1608760]+8B8]+328]+30]+10",
+     "2841E26D7FB8AA17": "[[[[main+1608760]+8B8]+328]+30]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf. Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

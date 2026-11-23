@@ -1,0 +1,80 @@
+{
+ "title_id": "0100D7800E9E0000",
+ "name": "Trials of Mana",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "74A7B4B505977CA5": "[[[[main+5F5ECD8]+8]+600]+68]+3A6C",
+     "92C25172D38DFEDB": "[[[[main+5F5ECD8]+8]+600]+68]+3F1C",
+     "9E66575BDC49EC40": "[[[[main+5FDDCD8]+8]+600]+68]+3A6C",
+     "E419DA6F3BF16A1C": "[[[[main+5FDCCD8]+8]+600]+68]+3A6C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "74A7B4B505977CA5": "[[[[main+5F5ECD8]+8]+600]+68]+3A6C",
+     "92C25172D38DFEDB": "[[[[main+5F5ECD8]+8]+600]+68]+3F1C",
+     "9E66575BDC49EC40": "[[[[main+5FDDCD8]+8]+600]+68]+3A6C",
+     "E419DA6F3BF16A1C": "[[[[main+5FDCCD8]+8]+600]+68]+3A6C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "74A7B4B505977CA5": "[[[[main+5F5ECD8]+8]+600]+68]+3A6C",
+     "92C25172D38DFEDB": "[[[[main+5F5ECD8]+8]+600]+68]+3F1C",
+     "9E66575BDC49EC40": "[[[[main+5FDDCD8]+8]+600]+68]+3A6C",
+     "E419DA6F3BF16A1C": "[[[[main+5FDCCD8]+8]+600]+68]+3A6C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Trails of mana Version 1.0.0 and 1.0.1 By patjenova ver 1.1.0 by arismendy64 and DPyro latest updated by Snakes13x",
+  "Trials of Mana"
+ ]
+}

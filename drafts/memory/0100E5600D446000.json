@@ -1,0 +1,152 @@
+{
+ "title_id": "0100E5600D446000",
+ "name": "Ni no Kuni: Wrath of the White Witch",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "45F10C499223A9E4": "[heap+6E1387D0]+890",
+     "C32B29CB5FBA96D9": [
+      "heap+6DD39080",
+      "heap+6DD3C210"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money",
+    "inf Money",
+    "Max Money 99 999 999"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "45F10C499223A9E4": "[heap+6E1387D0]+890",
+     "C32B29CB5FBA96D9": [
+      "heap+6DD39080",
+      "heap+6DD3C210"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money",
+    "inf Money",
+    "Max Money 99 999 999"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "45F10C499223A9E4": "[heap+6E1387D0]+890",
+     "C32B29CB5FBA96D9": [
+      "heap+6DD39080",
+      "heap+6DD3C210"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money",
+    "inf Money",
+    "Max Money 99 999 999"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "45F10C499223A9E4": "heap+6E13EF30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999999 Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "45F10C499223A9E4": "heap+6E13EF30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999999 Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "45F10C499223A9E4": "heap+6E13EF30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999999 Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Ni No Kuni ver 1.0,2 by patjenova and merlin555",
+  "Ni no Kuni Wrath of the White Witch"
+ ],
+ "_notes": [
+  "currency coins: value 9999 too small or odd for tiers, skipped"
+ ]
+}

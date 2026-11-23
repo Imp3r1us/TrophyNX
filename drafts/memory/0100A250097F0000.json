@@ -1,0 +1,134 @@
+{
+ "title_id": "0100A250097F0000",
+ "name": "DRAGON BALL FighterZ",
+ "achievements": [
+  {
+   "id": "mem_level_25",
+   "name": "Getting Stronger",
+   "desc": "Reach level 25 (any character or save slot)",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 25,
+    "max": 1000,
+    "builds": {
+     "CD53729B7AE2D794": [
+      "[main+524F958]+884C",
+      "[main+524F958]+88A0",
+      "[main+524F958]+88F4",
+      "[main+524F958]+8948",
+      "[main+524F958]+899C",
+      "[main+524F958]+89F0",
+      "[main+524F958]+8A44",
+      "[main+524F958]+8A98",
+      "[main+524F958]+8B40",
+      "[main+524F958]+8B94",
+      "[main+524F958]+8BE8",
+      "[main+524F958]+8C3C",
+      "[main+524F958]+8C90",
+      "[main+524F958]+8CE4",
+      "[main+524F958]+8D38"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Piccolo - Level 100",
+    "Gohan (Adult) - Level 100",
+    "Krillin - Level 100",
+    "Yamcha - Level 100",
+    "Tien - Level 100",
+    "Majin Buu - Level 100"
+   ]
+  },
+  {
+   "id": "mem_level_50",
+   "name": "Seasoned",
+   "desc": "Reach level 50 (any character or save slot)",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50,
+    "max": 1000,
+    "builds": {
+     "CD53729B7AE2D794": [
+      "[main+524F958]+884C",
+      "[main+524F958]+88A0",
+      "[main+524F958]+88F4",
+      "[main+524F958]+8948",
+      "[main+524F958]+899C",
+      "[main+524F958]+89F0",
+      "[main+524F958]+8A44",
+      "[main+524F958]+8A98",
+      "[main+524F958]+8B40",
+      "[main+524F958]+8B94",
+      "[main+524F958]+8BE8",
+      "[main+524F958]+8C3C",
+      "[main+524F958]+8C90",
+      "[main+524F958]+8CE4",
+      "[main+524F958]+8D38"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Piccolo - Level 100",
+    "Gohan (Adult) - Level 100",
+    "Krillin - Level 100",
+    "Yamcha - Level 100",
+    "Tien - Level 100",
+    "Majin Buu - Level 100"
+   ]
+  },
+  {
+   "id": "mem_level_100",
+   "name": "Peak Form",
+   "desc": "Reach level 100 (any character or save slot)",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 1000,
+    "builds": {
+     "CD53729B7AE2D794": [
+      "[main+524F958]+884C",
+      "[main+524F958]+88A0",
+      "[main+524F958]+88F4",
+      "[main+524F958]+8948",
+      "[main+524F958]+899C",
+      "[main+524F958]+89F0",
+      "[main+524F958]+8A44",
+      "[main+524F958]+8A98",
+      "[main+524F958]+8B40",
+      "[main+524F958]+8B94",
+      "[main+524F958]+8BE8",
+      "[main+524F958]+8C3C",
+      "[main+524F958]+8C90",
+      "[main+524F958]+8CE4",
+      "[main+524F958]+8D38"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Piccolo - Level 100",
+    "Gohan (Adult) - Level 100",
+    "Krillin - Level 100",
+    "Yamcha - Level 100",
+    "Tien - Level 100",
+    "Majin Buu - Level 100"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Dragon Ball Fighterz ver 1.19 and 1.25 by Patjenova and 1.20 by arismendy64",
+  "DRAGON BALL FIGHTERZ"
+ ]
+}

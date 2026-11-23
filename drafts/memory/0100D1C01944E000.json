@@ -1,0 +1,68 @@
+{
+ "title_id": "0100D1C01944E000",
+ "name": "The Smile Alchemist",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "22ECADB47F6E0D1F": "[[[[[[main+606FB18]+B8]]+10]+50]+20]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "22ECADB47F6E0D1F": "[[[[[[main+606FB18]+B8]]+10]+50]+20]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "22ECADB47F6E0D1F": "[[[[[[main+606FB18]+B8]]+10]+50]+20]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

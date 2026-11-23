@@ -12,7 +12,17 @@
 #include <cstring>
 #include <ctime>
 
-extern "C" char* fake_heap_end;   // end of the module's fixed heap (main.cpp)
+extern "C" char* fake_heap_end;   // current end of the module heap (heap.cpp: 2 MB idle, 4 MB when it could grow)
+
+// Free bytes in the heap as it is now (free blocks + never used tail), minus a safety margin.
+size_t moduleMemoryAvailable() {
+    struct mallinfo mi = mallinfo();
+    char* top = (char*)sbrk(0);
+    size_t tail = (top && fake_heap_end > top) ? (size_t)(fake_heap_end - top) : 0;
+    size_t total = (size_t)mi.fordblks + tail;
+    const size_t margin = 192 * 1024;
+    return total > margin ? total - margin : 0;
+}
 
 // ---------------------------------------------------------------- save access
 // Streaming source: small reads, never more in memory than the heap can take.
@@ -61,15 +71,7 @@ public:
         if (!fileSize(rel, size) || size + 64 * 1024 > memoryAvailable()) return false;
         return readFile(path(rel), out);
     }
-    // Free bytes in the fixed heap (free blocks + never used tail), minus a safety margin.
-    size_t memoryAvailable() override {
-        struct mallinfo mi = mallinfo();
-        char* top = (char*)sbrk(0);
-        size_t tail = (top && fake_heap_end > top) ? (size_t)(fake_heap_end - top) : 0;
-        size_t total = (size_t)mi.fordblks + tail;
-        const size_t margin = 192 * 1024;
-        return total > margin ? total - margin : 0;
-    }
+    size_t memoryAvailable() override { return moduleMemoryAvailable(); }
 
 private:
     std::string path(const std::string& rel) const { return "acsave:/" + rel; }
@@ -107,7 +109,7 @@ static bool containsNoCase(const char* hay, const char* needle) {
     return false;
 }
 
-static bool findDef(uint64_t tid, GameDef& out, std::string& source, void (*logf)(const char*, ...)) {
+bool findDef(uint64_t tid, GameDef& out, std::string& source, void (*logf)(const char*, ...)) {
     std::string err;
     bool found = builtinDef(tid, out, err);
     if (found) source = "built-in";
@@ -128,33 +130,14 @@ static bool findDef(uint64_t tid, GameDef& out, std::string& source, void (*logf
     return found;
 }
 
-// ---------------------------------------------------------------- scan
-CloseScanResult closeScan(uint64_t tid, const AccountUid& uid, void (*logf)(const char*, ...)) {
-    GameDef def;
-    std::string defSource;
-    if (!findDef(tid, def, defSource, logf)) return CS_SKIPPED;   // no definition: nothing to read
-    if (def.reader.empty()) return CS_SKIPPED;                     // play-log achievements only (the app handles them)
-    if (!def.closeScan) { logf("close scan: %016llX skipped (\"close_scan\": false)", (unsigned long long)tid); return CS_SKIPPED; }
-
-    Game g;
-    g.id = tid;
-    g.name = def.name;
-    applyGameDef(g, def);
+// ---------------------------------------------------------------- unlocks
+int unlockMet(const Game& g, const GameDef& def, const std::string& defSource, const AccountUid& uid, const char* tag,
+              unsigned long long ms, const char* reportName, void (*logf)(const char*, ...)) {
+    const bool live = strcmp(tag, "live") == 0;
     std::string user = userKeyOf(uid);
-    u64 t0 = armGetSystemTick();
-    {
-        SysSaveSource src(uid);
-        evaluateSave(g, src);
-        if (g.saveStatus == SaveStatus::NoSave && src.lastRc() != 0x7D402) {
-            logf("close scan: %s - %s", def.name.c_str(), src.lastError().c_str());
-            return CS_LOCKED;
-        }
-    }
-    u64 ms = armTicksToNs(armGetSystemTick() - t0) / 1000000;
-
     // Unlock what is met (re-read the store right before writing: the app or the live mode may have changed it)
     char prefix[24];
-    snprintf(prefix, sizeof(prefix), "%016llX/", (unsigned long long)tid);
+    snprintf(prefix, sizeof(prefix), "%016llX/", (unsigned long long)g.id);
     std::map<std::string, uint64_t> store = loadStore(user);
     std::vector<const Achievement*> fresh;
     int met = 0, saveAchs = 0;
@@ -172,23 +155,23 @@ CloseScanResult closeScan(uint64_t tid, const AccountUid& uid, void (*logf)(cons
     if (!fresh.empty()) saveStore(user, store);
 
     // Full report for the X debug view / troubleshooting, overwritten each time
-    std::string rep = "Scan on close: " + def.name + " (definition: " + defSource + ", user " + user + ")\n";
+    std::string rep = std::string(live ? "Live save read: " : "Scan on close: ") + def.name + " (definition: " + defSource + ", user " + user + ")\n";
     for (const std::string& l : g.debug) rep += l + "\n";
     for (const Achievement* a : fresh) rep += "NEW UNLOCK: " + a->id + " (" + a->name + ")\n";
-    writeFile(dataDir() + "/close_log.txt", rep);
+    writeFile(dataDir() + "/" + reportName, rep);
 
     const char* status = g.saveStatus == SaveStatus::Ok ? "save read" : g.saveStatus == SaveStatus::NoSave ? "no save" : "save NOT recognised";
-    logf("close scan: %s - %s in %llu ms, %d/%d met, %u new", def.name.c_str(), status, (unsigned long long)ms, met, saveAchs,
-         (unsigned)fresh.size());
+    logf("%s: %s - %s in %llu ms, %d/%d met, %u new", live ? "live save" : "close scan", def.name.c_str(), status, ms, met,
+         saveAchs, (unsigned)fresh.size());
 
     // Popups: a first scan of an advanced save can unlock dozens at once -> 3 cards + a summary
     const size_t SHOW = fresh.size() > 4 ? 3 : fresh.size();
     for (size_t i = 0; i < fresh.size(); i++) {
         const Achievement& a = *fresh[i];
-        logf("UNLOCKED %s (%s) value %g >= %g [on close]", a.id.c_str(), a.name.c_str(), a.value, a.rule.target);
+        logf("UNLOCKED %s (%s) value %g >= %g [%s]", a.id.c_str(), a.name.c_str(), a.value, a.rule.target, tag);
         if (i >= SHOW) continue;
         PopupRequest pr;
-        pr.titleId = tid; pr.achId = a.id; pr.title = a.name; pr.desc = a.desc; pr.game = def.name;
+        pr.titleId = g.id; pr.achId = a.id; pr.title = a.name; pr.desc = a.desc; pr.game = def.name;
         pr.points = a.points; pr.tier = popupTierFor(a.tier.empty() ? nullptr : a.tier.c_str(), a.points);
         popupEnqueue(pr);
     }
@@ -198,9 +181,35 @@ CloseScanResult closeScan(uint64_t tid, const AccountUid& uid, void (*logf)(cons
         for (size_t i = SHOW; i < fresh.size(); i++) pts += fresh[i]->points;
         char t[64];
         snprintf(t, sizeof(t), "+%u more achievements", (unsigned)(fresh.size() - SHOW));
-        pr.titleId = tid; pr.achId = "_summary"; pr.title = t; pr.desc = "Open TrophyNX to see them all";
+        pr.titleId = g.id; pr.achId = "_summary"; pr.title = t; pr.desc = "Open TrophyNX to see them all";
         pr.game = def.name; pr.points = pts; pr.tier = popupTierFor(nullptr, 0);
         popupEnqueue(pr);
     }
+    return (int)fresh.size();
+}
+
+// ---------------------------------------------------------------- scan
+CloseScanResult closeScan(uint64_t tid, const AccountUid& uid, void (*logf)(const char*, ...)) {
+    GameDef def;
+    std::string defSource;
+    if (!findDef(tid, def, defSource, logf)) return CS_SKIPPED;   // no definition: nothing to read
+    if (def.reader.empty()) return CS_SKIPPED;                     // play-log achievements only (the app handles them)
+    if (!def.closeScan) { logf("close scan: %016llX skipped (\"close_scan\": false)", (unsigned long long)tid); return CS_SKIPPED; }
+
+    Game g;
+    g.id = tid;
+    g.name = def.name;
+    applyGameDef(g, def);
+    u64 t0 = armGetSystemTick();
+    {
+        SysSaveSource src(uid);
+        evaluateSave(g, src);
+        if (g.saveStatus == SaveStatus::NoSave && src.lastRc() != 0x7D402) {
+            logf("close scan: %s - %s", def.name.c_str(), src.lastError().c_str());
+            return CS_LOCKED;
+        }
+    }
+    u64 ms = armTicksToNs(armGetSystemTick() - t0) / 1000000;
+    unlockMet(g, def, defSource, uid, "on close", ms, "close_log.txt", logf);
     return CS_DONE;
 }

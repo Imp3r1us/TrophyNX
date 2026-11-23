@@ -1,0 +1,70 @@
+{
+ "title_id": "0100C3E00D68E000",
+ "name": "Deep Sky Derelicts: Definitive Edition",
+ "achievements": [
+  {
+   "id": "mem_currency_money_500",
+   "name": "Saving Up",
+   "desc": "Have 500 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 8888880,
+    "builds": {
+     "CB90194ECED68B43": "[[[main+4035E40]+2198]+E8]+5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money jericoss v 1.0.0"
+   ]
+  },
+  {
+   "id": "mem_currency_money_5000",
+   "name": "Well Off",
+   "desc": "Have 5,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 8888880,
+    "builds": {
+     "CB90194ECED68B43": "[[[main+4035E40]+2198]+E8]+5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money jericoss v 1.0.0"
+   ]
+  },
+  {
+   "id": "mem_currency_money_50000",
+   "name": "Rolling In It",
+   "desc": "Have 50,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50000,
+    "max": 8888880,
+    "builds": {
+     "CB90194ECED68B43": "[[[main+4035E40]+2198]+E8]+5C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money jericoss v 1.0.0"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Deep Sky Derelicts Definitive Edition ver 1.0.0 by jericoos"
+ ]
+}

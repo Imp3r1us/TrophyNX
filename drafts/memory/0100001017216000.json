@@ -1,0 +1,70 @@
+{
+ "title_id": "0100001017216000",
+ "name": "Labyrinth of Galleria: The Moon Society",
+ "achievements": [
+  {
+   "id": "mem_currency_silver_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 silver",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "5B8A84D880998114": "heap+881A6C4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Silver Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_silver_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 silver",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "5B8A84D880998114": "heap+881A6C4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Silver Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_silver_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 silver",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "5B8A84D880998114": "heap+881A6C4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf.Silver Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Labyrinth of Galleria - The Moon Society"
+ ]
+}

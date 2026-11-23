@@ -1,0 +1,70 @@
+{
+ "title_id": "010048F007ADE000",
+ "name": "Tangledeep",
+ "achievements": [
+  {
+   "id": "mem_currency_money_100",
+   "name": "Saving Up",
+   "desc": "Have 100 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "AB6322343406634A": "[[[[[main+3DDD688]+48]+608]+98]+A0]+2E8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "AB6322343406634A": "[[[[[main+3DDD688]+48]+608]+98]+A0]+2E8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "AB6322343406634A": "[[[[[main+3DDD688]+48]+608]+98]+A0]+2E8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Tangledeep ver 1.1.0"
+ ]
+}

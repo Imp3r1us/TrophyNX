@@ -1,0 +1,70 @@
+{
+ "title_id": "010072900AFF0000",
+ "name": "Gear.Club Unlimited 2",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 1000000000,
+    "builds": {
+     "0A547E79E76C8849": "[[[[main+5DA79A0]+340]+60]+D0]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 1000000000,
+    "builds": {
+     "0A547E79E76C8849": "[[[[main+5DA79A0]+340]+60]+D0]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 1000000000,
+    "builds": {
+     "0A547E79E76C8849": "[[[[main+5DA79A0]+340]+60]+D0]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Gear Club Unlimited 2 ver 1.7.0 by merlin555 and jericoss"
+ ]
+}

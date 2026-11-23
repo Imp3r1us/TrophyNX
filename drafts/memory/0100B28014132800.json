@@ -1,0 +1,70 @@
+{
+ "title_id": "0100B28014132800",
+ "name": "SAMURAI WARRIORS 5",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "AEA6B2652EA9E34B": "heap+1E2A444"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "AEA6B2652EA9E34B": "heap+1E2A444"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "AEA6B2652EA9E34B": "heap+1E2A444"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "SAMURAI WARRIORS 5 ver 1.0.1 and 1.0.2 by xtatu and Bekim"
+ ]
+}

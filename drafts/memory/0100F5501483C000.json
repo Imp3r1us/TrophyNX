@@ -1,0 +1,68 @@
+{
+ "title_id": "0100F5501483C000",
+ "name": "Rift Adventure",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "05E742A660D46B42": "[[[main+2BFCDC0]+B8]]+6C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "05E742A660D46B42": "[[[main+2BFCDC0]+B8]]+6C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "05E742A660D46B42": "[[[main+2BFCDC0]+B8]]+6C"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

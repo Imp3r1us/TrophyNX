@@ -1,0 +1,136 @@
+{
+ "title_id": "0100DCA0064A6000",
+ "name": "Luigi's Mansion 3",
+ "reader": "",
+ "save_files": [],
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Last Resort Check-In",
+   "desc": "Launch Luigi's Mansion 3 10 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Bellhop",
+   "desc": "Play Luigi's Mansion 3 for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Floor Clearer",
+   "desc": "Play Luigi's Mansion 3 for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Hotel Manager",
+   "desc": "Play Luigi's Mansion 3 for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  },
+  {
+   "id": "mem_currency_money_100",
+   "name": "Saving Up",
+   "desc": "Have 100 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "075AD583A1603F84": "[main+19273E0]+3868",
+     "486F6A3B2D6BCF5C": [
+      "[main+19273E0]+3868",
+      "heap+1911B320"
+     ],
+     "788DD38AD97F1D12": "[main+19B6610]+38E8",
+     "79E5950FFA85ACF6": "[main+19D0940]+38F8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX",
+    "999,999 Money",
+    "999999 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "075AD583A1603F84": "[main+19273E0]+3868",
+     "486F6A3B2D6BCF5C": [
+      "[main+19273E0]+3868",
+      "heap+1911B320"
+     ],
+     "788DD38AD97F1D12": "[main+19B6610]+38E8",
+     "79E5950FFA85ACF6": "[main+19D0940]+38F8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX",
+    "999,999 Money",
+    "999999 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "075AD583A1603F84": "[main+19273E0]+3868",
+     "486F6A3B2D6BCF5C": [
+      "[main+19273E0]+3868",
+      "heap+1911B320"
+     ],
+     "788DD38AD97F1D12": "[main+19B6610]+38E8",
+     "79E5950FFA85ACF6": "[main+19D0940]+38F8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX",
+    "999,999 Money",
+    "999999 Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Luigi's Mansion 3 ver 1.0 made by merlin555 and Zit866 ver 1.2.1 by RyuSeisuke1992 ver1.3.1 patjenova ver 1.4.0 by Patjenova"
+ ]
+}

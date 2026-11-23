@@ -1,0 +1,100 @@
+{
+ "title_id": "01007250089F8000",
+ "name": "LoveR Kiss",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "6A508FAE5EE5A625": [
+      "[[main+6142C8]+80]+134",
+      "[[main+6142C8]+80]+178"
+     ],
+     "EB388107C2C7630A": [
+      "[[main+6152F8]+80]+134",
+      "[[main+6152F8]+80]+178"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Summer Coin Max v1.01",
+    "Love Coin Max v1.01",
+    "Summer Coin Max v1.02",
+    "Love Coin Max v1.02"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "6A508FAE5EE5A625": [
+      "[[main+6142C8]+80]+134",
+      "[[main+6142C8]+80]+178"
+     ],
+     "EB388107C2C7630A": [
+      "[[main+6152F8]+80]+134",
+      "[[main+6152F8]+80]+178"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Summer Coin Max v1.01",
+    "Love Coin Max v1.01",
+    "Summer Coin Max v1.02",
+    "Love Coin Max v1.02"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "6A508FAE5EE5A625": [
+      "[[main+6142C8]+80]+134",
+      "[[main+6142C8]+80]+178"
+     ],
+     "EB388107C2C7630A": [
+      "[[main+6152F8]+80]+134",
+      "[[main+6152F8]+80]+178"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Summer Coin Max v1.01",
+    "Love Coin Max v1.01",
+    "Summer Coin Max v1.02",
+    "Love Coin Max v1.02"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "LoveR Kiss ver 1.0.3 by misaki4545"
+ ]
+}

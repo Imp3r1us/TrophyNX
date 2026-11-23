@@ -1139,18 +1139,50 @@ function autoByml(trees, diff, opts = {}) {
   return out;
 }
 
+// "memory" rules (include/memrules.h): "[[main+2D21A90]+20]+1C0" -> { region, offsets } or null.
+const MEM_TYPES = ['u8', 'u16', 'u32', 'u64', 's8', 's16', 's32', 's64', 'i8', 'i16', 'i32', 'i64', 'f32', 'f64', 'float', 'double'];
+const MEM_CMPS = ['>=', '>', '<=', '<', '==', '=', '!=', '&'];
+function parseMemAddress(text) {
+  const m = /^\s*(\[\s*)*(main|heap|alias)\s*(?:([+-])\s*(?:0x)?([0-9a-f]{1,16}))?((?:\s*\]\s*(?:[+-]\s*(?:0x)?[0-9a-f]{1,16})?)*)\s*$/i.exec(String(text));
+  if (!m) return null;
+  const depth = (String(text).match(/\[/g) || []).length;
+  const tail = [...(m[5] || '').matchAll(/\]\s*(?:([+-])\s*(?:0x)?([0-9a-f]{1,16}))?/gi)];
+  if (tail.length !== depth || depth > 16) return null;
+  const off = (sg, h) => h ? (sg === '-' ? -1n : 1n) * BigInt('0x' + h) : 0n;
+  return { region: m[2].toLowerCase(), offsets: [off(m[3], m[4]), ...tail.map(t => off(t[1], t[2]))] };
+}
+function formatMemAddress(a) {
+  const o = v => (v < 0n ? '-' : '+') + (v < 0n ? -v : v).toString(16).toUpperCase();
+  let s = '['.repeat(a.offsets.length - 1) + a.region + o(a.offsets[0]);
+  for (const v of a.offsets.slice(1)) s += ']' + (v ? o(v) : '');
+  return s;
+}
+function validateMemRule(id, r, errs) {
+  if (r.value_type !== undefined && !MEM_TYPES.includes(String(r.value_type).toLowerCase())) errs.push(id + ': value_type must be u8…u64, s8…s64, f32 or f64');
+  if (r.cmp !== undefined && !MEM_CMPS.includes(r.cmp)) errs.push(id + ': cmp must be >=, >, <=, <, ==, != or &');
+  const b = r.builds;
+  if (!b || typeof b !== 'object' || Array.isArray(b) || !Object.keys(b).length) { errs.push(id + T(': memory rule needs "builds": { "<build id>": "<address>" }', ' : une règle memory a besoin de "builds": { "<build id>": "<adresse>" }')); return; }
+  for (const [k, v] of Object.entries(b)) {
+    if (!/^[0-9A-Fa-f]{1,64}$/.test(k)) errs.push(id + ': build id “' + k + '” is not hex');
+    const list = Array.isArray(v) ? v : [v];
+    if (!list.length) errs.push(id + ': build ' + k + ' has no address');
+    for (const a of list) if (typeof a !== 'string' || !parseMemAddress(a)) errs.push(id + T(': malformed address “', ' : adresse mal formée « ') + a + T('” (main/heap/alias+offset, [ ] for pointers)', ' » (main/heap/alias+offset, [ ] pour les pointeurs)'));
+  }
+}
+
 // Validation like the app's parser: catches what the console would silently drop.
 function validate(def) {
   const errs = [];
   if (!/^[0-9A-Fa-f]{16}$/.test(def.title_id || '')) errs.push(T('title_id must be 16 hexadecimal characters', 'title_id doit faire 16 caractères hexadécimaux'));
   const ids = new Set();
-  const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches'];
+  const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches', 'memory'];
   for (const a of def.achievements || []) {
     if (!a.id) errs.push(T('an achievement has no id', 'un succès n\'a pas d\'id'));
     else if (ids.has(a.id)) errs.push(T('duplicate id: ', 'id en double : ') + a.id);
     ids.add(a.id);
     const r = a.rule || {};
     if (!types.includes(r.type)) { errs.push(a.id + T(': unknown rule type “', ' : type de règle inconnu « ') + r.type + T('”', ' »')); continue; }
+    if (r.type === 'memory') validateMemRule(a.id, r, errs);
     if (SAVE_TYPES.includes(r.type)) {
       const hasSrc = r.name || r.hash || (r.names && r.names.length) || r.pattern || r.offset !== undefined || (r.offsets && r.offsets.length) || r.path || (r.paths && r.paths.length);
       if (!hasSrc) errs.push(a.id + T(': needs an offset, a hash or a name', ' : il faut un offset, un hash ou un nom'));
@@ -1170,7 +1202,7 @@ function validate(def) {
 
 const api = { crc32, murmur3, fnv1a, HASHES, hex, hexOff, rd, rdF32, entropy, unzip, zipStore, stripCommonPrefix, identify,
   parseHashTable, classify, KIND_LABEL, diffBinary, diffHash, searchValue, searchValueHash, extendSeries,
-  matchDictionary, evaluate, validate, autoAchievements, findByml, parseByml, parseJson, parseTree, TREE_READERS, TREE_FORMATS, treeFormat, parseGvas: F.parseGvas, parseNrbf: F.parseNrbf, flattenByml, queryByml, diffByml, searchValueByml, bymlGroupRule, bymlRuleValue, patternOf, findFlagGroups, findHashGroups, niceNum, niceBelow, compileRule, cFormat, extractStrings, detectHashTable };
+  matchDictionary, evaluate, validate, parseMemAddress, formatMemAddress, MEM_TYPES, autoAchievements, findByml, parseByml, parseJson, parseTree, TREE_READERS, TREE_FORMATS, treeFormat, parseGvas: F.parseGvas, parseNrbf: F.parseNrbf, flattenByml, queryByml, diffByml, searchValueByml, bymlGroupRule, bymlRuleValue, patternOf, findFlagGroups, findHashGroups, niceNum, niceBelow, compileRule, cFormat, extractStrings, detectHashTable };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveLab = api;
 })(typeof self !== 'undefined' ? self : this);

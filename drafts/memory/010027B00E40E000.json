@@ -1,0 +1,83 @@
+{
+ "title_id": "010027B00E40E000",
+ "name": "Ashen",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "663E05AB067861EC": [
+      "[[[[[main+5B2B340]+110]+288]+C0]+20]+1E8",
+      "[[[[main+623B7D8]+B0]+160]+80]+1E8"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 Money",
+    "inf money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "663E05AB067861EC": [
+      "[[[[[main+5B2B340]+110]+288]+C0]+20]+1E8",
+      "[[[[main+623B7D8]+B0]+160]+80]+1E8"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 Money",
+    "inf money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "663E05AB067861EC": [
+      "[[[[[main+5B2B340]+110]+288]+C0]+20]+1E8",
+      "[[[[main+623B7D8]+B0]+160]+80]+1E8"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999999 Money",
+    "inf money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Ashen ver1.00 by patjenova",
+  "Ashen"
+ ]
+}

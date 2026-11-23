@@ -1,0 +1,70 @@
+{
+ "title_id": "010050101127C000",
+ "name": "The Persistence",
+ "achievements": [
+  {
+   "id": "mem_currency_tokens_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 tokens",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "4D1C7699D3FE0E32": "[[[[main+5030A18]+D0]+120]]+22B8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "o Infinite/Max Erubus Tokens"
+   ]
+  },
+  {
+   "id": "mem_currency_tokens_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 tokens",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "4D1C7699D3FE0E32": "[[[[main+5030A18]+D0]+120]]+22B8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "o Infinite/Max Erubus Tokens"
+   ]
+  },
+  {
+   "id": "mem_currency_tokens_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 tokens",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "4D1C7699D3FE0E32": "[[[[main+5030A18]+D0]+120]]+22B8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "o Infinite/Max Erubus Tokens"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "The Persistence by Spider-man"
+ ]
+}

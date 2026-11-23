@@ -1,0 +1,106 @@
+{
+ "title_id": "010013800BE2C000",
+ "name": "Magic Scroll Tactics",
+ "achievements": [
+  {
+   "id": "mem_level_25",
+   "name": "Getting Stronger",
+   "desc": "Reach level 25 (any character or save slot)",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 25,
+    "max": 990,
+    "builds": {
+     "E4473CEEDCC3CC4F": [
+      "[[[[[main+24B8260]+A0]]+28]+20]+28",
+      "[[[[[main+24B8260]+A0]]+28]+28]+28",
+      "[[[[[main+24B8260]+A0]]+28]+30]+28",
+      "[[[[[main+24B8260]+A0]]+28]+38]+28",
+      "[[[[[main+24B8260]+A0]]+28]+40]+28",
+      "[[[[main+24B8260]+A0]]+18]+28"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Nash Lv 99",
+    "P2 Lv 99",
+    "P3 Lv 99",
+    "P4 Lv 99",
+    "P5 Lv 99",
+    "P6 Lv 99"
+   ]
+  },
+  {
+   "id": "mem_level_50",
+   "name": "Seasoned",
+   "desc": "Reach level 50 (any character or save slot)",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50,
+    "max": 990,
+    "builds": {
+     "E4473CEEDCC3CC4F": [
+      "[[[[[main+24B8260]+A0]]+28]+20]+28",
+      "[[[[[main+24B8260]+A0]]+28]+28]+28",
+      "[[[[[main+24B8260]+A0]]+28]+30]+28",
+      "[[[[[main+24B8260]+A0]]+28]+38]+28",
+      "[[[[[main+24B8260]+A0]]+28]+40]+28",
+      "[[[[main+24B8260]+A0]]+18]+28"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Nash Lv 99",
+    "P2 Lv 99",
+    "P3 Lv 99",
+    "P4 Lv 99",
+    "P5 Lv 99",
+    "P6 Lv 99"
+   ]
+  },
+  {
+   "id": "mem_level_99",
+   "name": "Peak Form",
+   "desc": "Reach level 99 (any character or save slot)",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 99,
+    "max": 990,
+    "builds": {
+     "E4473CEEDCC3CC4F": [
+      "[[[[[main+24B8260]+A0]]+28]+20]+28",
+      "[[[[[main+24B8260]+A0]]+28]+28]+28",
+      "[[[[[main+24B8260]+A0]]+28]+30]+28",
+      "[[[[[main+24B8260]+A0]]+28]+38]+28",
+      "[[[[[main+24B8260]+A0]]+28]+40]+28",
+      "[[[[main+24B8260]+A0]]+18]+28"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "P1 Nash Lv 99",
+    "P2 Lv 99",
+    "P3 Lv 99",
+    "P4 Lv 99",
+    "P5 Lv 99",
+    "P6 Lv 99"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Magic Scroll Tactics ver 1.0.0 by jhmiller"
+ ]
+}

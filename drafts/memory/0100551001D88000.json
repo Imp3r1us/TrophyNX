@@ -1,0 +1,70 @@
+{
+ "title_id": "0100551001D88000",
+ "name": "Battle Chasers: Nightwar",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 42949630020327030,
+    "builds": {
+     "D0222F29AB9BB64C": "[[[[main+327F5A0]+A0]]+78]+28"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 42949630020327030,
+    "builds": {
+     "D0222F29AB9BB64C": "[[[[main+327F5A0]+A0]]+78]+28"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 42949630020327030,
+    "builds": {
+     "D0222F29AB9BB64C": "[[[[main+327F5A0]+A0]]+78]+28"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Money MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Battle Chasers - Nightwar ver 1.0.2 by merlin555 and arismendy64"
+ ]
+}

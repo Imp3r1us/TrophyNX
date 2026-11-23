@@ -1,0 +1,75 @@
+{
+ "title_id": "0100B04011742000",
+ "name": "Monster Hunter Rise",
+ "achievements": [
+  {
+   "id": "mem_currency_zenny_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 Zenny",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 24369860185868790,
+    "builds": {
+     "C9A3DD7702075ECD": "[[main+12A6D7C0]+58]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Zenny & Total Zenny Obtained 567405 (On GC Page 4)"
+   ]
+  },
+  {
+   "id": "mem_currency_zenny_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 Zenny",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 24369860185868790,
+    "builds": {
+     "C9A3DD7702075ECD": "[[main+12A6D7C0]+58]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Zenny & Total Zenny Obtained 567405 (On GC Page 4)"
+   ]
+  },
+  {
+   "id": "mem_currency_zenny_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 Zenny",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 24369860185868790,
+    "builds": {
+     "C9A3DD7702075ECD": "[[main+12A6D7C0]+58]+18"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Zenny & Total Zenny Obtained 567405 (On GC Page 4)"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Monster Hunter Rise ver 1.0.0 by xtatu and hanson and chworden",
+  "Monster Hunter Rise ver 1.0.0 by xtatu and hanson",
+  "Monster Hunter Rise ver 3.0.0 and 3.0.1 and 3.3.1 by xtatu and 3.2.0 updated by hazerou",
+  "Monster Hunter Rise ver 1.0.0 and 1.1.1 by xtatu and hanson and bbhark and TomSwitch",
+  "Monster Hunter Rise ver 2.0.0 by TomSwitch and Hazerou",
+  "Monster Hunter Rise"
+ ]
+}

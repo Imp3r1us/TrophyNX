@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "platform.h"
+#include "memrules.h"
 
 enum class RuleType {
     // Save-based (reader "gamedata_hash": BotW-style u32 hash / u32 value pairs)
@@ -20,6 +21,8 @@ enum class RuleType {
     GamesPlayed,
     TotalHours,
     UnlockedTotal,
+    // Live: a value in the running game's memory (memrules.h), checked by the background module only
+    Memory,
 };
 
 struct Rule {
@@ -39,6 +42,8 @@ struct Rule {
     std::vector<std::string> paths;
     bool hasEqualsStr = false;  // byml/json: matched values must equal this (string, number, true/false)
     std::string equalsStr;
+    // "memory": per-build addresses, value type and comparison (target/max are copied into it)
+    mem::Condition mem;
 };
 
 struct Achievement {

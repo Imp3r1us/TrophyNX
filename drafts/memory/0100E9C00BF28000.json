@@ -1,0 +1,70 @@
+{
+ "title_id": "0100E9C00BF28000",
+ "name": "Jikkyou Powerful Pro Yakyuu",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999999990,
+    "builds": {
+     "859A3A3D296D44E8": "[main+3445D20]+14464"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "MY LIFE MONEY 999,999,999"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999999990,
+    "builds": {
+     "859A3A3D296D44E8": "[main+3445D20]+14464"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "MY LIFE MONEY 999,999,999"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 9999999990,
+    "builds": {
+     "859A3A3D296D44E8": "[main+3445D20]+14464"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "MY LIFE MONEY 999,999,999"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Jikkyou Powerful Pro Yakyuu Ver. 1.0.4 Jap by R1N08GAM1"
+ ]
+}

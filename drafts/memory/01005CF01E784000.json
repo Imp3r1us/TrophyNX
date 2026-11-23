@@ -1,0 +1,88 @@
+{
+ "title_id": "01005CF01E784000",
+ "name": "Teenage Mutant Ninja Turtles: Splintered Fate",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_100",
+   "name": "Saving Up",
+   "desc": "Have 100 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 1000000,
+    "builds": {
+     "97793A447CDBB675": [
+      "[[[[[main+21F79210]+10]+30]+20]+128]+C",
+      "[[[[[main+21F79210]+10]+30]+20]+2D70]+C",
+      "[[[[[main+21F79210]+10]+30]+20]+2DC0]+C"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin",
+    "dragon coin",
+    "dreamer coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 1000000,
+    "builds": {
+     "97793A447CDBB675": [
+      "[[[[[main+21F79210]+10]+30]+20]+128]+C",
+      "[[[[[main+21F79210]+10]+30]+20]+2D70]+C",
+      "[[[[[main+21F79210]+10]+30]+20]+2DC0]+C"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin",
+    "dragon coin",
+    "dreamer coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "f32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 1000000,
+    "builds": {
+     "97793A447CDBB675": [
+      "[[[[[main+21F79210]+10]+30]+20]+128]+C",
+      "[[[[[main+21F79210]+10]+30]+20]+2D70]+C",
+      "[[[[[main+21F79210]+10]+30]+20]+2DC0]+C"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin",
+    "dragon coin",
+    "dreamer coin"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Teenage Mutant Ninja Turtles Splintered Fate"
+ ]
+}

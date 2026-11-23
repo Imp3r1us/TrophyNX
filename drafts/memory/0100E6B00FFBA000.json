@@ -1,0 +1,50 @@
+{
+ "title_id": "0100E6B00FFBA000",
+ "name": "King Lucas",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_100",
+   "name": "Well Off",
+   "desc": "Have 100 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 100000,
+    "builds": {
+     "EA5BA579F77A014A": "[[[[main+2D26A88]+A0]+30]+B8]+30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coin MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 100000,
+    "builds": {
+     "EA5BA579F77A014A": "[[[[main+2D26A88]+A0]+30]+B8]+30"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Coin MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "King Lucas by ZiT866"
+ ]
+}

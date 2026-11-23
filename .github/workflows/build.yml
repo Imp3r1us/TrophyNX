@@ -37,19 +37,35 @@ jobs:
           python3 tools/deltarune/make_test_save.py /tmp/drsave
           /tmp/test_deltarune /tmp/drsave
           # THEATRHYTHM reader (AES + raw DEFLATE + MessagePack) on synthetic saves (dummy password), with sanitizers
-          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_theatrhythm.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_theatrhythm
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_theatrhythm.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_theatrhythm
           # ASan + the runners' high-entropy ASLR loops on "DEADLYSIGNAL": run without ASLR, or UBSan only if that is refused
           if ! timeout 300 setarch "$(uname -m)" -R /tmp/test_theatrhythm; then
             echo "ASan run failed or ASLR could not be disabled: retrying with UBSan only"
-            g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_theatrhythm.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_theatrhythm_ub
+            g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_theatrhythm.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_theatrhythm_ub
             timeout 300 /tmp/test_theatrhythm_ub
+          fi
+      - name: Host test (memory rules)
+        run: |
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_memrules.cpp source/memrules.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_memrules
+          if ! timeout 300 setarch "$(uname -m)" -R /tmp/test_memrules; then
+            echo "ASan run failed or ASLR could not be disabled: retrying with UBSan only"
+            g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_memrules.cpp source/memrules.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_memrules_ub
+            timeout 300 /tmp/test_memrules_ub
           fi
       - name: Host test (scan on close = same values as the app)
         run: |
           apt-get install -y -qq python3 >/dev/null
-          g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_stream.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_stream
+          g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_stream.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_stream
           python3 host/test/gen_saves.py /tmp/streamroot romfs/games
           /tmp/test_stream romfs/games /tmp/streamroot/saves
+      - name: Host test (live save = save image read from raw NAND while the game runs)
+        run: |
+          apt-get install -y -qq python3 >/dev/null
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_saveimage.cpp source/saveimage.cpp source/rawfat.cpp source/sha256.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_saveimage
+          python3 host/test/make_save_image.py /tmp/img1
+          python3 host/test/make_save_image.py /tmp/img2 --header-b --v4 --seed 7
+          python3 host/test/make_save_image.py /tmp/img3 --seed 3
+          /tmp/test_saveimage /tmp/img1 /tmp/img2 /tmp/img3
       - name: Host test (save captures + Wi-Fi share server)
         run: |
           apt-get install -y -qq curl >/dev/null || true

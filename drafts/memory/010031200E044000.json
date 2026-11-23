@@ -1,0 +1,73 @@
+{
+ "title_id": "010031200E044000",
+ "name": "Two Point Hospital™",
+ "achievements": [
+  {
+   "id": "mem_currency_cash_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 cash",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "13265E4EBA0F0D41": "[[[[[main+6F66EB0]+B8]]+28]+110]+A8",
+     "296658DE5EF59049": "[[[[[main+76ACC68]+B8]+30]+A0]+30]+A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999999 Cash"
+   ]
+  },
+  {
+   "id": "mem_currency_cash_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 cash",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "13265E4EBA0F0D41": "[[[[[main+6F66EB0]+B8]]+28]+110]+A8",
+     "296658DE5EF59049": "[[[[[main+76ACC68]+B8]+30]+A0]+30]+A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999999 Cash"
+   ]
+  },
+  {
+   "id": "mem_currency_cash_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 cash",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "13265E4EBA0F0D41": "[[[[[main+6F66EB0]+B8]]+28]+110]+A8",
+     "296658DE5EF59049": "[[[[[main+76ACC68]+B8]+30]+A0]+30]+A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999999 Cash"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Two Point Hospital by lionheartwolf ver 1.0.11 by patjenova ver 1.0.3 xtatu and 1.0.4 by merlin555"
+ ]
+}

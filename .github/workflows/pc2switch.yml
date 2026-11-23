@@ -49,12 +49,19 @@ jobs:
       - name: Tests
         run: |
           node tools/pc2switch/test/test_pc2switch.js
+          node tools/cheats2memory/test/test_import.js
           node tools/savelab/test/test_engine.js
           node tools/savelab/test/test_formats.js
       - name: Catalogue
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
         run: node tools/pc2switch/catalog.js --max-schemas "${{ github.event.inputs.max_schemas || '3000' }}"
+      - name: Memory drafts from cheat codes (switch-cheats-db)
+        run: |
+          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/HamletDuFromage/switch-cheats-db.git /tmp/cheatsdb
+          git -C /tmp/cheatsdb sparse-checkout set --no-cone '/cheats/*'
+          rm -rf drafts/memory
+          node tools/cheats2memory/import.js /tmp/cheatsdb
       - name: PC saves of the most played games (GitHub)
         if: github.event_name == 'schedule' || github.event.inputs.harvest == 'true'
         env:

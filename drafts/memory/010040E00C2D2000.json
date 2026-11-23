@@ -1,0 +1,146 @@
+{
+ "title_id": "010040E00C2D2000",
+ "name": "Marenian Tavern Story: Patty and the Hungry God",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "E81CF49793D37844": "[[[main+21AB070]+A0]]+330"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "E81CF49793D37844": "[[[main+21AB070]+A0]]+330"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "E81CF49793D37844": "[[[main+21AB070]+A0]]+330"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_level_125",
+   "name": "Getting Stronger",
+   "desc": "Reach level 125 (any character or save slot)",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 125,
+    "max": 9990,
+    "builds": {
+     "E81CF49793D37844": [
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+20]+70]+18]+18",
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+28]+70]+18]+18",
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+30]+70]+18]+18"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv (1P)",
+    "Max Lv (2P)",
+    "Max Lv (3P)] 000003E7"
+   ]
+  },
+  {
+   "id": "mem_level_250",
+   "name": "Seasoned",
+   "desc": "Reach level 250 (any character or save slot)",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 250,
+    "max": 9990,
+    "builds": {
+     "E81CF49793D37844": [
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+20]+70]+18]+18",
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+28]+70]+18]+18",
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+30]+70]+18]+18"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv (1P)",
+    "Max Lv (2P)",
+    "Max Lv (3P)] 000003E7"
+   ]
+  },
+  {
+   "id": "mem_level_500",
+   "name": "Peak Form",
+   "desc": "Reach level 500 (any character or save slot)",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 9990,
+    "builds": {
+     "E81CF49793D37844": [
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+20]+70]+18]+18",
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+28]+70]+18]+18",
+      "[[[[[[[[main+21AD710]+A0]]+48]+38]+30]+70]+18]+18"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv (1P)",
+    "Max Lv (2P)",
+    "Max Lv (3P)] 000003E7"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

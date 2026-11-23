@@ -1,0 +1,89 @@
+{
+ "title_id": "0100ABF008968000",
+ "name": "Pokemon Sword",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "4628A512B1D93D37": "heap+45072DF4",
+     "479BD2B581F4BC6A": "heap+45072DF4",
+     "5A7EEBF172343616": "heap+4506AE04",
+     "8DAFEDBB5BE81C2C": "heap+4293AE34",
+     "A3B75BCD3311385A": "heap+45072DF4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money (v1.3.1)",
+    "999999 money",
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "4628A512B1D93D37": "heap+45072DF4",
+     "479BD2B581F4BC6A": "heap+45072DF4",
+     "5A7EEBF172343616": "heap+4506AE04",
+     "8DAFEDBB5BE81C2C": "heap+4293AE34",
+     "A3B75BCD3311385A": "heap+45072DF4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money (v1.3.1)",
+    "999999 money",
+    "Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "4628A512B1D93D37": "heap+45072DF4",
+     "479BD2B581F4BC6A": "heap+45072DF4",
+     "5A7EEBF172343616": "heap+4506AE04",
+     "8DAFEDBB5BE81C2C": "heap+4293AE34",
+     "A3B75BCD3311385A": "heap+45072DF4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money (v1.3.1)",
+    "999999 money",
+    "Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Pokemon Sword ver 1.3.2 by Patjenova v1.0.0 by Stoned and patjenova and Zit866 ver 1.3.0 by patjeona",
+  "Pokemon Shield by Stoned"
+ ]
+}

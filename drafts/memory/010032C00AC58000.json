@@ -1,0 +1,71 @@
+{
+ "title_id": "010032C00AC58000",
+ "name": "Dragon's Dogma: Dark Arisen",
+ "achievements": [
+  {
+   "id": "mem_currency_money_5000",
+   "name": "Saving Up",
+   "desc": "Have 5,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 88888880,
+    "builds": {
+     "ED2C2056AF00B1C7": "[main+1027100]+31EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 8888888"
+   ]
+  },
+  {
+   "id": "mem_currency_money_50000",
+   "name": "Well Off",
+   "desc": "Have 50,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50000,
+    "max": 88888880,
+    "builds": {
+     "ED2C2056AF00B1C7": "[main+1027100]+31EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 8888888"
+   ]
+  },
+  {
+   "id": "mem_currency_money_500000",
+   "name": "Rolling In It",
+   "desc": "Have 500,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500000,
+    "max": 88888880,
+    "builds": {
+     "ED2C2056AF00B1C7": "[main+1027100]+31EC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "*Inf Money 8888888"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Hero Must Die Again ver 1.0.0 by jericoos",
+  "Dragon's Dogma Dark Arisen"
+ ]
+}

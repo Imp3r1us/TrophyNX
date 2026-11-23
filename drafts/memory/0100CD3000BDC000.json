@@ -1,0 +1,143 @@
+{
+ "title_id": "0100CD3000BDC000",
+ "name": "Dragon Quest Heroes I",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "5C598E5025BF97BC": "heap+8714CDE8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money for DQH 1"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "5C598E5025BF97BC": "heap+8714CDE8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money for DQH 1"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "5C598E5025BF97BC": "heap+8714CDE8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Money for DQH 1"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "BF91B9E86FF34541": [
+      "[main+2731CB8]-30EC0",
+      "heap+962604AC"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold Max",
+    "GOLD MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "BF91B9E86FF34541": [
+      "[main+2731CB8]-30EC0",
+      "heap+962604AC"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold Max",
+    "GOLD MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "BF91B9E86FF34541": [
+      "[main+2731CB8]-30EC0",
+      "heap+962604AC"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Gold Max",
+    "GOLD MAX"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Dragon Quest Heroes I ver 1.0.3 by Eiffel2018 ",
+  "Dragon Quest Heroes I and II by ZiT866"
+ ]
+}

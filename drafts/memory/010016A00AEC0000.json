@@ -1,0 +1,71 @@
+{
+ "title_id": "010016A00AEC0000",
+ "name": "WARRIORS OROCHI 4",
+ "achievements": [
+  {
+   "id": "mem_currency_gems_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 gems",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "5C9CCD358BE85FC9": "heap+122D40DC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999 Gems"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 gems",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "5C9CCD358BE85FC9": "heap+122D40DC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999 Gems"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 gems",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "5C9CCD358BE85FC9": "heap+122D40DC"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "999 Gems"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Warriors Orochi 4 USA version ver 1.0.5 and 1.0.13 by Stoned",
+  "WARRIORS OROCHI 4"
+ ]
+}

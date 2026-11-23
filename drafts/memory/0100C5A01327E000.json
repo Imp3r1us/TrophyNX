@@ -1,0 +1,50 @@
+{
+ "title_id": "0100C5A01327E000",
+ "name": "The Legend of Ninja 1.0.0",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_100",
+   "name": "Well Off",
+   "desc": "Have 100 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 100000,
+    "builds": {
+     "3BF0514D5FC82E4E": "[[[[main+35B3E40]+B8]]+18]+20"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 100000,
+    "builds": {
+     "3BF0514D5FC82E4E": "[[[[main+35B3E40]+B8]]+18]+20"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Coin"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "The Legend of Ninja 1.0.0 by ZiT"
+ ]
+}

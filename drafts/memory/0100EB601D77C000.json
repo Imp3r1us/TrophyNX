@@ -1,0 +1,68 @@
+{
+ "title_id": "0100EB601D77C000",
+ "name": "Doll Explorer",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "8551F33A28808C97": "[[main+3E771D0]+B8]+68"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "8551F33A28808C97": "[[main+3E771D0]+B8]+68"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "8551F33A28808C97": "[[main+3E771D0]+B8]+68"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

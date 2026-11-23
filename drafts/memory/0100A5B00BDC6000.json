@@ -1,0 +1,60 @@
+{
+ "title_id": "0100A5B00BDC6000",
+ "name": "FINAL FANTASY VII",
+ "achievements": [
+  {
+   "id": "mem_currency_gil_500",
+   "name": "Well Off",
+   "desc": "Have 500 Gil",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 655350,
+    "builds": {
+     "99B42A70EC0234B5": [
+      "heap+6387C6C8",
+      "heap+6920BCB4"
+     ],
+     "CA4ED0693797F529": "heap+7715BCB4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gil",
+    "GIL Max After Battle"
+   ]
+  },
+  {
+   "id": "mem_currency_gil_5000",
+   "name": "Rolling In It",
+   "desc": "Have 5,000 Gil",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 655350,
+    "builds": {
+     "99B42A70EC0234B5": [
+      "heap+6387C6C8",
+      "heap+6920BCB4"
+     ],
+     "CA4ED0693797F529": "heap+7715BCB4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gil",
+    "GIL Max After Battle"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Final Fantasy VII ver. 1.0.1 by lionheartwolf 1.2.0 by Patjenova"
+ ]
+}

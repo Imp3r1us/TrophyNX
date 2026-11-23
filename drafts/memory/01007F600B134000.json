@@ -1,0 +1,73 @@
+{
+ "title_id": "01007F600B134000",
+ "name": "Assassin's Creed® III: Remastered",
+ "achievements": [
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 9999990,
+    "builds": {
+     "4E2BD0A86A253F9F": "[[[[[[[[[[[[main+3AB66F0]+20]+D0]+18]+C8]+40]+F8]]+B0]]+18]]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite / Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 9999990,
+    "builds": {
+     "4E2BD0A86A253F9F": "[[[[[[[[[[[[main+3AB66F0]+20]+D0]+18]+C8]+40]+F8]]+B0]]+18]]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite / Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 9999990,
+    "builds": {
+     "4E2BD0A86A253F9F": "[[[[[[[[[[[[main+3AB66F0]+20]+D0]+18]+C8]+40]+F8]]+B0]]+18]]+10"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite / Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "ASSASSINS CREED LIBERATION by SpiderMan",
+  "Assassin's Creed III Remastered by MijeNs",
+  "Assasins Creed",
+  "Assassin's Creed III Remastered"
+ ]
+}

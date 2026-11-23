@@ -1,0 +1,71 @@
+{
+ "title_id": "010077B00E046000",
+ "name": "Spyro™ Reignited Trilogy",
+ "achievements": [
+  {
+   "id": "mem_currency_gems_500",
+   "name": "Saving Up",
+   "desc": "Have 500 gems",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 6000000,
+    "builds": {
+     "D2775FAFCF4835CB": "[main+616E400]+2C4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "600000 gems"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_5000",
+   "name": "Well Off",
+   "desc": "Have 5,000 gems",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 5000,
+    "max": 6000000,
+    "builds": {
+     "D2775FAFCF4835CB": "[main+616E400]+2C4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "600000 gems"
+   ]
+  },
+  {
+   "id": "mem_currency_gems_50000",
+   "name": "Rolling In It",
+   "desc": "Have 50,000 gems",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 50000,
+    "max": 6000000,
+    "builds": {
+     "D2775FAFCF4835CB": "[main+616E400]+2C4"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "600000 gems"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Spyro Reignited v1.0.1 by Smoker1 wiitendo84 and patjenova",
+  "Spyro Reignited Trilogy"
+ ]
+}

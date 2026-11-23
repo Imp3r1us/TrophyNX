@@ -1,0 +1,70 @@
+{
+ "title_id": "0100916011210000",
+ "name": "Cloudpunk",
+ "achievements": [
+  {
+   "id": "mem_currency_coin_1000",
+   "name": "Saving Up",
+   "desc": "Have 1,000 coins",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 10000000,
+    "builds": {
+     "AD212FE48BD0EE4F": "[[[main+33F4468]+B8]]+4D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_10000",
+   "name": "Well Off",
+   "desc": "Have 10,000 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 10000000,
+    "builds": {
+     "AD212FE48BD0EE4F": "[[[main+33F4468]+B8]]+4D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin"
+   ]
+  },
+  {
+   "id": "mem_currency_coin_100000",
+   "name": "Rolling In It",
+   "desc": "Have 100,000 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 10000000,
+    "builds": {
+     "AD212FE48BD0EE4F": "[[[main+33F4468]+B8]]+4D0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "coin"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Cloudpunk by TomSwitch"
+ ]
+}

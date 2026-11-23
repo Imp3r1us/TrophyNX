@@ -1,0 +1,146 @@
+{
+ "title_id": "0100AE101D3E4000",
+ "name": "0100AE101D3E4000",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "381EC011EC77CF29": "[[[main+365B198]+B8]]+A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "381EC011EC77CF29": "[[[main+365B198]+B8]]+A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "381EC011EC77CF29": "[[[main+365B198]+B8]]+A8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max G"
+   ]
+  },
+  {
+   "id": "mem_level_125",
+   "name": "Getting Stronger",
+   "desc": "Reach level 125 (any character or save slot)",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 125,
+    "max": 9990,
+    "builds": {
+     "381EC011EC77CF29": [
+      "[[[[[main+365A9B8]+B8]]+40]+20]+24",
+      "[[[[[main+365A9B8]+B8]]+40]+28]+24",
+      "[[[[[main+365A9B8]+B8]]+40]+30]+24"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv (1P)",
+    "Max Lv (2P)",
+    "Max Lv (3P)"
+   ]
+  },
+  {
+   "id": "mem_level_250",
+   "name": "Seasoned",
+   "desc": "Reach level 250 (any character or save slot)",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 250,
+    "max": 9990,
+    "builds": {
+     "381EC011EC77CF29": [
+      "[[[[[main+365A9B8]+B8]]+40]+20]+24",
+      "[[[[[main+365A9B8]+B8]]+40]+28]+24",
+      "[[[[[main+365A9B8]+B8]]+40]+30]+24"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv (1P)",
+    "Max Lv (2P)",
+    "Max Lv (3P)"
+   ]
+  },
+  {
+   "id": "mem_level_500",
+   "name": "Peak Form",
+   "desc": "Reach level 500 (any character or save slot)",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 9990,
+    "builds": {
+     "381EC011EC77CF29": [
+      "[[[[[main+365A9B8]+B8]]+40]+20]+24",
+      "[[[[[main+365A9B8]+B8]]+40]+28]+24",
+      "[[[[[main+365A9B8]+B8]]+40]+30]+24"
+     ]
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv (1P)",
+    "Max Lv (2P)",
+    "Max Lv (3P)"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": []
+}

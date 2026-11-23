@@ -1,0 +1,71 @@
+{
+ "title_id": "010049000B69E000",
+ "name": "Black Future '88",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "6B058D50FDCEDB4A": "[[[[[[main+3F01C00]+10]+5C0]+90]+18]+18]+170"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "6B058D50FDCEDB4A": "[[[[[[main+3F01C00]+10]+5C0]+90]+18]+18]+170"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "6B058D50FDCEDB4A": "[[[[[[main+3F01C00]+10]+5C0]+90]+18]+18]+170"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Black Future 88 ver 1.0.0 by ZiT",
+  "Black Future 88 v1.0.0 and v1.0.2 by DaBlackDeath"
+ ]
+}

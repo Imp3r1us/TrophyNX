@@ -1,0 +1,70 @@
+{
+ "title_id": "01001B10068EC000",
+ "name": "Urban Trial Playground",
+ "achievements": [
+  {
+   "id": "mem_currency_money_100",
+   "name": "Saving Up",
+   "desc": "Have 100 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100,
+    "max": 999990,
+    "builds": {
+     "1CAA05A4630E7769": "[[[[main+528AD80]+50]+3D8]+200]+C8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000",
+   "name": "Well Off",
+   "desc": "Have 1,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000,
+    "max": 999990,
+    "builds": {
+     "1CAA05A4630E7769": "[[[[main+528AD80]+50]+3D8]+200]+C8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Rolling In It",
+   "desc": "Have 10,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999990,
+    "builds": {
+     "1CAA05A4630E7769": "[[[[main+528AD80]+50]+3D8]+200]+C8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99999 Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Urban Trial Playground ver 1.4.0 by smoker"
+ ]
+}

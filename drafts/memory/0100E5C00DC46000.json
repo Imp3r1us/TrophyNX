@@ -1,0 +1,50 @@
+{
+ "title_id": "0100E5C00DC46000",
+ "name": "Ultracore",
+ "achievements": [
+  {
+   "id": "mem_currency_coins_250",
+   "name": "Well Off",
+   "desc": "Have 250 coins",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u16",
+    "cmp": ">=",
+    "target": 250,
+    "max": 391770,
+    "builds": {
+     "13082AAB64BDB509": "heap+2156844"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Coins"
+   ]
+  },
+  {
+   "id": "mem_currency_coins_2500",
+   "name": "Rolling In It",
+   "desc": "Have 2,500 coins",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u16",
+    "cmp": ">=",
+    "target": 2500,
+    "max": 391770,
+    "builds": {
+     "13082AAB64BDB509": "heap+2156844"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Inf Coins"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Ultracore ver 1.0.0 by ZiT"
+ ]
+}

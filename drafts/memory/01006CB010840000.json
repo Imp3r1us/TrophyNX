@@ -1,0 +1,77 @@
+{
+ "title_id": "01006CB010840000",
+ "name": "Oceanhorn 2: Knights of the Lost Realm",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "53CE4DC2FB6423A2": "[[[[main+5331BC8]+678]+10]+28]+ED0",
+     "E5E739813C69B5A6": "[[[[main+5331F28]+678]+10]+28]+ED0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold @arismendy64",
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "53CE4DC2FB6423A2": "[[[[main+5331BC8]+678]+10]+28]+ED0",
+     "E5E739813C69B5A6": "[[[[main+5331F28]+678]+10]+28]+ED0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold @arismendy64",
+    "Max Gold"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "53CE4DC2FB6423A2": "[[[[main+5331BC8]+678]+10]+28]+ED0",
+     "E5E739813C69B5A6": "[[[[main+5331F28]+678]+10]+28]+ED0"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Gold @arismendy64",
+    "Max Gold"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Oceanhorn 2 ver 1.0.0 by Patjenova and CJB ver 1.1 by arismendy64",
+  "Oceanhorn 2 Knights of the Lost Realm"
+ ]
+}

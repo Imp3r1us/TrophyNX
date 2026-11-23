@@ -1,0 +1,74 @@
+{
+ "title_id": "010018100CD46000",
+ "name": "Resident Evil 5",
+ "achievements": [
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 999999990,
+    "builds": {
+     "C517ECBB79DE9733": "heap+81A0320"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite/Max Money",
+    "- Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 999999990,
+    "builds": {
+     "C517ECBB79DE9733": "heap+81A0320"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite/Max Money",
+    "- Max Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 999999990,
+    "builds": {
+     "C517ECBB79DE9733": "heap+81A0320"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Infinite/Max Money",
+    "- Max Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Resident Evil 5 by Retroboy",
+  "Resident Evil 5"
+ ]
+}

@@ -1,0 +1,70 @@
+{
+ "title_id": "01008A6009758000",
+ "name": "Fairune Collection",
+ "achievements": [
+  {
+   "id": "mem_level_125",
+   "name": "Getting Stronger",
+   "desc": "Reach level 125",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 125,
+    "max": 9990,
+    "builds": {
+     "EA5C70AF7F4D8A4F": "[[[[main+21B4860]+148]+70]+38]+C8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv"
+   ]
+  },
+  {
+   "id": "mem_level_250",
+   "name": "Seasoned",
+   "desc": "Reach level 250",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 250,
+    "max": 9990,
+    "builds": {
+     "EA5C70AF7F4D8A4F": "[[[[main+21B4860]+148]+70]+38]+C8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv"
+   ]
+  },
+  {
+   "id": "mem_level_500",
+   "name": "Peak Form",
+   "desc": "Reach level 500",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 500,
+    "max": 9990,
+    "builds": {
+     "EA5C70AF7F4D8A4F": "[[[[main+21B4860]+148]+70]+38]+C8"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "Max Lv"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Fairune Collection ver 1.0.0 by ZiT"
+ ]
+}

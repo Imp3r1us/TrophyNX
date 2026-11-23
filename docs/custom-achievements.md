@@ -31,6 +31,8 @@ Two places to look:
   made on and whether they were tested on a console.
 - [`drafts/`](../drafts): lists generated automatically from Steam achievements (see
   [`drafts/README.md`](../drafts/README.md) for the full table of games and verdicts).
+- [`drafts/memory/`](../drafts/memory/README.md): live money / level achievements made from cheat codes for about
+  300 games (section 5b). **Not checked on a console**: test before you trust them.
 
 1. Open the game's `drafts/<TITLEID>.json` on GitHub, press **Raw**, save the file.
 2. Copy it to `sdmc:/switch/TrophyNX/games/` (create the `games` folder if it isn't there).
@@ -176,6 +178,7 @@ The save is read as a tree; a path walks it with `/`:
 | `count` | at least `target` of the matched values are true / non-zero / non-empty | `{ "type": "count", "path": "ShineData[*]/IsGet", "target": 100 }` |
 | `sum` | the matched values add up to `target` | `{ "type": "sum", "paths": ["coins/a", "coins/b"], "target": 500 }` |
 | `playtime_hours` / `launches` | play statistics | section 4 |
+| `memory` | a value in the game's memory, while you play | section 5b |
 
 Inside a rule, `"show_progress": false` hides the "37 / 100" counter (shown by default when `target` is above 1),
 and `"divisor": 4` divides the shown value (e.g. quarter hearts shown as hearts).
@@ -218,6 +221,47 @@ It also works offline: download [`tools/savelab/index.html`](../tools/savelab/in
 5. **Known value** finds a number you can see on screen (coins, deaths, percentage) in the save.
 
 For JSON saves, a text editor works too: search for a value you know (e.g. your gold) and copy the path.
+
+## 5b. Live achievements from memory (any game)
+
+Some games can't be read from their save (encrypted, custom binary) but cheat codes already know where their
+values live **in memory**. A `memory` rule watches such a value while you play: the background module
+(`sys-trophynx`) reads it once a second through Atmosphère's cheat service (read-only, like EdiZon) and unlocks
+the achievement with a popup the moment it holds. No save reader is needed.
+
+```json
+{ "id": "rich", "name": "Rolling In It", "desc": "Have 100,000 coins", "points": 25,
+  "rule": { "type": "memory", "value_type": "u32", "cmp": ">=", "target": 100000, "max": 99999999,
+            "builds": { "3CA12DFAAF9C82DA": "[[main+2D21A90]+20]+1C0",
+                        "0123456789ABCDEF": ["heap+61C77360", "heap+61C77400"] } } }
+```
+
+| Field | Notes |
+|---|---|
+| `builds` | one entry per **game version**: the start of its build ID (the name of its cheat file, `atmosphere/contents/<title id>/cheats/<build id>.txt`) → an address, or a list of addresses (save slots, characters: **any** of them unlocks it). A version that isn't listed stays locked |
+| address | `main`, `heap` or `alias` + a hex offset. `[...]` reads the 64-bit pointer stored there: `[[main+2D21A90]+20]+1C0` follows two pointers, then adds 0x1C0. Same syntax as HomeNX packs |
+| `value_type` | `u8` `u16` `u32` `u64` (default `u32`), `s8`…`s64` (signed), `f32` `f64` (decimals). Use the width the cheat code writes, and `f32` when its value is a float (`47C34FF0` = 99999.875): an integer read of a float is huge and would unlock at once |
+| `cmp` | `>=` (default), `>`, `<=`, `<`, `==`, `!=`, or `&` (any of the bits of `target`, e.g. `"target": "0x4"`) |
+| `target` | the number to compare with |
+| `max` | optional: values above it are ignored. A pointer read during a loading screen can give nonsense |
+
+The condition has to hold on **3 checks in a row** before it unlocks, for the same reason.
+
+**From a cheat code.** `580F0000 XXXXXXXX` loads the pointer at `main+XXXXXXXX`, each `580F1000 YYYYYYYY` reads the
+next pointer at `+YYYYYYYY`, `780F0000 ZZZZZZZZ` adds `ZZZZZZZZ`, and the final `6T0F0000 …` writes `T` bytes there:
+that's `[[main+XXXXXXXX]+YYYYYYYY]+ZZZZZZZZ` with `value_type` `uT`. A single `04100000 AAAAAAAA …` line writes to
+`heap+AAAAAAAA`. [`tools/cheats2memory`](../tools/cheats2memory/README.md) does this for every money / level code
+of switch-cheats-db: its drafts are in [`drafts/memory/`](../drafts/memory/README.md).
+
+**Testing one.** Copy the file to `sdmc:/switch/TrophyNX/games/`, start the game and play for a minute.
+`sdmc:/switch/TrophyNX/live_log.txt` then shows the game's **build ID** (`memory: <game> build 3CA12D…`), how many
+achievements have addresses for that version, and the first value read for each (`  rich = 2500`). Change the value
+in game and check that the achievement unlocks at the right moment. Nothing happens for a version that isn't in
+`builds`: the log says which build ID to add.
+
+Limits: Atmosphère's cheat service (`dmnt:cht`) must be on, the game is watched only while it runs (progress made
+earlier counts as soon as the value is read), and if you use cheats in the same game the module shares the cheat
+service with them (it never turns them off). Addresses can change with a game update: that's why they're per build.
 
 ## 6. Test it
 

@@ -1,0 +1,131 @@
+{
+ "title_id": "010010400D46A000",
+ "name": "Snack World The Dungeon Crawl",
+ "achievements": [
+  {
+   "id": "mem_currency_gold_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 gold",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 99999990,
+    "builds": {
+     "D3FA3AA21A0EB48C": "heap+C0654228"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 gold",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 99999990,
+    "builds": {
+     "D3FA3AA21A0EB48C": "heap+C0654228"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_gold_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 gold",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u32",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 99999990,
+    "builds": {
+     "D3FA3AA21A0EB48C": "heap+C0654228"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "GOLD MAX"
+   ]
+  },
+  {
+   "id": "mem_currency_money_10000",
+   "name": "Saving Up",
+   "desc": "Have 10,000 money",
+   "points": 10,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 10000,
+    "max": 42949630020327030,
+    "builds": {
+     "D3FA3AA21A0EB48C": "[main+A335E0]+BE50"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_100000",
+   "name": "Well Off",
+   "desc": "Have 100,000 money",
+   "points": 25,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 100000,
+    "max": 42949630020327030,
+    "builds": {
+     "D3FA3AA21A0EB48C": "[main+A335E0]+BE50"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99 Money"
+   ]
+  },
+  {
+   "id": "mem_currency_money_1000000",
+   "name": "Rolling In It",
+   "desc": "Have 1,000,000 money",
+   "points": 50,
+   "rule": {
+    "type": "memory",
+    "value_type": "u64",
+    "cmp": ">=",
+    "target": 1000000,
+    "max": 42949630020327030,
+    "builds": {
+     "D3FA3AA21A0EB48C": "[main+A335E0]+BE50"
+    }
+   },
+   "_draft": "unverified",
+   "_cheats": [
+    "99 Money"
+   ]
+  }
+ ],
+ "_generated": "cheats2memory from switch-cheats-db (unverified: test on a console before use)",
+ "_source": [
+  "Snack World The Dungeon Crawl (USA) Version 1.0 BY HRTBRKD",
+  "SNACK WORLD THE DUNGEON CRAWL - GOLD"
+ ]
+}
