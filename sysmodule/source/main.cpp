@@ -613,6 +613,7 @@ int main(int, char**) {
                         PopupRequest pr;
                         pr.titleId = curTid; pr.achId = id; pr.title = a->name; pr.desc = a->desc; pr.game = memDef.name;
                         pr.points = a->points; pr.tier = popupTierFor(a->tier.empty() ? nullptr : a->tier.c_str(), a->points);
+                        pr.hidden = a->hidden;
                         popupEnqueue(pr);
                     }
                     if (changed) saveStore(user, store);

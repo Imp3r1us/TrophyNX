@@ -193,13 +193,25 @@ to an **Ultrahand Overlay 2.1+** toast (notifications enabled); without Ultrahan
 Optional settings in `sdmc:/switch/TrophyNX/popup.json`:
 
 ```json
-{ "style": "custom", "theme": "dark", "icon": "right", "duration_ms": 4000 }
+{ "style": "custom", "card": "classic", "theme": "dark", "icon": "right", "duration_ms": 4000,
+  "position": "top-left", "live_check": true, "progress": true }
 ```
 
 - `style`: `custom` (default), `both` (custom + Ultrahand toast), `ultrahand` (toast only), `off`.
-- `theme`: `dark` (translucent black bar, white text) or `light` (white bar, dark text).
-- `icon`: `right` (after the text) or `left` (at the screen edge, text after it).
-- `duration_ms`: 1500 to 15000.
+- `card`: `classic` (default: text bar + tier medal) or `compact`: a small dark card (360x70 at 1080p)
+  with the icon, an uppercase label coloured by tier (bronze / silver cyan, gold or a hidden achievement
+  gold, platinum violet), the title and a short line (`+25 pts`, `5 / 10`). It slides in with a fade.
+- `position` (compact card): `top-left` (default), `top-right`, `bottom-left`, `bottom-right`, 24 px from the edges.
+- `theme`: `dark` (translucent black bar, white text) or `light` (white bar, dark text). Classic card.
+- `icon`: `right` (after the text) or `left` (at the screen edge, text after it). Classic card.
+- `duration_ms`: 1500 to 15000 (default: classic 4000; compact 220 ms in + 3.3 s + 180 ms out). When other
+  popups are waiting, each one is shorter (compact 1.7 s, classic 2.2 s) so a burst doesn't stay on screen long.
+- `live_check`: on the first live-save read of a game session, a **Live save** card (`3/41 met · read in 80 ms`),
+  then up to 3 achievements you already have that the save meets (**Already unlocked**): proof that it reads your game.
+- `progress`: while you play, a **Progress** card when a locked achievement's counter goes up
+  (`Pet Cerberus 5 / 10`), at most 3 per save + one `+N more` card. Hidden achievements never show it.
+
+No sound: the module never opens an audio service.
 
 Medal tier: an achievement's optional `"tier"` (`bronze`, `silver`, `gold`, `platinum`), otherwise from its
 points (under 25 bronze, under 50 silver, 50+ gold). Icon: `sdmc:/switch/TrophyNX/art/<TITLEID>/<id>.png`

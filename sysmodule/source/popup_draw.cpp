@@ -83,32 +83,32 @@ static uint32_t nextCp(const char*& s) {
     return c;
 }
 
-static float textWidth(const std::string& t, float px) {
+static float textWidth(const std::string& t, float px, float spacing = 0) {
     if (!g_fontOk) return 0;
     float sc = stbtt_ScaleForMappingEmToPixels(&g_font, px), w = 0;
     for (const char* s = t.c_str(); *s;) {
         int adv, lsb;
         stbtt_GetCodepointHMetrics(&g_font, (int)nextCp(s), &adv, &lsb);
-        w += adv * sc;
+        w += adv * sc + spacing;
     }
     return w;
 }
 
-static std::string ellipsize(const std::string& t, float px, float maxW) {
-    if (textWidth(t, px) <= maxW) return t;
+static std::string ellipsize(const std::string& t, float px, float maxW, float spacing = 0) {
+    if (textWidth(t, px, spacing) <= maxW) return t;
     std::vector<size_t> starts;   // codepoint boundaries
     for (const char* s = t.c_str(); *s;) { starts.push_back(s - t.c_str()); nextCp(s); }
     for (size_t n = starts.size(); n > 0; n--) {
         std::string c = t.substr(0, starts[n - 1]);
         while (!c.empty() && c.back() == ' ') c.pop_back();
         c += "...";
-        if (textWidth(c, px) <= maxW) return c;
+        if (textWidth(c, px, spacing) <= maxW) return c;
     }
     return "...";
 }
 
 // Draws with the top of the em box at y (canvas pixels).
-static void drawText(PopupImage& im, const std::string& t, float x, float y, float px, Rgba c) {
+static void drawText(PopupImage& im, const std::string& t, float x, float y, float px, Rgba c, float spacing = 0) {
     if (!g_fontOk) return;
     float sc = stbtt_ScaleForMappingEmToPixels(&g_font, px);
     int asc, desc, gap;
@@ -128,7 +128,7 @@ static void drawText(PopupImage& im, const std::string& t, float x, float y, flo
             for (int yy = 0; yy < h; yy++)
                 for (int xx = 0; xx < w; xx++) blend(im, ox + xx, oy + yy, c, bmp[yy * w + xx] / 255.f);
         }
-        x += adv * sc;
+        x += adv * sc + spacing;
     }
 }
 
@@ -232,5 +232,122 @@ float popupSlide(uint64_t t, uint64_t d) {
     if (t >= d) return 0;
     if (t < in) { float k = 1 - t / in; return 1 - k * k * k; }            // ease-out
     if (t > d - out) { float k = 1 - (d - t) / out; return 1 - k * k * k; }   // ease-in on the way out
+    return 1;
+}
+
+// ================================================================ compact toast
+// Coverage of a rounded rectangle at pixel (x, y): signed distance to the shape, 1 px anti-aliasing.
+static float roundCov(float x, float y, float x0, float y0, float x1, float y1, float r) {
+    float cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, hx = (x1 - x0) / 2 - r, hy = (y1 - y0) / 2 - r;
+    float qx = fabsf(x + .5f - cx) - hx, qy = fabsf(y + .5f - cy) - hy;
+    float ox = std::max(qx, 0.f), oy = std::max(qy, 0.f);
+    float d = sqrtf(ox * ox + oy * oy) + std::min(std::max(qx, qy), 0.f) - r;
+    return std::min(std::max(0.5f - d, 0.f), 1.f);
+}
+
+static void fillRound(PopupImage& im, float x0, float y0, float x1, float y1, float r, Rgba c) {
+    for (int y = (int)floorf(y0); y < (int)ceilf(y1); y++)
+        for (int x = (int)floorf(x0); x < (int)ceilf(x1); x++) blend(im, x, y, c, roundCov((float)x, (float)y, x0, y0, x1, y1, r));
+}
+
+// A 1 px line along the inside of a rounded rectangle.
+static void strokeRound(PopupImage& im, float x0, float y0, float x1, float y1, float r, Rgba c) {
+    for (int y = (int)floorf(y0); y < (int)ceilf(y1); y++)
+        for (int x = (int)floorf(x0); x < (int)ceilf(x1); x++) {
+            float outer = roundCov((float)x, (float)y, x0, y0, x1, y1, r);
+            float inner = roundCov((float)x, (float)y, x0 + 1, y0 + 1, x1 - 1, y1 - 1, std::max(r - 1, 0.f));
+            blend(im, x, y, c, outer - inner);
+        }
+}
+
+uint32_t popupAccentFor(int tier, bool hidden) {
+    if (tier >= TIER_PLATINUM) return ACCENT_VIOLET;
+    if (tier == TIER_GOLD || hidden) return ACCENT_GOLD;
+    return ACCENT_CYAN;
+}
+
+void popupRenderToast(const ToastInfo& info, PopupImage& out) {
+    out.w = TOAST_W;
+    out.h = TOAST_H;
+    out.px.assign((size_t)out.w * out.h * 4, 0);
+    const float W = TOAST_W, H = TOAST_H, pad = 13, icon = 44, textX = pad + icon + 12, textW = W - textX - 14;
+
+    // card: rgba(24, 26, 32, 0.88), radius 11, 1 px border rgba(255, 255, 255, 0.14)
+    fillRound(out, 0, 0, W, H, 11, hex(0x181A20, 0.88f));
+    strokeRound(out, 0, 0, W, H, 11, hex(0xFFFFFF, 0.14f));
+
+    // icon tile (rounded 44 px): the achievement's art or the game icon, else a tile with a star
+    const float ix = pad, iy = (H - icon) / 2;
+    if (info.icon && info.icon->w > 0) {
+        PopupImage sc;
+        const PopupImage* src = info.icon;
+        if (src->w != (int)icon || src->h != (int)icon) {
+            popupScaleImage(src->px.data(), src->w, src->h, (int)icon, (int)icon, sc);
+            src = &sc;
+        }
+        for (int y = 0; y < src->h; y++)
+            for (int x = 0; x < src->w; x++) {
+                const uint8_t* p = &src->px[(size_t)(y * src->w + x) * 4];
+                float m = roundCov((float)x, (float)y, 0, 0, icon, icon, 8);
+                blend(out, (int)ix + x, (int)iy + y, {p[0] / 255.f, p[1] / 255.f, p[2] / 255.f, 1.f}, m * p[3] / 255.f);
+            }
+    } else {
+        fillRound(out, ix, iy, ix + icon, iy + icon, 8, hex(0x2A2F3A));
+        Rgba a = hex(info.accent);
+        const int SS = 3;
+        for (int y = 0; y < (int)icon; y++)
+            for (int x = 0; x < (int)icon; x++) {
+                int in = 0;
+                for (int sy = 0; sy < SS; sy++)
+                    for (int sx = 0; sx < SS; sx++)
+                        in += inStar(x + (sx + .5f) / SS - icon / 2, y + (sy + .5f) / SS - icon / 2 - 1, 14, 6) ? 1 : 0;
+                if (in) blend(out, (int)ix + x, (int)iy + y, a, in / (float)(SS * SS));
+            }
+    }
+    strokeRound(out, ix, iy, ix + icon, iy + icon, 8, hex(0xFFFFFF, 0.10f));
+
+    // text: label (uppercase, spaced, accent), title (semi-bold white, cut with "..."), optional line (grey)
+    const float labelPx = 11, titlePx = 18, linePx = 13, spacing = 1.2f;
+    bool hasLine = !info.line.empty();
+    float labelY = hasLine ? 9 : 15, titleY = hasLine ? 24 : 31, lineY = 47;
+    std::string label = ellipsize(info.label, labelPx, textW, spacing);
+    std::string title = ellipsize(info.title, titlePx, textW - 1);
+    drawText(out, label, textX, labelY, labelPx, hex(info.accent), spacing);
+    drawText(out, title, textX, titleY, titlePx, hex(0xF3F4F6));
+    drawText(out, title, textX + 0.5f, titleY, titlePx, hex(0xF3F4F6, 0.6f));   // semi-bold: a second pass half a pixel over
+    if (hasLine) drawText(out, ellipsize(info.line, linePx, textW), textX, lineY, linePx, hex(0x9CA3AF));
+}
+
+bool popupParseCorner(const char* name, int& out) {
+    if (!name) return false;
+    if (!strcmp(name, "top-left")) out = CORNER_TOP_LEFT;
+    else if (!strcmp(name, "top-right")) out = CORNER_TOP_RIGHT;
+    else if (!strcmp(name, "bottom-left")) out = CORNER_BOTTOM_LEFT;
+    else if (!strcmp(name, "bottom-right")) out = CORNER_BOTTOM_RIGHT;
+    else return false;
+    return true;
+}
+
+static bool cornerRight(int c) { return c == CORNER_TOP_RIGHT || c == CORNER_BOTTOM_RIGHT; }
+static bool cornerBottom(int c) { return c == CORNER_BOTTOM_LEFT || c == CORNER_BOTTOM_RIGHT; }
+
+void popupToastLayer(int corner, int w, int h, int& x, int& y, int& lw, int& lh) {
+    lw = w + TOAST_SLIDE;
+    lh = h;
+    x = cornerRight(corner) ? 1920 - TOAST_MARGIN - w : TOAST_MARGIN - TOAST_SLIDE;
+    y = cornerBottom(corner) ? 1080 - TOAST_MARGIN - h : TOAST_MARGIN;
+}
+
+int popupToastCardX(int corner, float shown) {
+    shown = std::min(std::max(shown, 0.f), 1.f);
+    return cornerRight(corner) ? (int)lroundf(TOAST_SLIDE * (1 - shown)) : (int)lroundf(TOAST_SLIDE * shown);
+}
+
+int popupHoldMs(int holdMs, bool othersWaiting) { return othersWaiting ? std::min(holdMs, TOAST_HOLD_BUSY_MS) : holdMs; }
+
+float popupToastShown(uint64_t t, uint64_t total) {
+    if (t >= total) return 0;
+    if (t < (uint64_t)TOAST_IN_MS) { float k = 1 - t / (float)TOAST_IN_MS; return 1 - k * k * k; }   // ease-out
+    if (t + TOAST_OUT_MS > total) { float k = (total - t) / (float)TOAST_OUT_MS; return k * k; }       // quick ease-in
     return 1;
 }

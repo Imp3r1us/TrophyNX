@@ -185,6 +185,7 @@ int unlockMet(const Game& g, const GameDef& def, const std::string& defSource, c
         PopupRequest pr;
         pr.titleId = g.id; pr.achId = a.id; pr.title = a.name; pr.desc = a.desc; pr.game = def.name;
         pr.points = a.points; pr.tier = popupTierFor(a.tier.empty() ? nullptr : a.tier.c_str(), a.points);
+        pr.hidden = a.hidden;
         popupEnqueue(pr);
     }
     if (fresh.size() > SHOW) {

@@ -12,6 +12,7 @@
 #include "popup_draw.h"
 #include "heap.h"
 #include <switch.h>
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <deque>
@@ -54,7 +55,11 @@ static const size_t POPUP_MIN_HEAP = 1400 * 1024;   // card peak ~1 MB + icon de
 struct PopupConfig {
     std::string style = "custom";   // Ultrahand toast only as fallback
     bool dark = true, iconLeft = false;
-    int durationMs = 4000;
+    int durationMs = 4000;          // classic card: whole popup
+    bool durationSet = false;
+    bool compact = false;           // "card": "compact" (small dark toast) or "classic" (text bar + medal)
+    int corner = CORNER_TOP_LEFT;   // "position" (compact card)
+    PopupOptions opts;
 };
 
 static PopupConfig loadConfig() {
@@ -73,7 +78,12 @@ static PopupConfig loadConfig() {
     if (cJSON_IsString(v = cJSON_GetObjectItem(root, "style"))) c.style = v->valuestring;
     if (cJSON_IsString(v = cJSON_GetObjectItem(root, "theme"))) c.dark = strcmp(v->valuestring, "light") != 0;
     if (cJSON_IsString(v = cJSON_GetObjectItem(root, "icon"))) c.iconLeft = strcmp(v->valuestring, "left") == 0;
-    if (cJSON_IsNumber(v = cJSON_GetObjectItem(root, "duration_ms"))) c.durationMs = v->valueint;
+    if (cJSON_IsNumber(v = cJSON_GetObjectItem(root, "duration_ms"))) { c.durationMs = v->valueint; c.durationSet = true; }
+    if (cJSON_IsString(v = cJSON_GetObjectItem(root, "card"))) c.compact = strcmp(v->valuestring, "compact") == 0;
+    if (cJSON_IsString(v = cJSON_GetObjectItem(root, "position")) && !popupParseCorner(v->valuestring, c.corner))
+        PLOG("popup.json: unknown position '%s' (top-left, top-right, bottom-left, bottom-right)", v->valuestring);
+    if (cJSON_IsBool(v = cJSON_GetObjectItem(root, "live_check"))) c.opts.liveCheck = cJSON_IsTrue(v);
+    if (cJSON_IsBool(v = cJSON_GetObjectItem(root, "progress"))) c.opts.progress = cJSON_IsTrue(v);
     if (c.durationMs < 1500) c.durationMs = 1500;
     if (c.durationMs > 15000) c.durationMs = 15000;
     cJSON_Delete(root);
@@ -96,8 +106,11 @@ static void ultrahandToast(const PopupRequest& r) {
     mkdir(NOTIFY_DIR, 0777);
     char path[160];
     snprintf(path, sizeof(path), "%s/TrophyNX-%llu.notify", NOTIFY_DIR, (unsigned long long)armGetSystemTick());
-    std::string body = "{\"title\":\"Achievement unlocked!\",\"text\":\"" + jsonEscape(r.title) + "  (+" +
-                       std::to_string(r.points) + " pts)  " + jsonEscape(r.game) + "\",\"duration\":6000,\"priority\":30}";
+    std::string title = r.kind == POPUP_PROGRESS ? "Achievement progress" : r.kind == POPUP_LIVE_CHECK ? "TrophyNX live save"
+                        : r.kind == POPUP_KNOWN ? "Already unlocked" : "Achievement unlocked!";
+    std::string text = r.kind == POPUP_UNLOCK ? r.title + "  (+" + std::to_string(r.points) + " pts)  " + r.game
+                                              : r.title + "  " + r.line;
+    std::string body = "{\"title\":\"" + title + "\",\"text\":\"" + jsonEscape(text) + "\",\"duration\":6000,\"priority\":30}";
     FILE* f = fopen(path, "wb");
     if (!f) { PLOG("popup: cannot write %s", path); return; }
     fwrite(body.data(), 1, body.size(), f);
@@ -186,7 +199,7 @@ struct Overlay {
     Framebuffer fb = {};
     int stage = 0;   // how far open() got, for close()
 
-    bool open(int w, int h, int y) {
+    bool open(int w, int h, int x, int y) {
         Result rc;
         ::stage("nv init");
         if (R_FAILED(rc = nvInitialize())) { PLOG("popup: nv init 0x%X", rc); return false; }
@@ -216,7 +229,7 @@ struct Overlay {
                                        ViLayerStack_Arbitrary, ViLayerStack_LastFrame, ViLayerStack_Null,
                                        ViLayerStack_ApplicationForDebug, ViLayerStack_Lcd};
         for (ViLayerStack s : stacks) addToLayerStack(&layer, s);
-        if (R_FAILED(rc = viSetLayerSize(&layer, w, h)) || R_FAILED(rc = viSetLayerPosition(&layer, 0, (float)y))) {
+        if (R_FAILED(rc = viSetLayerSize(&layer, w, h)) || R_FAILED(rc = viSetLayerPosition(&layer, (float)x, (float)y))) {
             PLOG("popup: layer size/position 0x%X", rc); return false;
         }
         if (R_FAILED(rc = nwindowCreateFromLayer(&win, &layer))) { PLOG("popup: window 0x%X", rc); return false; }
@@ -225,7 +238,7 @@ struct Overlay {
         if (R_FAILED(rc = framebufferCreate(&fb, &win, w, h, PIXEL_FORMAT_RGBA_4444, 2))) { PLOG("popup: framebuffer 0x%X", rc); return false; }
         stage = 6;
         if (R_FAILED(rc = framebufferMakeLinear(&fb))) { PLOG("popup: linear fb 0x%X", rc); return false; }
-        PLOG("popup: layer %llu open, %dx%d at y=%d, z=%d", (unsigned long long)layer.layer_id, w, h, y, (int)z);
+        PLOG("popup: layer %llu open, %dx%d at %d,%d, z=%d", (unsigned long long)layer.layer_id, w, h, x, y, (int)z);
         return true;
     }
 
@@ -244,14 +257,97 @@ static inline u16 to4444(const uint8_t* p) {   // r in the low nibble (same layo
     return (u16)((p[0] >> 4) | ((p[1] >> 4) << 4) | ((p[2] >> 4) << 8) | ((p[3] >> 4) << 12));
 }
 
+// Texts of the classic card for each kind of popup.
+static void classicTexts(const PopupRequest& r, std::string& title, std::string& desc) {
+    title = r.title;
+    desc = r.desc;
+    if (r.kind == POPUP_PROGRESS) desc = "Progress " + r.line + (r.desc.empty() ? "" : " - " + r.desc);
+    else if (r.kind == POPUP_LIVE_CHECK) { title = "Live save working - " + r.game; desc = r.line; }
+    else if (r.kind == POPUP_KNOWN) desc = "Already unlocked - " + r.line;
+}
+
+// Texts of the compact card: label, title, short line.
+static ToastInfo toastTexts(const PopupRequest& r) {
+    ToastInfo t;
+    t.title = r.title;
+    t.accent = popupAccentFor(r.tier, r.hidden);
+    switch (r.kind) {
+        case POPUP_PROGRESS: t.label = "PROGRESS"; t.line = r.line; t.accent = ACCENT_CYAN; break;
+        case POPUP_LIVE_CHECK: t.label = "LIVE SAVE"; t.title = "Working: " + r.game; t.line = r.line; t.accent = ACCENT_CYAN; break;
+        case POPUP_KNOWN: t.label = "ALREADY UNLOCKED"; t.line = r.line; break;
+        default: t.label = "ACHIEVEMENT UNLOCKED"; t.line = "+" + std::to_string(r.points) + " pts"; break;
+    }
+    return t;
+}
+
+static bool othersWaiting() {
+    mutexLock(&g_mtx);
+    bool w = !g_queue.empty();
+    mutexUnlock(&g_mtx);
+    return w;
+}
+
+// Compact toast: rendered once (360x70, kept as 16-bit), then each frame only copies it into the layer,
+// shifted for the slide, with its alpha scaled for the fade. No allocation in the frame loop.
+static bool showToast(const PopupRequest& r, const PopupConfig& cfg) {
+    PopupImage art;
+    ToastInfo info = toastTexts(r);
+    info.icon = achievementArt(r, art) ? &art : gameIcon(r.titleId);
+    std::vector<u16> card;
+    {
+        PopupImage img;
+        popupRenderToast(info, img);
+        card.resize((size_t)TOAST_W * TOAST_H);
+        for (size_t i = 0; i < card.size(); i++) card[i] = to4444(&img.px[i * 4]);
+    }
+    int lx, ly, lw, lh;
+    popupToastLayer(cfg.corner, TOAST_W, TOAST_H, lx, ly, lw, lh);
+    Overlay ov;
+    if (!ov.open(lw, lh, lx, ly)) { ov.close(); return false; }
+
+    int hold = cfg.durationSet ? std::max(cfg.durationMs - TOAST_IN_MS - TOAST_OUT_MS, 1000) : TOAST_HOLD_MS;
+    hold = popupHoldMs(hold, othersWaiting());   // a burst of unlocks: 1.7 s each
+    const u64 total = (u64)(TOAST_IN_MS + hold + TOAST_OUT_MS), t0 = armGetSystemTick();
+    int frames = 0;
+    stage("first frame");
+    while (true) {
+        u64 t = armTicksToNs(armGetSystemTick() - t0) / 1000000;
+        float v = popupToastShown(t, total);
+        int cx = popupToastCardX(cfg.corner, v);
+        u32 alpha = (u32)(v * 16 + 0.5f);   // 0..16, applied to each pixel's 4-bit alpha
+        u32 stride = 0;
+        u16* fb = (u16*)framebufferBegin(&ov.fb, &stride);
+        for (int y = 0; y < lh; y++) {
+            u16* row = fb + (size_t)y * (stride / 2);
+            memset(row, 0, (size_t)lw * 2);
+            const u16* src = &card[(size_t)y * TOAST_W];
+            u16* dst = row + cx;
+            int n = std::min(TOAST_W, lw - cx);
+            if (alpha >= 16) memcpy(dst, src, (size_t)n * 2);
+            else
+                for (int x = 0; x < n; x++) {
+                    u16 p = src[x];
+                    dst[x] = (u16)((p & 0x0FFF) | ((((p >> 12) * alpha) >> 4) << 12));
+                }
+        }
+        framebufferEnd(&ov.fb);
+        if (++frames == 3) stage("animating");
+        if (t >= total) break;
+    }
+    stage("close layer");
+    ov.close();
+    PLOG("popup: toast shown, %d frames in %llu ms", frames, (unsigned long long)(armTicksToNs(armGetSystemTick() - t0) / 1000000));
+    return true;
+}
+
 static bool showCustom(const PopupRequest& r, const PopupConfig& cfg) {
     stage("font");
     if (!ensureFont()) return false;
     stage("icon + render");
+    if (cfg.compact) return showToast(r, cfg);
     PopupImage art;
     PopupInfo info;
-    info.title = r.title;
-    info.desc = r.desc;
+    classicTexts(r, info.title, info.desc);
     info.tier = r.tier;
     info.dark = cfg.dark;
     info.iconLeft = cfg.iconLeft;
@@ -269,9 +365,10 @@ static bool showCustom(const PopupRequest& r, const PopupConfig& cfg) {
     }
 
     Overlay ov;   // re-created for every popup: confirmed working on hardware (0.3.1 log)
-    if (!ov.open(cw, ch, (int)(POPUP_Y720 * POPUP_SCALE + 0.5f))) { ov.close(); return false; }
+    if (!ov.open(cw, ch, 0, (int)(POPUP_Y720 * POPUP_SCALE + 0.5f))) { ov.close(); return false; }
 
-    const u64 dur = (u64)cfg.durationMs, t0 = armGetSystemTick();
+    // a burst of unlocks: each card shorter, so the screen isn't busy for long
+    const u64 dur = (u64)(othersWaiting() ? std::min(cfg.durationMs, 2200) : cfg.durationMs), t0 = armGetSystemTick();
     int frames = 0;
     stage("first frame");
     while (true) {
@@ -310,7 +407,7 @@ static void worker(void*) {
         mutexUnlock(&g_mtx);
 
         PopupConfig cfg = loadConfig();
-        PLOG("popup: %s (style %s)", r.achId.c_str(), cfg.style.c_str());
+        PLOG("popup: %s (style %s, %s card, kind %d)", r.achId.c_str(), cfg.style.c_str(), cfg.compact ? "compact" : "classic", r.kind);
         if (cfg.style == "off") { g_busy = false; continue; }
         if (cfg.style == "ultrahand") { ultrahandToast(r); g_busy = false; continue; }
         if (g_safe && cfg.style != "both") { PLOG("popup: safe mode, toast instead of a display layer"); ultrahandToast(r); g_busy = false; continue; }
@@ -368,6 +465,7 @@ bool popupIdle() {
 }
 
 int popupLayersOpen() { return g_layersOpen; }
+PopupOptions popupOptions() { return loadConfig().opts; }
 void popupSetSafeMode(bool on) { g_safe = on; }
 
 void popupEnqueue(const PopupRequest& r) {

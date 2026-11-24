@@ -12,13 +12,20 @@ How to write a section (see `tools/release/changelog.py`):
 
 ## 0.15.2 (2026-11-25)
 
-Popups while you play now really work: live save reads the game's save a few seconds after it saves.
+Popups while you play now really work, a new compact popup style, and popups that show TrophyNX is following your game.
+
+### New
+- Live save check: the first time live save reads your game's save in a session, a "Live save" popup says what it read (e.g. 3/41 met), then shows up to 3 achievements you already have that the save meets. Turn it off with "live_check": false in popup.json.
+- Progress popups: while you play, a popup when a locked achievement's counter goes up (Pet Cerberus 4/10, then 5/10...). At most 3 per save, hidden achievements never. Turn them off with "progress": false.
+- Compact popup: "card": "compact" in popup.json for a small dark card with the icon, a coloured label, the title and a short line. Choose the corner with "position" (top-left, top-right, bottom-left, bottom-right).
+- Several popups at once now each stay on screen a shorter time.
 
 ### Fixed
 - Live save never finished a single read, for any game: after each read it lost track of which save it had read, took that for "the game saved meanwhile" and started over, forever. It now keeps that information, so achievements pop up a few seconds after the game saves instead of only when you quit.
 
 ### Live module 0.10.2
 - The fix above (the module logged "save image not readable: unknown error" three times, then stopped watching until you quit).
+- Live check, already unlocked, progress and compact popups.
 
 ## 0.15.1 (2026-11-24)
 
