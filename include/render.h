@@ -28,6 +28,7 @@ public:
     void line(float x0, float y0, float x1, float y1, float thick, uint32_t c);
     void blit(const Image& img, int x, int y, uint8_t alpha = 255, bool grayscale = false);
     void blitRounded(const Image& img, int x, int y, float radius, bool grayscale = false);
+    void blitAlpha(const Image& img, int x, int y);   // uses each pixel's own alpha (rendered cards, not JPEG icons)
     void blend(int x, int y, uint32_t c, float cov);  // c = 0xAARRGGBB
 private:
     int cx0 = 0, cy0 = 0, cx1 = 1280, cy1 = 720;

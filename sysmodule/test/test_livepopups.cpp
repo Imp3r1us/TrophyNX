@@ -1,7 +1,7 @@
 // Host test of the live save "following" popups (include/livepopups.h): live check on the first read,
 // already-unlocked achievements met by the save, progress when a counter goes up, caps, switches.
 //   g++ -std=gnu++17 -fno-exceptions -Isysmodule/include -Iinclude sysmodule/test/test_livepopups.cpp sysmodule/source/livepopups.cpp \
-//       sysmodule/source/popup_draw.cpp source/overlay_data.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp \
+//       -DPOPUP_DRAW_STB_IMPL source/popup_draw.cpp source/overlay_data.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp \
 //       source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_livepopups
 #include "livepopups.h"
 #include <cstdio>

@@ -18,7 +18,7 @@ and remembers them on the SD card. A background module shows a popup when you un
 | ![Library: profile card, medals by tier, latest unlocks and the game grid](docs/ui-library.png) | ![Game page: completion ring, medals by tier, filters and the achievement list](docs/ui-game.png) |
 | Your points, medals by tier and latest unlocks, then every game as a card. **L / R** sorts the grid. | **A** on a game: play stats, save status, completion ring, and its achievements filtered with **L / R** (All, Unlocked, Locked). |
 
-Prefer the original layout? **Press either stick** (the *LS* chip in the header) to switch to the classic look
+Prefer the original layout? **Press the left stick** (the *LS* chip in the header) to switch to the classic look
 and back. The app remembers your choice.
 
 ![Classic look: game list on the left, achievements on the right](docs/ui-classic.png)
@@ -190,11 +190,19 @@ The module draws the popup itself, on its own small display layer above the game
 overlays do; it also shows in screenshots and recordings). If that layer can't be created, it falls back
 to an **Ultrahand Overlay 2.1+** toast (notifications enabled); without Ultrahand it unlocks silently.
 
-Optional settings in `sdmc:/switch/TrophyNX/popup.json`:
+**Popup settings in the app:** press the **right stick** (the *RS* chip in the header). Up / Down picks a
+setting, Left / Right or A changes it, Y switches the preview (Unlock, Progress, Live save check, Already
+unlocked), X restores the defaults, B saves, - leaves without saving. The preview is drawn by the live module's
+own renderer, with the selected game's icon and achievements: a small TV shows where the popup appears, and a
+close-up shows the card. The live module reads the file before every popup: no restart needed.
+
+They are saved in `sdmc:/switch/TrophyNX/popup.json` (it can also be edited by hand; every key is optional):
 
 ```json
-{ "style": "custom", "card": "classic", "theme": "dark", "icon": "right", "duration_ms": 4000,
-  "position": "top-left", "live_check": true, "progress": true }
+{ "style": "custom", "card": "compact", "duration_ms": 0, "live_check": true, "progress": true,
+  "theme": "dark", "icon": "right",
+  "position": "top-left", "compact_theme": "dark", "accent": "tier", "opacity": 88,
+  "border": true, "show_icon": true, "show_label": true }
 ```
 
 - `style`: `custom` (default), `both` (custom + Ultrahand toast), `ultrahand` (toast only), `off`.
@@ -202,9 +210,15 @@ Optional settings in `sdmc:/switch/TrophyNX/popup.json`:
   with the icon, an uppercase label coloured by tier (bronze / silver cyan, gold or a hidden achievement
   gold, platinum violet), the title and a short line (`+25 pts`, `5 / 10`). It slides in with a fade.
 - `position` (compact card): `top-left` (default), `top-right`, `bottom-left`, `bottom-right`, 24 px from the edges.
+- `compact_theme` (compact card): `dark` (default), `light`, `midnight`, `oled` (black), `warm`.
+- `accent` (compact card): `tier` (default, as above), or one colour for every popup: `cyan`, `gold`, `violet`,
+  `green`, `pink`, `orange`, `red`, `white`. On the light theme it is darkened to stay readable.
+- `opacity` (compact card): background opacity, 50 to 100 % (default 88).
+- `border`, `show_icon`, `show_label` (compact card): the thin border, the icon, the small uppercase line
+  (without it, a small accent mark sits next to the title). All `true` by default.
 - `theme`: `dark` (translucent black bar, white text) or `light` (white bar, dark text). Classic card.
 - `icon`: `right` (after the text) or `left` (at the screen edge, text after it). Classic card.
-- `duration_ms`: 1500 to 15000 (default: classic 4000; compact 220 ms in + 3.3 s + 180 ms out). When other
+- `duration_ms`: 0 = default (classic 4000; compact 220 ms in + 3.3 s + 180 ms out), or 1500 to 15000. When other
   popups are waiting, each one is shorter (compact 1.7 s, classic 2.2 s) so a burst doesn't stay on screen long.
 - `live_check`: on the first live-save read of a game session, a **Live save** card (`3/41 met · read in 80 ms`),
   then up to 3 achievements you already have that the save meets (**Already unlocked**): proof that it reads your game.
@@ -279,7 +293,8 @@ they are mounted with the system's read-only save API.
 | Y | Rescan saves (after playing) |
 | X | Debug view for the selected game (what was read, values, errors) |
 | − | Re-lock: the selected achievement (on a game page), the whole game (in the library) or everything (Overview in the library), with confirmation |
-| Press a stick (LS or RS) | Switch between the new look and the classic look (remembered in `theme.txt`) |
+| Press the left stick (LS) | Switch between the new look and the classic look (remembered in `theme.txt`) |
+| Press the right stick (RS) | **Popup settings**: card, colours, position, what is shown, with a live preview |
 | + | Exit |
 
 In the classic look, Up / Down move, A or Right opens the achievement list, B or Left goes back and L / R page up / down.

@@ -2,15 +2,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
-
-// What a popup announces. Unlock is the achievement popup; the others show that the module is following
-// the game (popup.json: "live_check" and "progress", both on by default).
-enum PopupKind {
-    POPUP_UNLOCK = 0,    // a new achievement
-    POPUP_PROGRESS,      // a counter went up while the achievement is still locked (line: "5 / 10")
-    POPUP_LIVE_CHECK,    // first live-save read of a session (title: "Working: <game>", line: what was read)
-    POPUP_KNOWN,         // already unlocked, met again in the save (first read of a session only)
-};
+#include "popup_config.h"   // PopupKind
 
 struct PopupRequest {
     uint64_t titleId = 0;

@@ -60,8 +60,21 @@ struct ToastInfo {
     const PopupImage* icon = nullptr;   // nullptr: a neutral tile with a star
 };
 
+// The card's look (popup.json "compact_theme", "opacity", "border", "show_icon", "show_label": see popup_config.h).
+// The defaults are the original dark card.
+struct ToastStyle {
+    uint32_t bg = 0x181A20;
+    float bgAlpha = 0.88f;
+    uint32_t title = 0xF3F4F6, line = 0x9CA3AF;
+    uint32_t border = 0xFFFFFF;
+    float borderAlpha = 0.14f;   // 0: no border
+    uint32_t tile = 0x2A2F3A;    // icon placeholder
+    bool icon = true;            // false: no icon, the text starts at the left
+    bool label = true;           // false: no uppercase label, title (and line) centred
+};
+
 // Renders the card into a TOAST_W x TOAST_H straight-RGBA8 image.
-void popupRenderToast(const ToastInfo& info, PopupImage& out);
+void popupRenderToast(const ToastInfo& info, PopupImage& out, const ToastStyle& style = ToastStyle());
 // Bronze / silver: cyan. Gold, or a hidden (secret) achievement: gold. Platinum: violet.
 uint32_t popupAccentFor(int tier, bool hidden);
 // "top-left", "top-right", "bottom-left", "bottom-right"; false (out unchanged) for anything else.

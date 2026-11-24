@@ -173,6 +173,7 @@ bool plat::poll() {
     else if (t == "LEFT") g_down = BTN_LEFT; else if (t == "RIGHT") g_down = BTN_RIGHT; else if (t == "PLUS") g_down = BTN_PLUS;
     else if (t == "R") g_down = BTN_R; else if (t == "ZR") g_down = BTN_ZR; else if (t == "ZL") g_down = BTN_ZL; else if (t == "L") g_down = BTN_L; else if (t == "MINUS") g_down = BTN_MINUS;
     else if (t == "LS") g_down = BTN_STICK;
+    else if (t == "RS") g_down = BTN_RSTICK;
     return true;
 }
 uint32_t* plat::beginDraw(int& stride) { stride = 1280; return g_px.data(); }

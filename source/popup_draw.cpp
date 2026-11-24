@@ -4,7 +4,11 @@
 #include <cmath>
 #include <cstring>
 
+// The app already compiles stb_truetype in render.cpp: only the live module and the tests define this
+// (sysmodule/source/shared_popup_draw.cpp).
+#ifdef POPUP_DRAW_STB_IMPL
 #define STB_TRUETYPE_IMPLEMENTATION
+#endif
 #include "stb_truetype.h"
 
 static stbtt_fontinfo g_font;
@@ -266,19 +270,21 @@ uint32_t popupAccentFor(int tier, bool hidden) {
     return ACCENT_CYAN;
 }
 
-void popupRenderToast(const ToastInfo& info, PopupImage& out) {
+void popupRenderToast(const ToastInfo& info, PopupImage& out, const ToastStyle& st) {
     out.w = TOAST_W;
     out.h = TOAST_H;
     out.px.assign((size_t)out.w * out.h * 4, 0);
-    const float W = TOAST_W, H = TOAST_H, pad = 13, icon = 44, textX = pad + icon + 12, textW = W - textX - 14;
+    const float W = TOAST_W, H = TOAST_H, pad = 13, icon = 44;
+    const float textX = st.icon ? pad + icon + 12 : 18, textW = W - textX - 14;
 
-    // card: rgba(24, 26, 32, 0.88), radius 11, 1 px border rgba(255, 255, 255, 0.14)
-    fillRound(out, 0, 0, W, H, 11, hex(0x181A20, 0.88f));
-    strokeRound(out, 0, 0, W, H, 11, hex(0xFFFFFF, 0.14f));
+    // card: rgba(24, 26, 32, 0.88) by default, radius 11, 1 px border rgba(255, 255, 255, 0.14)
+    fillRound(out, 0, 0, W, H, 11, hex(st.bg, st.bgAlpha));
+    if (st.borderAlpha > 0) strokeRound(out, 0, 0, W, H, 11, hex(st.border, st.borderAlpha));
 
     // icon tile (rounded 44 px): the achievement's art or the game icon, else a tile with a star
     const float ix = pad, iy = (H - icon) / 2;
-    if (info.icon && info.icon->w > 0) {
+    if (!st.icon) {
+    } else if (info.icon && info.icon->w > 0) {
         PopupImage sc;
         const PopupImage* src = info.icon;
         if (src->w != (int)icon || src->h != (int)icon) {
@@ -292,7 +298,7 @@ void popupRenderToast(const ToastInfo& info, PopupImage& out) {
                 blend(out, (int)ix + x, (int)iy + y, {p[0] / 255.f, p[1] / 255.f, p[2] / 255.f, 1.f}, m * p[3] / 255.f);
             }
     } else {
-        fillRound(out, ix, iy, ix + icon, iy + icon, 8, hex(0x2A2F3A));
+        fillRound(out, ix, iy, ix + icon, iy + icon, 8, hex(st.tile));
         Rgba a = hex(info.accent);
         const int SS = 3;
         for (int y = 0; y < (int)icon; y++)
@@ -304,18 +310,19 @@ void popupRenderToast(const ToastInfo& info, PopupImage& out) {
                 if (in) blend(out, (int)ix + x, (int)iy + y, a, in / (float)(SS * SS));
             }
     }
-    strokeRound(out, ix, iy, ix + icon, iy + icon, 8, hex(0xFFFFFF, 0.10f));
+    if (st.icon) strokeRound(out, ix, iy, ix + icon, iy + icon, 8, hex(st.border, std::min(st.borderAlpha, 0.10f) + 0.04f));
 
-    // text: label (uppercase, spaced, accent), title (semi-bold white, cut with "..."), optional line (grey)
+    // text: label (uppercase, spaced, accent), title (semi-bold, cut with "..."), optional line
     const float labelPx = 11, titlePx = 18, linePx = 13, spacing = 1.2f;
-    bool hasLine = !info.line.empty();
+    bool hasLine = !info.line.empty(), hasLabel = st.label && !info.label.empty();
     float labelY = hasLine ? 9 : 15, titleY = hasLine ? 24 : 31, lineY = 47;
-    std::string label = ellipsize(info.label, labelPx, textW, spacing);
+    if (!hasLabel) { titleY = hasLine ? 14 : 24; lineY = 39; }
     std::string title = ellipsize(info.title, titlePx, textW - 1);
-    drawText(out, label, textX, labelY, labelPx, hex(info.accent), spacing);
-    drawText(out, title, textX, titleY, titlePx, hex(0xF3F4F6));
-    drawText(out, title, textX + 0.5f, titleY, titlePx, hex(0xF3F4F6, 0.6f));   // semi-bold: a second pass half a pixel over
-    if (hasLine) drawText(out, ellipsize(info.line, linePx, textW), textX, lineY, linePx, hex(0x9CA3AF));
+    if (hasLabel) drawText(out, ellipsize(info.label, labelPx, textW, spacing), textX, labelY, labelPx, hex(info.accent), spacing);
+    drawText(out, title, textX, titleY, titlePx, hex(st.title));
+    drawText(out, title, textX + 0.5f, titleY, titlePx, hex(st.title, 0.6f));   // semi-bold: a second pass half a pixel over
+    if (!hasLabel) fillRound(out, textX - 8, titleY + 4, textX - 5, titleY + 19, 1.5f, hex(info.accent));   // accent mark instead
+    if (hasLine) drawText(out, ellipsize(info.line, linePx, textW), textX, lineY, linePx, hex(st.line));
 }
 
 bool popupParseCorner(const char* name, int& out) {
