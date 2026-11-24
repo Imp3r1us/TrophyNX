@@ -17,10 +17,19 @@ enum class RuleType {
     // Play-statistics based, available for every game
     PlaytimeHours,
     Launches,
+    // Play history (system play log) and album, available for every game
+    DaysPlayed,    // distinct days the game was played
+    StreakDays,    // most days in a row
+    ComebackDays,  // most days away before playing again
+    Screenshots,   // album screenshots of the game
+    Videos,        // album video clips of the game
     // Global (across all games)
     GamesPlayed,
     TotalHours,
     UnlockedTotal,
+    DaysTotal,     // distinct days with any game played
+    StreakTotal,   // most days in a row with any game played
+    CapturesTotal, // album screenshots + videos, all games
     // Live: a value in the running game's memory (memrules.h), checked by the background module only
     Memory,
 };

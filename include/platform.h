@@ -20,6 +20,9 @@ struct PlayStats {
     uint64_t lastPlayed = 0; // POSIX time
 };
 
+struct PlayHistory;   // history.h
+struct AlbumCounts;
+
 namespace plat {
     // Initializes services and selects the user. Returns false and fills err on failure.
     bool init(std::string& err);
@@ -31,6 +34,10 @@ namespace plat {
     using ProgressFn = void (*)(int done, int total, void* ctx);
     void listGames(std::vector<GameInfo>& out, ProgressFn progress, void* ctx);
     PlayStats playStats(uint64_t titleId);
+    // Days each game was played by the selected user (system play log) and album capture counts.
+    // Read once per scan; valid=false when the service is unavailable.
+    void playHistory(PlayHistory& out);
+    void albumCounts(AlbumCounts& out);
 
     // Mounts the selected user's save for a title (read-only).
     bool openSave(uint64_t titleId);

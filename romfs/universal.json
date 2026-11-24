@@ -9,7 +9,21 @@
     { "id": "u_hours_50", "name": "Dedicated", "desc": "Play for 50 hours", "points": 25,
       "rule": { "type": "playtime_hours", "target": 50 } },
     { "id": "u_hours_100", "name": "Centurion", "desc": "Play for 100 hours", "points": 50,
-      "rule": { "type": "playtime_hours", "target": 100 } }
+      "rule": { "type": "playtime_hours", "target": 100 } },
+    { "id": "u_days_7", "name": "Week of Play", "desc": "Play the game on 7 different days", "points": 10,
+      "rule": { "type": "days_played", "target": 7 } },
+    { "id": "u_days_30", "name": "Part of the Routine", "desc": "Play the game on 30 different days", "points": 25,
+      "rule": { "type": "days_played", "target": 30 } },
+    { "id": "u_streak_3", "name": "Hat Trick", "desc": "Play the game 3 days in a row", "points": 10,
+      "rule": { "type": "streak_days", "target": 3 } },
+    { "id": "u_streak_7", "name": "Daily Ritual", "desc": "Play the game 7 days in a row", "points": 25,
+      "rule": { "type": "streak_days", "target": 7 } },
+    { "id": "u_comeback", "name": "Welcome Back", "desc": "Come back to the game after 90 days away", "points": 10,
+      "rule": { "type": "comeback_days", "target": 90, "show_progress": false } },
+    { "id": "u_shots_10", "name": "Photographer", "desc": "Take 10 screenshots of the game", "points": 10,
+      "rule": { "type": "screenshots", "target": 10 } },
+    { "id": "u_video", "name": "Director's Cut", "desc": "Record a video clip of the game", "points": 10,
+      "rule": { "type": "videos", "target": 1 } }
   ],
   "global": [
     { "id": "g_games_5", "name": "Collector", "desc": "Play 5 different games", "points": 10,
@@ -27,6 +41,14 @@
     { "id": "g_unlock_25", "name": "Hunter", "desc": "Unlock 25 achievements in your games", "points": 10,
       "rule": { "type": "unlocked_total", "target": 25 } },
     { "id": "g_unlock_100", "name": "Completionist", "desc": "Unlock 100 achievements in your games", "points": 50,
-      "rule": { "type": "unlocked_total", "target": 100 } }
+      "rule": { "type": "unlocked_total", "target": 100 } },
+    { "id": "g_days_100", "name": "Hundred Days", "desc": "Play on 100 different days", "points": 25,
+      "rule": { "type": "days_total", "target": 100 } },
+    { "id": "g_days_365", "name": "Year Round", "desc": "Play on 365 different days", "points": 50,
+      "rule": { "type": "days_total", "target": 365 } },
+    { "id": "g_streak_30", "name": "Every Single Day", "desc": "Play something 30 days in a row", "points": 50,
+      "rule": { "type": "streak_total", "target": 30 } },
+    { "id": "g_captures_100", "name": "Album Keeper", "desc": "Keep 100 screenshots or videos in the album", "points": 25,
+      "rule": { "type": "captures_total", "target": 100 } }
   ]
 }

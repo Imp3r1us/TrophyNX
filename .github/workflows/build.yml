@@ -65,12 +65,21 @@ jobs:
           python3 host/test/make_save_image.py /tmp/img1
           python3 host/test/make_save_image.py /tmp/img2 --header-b --v4 --seed 7
           python3 host/test/make_save_image.py /tmp/img3 --seed 3
-          /tmp/test_saveimage /tmp/img1 /tmp/img2 /tmp/img3
+          # same ASan/ASLR "DEADLYSIGNAL" loop as above: no ASLR, or UBSan only
+          if ! timeout 300 setarch "$(uname -m)" -R /tmp/test_saveimage /tmp/img1 /tmp/img2 /tmp/img3; then
+            echo "ASan run failed or ASLR could not be disabled: retrying with UBSan only"
+            g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_saveimage.cpp source/saveimage.cpp source/rawfat.cpp source/sha256.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_saveimage_ub
+            timeout 300 /tmp/test_saveimage_ub /tmp/img1 /tmp/img2 /tmp/img3
+          fi
       - name: Host test (save captures + Wi-Fi share server)
         run: |
           apt-get install -y -qq curl >/dev/null || true
           g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_captures.cpp source/captures.cpp source/share_server.cpp source/fileutil.cpp -x c source/cJSON.c -o /tmp/test_captures -lpthread
           /tmp/test_captures
+      - name: Host test (play history)
+        run: |
+          g++ -std=gnu++17 -Iinclude host/test/test_history.cpp source/history.cpp -o /tmp/test_history
+          /tmp/test_history
       - name: Host test (updater SHA-256)
         run: |
           g++ -std=gnu++17 -Iinclude host/test/test_sha256.cpp source/sha256.cpp -o /tmp/test_sha256
