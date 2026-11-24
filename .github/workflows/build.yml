@@ -32,6 +32,9 @@ jobs:
           /tmp/test_formats
           g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_sgb.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_sgb
           /tmp/test_sgb
+          # the live module's Hades reader (in pieces, rule values only) gives the app's values in a small heap
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_sgb_stream.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_sgb_stream
+          /tmp/test_sgb_stream romfs/games
           g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_deltarune.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_deltarune
           apt-get install -y -qq python3 >/dev/null
           python3 tools/deltarune/make_test_save.py /tmp/drsave

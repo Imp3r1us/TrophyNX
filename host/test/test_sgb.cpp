@@ -3,6 +3,7 @@
 //   g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_sgb.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_sgb
 #include "save_formats.h"
 #include <cstdio>
+#include <cstring>
 #include <string>
 
 static int fails = 0;
@@ -43,11 +44,34 @@ int main() {
     CHECK(q.size() == 2);
     CHECK(one(d, "TextLinesRecord/Ending01") == 1);
     CHECK(one(d, "Padding") == 1);
+    // live module's reader (in pieces, python-lz4 data): same values; "[*]" keeps every global whole
+    auto rd = [&b](uint64_t off, void* buf, size_t len) {
+        if (off + len > b.size()) return false;
+        memcpy(buf, b.data() + off, len);
+        return true;
+    };
+    SgbDoc s;
+    CHECK(s.parseStream(rd, b.size(), {"[*]"}, 0));
+    CHECK(one(s, "_header/runs") == 42 && one(s, "GameState/EnemyKills/TrainingMelee") == 16 &&
+          one(s, "GameState/WeaponUnlocks/SwordWeapon/1") == 5 && one(s, "TextLinesRecord/Ending01") == 1 && one(s, "Padding") == 1);
+    SgbDoc p;
+    CHECK(p.parseStream(rd, b.size(), {"GameState/WeaponUnlocks[*][*]", "GameState/QuestStatus[*]"}, 0));
+    q.clear();
+    p.query("GameState/QuestStatus[*]", q);
+    CHECK(q.size() == 2 && one(p, "GameState/WeaponUnlocks[*][*]", &n) == 6 && n == 2);
+    CHECK(one(p, "GameState/EnemyKills/TrainingMelee") == 0 && one(p, "_header/runs") == 42);   // not asked: skipped; header kept
     // damaged files fail cleanly
     for (size_t cut : {(size_t)20, (size_t)60, b.size() - 30, b.size() - 1}) {
         std::vector<uint8_t> t(b.begin(), b.begin() + cut);
         SgbDoc x;
         CHECK(!x.parse(std::move(t)));
+        auto rt = [&t](uint64_t off, void* buf, size_t len) {
+            if (off + len > t.size()) return false;
+            memcpy(buf, t.data() + off, len);
+            return true;
+        };
+        SgbDoc xs;
+        CHECK(!xs.parseStream(rt, t.size(), {"[*]"}, 0));
     }
     std::vector<uint8_t> bad(b);
     bad[bad.size() - 40] ^= 0x5A;

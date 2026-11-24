@@ -10,6 +10,17 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.15.1 (2026-11-24)
+
+Hades achievements now pop up while you play and when you quit, not only after a scan in the app.
+
+### Fixed
+- Hades: the live module skipped the game's saves (too big for its memory), so achievements only unlocked when you opened the app and rescanned, and the in-game menu kept them locked. It now reads them in small pieces and keeps only the values the achievements need, so they unlock a few seconds after the game saves.
+- Already played? Open the app once and rescan (Y): anything you earned meanwhile unlocks then.
+
+### Live module 0.10.1
+- Hades saves are read 16 KB at a time, with LZ4 decoded through its 64 KB window: the memory needed no longer grows with the save.
+
 ## 0.15.0 (2026-11-24)
 
 See your achievements without leaving the game: TrophyNX now has a Tesla / Ultrahand menu.

@@ -12,6 +12,7 @@
 #include "json_doc.h"
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -35,6 +36,13 @@ cJSON* nrbfToJson(const uint8_t* data, size_t size, std::string& error, SaveForm
 // plus "_header": {version, location, runs, meta_points, shrine_points, god_mode, hell_mode, map}.
 bool isSgb(const uint8_t* data, size_t size);
 cJSON* sgbToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info = nullptr);
+// Live module (small heap): the same tree, read in pieces through `read` (file offset, length) and built only
+// where `keepPaths` (rule paths) reach; "_header" is always built. Memory: a 64 KB LZ4 window + 16 KB of file +
+// the pruned tree, whatever the save's size. `memoryBudget` > 0: gives up cleanly ("not enough memory") when the
+// pruned tree would need more. A node where a path ends, or reached by an index / [Field=value] selector, is kept whole.
+typedef std::function<bool(uint64_t offset, void* buf, size_t len)> ReadAtFn;
+cJSON* sgbToJsonStream(const ReadAtFn& read, uint64_t size, const std::vector<std::string>& keepPaths, size_t memoryBudget,
+                       std::string& error, SaveFormatInfo* info = nullptr);
 // DELTARUNE (Switch) "deltarune.sav": a JSON object {file name: file text} written by GameMaker. Tree:
 //   files[*]: one object per "filechN_S" text (chapter N, slot S; S >= 3 = the completion save of slot S - 3):
 //     name, chapter, slot, completion (0/1), route (chapter 5 "_b" files), truename, char[3], gold, xp, lv, darkzone,
@@ -104,6 +112,7 @@ public:
 class SgbDoc : public JsonDoc {
 public:
     bool parse(std::vector<uint8_t>&& data);
+    bool parseStream(const ReadAtFn& read, uint64_t size, const std::vector<std::string>& keepPaths, size_t memoryBudget);
     SaveFormatInfo info;
 };
 
