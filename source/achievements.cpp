@@ -1,5 +1,6 @@
 #include "achievements.h"
 #include "rules.h"
+#include "history.h"
 #include "byml.h"
 #include "json_doc.h"
 #include "save_formats.h"
@@ -9,6 +10,7 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <set>
 
 // The app reads saves through the platform layer, whole files at a time.
 class PlatSaveSource : public SaveSource {
@@ -124,6 +126,16 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
     int n = (int)lib.games.size();
     double totalHours = 0;
     int played = 0;
+    // Play days and album captures: read once for every game.
+    PlayHistory hist;
+    AlbumCounts album;
+    plat::playHistory(hist);
+    plat::albumCounts(album);
+    std::set<int32_t> allDays;
+    uint32_t allCaptures = 0;
+    if (hist.valid) for (auto& kv : hist.days) allDays.insert(kv.second.begin(), kv.second.end());
+    for (auto& kv : album.screenshots) allCaptures += kv.second;
+    for (auto& kv : album.videos) allCaptures += kv.second;
     for (int i = 1; i < n; i++) {
         if (progress) progress(i, n, ctx);
         Game& g = lib.games[i];
@@ -137,9 +149,25 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
         double hours = g.stats.playtimeNs / 3.6e12;
         if (g.stats.launches > 0) played++;
         totalHours += hours;
+        DayStats ds;
+        auto hd = hist.days.find(g.id);
+        if (hd != hist.days.end()) ds = dayStats(hd->second);
+        uint32_t shots = album.screenshots.count(g.id) ? album.screenshots[g.id] : 0;
+        uint32_t clips = album.videos.count(g.id) ? album.videos[g.id] : 0;
+        if (hist.valid) g.debug.push_back("Play days: " + std::to_string(ds.days) + ", longest streak " + std::to_string(ds.longestStreak) +
+                                          ", longest break " + std::to_string(ds.longestGap) + " days");
+        if (album.valid) g.debug.push_back("Album: " + std::to_string(shots) + " screenshots, " + std::to_string(clips) + " videos");
         for (Achievement& a : g.achs) {
-            if (a.rule.type == RuleType::PlaytimeHours) a.value = hours;
-            else if (a.rule.type == RuleType::Launches) a.value = g.stats.launches;
+            switch (a.rule.type) {
+                case RuleType::PlaytimeHours: a.value = hours; break;
+                case RuleType::Launches: a.value = g.stats.launches; break;
+                case RuleType::DaysPlayed: a.value = ds.days; break;
+                case RuleType::StreakDays: a.value = ds.longestStreak; break;
+                case RuleType::ComebackDays: a.value = ds.longestGap; break;
+                case RuleType::Screenshots: a.value = shots; break;
+                case RuleType::Videos: a.value = clips; break;
+                default: break;
+            }
         }
         PlatSaveSource src;
         evaluateSave(g, src);
@@ -155,6 +183,13 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
     Game& ov = lib.games[0];
     ov.debug.clear();
     ov.debug.push_back("User: " + plat::userName() + "  (" + plat::userKey() + ")");
+    ov.debug.push_back("Play history: " + (hist.valid ? hist.source : std::string("unavailable")));
+    for (const std::string& l : hist.notes) ov.debug.push_back("  " + l);
+    ov.debug.push_back(std::string("Album: ") + (album.valid ? "read" : "unavailable"));
+    for (const std::string& l : album.notes) ov.debug.push_back("  " + l);
+    DayStats allStats = dayStats(allDays);
+    ov.debug.push_back("Days with play: " + std::to_string(allStats.days) + ", longest streak " + std::to_string(allStats.longestStreak) +
+                       ", captures " + std::to_string(allCaptures));
     ov.debug.push_back("Installed games: " + std::to_string(n - 1) + ", played: " + std::to_string(played) + ", total " + fmtd(floor(totalHours * 10) / 10) + " h");
     int withSave = 0;
     for (const Game& g : lib.games) if (!g.reader.empty()) withSave++;
@@ -170,6 +205,9 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
         if (a.rule.type == RuleType::GamesPlayed) a.value = played;
         else if (a.rule.type == RuleType::TotalHours) a.value = totalHours;
         else if (a.rule.type == RuleType::UnlockedTotal) a.value = unlockedInGames;
+        else if (a.rule.type == RuleType::DaysTotal) a.value = allStats.days;
+        else if (a.rule.type == RuleType::StreakTotal) a.value = allStats.longestStreak;
+        else if (a.rule.type == RuleType::CapturesTotal) a.value = allCaptures;
     }
     applyUnlocksGame(ov, true, store, changed);
     if (changed) saveStore(store);

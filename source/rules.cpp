@@ -163,6 +163,14 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
     else if (t == "games_played") rule.type = RuleType::GamesPlayed;
     else if (t == "total_hours") rule.type = RuleType::TotalHours;
     else if (t == "unlocked_total") rule.type = RuleType::UnlockedTotal;
+    else if (t == "days_played") rule.type = RuleType::DaysPlayed;
+    else if (t == "streak_days") rule.type = RuleType::StreakDays;
+    else if (t == "comeback_days") rule.type = RuleType::ComebackDays;
+    else if (t == "screenshots") rule.type = RuleType::Screenshots;
+    else if (t == "videos") rule.type = RuleType::Videos;
+    else if (t == "days_total") rule.type = RuleType::DaysTotal;
+    else if (t == "streak_total") rule.type = RuleType::StreakTotal;
+    else if (t == "captures_total") rule.type = RuleType::CapturesTotal;
     else if (t == "memory") {
         // live only: the background module reads the game's memory; the app shows the unlocks it stored
         rule.type = RuleType::Memory;

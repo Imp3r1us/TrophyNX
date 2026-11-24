@@ -1,6 +1,7 @@
 // PC test harness: fake games and stats, scripted input, frames written as PNG.
 #ifndef __SWITCH__
 #include "platform.h"
+#include "history.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -74,6 +75,28 @@ PlayStats plat::playStats(uint64_t id) {
         default: p.playtimeNs = 0; p.launches = 0; break;
     }
     return p;
+}
+
+// Fake play history: BotW played 40 days (a 9-day streak, then a 200-day break), Hollow Knight 8 days in a row.
+void plat::playHistory(PlayHistory& out) {
+    out = PlayHistory();
+    out.valid = true;
+    out.source = "host mock";
+    int32_t base = dayNumber(2025, 1, 1);
+    auto& botw = out.days[0x01007EF00011E000ULL];
+    for (int i = 0; i < 9; i++) botw.insert(base + i);
+    for (int i = 0; i < 31; i++) botw.insert(base + 9 + 200 + i * 2);
+    auto& hk = out.days[0x0100633007D48000ULL];
+    for (int i = 0; i < 8; i++) hk.insert(base + 400 + i);
+    out.notes.push_back("host mock history");
+}
+void plat::albumCounts(AlbumCounts& out) {
+    out = AlbumCounts();
+    out.valid = true;
+    out.screenshots[0x01007EF00011E000ULL] = 57;
+    out.videos[0x01007EF00011E000ULL] = 2;
+    out.screenshots[0x0100633007D48000ULL] = 4;
+    out.notes.push_back("host mock album");
 }
 
 bool plat::openSave(uint64_t id) {

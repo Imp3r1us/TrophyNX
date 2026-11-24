@@ -1,5 +1,6 @@
 #ifdef __SWITCH__
 #include "platform.h"
+#include "history.h"
 #include <switch.h>
 #include <cstring>
 #include <cstdio>
@@ -163,6 +164,130 @@ PlayStats plat::playStats(uint64_t id) {
         p.lastPlayed = s.last_timestamp_user;
     }
     return p;
+}
+
+// Local UTC offset (seconds) from the console's time zone, so play days start at local midnight.
+static int64_t localUtcOffset() {
+    u64 now = 0;
+    if (R_FAILED(timeGetCurrentTime(TimeType_UserSystemClock, &now))) return 0;
+    TimeCalendarTime cal;
+    TimeCalendarAdditionalInfo info;
+    if (R_FAILED(timeToCalendarTimeWithMyRule(now, &cal, &info))) return 0;
+    return info.offset;
+}
+
+// Per-user play days from the account events of the play log: on 10.0.0+ each "open" / "close" of the
+// user account by an application carries its program id. Older firmware: application events, all users.
+void plat::playHistory(PlayHistory& out) {
+    out = PlayHistory();
+    if (!g_pdm) { out.notes.push_back("pdm:qry unavailable"); return; }
+    int64_t off = localUtcOffset();
+    s32 total = 0, start = 0, end = 0;
+    Result rc = pdmqryGetAvailablePlayEventRange(&total, &start, &end);
+    char b[200];
+    snprintf(b, sizeof(b), "play log range: rc=0x%X, %d entries, index %d..%d, UTC offset %+ld min", rc, total, start, end, (long)(off / 60));
+    out.notes.push_back(b);
+    if (R_FAILED(rc) || total <= 0) return;
+
+    const s32 batch = 128;
+    std::vector<PdmAccountEvent> ev(batch);
+    std::map<uint64_t, uint64_t> openAt;   // program id -> open time of the current session
+    int read = 0, mine = 0, opens = 0, closes = 0, withProgram = 0, otherTypes = 0;
+    s32 idx = start;
+    for (int guard = 0; guard < 4096 && idx <= end; guard++) {
+        s32 n = 0;
+        rc = pdmqryQueryAccountEvent(idx, ev.data(), batch, &n);
+        if (R_FAILED(rc) || n <= 0) break;
+        for (s32 i = 0; i < n; i++) {
+            const PdmAccountEvent& e = ev[i];
+            read++;
+            if (memcmp(&e.uid, &g_uid, sizeof(AccountUid)) != 0) continue;
+            mine++;
+            uint64_t pid = e.program_id;
+            if (pid) withProgram++;
+            if (!pid) continue;
+            if (e.type == 0) {
+                opens++;
+                auto it = openAt.find(pid);
+                if (it != openAt.end()) addSessionDays(out.days[pid], it->second, it->second, off);   // never closed
+                openAt[pid] = e.timestamp_user;
+            } else if (e.type == 1) {
+                closes++;
+                auto it = openAt.find(pid);
+                if (it != openAt.end()) { addSessionDays(out.days[pid], it->second, e.timestamp_user, off); openAt.erase(it); }
+                else addSessionDays(out.days[pid], e.timestamp_user, e.timestamp_user, off);
+            } else otherTypes++;
+        }
+        s32 next = (s32)ev[n - 1].entry_index + 1;
+        if (next <= idx) break;
+        idx = next;
+    }
+    for (auto& kv : openAt) addSessionDays(out.days[kv.first], kv.second, kv.second, off);   // still running / not closed
+    snprintf(b, sizeof(b), "account events: %d read, %d for this user (%d with a program id: %d open, %d close, %d other)",
+             read, mine, withProgram, opens, closes, otherTypes);
+    out.notes.push_back(b);
+    if (!out.days.empty()) { out.valid = true; out.source = "account events (this user)"; return; }
+
+    // Fallback: application launch / focus events (every user).
+    std::vector<PdmAppletEvent> ae(batch);
+    int appEvents = 0;
+    idx = start;
+    for (int guard = 0; guard < 4096 && idx <= end; guard++) {
+        s32 n = 0;
+        rc = pdmqryQueryAppletEvent(idx, false, ae.data(), batch, &n);
+        if (R_FAILED(rc) || n <= 0) break;
+        for (s32 i = 0; i < n; i++) {
+            const PdmAppletEvent& e = ae[i];
+            if (e.event_type != PdmAppletEventType_Launch && e.event_type != PdmAppletEventType_InFocus) continue;
+            if (!e.program_id || !e.timestamp_user) continue;
+            appEvents++;
+            addSessionDays(out.days[e.program_id], e.timestamp_user, e.timestamp_user, off);
+        }
+        s32 next = (s32)ae[n - 1].entry_index + 1;
+        if (next <= idx) break;
+        idx = next;
+    }
+    snprintf(b, sizeof(b), "application events (all users): %d launch/focus events, %d games", appEvents, (int)out.days.size());
+    out.notes.push_back(b);
+    if (!out.days.empty()) { out.valid = true; out.source = "application events (all users)"; }
+}
+
+// Screenshots and videos per game, from both album storages (console + SD card).
+void plat::albumCounts(AlbumCounts& out) {
+    out = AlbumCounts();
+    Result rc = capsaInitialize();
+    if (R_FAILED(rc)) {
+        char b[64]; snprintf(b, sizeof(b), "caps:a unavailable (rc=0x%X)", rc);
+        out.notes.push_back(b);
+        return;
+    }
+    const CapsAlbumStorage stores[2] = {CapsAlbumStorage_Nand, CapsAlbumStorage_Sd};
+    for (CapsAlbumStorage st : stores) {
+        u64 count = 0;
+        rc = capsaGetAlbumFileCount(st, &count);
+        char b[160];
+        if (R_FAILED(rc)) {
+            snprintf(b, sizeof(b), "album %s: count failed rc=0x%X", st == CapsAlbumStorage_Sd ? "SD" : "NAND", rc);
+            out.notes.push_back(b);
+            continue;
+        }
+        if (count > 100000) count = 100000;
+        std::vector<CapsAlbumEntry> list(count ? count : 1);
+        u64 got = 0;
+        if (count) rc = capsaGetAlbumFileList(st, &got, list.data(), count);
+        if (R_FAILED(rc)) got = 0;
+        int shots = 0, movies = 0;
+        for (u64 i = 0; i < got && i < count; i++) {
+            const CapsAlbumFileId& f = list[i].file_id;
+            if (f.content == CapsAlbumFileContents_ScreenShot || f.content == CapsAlbumFileContents_ExtraScreenShot) { out.screenshots[f.application_id]++; shots++; }
+            else if (f.content == CapsAlbumFileContents_Movie || f.content == CapsAlbumFileContents_ExtraMovie) { out.videos[f.application_id]++; movies++; }
+        }
+        snprintf(b, sizeof(b), "album %s: %llu files listed (rc=0x%X), %d screenshots, %d videos", st == CapsAlbumStorage_Sd ? "SD" : "NAND",
+                 (unsigned long long)got, rc, shots, movies);
+        out.notes.push_back(b);
+        out.valid = true;
+    }
+    capsaExit();
 }
 
 bool plat::openSave(uint64_t id) {

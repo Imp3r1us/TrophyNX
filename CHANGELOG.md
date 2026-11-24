@@ -10,6 +10,17 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.13.0 (2026-11-24)
+
+Every game gets 7 new achievements from your play days and your album, no save needed.
+
+### New
+- New achievements for every game: play on 7 and 30 different days, play 3 and 7 days in a row, come back after 90 days away, take 10 screenshots, record a video clip.
+- New global achievements: play on 100 and 365 different days, play something 30 days in a row, keep 100 screenshots or videos in the album.
+- Days are read from the console's play log for the selected user, and captures from the album (console memory and SD card). Older play-log entries may already be gone, so long histories can count a little less than the real total.
+- The game's debug view (X) now shows its play days, longest streak, longest break and album counts. The Overview shows what the play log and album returned.
+- Custom definitions can use the new rule types: days_played, streak_days, comeback_days, screenshots, videos (and days_total, streak_total, captures_total in universal.json). See docs/custom-achievements.md.
+
 ## 0.12.0 (2026-11-23)
 
 A new look for the app, and achievement popups while you play, right after the game saves.

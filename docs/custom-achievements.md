@@ -178,6 +178,8 @@ The save is read as a tree; a path walks it with `/`:
 | `count` | at least `target` of the matched values are true / non-zero / non-empty | `{ "type": "count", "path": "ShineData[*]/IsGet", "target": 100 }` |
 | `sum` | the matched values add up to `target` | `{ "type": "sum", "paths": ["coins/a", "coins/b"], "target": 500 }` |
 | `playtime_hours` / `launches` | play statistics | section 4 |
+| `days_played` / `streak_days` / `comeback_days` | days played, most days in a row, longest break before coming back (system play log) | `{ "type": "streak_days", "target": 7 }` |
+| `screenshots` / `videos` | captures of the game in the album | `{ "type": "screenshots", "target": 10 }` |
 | `memory` | a value in the game's memory, while you play | section 5b |
 
 Inside a rule, `"show_progress": false` hides the "37 / 100" counter (shown by default when `target` is above 1),

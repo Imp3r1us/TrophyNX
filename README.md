@@ -361,7 +361,12 @@ JSON XORed with a fixed phrase. The Save Lab finds known keys and recovers unkno
 | `sum` | sum of listed values | `names`, `target` |
 | `playtime_hours` | hours played (system log) | `target` |
 | `launches` | number of launches | `target` |
+| `days_played` | different days the game was played (system play log, this user) | `target` |
+| `streak_days` | most days in a row the game was played | `target` |
+| `comeback_days` | longest break (in days) before playing the game again | `target` |
+| `screenshots`, `videos` | captures of the game in the album (console + SD card) | `target` |
 | `games_played`, `total_hours`, `unlocked_total` | global only (`universal.json`) | `target` |
+| `days_total`, `streak_total`, `captures_total` | global only: days with any game, most days in a row, all album captures | `target` |
 
 Display options: `divisor` (e.g. `4` shows quarter-hearts as hearts), `show_progress`, and `"hidden": true` on the achievement to hide its description until it unlocks.
 Points tiers: ≤10 bronze, ≤25 silver, ≤50 gold, above that platinum.
