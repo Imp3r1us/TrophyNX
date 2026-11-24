@@ -10,6 +10,17 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.16.1 (2026-11-25)
+
+The compact popup is bigger, and its size is now a setting.
+
+### Changed
+- Compact popup: new Size setting (Small, Medium, Large, Extra large). Large, 1.5x the old card, is the new default. The card and its text are drawn at that size, so they stay sharp.
+- The popup settings preview shows the card at its real size on screen.
+
+### Live module 0.11.1
+- Draws the compact card at the chosen size.
+
 ## 0.16.0 (2026-11-25)
 
 Popup settings in the app: choose the card, its colours and position, and what is shown, with a live preview.

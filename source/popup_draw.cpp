@@ -271,18 +271,21 @@ uint32_t popupAccentFor(int tier, bool hidden) {
 }
 
 void popupRenderToast(const ToastInfo& info, PopupImage& out, const ToastStyle& st) {
-    out.w = TOAST_W;
-    out.h = TOAST_H;
+    // Everything is designed at size 1 (360x70 at 1080p) and multiplied by st.scale: same card, drawn larger
+    // (vector shapes and text, no stretching).
+    const float s = std::min(std::max(st.scale, 0.5f), 2.5f);
+    out.w = (int)lroundf(TOAST_W * s);
+    out.h = (int)lroundf(TOAST_H * s);
     out.px.assign((size_t)out.w * out.h * 4, 0);
-    const float W = TOAST_W, H = TOAST_H, pad = 13, icon = 44;
-    const float textX = st.icon ? pad + icon + 12 : 18, textW = W - textX - 14;
+    const float W = (float)out.w, H = (float)out.h, pad = 13 * s, icon = roundf(44 * s), radius = 11 * s, iconR = 8 * s;
+    const float textX = st.icon ? pad + icon + 12 * s : 18 * s, textW = W - textX - 14 * s;
 
-    // card: rgba(24, 26, 32, 0.88) by default, radius 11, 1 px border rgba(255, 255, 255, 0.14)
-    fillRound(out, 0, 0, W, H, 11, hex(st.bg, st.bgAlpha));
-    if (st.borderAlpha > 0) strokeRound(out, 0, 0, W, H, 11, hex(st.border, st.borderAlpha));
+    // card: rgba(24, 26, 32, 0.88) by default, rounded, 1 px border rgba(255, 255, 255, 0.14)
+    fillRound(out, 0, 0, W, H, radius, hex(st.bg, st.bgAlpha));
+    if (st.borderAlpha > 0) strokeRound(out, 0, 0, W, H, radius, hex(st.border, st.borderAlpha));
 
-    // icon tile (rounded 44 px): the achievement's art or the game icon, else a tile with a star
-    const float ix = pad, iy = (H - icon) / 2;
+    // icon tile (rounded): the achievement's art or the game icon, else a tile with a star
+    const float ix = roundf(pad), iy = roundf((H - icon) / 2);
     if (!st.icon) {
     } else if (info.icon && info.icon->w > 0) {
         PopupImage sc;
@@ -294,11 +297,11 @@ void popupRenderToast(const ToastInfo& info, PopupImage& out, const ToastStyle& 
         for (int y = 0; y < src->h; y++)
             for (int x = 0; x < src->w; x++) {
                 const uint8_t* p = &src->px[(size_t)(y * src->w + x) * 4];
-                float m = roundCov((float)x, (float)y, 0, 0, icon, icon, 8);
+                float m = roundCov((float)x, (float)y, 0, 0, icon, icon, iconR);
                 blend(out, (int)ix + x, (int)iy + y, {p[0] / 255.f, p[1] / 255.f, p[2] / 255.f, 1.f}, m * p[3] / 255.f);
             }
     } else {
-        fillRound(out, ix, iy, ix + icon, iy + icon, 8, hex(st.tile));
+        fillRound(out, ix, iy, ix + icon, iy + icon, iconR, hex(st.tile));
         Rgba a = hex(info.accent);
         const int SS = 3;
         for (int y = 0; y < (int)icon; y++)
@@ -306,22 +309,23 @@ void popupRenderToast(const ToastInfo& info, PopupImage& out, const ToastStyle& 
                 int in = 0;
                 for (int sy = 0; sy < SS; sy++)
                     for (int sx = 0; sx < SS; sx++)
-                        in += inStar(x + (sx + .5f) / SS - icon / 2, y + (sy + .5f) / SS - icon / 2 - 1, 14, 6) ? 1 : 0;
+                        in += inStar(x + (sx + .5f) / SS - icon / 2, y + (sy + .5f) / SS - icon / 2 - s, 14 * s, 6 * s) ? 1 : 0;
                 if (in) blend(out, (int)ix + x, (int)iy + y, a, in / (float)(SS * SS));
             }
     }
-    if (st.icon) strokeRound(out, ix, iy, ix + icon, iy + icon, 8, hex(st.border, std::min(st.borderAlpha, 0.10f) + 0.04f));
+    if (st.icon) strokeRound(out, ix, iy, ix + icon, iy + icon, iconR, hex(st.border, std::min(st.borderAlpha, 0.10f) + 0.04f));
 
     // text: label (uppercase, spaced, accent), title (semi-bold, cut with "..."), optional line
-    const float labelPx = 11, titlePx = 18, linePx = 13, spacing = 1.2f;
+    const float labelPx = 11 * s, titlePx = 18 * s, linePx = 13 * s, spacing = 1.2f * s;
     bool hasLine = !info.line.empty(), hasLabel = st.label && !info.label.empty();
-    float labelY = hasLine ? 9 : 15, titleY = hasLine ? 24 : 31, lineY = 47;
-    if (!hasLabel) { titleY = hasLine ? 14 : 24; lineY = 39; }
-    std::string title = ellipsize(info.title, titlePx, textW - 1);
+    float labelY = (hasLine ? 9 : 15) * s, titleY = (hasLine ? 24 : 31) * s, lineY = 47 * s;
+    if (!hasLabel) { titleY = (hasLine ? 14 : 24) * s; lineY = 39 * s; }
+    std::string title = ellipsize(info.title, titlePx, textW - s);
     if (hasLabel) drawText(out, ellipsize(info.label, labelPx, textW, spacing), textX, labelY, labelPx, hex(info.accent), spacing);
     drawText(out, title, textX, titleY, titlePx, hex(st.title));
-    drawText(out, title, textX + 0.5f, titleY, titlePx, hex(st.title, 0.6f));   // semi-bold: a second pass half a pixel over
-    if (!hasLabel) fillRound(out, textX - 8, titleY + 4, textX - 5, titleY + 19, 1.5f, hex(info.accent));   // accent mark instead
+    drawText(out, title, textX + 0.5f * s, titleY, titlePx, hex(st.title, 0.6f));   // semi-bold: a second pass half a pixel over
+    if (!hasLabel)   // accent mark instead of the label
+        fillRound(out, textX - 8 * s, titleY + 4 * s, textX - 5 * s, titleY + 19 * s, 1.5f * s, hex(info.accent));
     if (hasLine) drawText(out, ellipsize(info.line, linePx, textW), textX, lineY, linePx, hex(st.line));
 }
 

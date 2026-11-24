@@ -1,10 +1,10 @@
 // Host test of the popup settings (include/popup_config.h): popup.json parsing (old files included), saving,
 // themes, accents and the texts of each popup kind. With an output folder and a font, also renders every
 // compact theme with every accent to <out>/popup_themes.png.
-//   g++ -std=gnu++17 -DPOPUP_DRAW_STB_IMPL -Iinclude host/test/test_popup_config.cpp source/popup_config.cpp source/popup_draw.cpp \
-//       -x c source/cJSON.c -o /tmp/test_popup_config
-//   /tmp/test_popup_config [out_dir font.ttf]
+//   g++ -std=gnu++17 -DPOPUP_DRAW_STB_IMPL -Iinclude host/test/test_popup_config.cpp source/popup_config.cpp source/popup_draw.cpp -x c source/cJSON.c -o /tmp/test_popup_config
+//   /tmp/test_popup_config [out_dir font.ttf]   (also renders popup_sizes.png)
 #include "popup_config.h"
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -32,8 +32,9 @@ int main(int argc, char** argv) {
     // --- defaults: the classic card as before
     PopupSettings d;
     ok(d.style == "custom" && !d.compact && d.durationMs == 0 && d.liveCheck && d.progress && d.classicDark && !d.classicIconLeft &&
-           d.corner == CORNER_TOP_LEFT && d.toastTheme == "dark" && d.accent == "tier" && d.opacity == 88 && d.border && d.icon && d.label,
-       "defaults");
+           d.corner == CORNER_TOP_LEFT && d.toastTheme == "dark" && d.accent == "tier" && d.opacity == 88 && d.border && d.icon && d.label &&
+           d.size == "large",
+       "defaults (compact card large)");
 
     // --- an old popup.json (before the settings page) keeps working
     PopupSettings o;
@@ -60,6 +61,18 @@ int main(int argc, char** argv) {
            w.find("border") != std::string::npos, "each bad value named in the warnings");
     PopupSettings c;
     ok(!popupSettingsParse("not json", c) && !popupSettingsParse("[1,2]", c) && !popupSettingsParse(nullptr, c), "not an object: false");
+
+    // --- size: parsed, bad names reported, scale of the design
+    PopupSettings z;
+    w.clear();
+    ok(popupSettingsParse(R"({ "size": "xl" })", z, &w) && w.empty() && z.size == "xl" && popupToastStyle(z).scale == 1.75f, "size xl = 1.75x");
+    w.clear();
+    popupSettingsParse(R"({ "size": "huge" })", z, &w);
+    ok(z.size == "xl" && w.find("unknown size 'huge'") != std::string::npos, "unknown size: warning, value kept");
+    ok(popupToastStyle(PopupSettings()).scale == 1.5f, "default size large = 1.5x");
+    PopupSettings oldFile;   // a popup.json from 0.16.0 has no "size": the card gets the new default
+    popupSettingsParse(R"({ "card": "compact", "compact_theme": "oled" })", oldFile);
+    ok(oldFile.size == "large", "0.16.0 file without size: large");
 
     // --- save and read back: identical
     std::string js = popupSettingsJson(a);
@@ -112,6 +125,48 @@ int main(int argc, char** argv) {
     popupClassicTexts(p, title, desc);
     ok(title == "Pet Cerberus" && desc == "Already unlocked - met in your save", "classic card: already unlocked texts");
 
+    // --- rendered size follows the scale (vector shapes and text, not stretched)
+    if (argc > 2) {
+        std::vector<uint8_t> font = readAll(argv[2]);
+        if (!font.empty() && popupFontInit(font.data())) {
+            const auto& sizes = popupToastSizes();
+            int H = 16, W = 0;
+            std::vector<PopupImage> imgs;
+            for (const NamedSize& sz : sizes) {
+                PopupSettings ps;
+                ps.size = sz.name;
+                ps.toastTheme = "oled";
+                ps.opacity = 73;
+                PopupText u;
+                u.title = std::string("Escaped Tartarus (") + sz.label + ")";
+                u.points = 10;
+                PopupImage img;
+                popupRenderToast(popupToastTexts(u, ps), img, popupToastStyle(ps));
+                ok(img.w == (int)(TOAST_W * sz.scale + 0.5f) && img.h == (int)(TOAST_H * sz.scale + 0.5f),
+                   (std::string("size ") + sz.name + ": card is " + std::to_string(img.w) + "x" + std::to_string(img.h)).c_str());
+                H += img.h + 16;
+                W = std::max(W, img.w + 32);
+                imgs.push_back(img);
+            }
+            std::vector<uint8_t> sheet((size_t)W * H * 4);
+            for (size_t i = 0; i < sheet.size(); i += 4) { sheet[i] = 70; sheet[i + 1] = 110; sheet[i + 2] = 150; sheet[i + 3] = 255; }
+            int oy = 16;
+            for (const PopupImage& img : imgs) {
+                for (int y = 0; y < img.h; y++)
+                    for (int x = 0; x < img.w; x++) {
+                        const uint8_t* s2 = &img.px[((size_t)y * img.w + x) * 4];
+                        uint8_t* q = &sheet[((size_t)(oy + y) * W + 16 + x) * 4];
+                        float al = s2[3] / 255.f;
+                        for (int ch = 0; ch < 3; ch++) q[ch] = (uint8_t)(s2[ch] * al + q[ch] * (1 - al));
+                    }
+                oy += img.h + 16;
+            }
+            std::string path = std::string(argv[1]) + "/popup_sizes.png";
+            stbi_write_png(path.c_str(), W, H, 4, sheet.data(), W * 4);
+            printf("     %s\n", path.c_str());
+        }
+    }
+
     // --- every theme x a few accents, for the docs
     if (argc > 2) {
         std::vector<uint8_t> font = readAll(argv[2]);
@@ -130,6 +185,7 @@ int main(int argc, char** argv) {
             for (size_t ti2 = 0; ti2 < themes.size(); ti2++)
                 for (int ai = 0; ai < cols; ai++) {
                     PopupSettings ps;
+                    ps.size = "small";   // the sheet is laid out for the 360x70 design size
                     ps.toastTheme = themes[ti2].name;
                     ps.accent = accents[ai];
                     PopupText u;

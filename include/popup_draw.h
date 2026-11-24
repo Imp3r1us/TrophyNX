@@ -71,9 +71,10 @@ struct ToastStyle {
     uint32_t tile = 0x2A2F3A;    // icon placeholder
     bool icon = true;            // false: no icon, the text starts at the left
     bool label = true;           // false: no uppercase label, title (and line) centred
+    float scale = 1.f;           // card size: 1 = 360x70 at 1080p (popup.json "size")
 };
 
-// Renders the card into a TOAST_W x TOAST_H straight-RGBA8 image.
+// Renders the card into a straight-RGBA8 image of TOAST_W x TOAST_H times style.scale.
 void popupRenderToast(const ToastInfo& info, PopupImage& out, const ToastStyle& style = ToastStyle());
 // Bronze / silver: cyan. Gold, or a hidden (secret) achievement: gold. Platinum: violet.
 uint32_t popupAccentFor(int tier, bool hidden);
