@@ -139,9 +139,21 @@ When several save files are listed (slots), **the best one counts**.
 | .NET BinaryFormatter (many Unity games; the Save Lab detects it) | `nrbf` |
 | starts with `SGB1` (Supergiant Games: Hades) | `sgb` |
 | DELTARUNE `deltarune.sav` (JSON of the game's text files) | `deltarune` |
+| RPG Maker MV / MZ `fileN.rpgsave` / `fileN.rmmzsave` (LZString base64 or zlib) | `rpgmaker` |
+| GameMaker text save: INI (`[Section]` / `key="value"`, also base64), or one value per line | `gamemaker` |
 | THEATRHYTHM FINAL BAR LINE `backup.inf` / `musicBackup.inf` (encrypted MessagePack) | `theatrhythm` + `"key_file": "theatrhythm.txt"` |
 | Nintendo BYML (`YB` / `BY` at the start or at 0x10) | `byml` |
 | anything else with values at fixed positions | `binary_le` (see the main README) |
+
+**RPG Maker MV / MZ paths**: `switches/_data[12]` (switch 12 on), `variables/_data[5]` (variable 5),
+`selfSwitches/_data/1,4,A` (map 1, event 4, self switch A), `party/_gold`, `party/_items/7` (how many of item 7),
+`party/_weapons/2`, `actors/_data[1]/_level`, `system/_battleCount`, `system/_winCount`, `system/_saveCount`.
+The engine's class markers are removed, so the paths follow the game's own field names.
+
+**GameMaker paths**: an INI file reads as `Section/key` (`Progress/Level`); quoted numbers such as `"12.000000"` are
+numbers. Other text files read line by line: `lines[0]`, `lines[1]`... Values saved with `ds_list_write` /
+`ds_map_write` (long hex strings starting with `2F010000` / `91010000`) are decoded: `Progress/Flags/boss_dead`,
+`lines[2][4]`.
 
 If the save is JSON scrambled with a repeating key (SIGNALIS does this), the Save Lab recovers the key: add it as
 `"xor_key": "..."`.

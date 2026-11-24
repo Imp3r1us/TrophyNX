@@ -71,6 +71,17 @@ cJSON* msgpackToJson(const uint8_t* data, size_t size, std::string& error, size_
 // Tree = msgpackToJson, with the [Key(n)] records labelled: MusicInfo/MusicRecordDictionary/<id>/
 // DifficultyRecordDictionary/<d>/PlayStyleRecordDictionary/<s>/{Highscore, ..., TotalPlayCount, TotalClearCount,
 // TotalFullChainClearCount, MaxDamage}, ProficaInfo/MyProfica, ProficaInfo/RivalProficaList[*].
+// RPG Maker MV / MZ saves (fileN.rpgsave: LZString base64; fileN.rmmzsave: zlib; plain JSON accepted).
+// Tree = the save contents with JsonEx markers removed ({"@a": [..]} -> list, "@"/"@c" dropped, {"@r"} -> null),
+// e.g. switches/_data[12], variables/_data[5], party/_gold, party/_items/7, actors/_data[1]/_level,
+// system/_battleCount; plus "_header": {encoding: "lzstring"|"zlib"|"json"}.
+bool isRpgMaker(const uint8_t* data, size_t size);
+cJSON* rpgMakerToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info = nullptr);
+// GameMaker text saves: INI ({section: {key: value}}, also base64-wrapped) or {"lines": [...]}; quoted values unquoted,
+// numbers as numbers, ds_list_write / ds_map_write hex decoded to lists / objects; plus "_header": {format, encoding}.
+// isGameMaker: an INI text, a base64 INI, or a text with at least one ds_list / ds_map hex line.
+bool isGameMaker(const uint8_t* data, size_t size);
+cJSON* gameMakerToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info = nullptr);
 bool isTheatrhythm(const uint8_t* data, size_t size);   // size check only (the content needs the password)
 // Finds the password in the game's own global-metadata.dat (romfs Data/Managed/Metadata, e.g. dumped with nxdumptool):
 // tries its string literals against one save file. false if none decrypts it.
@@ -97,6 +108,18 @@ public:
 };
 
 class DeltaruneDoc : public JsonDoc {
+public:
+    bool parse(std::vector<uint8_t>&& data);
+    SaveFormatInfo info;
+};
+
+class RpgMakerDoc : public JsonDoc {
+public:
+    bool parse(std::vector<uint8_t>&& data);
+    SaveFormatInfo info;
+};
+
+class GameMakerDoc : public JsonDoc {
 public:
     bool parse(std::vector<uint8_t>&& data);
     SaveFormatInfo info;

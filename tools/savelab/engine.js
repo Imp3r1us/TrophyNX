@@ -242,12 +242,28 @@ function identify(buf, path = '') {
       notes.push(T('DELTARUNE deltarune.sav: each chapter file decoded (files[*]/flags/<n>, plot, weapon…), plus completed[n], patch[i] (TrophyNX patch flags) and trophy[i]. App reader “deltarune”.', 'deltarune.sav de DELTARUNE : chaque fichier de chapitre décodé (files[*]/flags/<n>, plot, weapon…), plus completed[n], patch[i] (drapeaux du patch TrophyNX) et trophy[i]. Lecteur « deltarune » de l\'app.'));
     } catch (e) { r.treeError = e.message; }
   }
+  if (!bh && !r.known && F.isRpgMaker(buf)) {   // LZString / zlib / JsonEx JSON: before the plain JSON reader
+    try {
+      const d = F.parseRpgMaker(buf);
+      r.known = r.reader = 'rpgmaker'; r.meta = d.meta;
+      r.format = T('RPG Maker MV/MZ save (', 'Sauvegarde RPG Maker MV/MZ (') + d.meta.encoding + ', ' + Math.round(d.meta.jsonBytes / 1024) + T(' KB of JSON)', ' Ko de JSON)');
+      notes.push(T('RPG Maker MV/MZ save: switches/_data[n], variables/_data[n], party/_gold, party/_items/<id>, actors/_data[n]/_level, system/_battleCount… App reader “rpgmaker”.', 'Sauvegarde RPG Maker MV/MZ : switches/_data[n], variables/_data[n], party/_gold, party/_items/<id>, actors/_data[n]/_level, system/_battleCount… Lecteur « rpgmaker » de l\'app.'));
+    } catch (e) { r.treeError = e.message; }
+  }
   if (!bh && !r.known && looksJson(buf)) {
     let ok = false; try { ok = !!parseJson(buf); } catch (e) { r.jsonError = e.message; }
     if (ok) {
       r.known = 'json'; r.reader = 'json'; r.format = T('JSON document (text)', 'Document JSON (texte)');
       notes.push(T('Plain-text JSON save (Unity games, e.g. Hollow Knight): values are identified by their path (e.g. playerData/grubsCollected). App reader “json”.', 'Sauvegarde en texte JSON (jeux Unity, ex. Hollow Knight) : les valeurs sont identifiées par leur chemin (ex. playerData/grubsCollected). Lecteur « json » de l\'app.'));
     }
+  }
+  if (!bh && !r.known && F.isGameMaker(buf)) {   // GameMaker INI / base64 INI / ds_list-ds_map hex lines
+    try {
+      const d = F.parseGameMaker(buf);
+      r.known = r.reader = 'gamemaker'; r.meta = d.meta;
+      r.format = T('GameMaker ', 'Sauvegarde GameMaker ') + (d.meta.format === 'ini' ? 'INI' : T('text', 'texte')) + (d.meta.encoding === 'base64' ? ' (base64)' : '') + ', ' + d.meta.keys + (d.meta.format === 'ini' ? T(' keys', ' clés') : T(' lines', ' lignes'));
+      notes.push(T('GameMaker text save: INI values by section/key (e.g. Progress/Level), or lines[n]; ds_list / ds_map hex strings are decoded into lists / objects. App reader “gamemaker”.', 'Sauvegarde texte GameMaker : valeurs INI par section/clé (ex. Progress/Level), ou lines[n] ; les chaînes hex ds_list / ds_map sont décodées en listes / objets. Lecteur « gamemaker » de l\'app.'));
+    } catch (e) { r.treeError = e.message; }
   }
   if (!bh && !r.known && F.isSgb(buf)) {
     r.known = r.reader = 'sgb';
@@ -478,7 +494,9 @@ const TREE_FORMATS = [
   { reader: 'sgb', label: 'Supergiant SGB1 (Hades)', parse: (b) => F.parseSgb(b) },
   { reader: 'deltarune', label: 'DELTARUNE (deltarune.sav)', parse: (b) => F.parseDeltarune(b) },
   { reader: 'theatrhythm', label: 'THEATRHYTHM FINAL BAR LINE (AES + DEFLATE + MessagePack)', parse: (b) => F.parseTheatrhythm(b) },
+  { reader: 'rpgmaker', label: 'RPG Maker MV/MZ', parse: (b, explicit) => { if (!explicit && !F.isRpgMaker(b)) return null; try { return F.parseRpgMaker(b); } catch (e) { if (explicit) throw e; return null; } } },
   { reader: 'json', label: 'JSON', parse: parseJson },
+  { reader: 'gamemaker', label: 'GameMaker (INI / text)', parse: (b, explicit) => { if (!explicit && !F.isGameMaker(b)) return null; try { return F.parseGameMaker(b); } catch (e) { if (explicit) throw e; return null; } } },
 ];
 const TREE_READERS = TREE_FORMATS.map(f => f.reader);
 function treeFormat(reader) { return TREE_FORMATS.find(f => f.reader === reader) || null; }
@@ -488,7 +506,7 @@ function parseTree(buf, reader, opts = {}) {
   if (opts.xorKey) buf = F.xorBytes(buf, opts.xorKey);
   for (const f of TREE_FORMATS) {
     if (reader && f.reader !== reader) continue;
-    const d = f.parse(buf);
+    const d = f.parse(buf, !!reader);
     if (d) { d.reader = f.reader; if (opts.xorKey) d.xorKey = opts.xorKey; return d; }
   }
   if (opts.xorKey || opts.guess === false) return null;

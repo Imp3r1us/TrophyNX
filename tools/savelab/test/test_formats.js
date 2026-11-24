@@ -150,7 +150,8 @@ if (process.env.CPP_DUMP) {
   F.setPassword('theatrhythm', fs.readFileSync(process.env.THEATRHYTHM_KEY || path.join(fx, 'theatrhythm/password.txt'), 'utf8'));
   const files = process.argv.slice(2).length ? process.argv.slice(2) : ['gvas/Slot1.sav', 'gvas/assert_failed.sav', 'gvas/tagcontainer.sav', 'gvas/regression_01.bin',
     'gvas/vector2d.sav', 'gvas/Options.sav', 'nrbf/save0.dat', 'nrbf/save1.dat', 'nrbf/string.dat', 'nrbf/list.dat',
-    'theatrhythm/backup.inf', 'theatrhythm/musicBackup.inf', 'theatrhythm/proficaBackup.inf', 'theatrhythm/edge.inf'].map(f => path.join(fx, f));
+    'theatrhythm/backup.inf', 'theatrhythm/musicBackup.inf', 'theatrhythm/proficaBackup.inf', 'theatrhythm/edge.inf',
+    'rpgmaker/file1.rpgsave', 'rpgmaker/file1.rmmzsave', 'rpgmaker/global.rpgsave', 'gamemaker/save.ini', 'gamemaker/save_b64.sav', 'gamemaker/file0'].map(f => path.join(fx, f));
   const same = (x, y, p) => {
     if (typeof x === 'number' && typeof y === 'number') return x === y || Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x)) ? null : p + ': ' + x + ' ≠ ' + y;
     if (x === null || y === null || typeof x !== 'object' || typeof y !== 'object') return x === y ? null : p + ': ' + JSON.stringify(x) + ' ≠ ' + JSON.stringify(y);
@@ -168,6 +169,39 @@ if (process.env.CPP_DUMP) {
     const err = same(js.tree, JSON.parse(fs.readFileSync(dump, 'utf8')), '');
     ok(!err, 'app = Save Lab : ' + path.basename(f) + (err ? ' → ' + err : ''));
   }
+}
+// ---------------------------------------------------------------- RPG Maker MV/MZ and GameMaker (same checks as host/test/test_formats.cpp)
+{
+  const E = require('../engine.js');
+  const rd = (f) => new Uint8Array(fs.readFileSync(path.join(fx, f)));
+  const q1 = (t, p) => { const v = E.queryByml(t, p); return v.length === 1 ? v[0] : 'none'; };
+  for (const f of ['rpgmaker/file1.rpgsave', 'rpgmaker/file1.rmmzsave']) {
+    const b = rd(f);
+    ok(F.isRpgMaker(b) && E.identify(b, f).reader === 'rpgmaker', f + ' identified as rpgmaker');
+    const t = F.parseRpgMaker(b).tree;
+    ok(q1(t, 'switches/_data[3]') === true && q1(t, 'variables/_data[5]') === 42 && q1(t, 'party/_gold') === 9876, f + ': switches / variables / gold');
+    ok(q1(t, 'party/_items/12') === 1 && q1(t, 'actors/_data[1]/_level') === 17 && q1(t, 'selfSwitches/_data/1,4,A') === true, f + ': items / actors / self switches');
+    ok(!('@' in t.system) && !('@c' in t.system) && Array.isArray(t.party._actors) && t.party._leader === null, f + ': JsonEx markers removed');
+    ok(q1(t, 'variables/_data[10]') === 'Pépé ★', f + ': UTF-8 text');
+  }
+  ok(E.parseTree(rd('rpgmaker/global.rpgsave')).tree[1].title === 'Test', 'global.rpgsave');
+  ok(!F.isRpgMaker(new TextEncoder().encode('{"name": 1}')), 'plain JSON left to the json reader');
+  for (const f of ['gamemaker/save.ini', 'gamemaker/save_b64.sav']) {
+    const b = rd(f);
+    ok(E.identify(b, f).reader === 'gamemaker', f + ' identified as gamemaker');
+    const t = F.parseGameMaker(b).tree;
+    ok(q1(t, 'Progress/Level') === 12 && q1(t, 'Progress/Name') === 'Frisk' && q1(t, '10/Best') === 1000, f + ': INI values');
+    ok(q1(t, 'Stats/Deaths') === 5 && q1(t, 'Progress/Flags/coins') === 300 && q1(t, 'Progress/Flags/1') === -7 && q1(t, 'Progress/Flags/nested[2]') === 3, f + ': ds_map / ds_list hex');
+  }
+  const l = F.parseGameMaker(rd('gamemaker/file0')).tree;
+  ok(l.lines[1] === 120 && l.lines[2][4] === 'item' && l.lines[3] === -3.5 && l.lines.length === 5, 'GameMaker line file');
+  ok(!F.isGameMaker(new TextEncoder().encode('{"a": 1}\n')) && !F.isGameMaker(new TextEncoder().encode('hello\nworld\n')), 'JSON / plain text not taken');
+  // end to end: a definition with the rpgmaker reader, evaluated like the app
+  const def = { title_id: '0100000000000001', reader: 'rpgmaker', save_files: ['file1.rpgsave'], achievements: [
+    { id: 'sw', name: 's', rule: { type: 'flag', path: 'switches/_data[20]' } },
+    { id: 'gold', name: 'g', rule: { type: 'flag', path: 'party/_gold', target: 5000 } },
+    { id: 'lv', name: 'l', rule: { type: 'flag', path: 'actors/_data[1]/_level', target: 20 } } ] };
+  ok(E.validate(def).length === 0, 'rpgmaker definition validates');
 }
 // ---------------------------------------------------------------- Hades SGB1 (same bytes as host/test/test_sgb.cpp)
 {

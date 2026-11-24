@@ -469,6 +469,8 @@ static std::string describeDoc(const NrbfDoc& d) { return "NRBF, " + d.info.summ
 static std::string describeDoc(const SgbDoc& d) { return d.info.summary; }
 static std::string describeDoc(const DeltaruneDoc& d) { return d.info.summary; }
 static std::string describeDoc(const TheatrhythmDoc& d) { return d.info.summary; }
+static std::string describeDoc(const RpgMakerDoc& d) { return d.info.summary; }
+static std::string describeDoc(const GameMakerDoc& d) { return d.info.summary; }
 
 // Rough peak memory of a parsed document per byte of file (BymlDoc keeps the file; the others build
 // a cJSON tree, ~10 bytes of tree per byte of text, more for dense binary formats).
@@ -478,6 +480,8 @@ static size_t memoryFactor(const GvasDoc*) { return 16; }
 static size_t memoryFactor(const NrbfDoc*) { return 16; }
 static size_t memoryFactor(const SgbDoc*) { return 160; }   // LZ4 (x4..x40) then a Lua state tree
 static size_t memoryFactor(const DeltaruneDoc*) { return 3; }   // parsed JSON text (~1x) + a small tree (flags kept sparse)
+static size_t memoryFactor(const RpgMakerDoc*) { return 48; }   // LZString / zlib (x3..x10) then a JSON tree
+static size_t memoryFactor(const GameMakerDoc*) { return 16; }
 static size_t memoryFactor(const TheatrhythmDoc*) { return 4; }   // pre-check only: the reader checks its real need after decrypting
 // (live module: only the rule values are built, ~2.3 MB peak for musicBackup.inf instead of ~11 MB)
 
@@ -687,6 +691,8 @@ void evaluateSave(Game& g, SaveSource& src) {
     else if (g.reader == "sgb") evaluateTree<SgbDoc>(g, src);
     else if (g.reader == "deltarune") evaluateTree<DeltaruneDoc>(g, src);
     else if (g.reader == "theatrhythm") evaluateTree<TheatrhythmDoc>(g, src);
+    else if (g.reader == "rpgmaker") evaluateTree<RpgMakerDoc>(g, src);
+    else if (g.reader == "gamemaker") evaluateTree<GameMakerDoc>(g, src);
     else if (g.reader == "gamedata_hash" || g.reader == "totk_progress") evaluateHashSave(g, src);
     else {
         g.debug.push_back("ERROR: unknown reader");

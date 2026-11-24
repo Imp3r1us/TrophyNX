@@ -1058,7 +1058,241 @@ async function theatrhythmFindPassword(meta, save, onProgress) {
   return null;
 }
 
-const api = { Reader, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor,
+// ================================================================== RPG Maker MV / MZ (fileN.rpgsave / fileN.rmmzsave)
+// Same tree as rpgMakerToJson in source/save_formats.cpp. MV: LZString.compressToBase64(JsonEx JSON); MZ: zlib of
+// the JSON (the binary string often written back as UTF-8); plain JSON accepted. JsonEx markers removed:
+// {"@a": [...]} -> the list, "@" / "@c" keys dropped, {"@r": n} -> null. Plus _header {encoding}.
+const LZ_B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const lzB64 = (c) => { const i = LZ_B64.indexOf(c); return c.length === 1 ? i : -1; };
+function lzStringDecompressB64(input, maxOut = 64 << 20) {
+  const len = input.length;
+  if (!len) return null;
+  const dict = [{ lit: true, ch: 0 }, { lit: true, ch: 1 }, { lit: true, ch: 2 }];
+  let val = Math.max(0, lzB64(input[0])), position = 32, index = 1;
+  const readBits = (n) => {
+    let bits = 0;
+    for (let i = 0; i < n; i++) {
+      const resb = val & position;
+      position >>>= 1;
+      if (!position) { position = 32; val = index < len ? Math.max(0, lzB64(input[index])) : 0; index++; }
+      bits |= (resb ? 1 : 0) << i;
+    }
+    return bits >>> 0;
+  };
+  let enlargeIn = 4, numBits = 3;
+  const first = readBits(2);
+  let c0;
+  if (first === 0) c0 = readBits(8); else if (first === 1) c0 = readBits(16); else return null;
+  const out = [c0];
+  dict.push({ lit: false, off: 0, len: 1 });
+  let wOff = 0, wLen = 1;
+  for (;;) {
+    if (index > len) return null;
+    let c = readBits(numBits);
+    if (c === 0 || c === 1) { dict.push({ lit: true, ch: readBits(c === 0 ? 8 : 16) }); c = dict.length - 1; enlargeIn--; }
+    else if (c === 2) break;
+    if (!enlargeIn) { enlargeIn = 2 ** numBits; numBits++; if (numBits > 31) return null; }
+    const eOff = out.length; let eLen;
+    if (c < dict.length) {
+      const e = dict[c];
+      if (e.lit) { out.push(e.ch); eLen = 1; } else { for (let k = 0; k < e.len; k++) out.push(out[e.off + k]); eLen = e.len; }
+    } else if (c === dict.length) {
+      for (let k = 0; k < wLen; k++) out.push(out[wOff + k]);
+      out.push(out[wOff]); eLen = wLen + 1;
+    } else return null;
+    if (out.length > maxOut) return null;
+    dict.push({ lit: false, off: wOff, len: wLen + 1 });
+    enlargeIn--;
+    wOff = eOff; wLen = eLen;
+    if (!enlargeIn) { enlargeIn = 2 ** numBits; numBits++; if (numBits > 31) return null; }
+  }
+  let s = '';
+  for (let i = 0; i < out.length; i += 8192) s += String.fromCharCode.apply(null, out.slice(i, i + 8192));
+  return s.replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(^|[^\uD800-\uDBFF])[\uDC00-\uDFFF]/g, (m, p) => (p || '') + '�');
+}
+function utf8Latin1(d) {
+  const out = []; let multi = false;
+  for (let i = 0; i < d.length; i++) {
+    const c = d[i];
+    if (c < 0x80) out.push(c);
+    else if ((c === 0xC2 || c === 0xC3) && i + 1 < d.length && (d[i + 1] & 0xC0) === 0x80) { out.push(((c & 3) << 6) | (d[i + 1] & 63)); i++; multi = true; }
+    else return null;
+  }
+  return multi ? Uint8Array.from(out) : null;
+}
+function zlibInflate(d) {
+  if (d.length < 6 || (d[0] & 0x0F) !== 8 || ((d[0] << 8) | d[1]) % 31 !== 0 || (d[1] & 0x20)) return null;
+  try { return inflateRawSync(d.subarray(2)); } catch (e) { return null; }
+}
+const RM_KEYS = ['system', 'screen', 'timer', 'switches', 'variables', 'selfSwitches', 'actors', 'party', 'map', 'player'];
+const isWs = (c) => c === 0x20 || c === 0x0D || c === 0x0A || c === 0x09;
+function rpgMakerDecode(buf) {
+  let s = 0, e = buf.length;
+  if (e >= 3 && buf[0] === 0xEF && buf[1] === 0xBB && buf[2] === 0xBF) s = 3;
+  while (s < e && isWs(buf[s])) s++;
+  while (e > s && (buf[e - 1] === 0 || isWs(buf[e - 1]))) e--;
+  if (e - s < 4) return null;
+  if (buf[s] === 0x7B || buf[s] === 0x5B) return { json: utf8.decode(buf.subarray(s, e)), encoding: 'json' };
+  let out = zlibInflate(buf);
+  if (out) return { json: utf8.decode(out), encoding: 'zlib' };
+  if (buf[0] === 0x78) { const b = utf8Latin1(buf); if (b && (out = zlibInflate(b))) return { json: utf8.decode(out), encoding: 'zlib' }; }
+  if (e - s < 8) return null;
+  for (let i = s; i < e; i++) if (lzB64(String.fromCharCode(buf[i])) < 0) return null;
+  const txt = lzStringDecompressB64(latin1(buf.subarray(s, e)));
+  return txt === null ? null : { json: txt, encoding: 'lzstring' };
+}
+function isRpgMaker(buf) {
+  const d = rpgMakerDecode(buf);
+  if (!d) return false;
+  const t = d.json.trimStart();
+  if (t[0] !== '{' && t[0] !== '[') return false;
+  if (d.encoding !== 'json') return true;
+  if (d.json.includes('"@c"') || d.json.includes('"@a"')) return true;
+  return RM_KEYS.filter(k => d.json.includes('"' + k + '"')).length >= 4;
+}
+function jsonExClean(n, depth = 0) {
+  if (depth > 256) return null;
+  if (n && typeof n === 'object' && !Array.isArray(n)) {
+    if ('@r' in n) return null;
+    if ('@a' in n) return jsonExClean(n['@a'], depth + 1);
+    const o = {};
+    for (const k of Object.keys(n)) if (k !== '@' && k !== '@c') o[k] = jsonExClean(n[k], depth + 1);
+    return o;
+  }
+  if (Array.isArray(n)) return n.map(v => jsonExClean(v, depth + 1));
+  return n;
+}
+function parseRpgMaker(buf) {
+  const d = rpgMakerDecode(buf);
+  if (!d) throw new Error(T('not an RPG Maker MV/MZ save', 'pas une sauvegarde RPG Maker MV/MZ'));
+  let tree = JSON.parse(d.json);
+  if (!tree || typeof tree !== 'object') throw new Error(T('decoded text is not JSON', 'le texte décodé n\'est pas du JSON'));
+  tree = jsonExClean(tree);
+  if (!Array.isArray(tree)) tree._header = { encoding: d.encoding };
+  return { rpgmaker: true, tree, meta: { encoding: d.encoding, jsonBytes: new TextEncoder().encode(d.json).length } };
+}
+
+// ================================================================== GameMaker text saves (ini / lines + ds_list / ds_map hex)
+// Same tree as gameMakerToJson in source/save_formats.cpp (see include/save_formats.h).
+const GM_NUM = /^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?$/;
+const gmTrim = (s) => s.replace(/^[ \t]+|[ \t]+$/g, '');
+const gmKeyOf = (v) => Number.isInteger(v) && Math.abs(v) < 9007199254740992 ? v.toFixed(0).replace(/^-0$/, '0') : String(v);
+function gmDsDecode(s, depth) {
+  if (depth > 8 || s.length < 16 || (s.length & 1) || !/^[0-9A-Fa-f]+$/.test(s)) return undefined;
+  const b = new Uint8Array(s.length / 2);
+  for (let i = 0; i < b.length; i++) b[i] = parseInt(s.substr(2 * i, 2), 16);
+  const dv = new DataView(b.buffer);
+  let p = 0;
+  const need = (n) => b.length - p >= n;
+  const u32 = () => { if (!need(4)) throw 0; const v = dv.getUint32(p, true); p += 4; return v; };
+  try {
+    const head = u32();
+    const isMap = head >= 0x191 && head <= 0x193, isList = head >= 0x12E && head <= 0x130;
+    if (!isMap && !isList) return undefined;
+    const count = u32();
+    if (count > Math.floor((b.length - 8) / (isMap ? 8 : 4))) return undefined;
+    const read = () => {
+      const type = u32();
+      if (type === 0 || type === 13) { if (!need(8)) throw 0; const v = dv.getFloat64(p, true); p += 8; return Number.isFinite(v) ? { k: 0, v } : { k: 2 }; }
+      if (type === 1) { const len = u32(); if (len > b.length - p) throw 0; const v = cut(utf8.decode(b.subarray(p, p + len))); p += len; return { k: 1, v }; }
+      if (type === 5) return { k: 2 };
+      if (type === 7) { if (!need(4)) throw 0; const v = dv.getInt32(p, true); p += 4; return { k: 0, v }; }
+      if (type === 10) { if (!need(8)) throw 0; const v = Number(dv.getBigInt64(p, true)); p += 8; return { k: 0, v }; }
+      throw 0;
+    };
+    const node = (x) => { if (x.k === 2) return null; if (x.k === 0) return x.v; const inner = gmDsDecode(x.v, depth + 1); return inner === undefined ? x.v : inner; };
+    const out = isMap ? {} : [];
+    for (let i = 0; i < count; i++) {
+      const a = read();
+      if (!isMap) { out.push(node(a)); continue; }
+      const v = read();
+      out[a.k === 1 ? a.v : a.k === 2 ? 'null' : gmKeyOf(a.v)] = node(v);
+    }
+    if (p !== b.length) return undefined;
+    return out;
+  } catch (e) { return undefined; }
+}
+function gmValue(raw, depth = 0) {
+  let v = gmTrim(raw);
+  if (v.length >= 2 && v[0] === '"' && v[v.length - 1] === '"') v = v.slice(1, -1);
+  if (GM_NUM.test(v)) { const n = parseFloat(v); if (Number.isFinite(n)) return n; }
+  const ds = gmDsDecode(v, depth);
+  return ds === undefined ? v : ds;
+}
+function gmLines(buf) {
+  const s = buf.length >= 3 && buf[0] === 0xEF && buf[1] === 0xBB && buf[2] === 0xBF ? 3 : 0;
+  let e = s; while (e < buf.length && buf[e]) e++;
+  const lines = utf8.decode(buf.subarray(s, e)).split('\n').map(l => l.endsWith('\r') ? l.slice(0, -1) : l);
+  if (lines.length && lines[lines.length - 1] === '') lines.pop();
+  return lines;
+}
+const gmIsSection = (l) => { const t = gmTrim(l); return t.length >= 3 && t[0] === '[' && t[t.length - 1] === ']' && t.indexOf(']') === t.length - 1; };
+function gmIsIni(lines) {
+  let sections = 0;
+  for (const l of lines) {
+    const t = gmTrim(l);
+    if (!t || t[0] === ';' || t[0] === '#') continue;
+    if (gmIsSection(t)) { sections++; continue; }
+    if (t.indexOf('=') <= 0) return false;
+  }
+  return sections > 0;
+}
+function gmPrintable(d) {
+  const s = d.length >= 3 && d[0] === 0xEF && d[1] === 0xBB && d[2] === 0xBF ? 3 : 0;
+  let e = s; while (e < d.length && d[e]) e++;
+  for (let i = e; i < d.length; i++) if (d[i]) return false;
+  if (e === s) return false;
+  for (let i = s; i < e; i++) { const c = d[i]; if (c < 32 && c !== 9 && c !== 10 && c !== 13) return false; }
+  return true;
+}
+function gmBase64Ini(lines) {
+  const b = lines.map(gmTrim).join('');
+  if (b.length < 8 || b.length % 4) return null;
+  for (const c of b) if (lzB64(c) < 0) return null;
+  const out = []; let acc = 0, bits = 0;
+  for (const c of b) {
+    const v = lzB64(c);
+    if (v === 64) break;
+    acc = ((acc << 6) | v) & 0xFFFFFF; bits += 6;
+    if (bits >= 8) { bits -= 8; out.push((acc >>> bits) & 0xFF); }
+  }
+  const d = Uint8Array.from(out);
+  if (!gmPrintable(d)) return null;
+  return gmIsIni(gmLines(d)) ? d : null;
+}
+function isGameMaker(buf) {
+  if (!gmPrintable(buf)) return false;
+  const lines = gmLines(buf);
+  if (!lines.length) return false;
+  const first = gmTrim(lines[0]);
+  if ((first[0] === '{' || first[0] === '[') && !gmIsSection(first)) return false;
+  if (gmIsIni(lines) || gmBase64Ini(lines)) return true;
+  return lines.some(l => { let v = gmTrim(l); if (v.length >= 2 && v[0] === '"' && v[v.length - 1] === '"') v = v.slice(1, -1); return gmDsDecode(v, 0) !== undefined; });
+}
+function parseGameMaker(buf) {
+  if (!gmPrintable(buf)) throw new Error(T('not a GameMaker text save', 'pas une sauvegarde texte GameMaker'));
+  let lines = gmLines(buf), encoding = 'text';
+  if (!gmIsIni(lines)) { const d = gmBase64Ini(lines); if (d) { lines = gmLines(d); encoding = 'base64'; } }
+  const ini = gmIsIni(lines), tree = {};
+  let keys = 0;
+  if (ini) {
+    let sec = null;
+    for (const l of lines) {
+      const t = gmTrim(l);
+      if (!t || t[0] === ';' || t[0] === '#') continue;
+      if (gmIsSection(t)) { const name = t.slice(1, -1); if (!tree[name] || typeof tree[name] !== 'object' || Array.isArray(tree[name])) tree[name] = {}; sec = tree[name]; continue; }
+      const eq = t.indexOf('=');
+      if (!sec) { if (!tree['']) tree[''] = {}; sec = tree['']; }
+      sec[gmTrim(t.slice(0, eq))] = gmValue(t.slice(eq + 1));
+      keys++;
+    }
+  } else { tree.lines = lines.map(l => gmValue(l)); keys = lines.length; }
+  delete tree._header;
+  tree._header = { format: ini ? 'ini' : 'lines', encoding };
+  return { gamemaker: true, tree, meta: { format: ini ? 'ini' : 'lines', encoding, keys } };
+}
+
+const api = { Reader, parseRpgMaker, isRpgMaker, parseGameMaker, isGameMaker, lzStringDecompressB64, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor,
   parseMsgpack, inflateRawSync, sha1, pbkdf2Sha1, aes128CbcDecrypt, setPassword, isTheatrhythm, parseTheatrhythm, decryptTheatrhythm, theatrhythmFindPassword, TH_FILES };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveFormats = api;

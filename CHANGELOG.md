@@ -10,6 +10,16 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.14.0 (2026-11-24)
+
+Two new save readers that work for whole game engines: RPG Maker MV / MZ and GameMaker.
+
+### New
+- RPG Maker MV / MZ games: the app reads their saves (switches, variables, gold, items, party levels, battles...). One achievement list per game is still needed, but no new code: the Save Lab finds the values.
+- GameMaker games: the app reads their INI saves (also when the INI is base64-encoded) and their line-by-line text saves, including the lists and maps GameMaker writes as long hex strings.
+- The compatibility scan (ZR on the Overview) now recognises both formats and marks those games "draftable", so they show up as candidates for new achievement lists.
+- The Save Lab detects and decodes both formats too, with the same result as the app.
+
 ## 0.13.0 (2026-11-24)
 
 Every game gets 7 new achievements from your play days and your album, no save needed.
