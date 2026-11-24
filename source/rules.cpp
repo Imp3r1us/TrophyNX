@@ -174,9 +174,9 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
     else if (t == "memory") {
         // live only: the background module reads the game's memory; the app shows the unlocks it stored
         rule.type = RuleType::Memory;
-        if (!mem::parseCondition(r, rule.mem, err)) return false;
-        rule.target = rule.mem.target;
-        rule.maxSane = rule.mem.max;
+        if (!mem::parseMemRule(r, rule.mem, err)) return false;
+        rule.target = rule.mem.all[0].target;
+        rule.maxSane = rule.mem.all[0].max;
         rule.showProgress = jbool(r, "show_progress", false);   // the app never sees the live value
         return true;
     }

@@ -29,6 +29,7 @@
 #include "store.h"
 #include "heap.h"
 #include "memrules.h"
+#include "overlay_data.h"
 
 #define MODULE_VERSION "0.9.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
@@ -406,6 +407,8 @@ int main(int, char**) {
     bool memMode = false, memReading = false, memLogged = false;
     u64 memRetryAt = 0;
     int memTries = 0, memFailRounds = 0;
+    std::map<std::string, double> memWritten;   // memory values last written for the overlay
+    u64 memWrittenAt = 0;
     const mem::Reader memRead = [](uint64_t addr, void* out, size_t size) {
         return R_SUCCEEDED(dmntchtReadCheatProcessMemory(addr, out, size));
     };
@@ -425,6 +428,8 @@ int main(int, char**) {
             for (const auto& kv : loadStore(user))
                 if (kv.first.compare(0, 17, pre) == 0) done.insert(kv.first.substr(17));
         memWatch.reset(items, done);
+        memWritten.clear();
+        memWrittenAt = 0;
         if (!memWatch.pending()) {
             logf("memory: %s - all %u live achievements already unlocked", memDef.name.c_str(), (unsigned)items.size());
             return false;
@@ -567,6 +572,16 @@ int main(int, char**) {
                 memLogged = true;
                 for (const auto& kv : memWatch.lastValues()) logf("  %s = %g", kv.first.c_str(), kv.second);
             }
+            // Progress for the Tesla overlay: when values changed, at most every 5 s (SD writes)
+            if (memWatch.lastValues() != memWritten && (now - memWrittenAt >= 5 || now < memWrittenAt)) {
+                std::string path = ov::livePath(dataDir(), curTid);
+                std::vector<uint8_t> old;
+                readFile(path, old);
+                mkdir((dataDir() + "/overlay").c_str(), 0777);
+                writeFile(path, ov::mergeLive(std::string(old.begin(), old.end()), memWatch.lastValues()));
+                memWritten = memWatch.lastValues();
+                memWrittenAt = now;
+            }
             if (memWatch.lastReadFailed()) {
                 if (++memFailRounds == 30) logf("memory: some reads keep failing (loading screen, or an address that is wrong for this version)");
                 bool has = false;
@@ -590,8 +605,11 @@ int main(int, char**) {
                         store[pre + id] = now;
                         changed = true;
                         auto it = memWatch.lastValues().find(id);
-                        logf("UNLOCKED %s (%s) value %g %s %g [memory]", id.c_str(), a->name.c_str(),
-                             it == memWatch.lastValues().end() ? 0.0 : it->second, mem::cmpName(a->rule.mem.cmp), a->rule.mem.target);
+                        const mem::Condition& c0 = a->rule.mem.all[0];
+                        logf("UNLOCKED %s (%s) value %g %s %g%s%s [memory%s]", id.c_str(), a->name.c_str(),
+                             it == memWatch.lastValues().end() ? 0.0 : it->second, mem::cmpName(c0.cmp), c0.target,
+                             c0.change != mem::Change::None ? " " : "", mem::changeName(c0.change),
+                             a->rule.mem.all.size() > 1 ? ", all conditions" : "");
                         PopupRequest pr;
                         pr.titleId = curTid; pr.achId = id; pr.title = a->name; pr.desc = a->desc; pr.game = memDef.name;
                         pr.points = a->points; pr.tier = popupTierFor(a->tier.empty() ? nullptr : a->tier.c_str(), a->points);

@@ -11,6 +11,16 @@
 // any of them unlocks it (save slots). The condition must hold on 3 checks in a row (a second apart),
 // so a pointer read during a loading screen can't unlock anything.
 //
+// Several conditions, all true on the same check ("win a race without being hit"):
+//   "rule": { "type": "memory", "all": [ { "value_type": "u8", "cmp": "==", "target": 1, "change": "becomes", "builds": {...} },
+//                                         { "value_type": "u8", "cmp": "==", "target": 0, "builds": {...} } ] }
+// "change" on a condition:
+//   (none)      the value compared as it is.
+//   "becomes"   the comparison only counts once it has been false (3 checks in a row) during this
+//               session: something already true when the game opens never unlocks it, a new event does.
+//   "increase"  cmp/target apply to how much the value rose since the lowest value seen this session
+//               ("earn 500 coins in one sitting"). Loading another save that has less restarts from there.
+//
 // The address syntax, per-build conditions and the 3-checks rule follow HomeNX's achievement packs
 // (github.com/ad3333m/homenx, docs/achievement-packs.md); this is an independent implementation.
 // Pure code (no Switch services): shared by the app, the background module and the host tests.
@@ -28,6 +38,7 @@ namespace mem {
 enum class ValType : uint8_t { U8, U16, U32, U64, S8, S16, S32, S64, F32, F64 };
 enum class Cmp : uint8_t { Ge, Gt, Le, Lt, Eq, Ne, BitsAny };
 enum class Region : uint8_t { Main, Heap, Alias };
+enum class Change : uint8_t { None, Becomes, Increase };
 
 // region + offsets[0], then for each further offset: read the pointer there and add it.
 struct Address {
@@ -68,12 +79,22 @@ struct Condition {
     Cmp cmp = Cmp::Ge;
     double target = 1;
     double max = 0;                 // > 0: values above it are garbage (pointer read too soon)
+    Change change = Change::None;
     std::vector<BuildAddrs> builds;
 };
+// A memory achievement: one condition, or several that must all hold on the same check.
+struct MemRule {
+    std::vector<Condition> all;
+    bool covers(const std::string& build) const;   // every condition has addresses for this build
+};
+bool parseChange(const std::string& s, Change& out);
+const char* changeName(Change c);
 
 // Parses the memory part of a rule object (cJSON*, kept opaque here to avoid the dependency).
 // Returns false with err set when the rule can't be used.
 bool parseCondition(const void* cjsonRule, Condition& out, std::string& err);
+// The memory part of a rule: its "all" list, or the rule object itself as a single condition.
+bool parseMemRule(const void* cjsonRule, MemRule& out, std::string& err);
 
 // True when one of the addresses for `build` holds. value = the last value read (for the log).
 bool anyHolds(const Condition& c, const std::string& build, const Bases& b, const Reader& read, double& value, bool& readFailed);
@@ -83,7 +104,7 @@ class Watcher {
 public:
     struct Item {
         std::string id;
-        const Condition* cond = nullptr;
+        const MemRule* rule = nullptr;
     };
     static const int kStreak = 3;
     void reset(const std::vector<Item>& items, const std::set<std::string>& alreadyUnlocked);
@@ -100,6 +121,16 @@ private:
     std::vector<Item> m_items;
     std::set<std::string> m_done;
     std::map<std::string, int> m_streak;
+    // Per achievement, per condition, per address: what "becomes" and "increase" remember.
+    struct AddrState {
+        int falseRun = 0;        // checks in a row where the comparison was false
+        bool armed = false;      // "becomes": seen false for kStreak checks this session
+        bool haveBase = false;   // "increase": lowest value seen this session
+        double base = 0;
+    };
+    bool condHolds(const Condition& c, std::vector<AddrState>& st, const std::string& build, const Bases& b,
+                   const Reader& read, double& value, bool& readFailed);
+    std::map<std::string, std::vector<std::vector<AddrState>>> m_state;
     std::map<std::string, double> m_values;
     bool m_readFailed = false;
 };
