@@ -284,14 +284,17 @@ static bool showToast(const PopupRequest& r, const PopupConfig& cfg) {
     ToastInfo info = popupToastTexts(textOf(r), cfg.s);
     info.icon = achievementArt(r, art) ? &art : gameIcon(r.titleId);
     std::vector<u16> card;
+    int cw, ch;   // the card at its chosen size ("size")
     {
         PopupImage img;
         popupRenderToast(info, img, popupToastStyle(cfg.s));
-        card.resize((size_t)TOAST_W * TOAST_H);
+        cw = img.w;
+        ch = img.h;
+        card.resize((size_t)cw * ch);
         for (size_t i = 0; i < card.size(); i++) card[i] = to4444(&img.px[i * 4]);
     }
     int lx, ly, lw, lh;
-    popupToastLayer(cfg.corner, TOAST_W, TOAST_H, lx, ly, lw, lh);
+    popupToastLayer(cfg.corner, cw, ch, lx, ly, lw, lh);
     Overlay ov;
     if (!ov.open(lw, lh, lx, ly)) { ov.close(); return false; }
 
@@ -310,9 +313,9 @@ static bool showToast(const PopupRequest& r, const PopupConfig& cfg) {
         for (int y = 0; y < lh; y++) {
             u16* row = fb + (size_t)y * (stride / 2);
             memset(row, 0, (size_t)lw * 2);
-            const u16* src = &card[(size_t)y * TOAST_W];
+            const u16* src = &card[(size_t)y * cw];
             u16* dst = row + cx;
-            int n = std::min(TOAST_W, lw - cx);
+            int n = std::min(cw, lw - cx);
             if (alpha >= 16) memcpy(dst, src, (size_t)n * 2);
             else
                 for (int x = 0; x < n; x++) {

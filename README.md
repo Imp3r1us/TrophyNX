@@ -202,13 +202,15 @@ They are saved in `sdmc:/switch/TrophyNX/popup.json` (it can also be edited by h
 { "style": "custom", "card": "compact", "duration_ms": 0, "live_check": true, "progress": true,
   "theme": "dark", "icon": "right",
   "position": "top-left", "compact_theme": "dark", "accent": "tier", "opacity": 88,
-  "border": true, "show_icon": true, "show_label": true }
+  "border": true, "show_icon": true, "show_label": true, "size": "large" }
 ```
 
 - `style`: `custom` (default), `both` (custom + Ultrahand toast), `ultrahand` (toast only), `off`.
 - `card`: `classic` (default: text bar + tier medal) or `compact`: a small dark card (360x70 at 1080p)
   with the icon, an uppercase label coloured by tier (bronze / silver cyan, gold or a hidden achievement
   gold, platinum violet), the title and a short line (`+25 pts`, `5 / 10`). It slides in with a fade.
+- `size` (compact card): `small` (360x70 at 1080p), `medium` (1.25x), `large` (1.5x, default), `xl` (1.75x).
+  The card and its text are drawn at that size (not stretched).
 - `position` (compact card): `top-left` (default), `top-right`, `bottom-left`, `bottom-right`, 24 px from the edges.
 - `compact_theme` (compact card): `dark` (default), `light`, `midnight`, `oled` (black), `warm`.
 - `accent` (compact card): `tier` (default, as above), or one colour for every popup: `cyan`, `gold`, `violet`,

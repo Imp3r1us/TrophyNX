@@ -40,6 +40,7 @@ struct PopupSettings {
     bool border = true;            // "border"
     bool icon = true;              // "show_icon"
     bool label = true;             // "show_label": the small uppercase line
+    std::string size = "large";    // "size": see popupToastSizes() (large = 540x105 at 1080p)
 };
 
 struct NamedColor { const char* name; const char* label; uint32_t rgb; };
@@ -47,6 +48,9 @@ struct NamedColor { const char* name; const char* label; uint32_t rgb; };
 const std::vector<NamedColor>& popupToastThemes();
 // Fixed accents (besides "tier"): name, label, colour.
 const std::vector<NamedColor>& popupAccents();
+// Compact card sizes: name, label, scale of the 360x70 design.
+struct NamedSize { const char* name; const char* label; float scale; };
+const std::vector<NamedSize>& popupToastSizes();
 // Durations offered in the app (ms, 0 = auto).
 const std::vector<int>& popupDurations();
 const char* popupStyleLabel(const std::string& style);   // "On screen", "On screen + Ultrahand", ...

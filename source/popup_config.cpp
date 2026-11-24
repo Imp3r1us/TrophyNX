@@ -31,6 +31,13 @@ const std::vector<NamedColor>& popupAccents() {
     return v;
 }
 
+const std::vector<NamedSize>& popupToastSizes() {
+    static const std::vector<NamedSize> v = {
+        {"small", "Small", 1.0f}, {"medium", "Medium", 1.25f}, {"large", "Large", 1.5f}, {"xl", "Extra large", 1.75f},
+    };
+    return v;
+}
+
 const std::vector<int>& popupDurations() {
     static const std::vector<int> v = {0, 2000, 3000, 4000, 5000, 6000, 8000, 10000};
     return v;
@@ -90,6 +97,12 @@ bool popupSettingsParse(const char* json, PopupSettings& out, std::string* warni
         if (knownName(popupToastThemes(), s)) out.toastTheme = s;
         else warn(std::string("unknown compact_theme '") + s + "'");
     }
+    if ((s = str("size"))) {
+        bool known = false;
+        for (const NamedSize& z : popupToastSizes()) if (!strcmp(z.name, s)) known = true;
+        if (known) out.size = s;
+        else warn(std::string("unknown size '") + s + "'");
+    }
     if ((s = str("accent"))) {
         if (knownName(popupAccents(), s)) out.accent = s;
         else warn(std::string("unknown accent '") + s + "'");
@@ -124,12 +137,13 @@ std::string popupSettingsJson(const PopupSettings& s) {
              "  \"opacity\": %d,\n"
              "  \"border\": %s,\n"
              "  \"show_icon\": %s,\n"
-             "  \"show_label\": %s\n"
+             "  \"show_label\": %s,\n"
+             "  \"size\": \"%s\"\n"
              "}\n",
              s.style.c_str(), s.compact ? "compact" : "classic", s.durationMs, s.liveCheck ? "true" : "false",
              s.progress ? "true" : "false", s.classicDark ? "dark" : "light", s.classicIconLeft ? "left" : "right",
              popupCornerName(s.corner), s.toastTheme.c_str(), s.accent.c_str(), s.opacity, s.border ? "true" : "false",
-             s.icon ? "true" : "false", s.label ? "true" : "false");
+             s.icon ? "true" : "false", s.label ? "true" : "false", s.size.c_str());
     return b;
 }
 
@@ -145,6 +159,7 @@ ToastStyle popupToastStyle(const PopupSettings& s) {
     st.tile = t.tile;
     st.icon = s.icon;
     st.label = s.label;
+    for (const NamedSize& z : popupToastSizes()) if (s.size == z.name) st.scale = z.scale;
     return st;
 }
 

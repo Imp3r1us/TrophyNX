@@ -1146,7 +1146,7 @@ static void drawCaptures(UI& ui) {
 // Edits popup.json, which the live module reads before every popup. The preview is drawn by the module's own
 // renderer (source/popup_draw.cpp), so it is exactly what appears in game.
 enum { PS_CARD, PS_SHOW, PS_DURATION, PS_LIVE, PS_PROGRESS, PS_POSITION, PS_CTHEME, PS_ACCENT, PS_OPACITY, PS_BORDER,
-       PS_ICON, PS_LABEL, PS_THEME, PS_ICONSIDE };
+       PS_ICON, PS_LABEL, PS_THEME, PS_ICONSIDE, PS_SIZE };
 static const char* PS_STYLES[] = {"custom", "both", "ultrahand", "off"};
 static const char* PS_KINDS[] = {"Unlock", "Progress", "Live save check", "Already unlocked"};
 static const int PS_GENERAL = 5;                          // rows before the card's own section
@@ -1156,7 +1156,7 @@ static std::string popupJsonPath() { return plat::dataDir() + "/popup.json"; }
 
 static std::vector<int> psRows(const PopupSettings& s) {
     std::vector<int> r = {PS_CARD, PS_SHOW, PS_DURATION, PS_LIVE, PS_PROGRESS};
-    if (s.compact) r.insert(r.end(), {PS_POSITION, PS_CTHEME, PS_ACCENT, PS_OPACITY, PS_BORDER, PS_ICON, PS_LABEL});
+    if (s.compact) r.insert(r.end(), {PS_SIZE, PS_POSITION, PS_CTHEME, PS_ACCENT, PS_OPACITY, PS_BORDER, PS_ICON, PS_LABEL});
     else r.insert(r.end(), {PS_THEME, PS_ICONSIDE});
     return r;
 }
@@ -1169,6 +1169,7 @@ static const char* psLabel(int row) {
         case PS_LIVE: return "Live save check";
         case PS_PROGRESS: return "Progress popups";
         case PS_POSITION: return "Position";
+        case PS_SIZE: return "Size";
         case PS_CTHEME: return "Theme";
         case PS_ACCENT: return "Accent colour";
         case PS_OPACITY: return "Background opacity";
@@ -1188,6 +1189,7 @@ static const char* psHelp(int row) {
         case PS_LIVE: return "First read of a session: what live save read + achievements you have.";
         case PS_PROGRESS: return "A popup when a locked counter goes up (Pet Cerberus 5 / 10).";
         case PS_POSITION: return "Corner of the screen, 24 px from the edges.";
+        case PS_SIZE: return "How big the card is. Large is 1.5x the original small card.";
         case PS_CTHEME: return "Colours of the card and its text.";
         case PS_ACCENT: return "Colour of the label. By tier: cyan, gold for gold or secret, violet for platinum.";
         case PS_OPACITY: return "How much of the game shows through the card.";
@@ -1211,6 +1213,9 @@ static std::string psValue(const PopupSettings& s, int row) {
         case PS_LIVE: return psOnOff(s.liveCheck);
         case PS_PROGRESS: return psOnOff(s.progress);
         case PS_POSITION: return popupCornerLabel(s.corner);
+        case PS_SIZE:
+            for (const NamedSize& z : popupToastSizes()) if (s.size == z.name) return z.label;
+            return s.size;
         case PS_CTHEME:
             for (const NamedColor& t : popupToastThemes()) if (s.toastTheme == t.name) return t.label;
             return s.toastTheme;
@@ -1247,6 +1252,13 @@ static void psChange(PopupSettings& s, int row, int dir) {
         case PS_LIVE: s.liveCheck = !s.liveCheck; break;
         case PS_PROGRESS: s.progress = !s.progress; break;
         case PS_POSITION: s.corner = psCycle(s.corner, 4, dir); break;
+        case PS_SIZE: {
+            const std::vector<NamedSize>& z = popupToastSizes();
+            int i = 0;
+            for (size_t k = 0; k < z.size(); k++) if (s.size == z[k].name) i = (int)k;
+            s.size = z[psCycle(i, (int)z.size(), dir)].name;
+            break;
+        }
         case PS_CTHEME: {
             const std::vector<NamedColor>& t = popupToastThemes();
             int i = 0;
@@ -1338,9 +1350,11 @@ static void psRenderPreview(UI& ui) {
         ti.icon = icon.w ? &icon : nullptr;
         popupRenderToast(ti, card, popupToastStyle(ui.ps));
         int lw, lh;
-        popupToastLayer(ui.ps.corner, TOAST_W, TOAST_H, x, y, lw, lh);
+        popupToastLayer(ui.ps.corner, card.w, card.h, x, y, lw, lh);
         x += popupToastCardX(ui.ps.corner, 1.f);
-        ui.psBig = psToImage(card);   // 1080p pixels shown 1:1 (1.5x its size on a 720p screen)
+        PopupImage s;   // its real size on this 720p screen (the layer is in 1080p pixels)
+        popupScaleImage(card.px.data(), card.w, card.h, card.w * 2 / 3, card.h * 2 / 3, s);
+        ui.psBig = psToImage(s);
     } else {
         PopupInfo pi;
         popupClassicTexts(t, pi.title, pi.desc);
@@ -1432,7 +1446,7 @@ static void drawPopupSettings(UI& ui) {
     c.fillCircle(px + 400, py + 70, 26, 0xFFF6E7A6);
     c.blitAlpha(ui.psMini, px + ui.psMiniX, py + ui.psMiniY);
     int cy = py + MINI_H + 28;
-    ui.font.draw(c, px, cy, 14, ui.ps.compact ? "Close up (1.5x)" : "Real size", C_DIM);
+    ui.font.draw(c, px, cy, 14, "Real size", C_DIM);
     cy += 24;
     c.gradientV(px - 6, cy - 6, MINI_W + 12, ui.psBig.h + 12, 0xFF2B3A55, 0xFF41573C);
     c.blitAlpha(ui.psBig, px, cy);
