@@ -98,7 +98,7 @@ std::shared_ptr<Data> loadData() {
 }
 
 // ---------------------------------------------------------------- drawing helpers
-using tsl::gfx::Color;
+using tsl::Color;   // libtesla declares Color in tsl, not tsl::gfx
 using tsl::gfx::Renderer;
 
 const Color C_TEXT = tsl::style::color::ColorText;
