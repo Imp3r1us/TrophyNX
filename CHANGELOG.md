@@ -10,6 +10,16 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.15.2 (2026-11-25)
+
+Popups while you play now really work: live save reads the game's save a few seconds after it saves.
+
+### Fixed
+- Live save never finished a single read, for any game: after each read it lost track of which save it had read, took that for "the game saved meanwhile" and started over, forever. It now keeps that information, so achievements pop up a few seconds after the game saves instead of only when you quit.
+
+### Live module 0.10.2
+- The fix above (the module logged "save image not readable: unknown error" three times, then stopped watching until you quit).
+
 ## 0.15.1 (2026-11-24)
 
 Hades achievements now unlock when you quit the game, not only after a scan in the app.

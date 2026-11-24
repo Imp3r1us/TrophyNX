@@ -117,6 +117,7 @@ static void fixture(const std::string& dir) {
     CHECK(src.readAt("slot0/sub/deep.bin", 4, c4, 4) && memcmp(c4, "deep", 4) == 0, "source readAt");
     CHECK(src.commit() == commit, "source commit");
     src.close();
+    CHECK(src.commit() == commit, "source commit still known after close (live save reads it then)");
 
     // 4) the rule engine on top of it, as the module does (streaming, small memory)
     const char* def = R"({"title_id": "0100000000000001", "name": "Test", "reader": "json", "save_files": ["progress.json"],
@@ -133,6 +134,9 @@ static void fixture(const std::string& dir) {
     saveimg::ImageSaveSource rsrc(imgRead, [] { return (size_t)1 << 20; });
     evaluateSave(g, rsrc);
     CHECK(g.saveStatus == SaveStatus::Ok, "rules: save status %d", (int)g.saveStatus);
+    // live save (sysmodule/source/livesave.cpp readSave) compares this with the header after evaluateSave,
+    // which closes the source: an empty id here made every live save read look like "the game saved meanwhile"
+    CHECK(rsrc.commit() == commit, "commit after evaluateSave: '%s'", rsrc.commit().c_str());
     for (const Achievement& a : g.achs) {
         bool met = a.value + 1e-9 >= a.rule.target;
         CHECK(met == (a.id == "rich"), "rules: %s value %g", a.id.c_str(), a.value);
