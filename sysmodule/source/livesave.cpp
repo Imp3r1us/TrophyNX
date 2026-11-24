@@ -26,7 +26,7 @@ struct State {
     bool located = false;
     rawfat::File file;
     std::string lastCommit, pending;
-    int failures = 0, headerMisses = 0, locates = 0;
+    int failures = 0, headerMisses = 0, locates = 0, changedDuringRead = 0;
 };
 State S;
 
@@ -100,15 +100,31 @@ bool readSave(const saveimg::ReadFn& rd, LiveLogFn log) {
     g.name = S.def.name;
     applyGameDef(g, S.def);
     u64 t0 = armGetSystemTick();
-    std::string seen;
+    std::string seen, openError;
     {
         saveimg::ImageSaveSource src(rd, moduleMemoryAvailable);
         evaluateSave(g, src);
         seen = src.commit();
+        openError = src.lastError();
     }
     u64 ms = armTicksToNs(armGetSystemTick() - t0) / 1000000;
+    // The image could not be opened (seen is empty). This used to return false without a word and retry at
+    // every save, forever: say why, and count it as a failure unless the game saved meanwhile.
+    if (seen.empty()) {
+        if (saveimg::commitId(rd) != S.pending) return false;
+        log("live save: %s - save image not readable: %s", S.def.name.c_str(), openError.empty() ? "unknown error" : openError.c_str());
+        if (++S.failures >= 3) stopWith(log, "the save image could not be read 3 times");
+        S.lastCommit = S.pending;   // next try at the next save
+        return true;
+    }
     // Only trust values read from one commit: same header before, during and after.
-    if (seen != S.pending || saveimg::commitId(rd) != S.pending) return false;
+    if (seen != S.pending || saveimg::commitId(rd) != S.pending) {
+        if (++S.changedDuringRead == 5)   // once: a silent loop here is what hid problems before
+            log("live save: %s - the save changed during each of the last 5 reads (%llu ms each); still trying", S.def.name.c_str(),
+                (unsigned long long)ms);
+        return false;
+    }
+    S.changedDuringRead = 0;
     if (g.saveStatus != SaveStatus::Ok) {
         std::string why = g.debug.empty() ? "save not recognised" : g.debug.front();
         log("live save: %s - %s", S.def.name.c_str(), why.c_str());

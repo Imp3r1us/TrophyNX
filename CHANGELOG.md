@@ -12,14 +12,15 @@ How to write a section (see `tools/release/changelog.py`):
 
 ## 0.15.1 (2026-11-24)
 
-Hades achievements now pop up while you play and when you quit, not only after a scan in the app.
+Hades achievements now unlock when you quit the game, not only after a scan in the app.
 
 ### Fixed
-- Hades: the live module skipped the game's saves (too big for its memory), so achievements only unlocked when you opened the app and rescanned, and the in-game menu kept them locked. It now reads them in small pieces and keeps only the values the achievements need, so they unlock a few seconds after the game saves.
+- Hades: the live module skipped the game's saves (too big for its memory), so achievements only unlocked when you opened the app and rescanned, and the in-game menu kept them locked. It now reads them in small pieces and keeps only the values the achievements need, so they unlock when you quit (and while you play once live save works on your console: see below).
 - Already played? Open the app once and rescan (Y): anything you earned meanwhile unlocks then.
 
 ### Live module 0.10.1
 - Hades saves are read 16 KB at a time, with LZ4 decoded through its 64 KB window: the memory needed no longer grows with the save.
+- Live save now says in `live_log.txt` why it could not read a save image (it used to retry silently at every save, so popups during play never came and nothing said why). If you see `save image not readable: ...` there, please share the line.
 
 ## 0.15.0 (2026-11-24)
 
