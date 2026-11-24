@@ -56,6 +56,26 @@ const char* cmpName(Cmp c) {
     return N[(int)c];
 }
 
+bool parseChange(const std::string& s0, Change& out) {
+    std::string s = lower(s0);
+    if (s.empty() || s == "none") out = Change::None;
+    else if (s == "becomes") out = Change::Becomes;
+    else if (s == "increase") out = Change::Increase;
+    else return false;
+    return true;
+}
+
+const char* changeName(Change c) {
+    static const char* N[] = {"", "becomes", "increase"};
+    return N[(int)c];
+}
+
+bool MemRule::covers(const std::string& build) const {
+    if (all.empty()) return false;
+    for (const Condition& c : all) if (!forBuild(c.builds, build)) return false;
+    return true;
+}
+
 // ---------------------------------------------------------------- addresses
 namespace {
 struct Cursor {
@@ -212,6 +232,11 @@ bool parseCondition(const void* rule, Condition& out, std::string& err) {
         err = "cmp must be >=, >, <=, <, ==, != or &";
         return false;
     }
+    const cJSON* ch = cJSON_GetObjectItemCaseSensitive(r, "change");
+    if (ch && (!cJSON_IsString(ch) || !parseChange(ch->valuestring, out.change))) {
+        err = "change must be \"becomes\" or \"increase\"";
+        return false;
+    }
     const cJSON* t = cJSON_GetObjectItemCaseSensitive(r, "target");
     if (cJSON_IsNumber(t)) out.target = t->valuedouble;
     else if (cJSON_IsString(t)) out.target = (double)strtoull(t->valuestring, nullptr, 0);   // "0x4" for bit masks
@@ -235,6 +260,30 @@ bool parseCondition(const void* rule, Condition& out, std::string& err) {
     return true;
 }
 
+bool parseMemRule(const void* rule, MemRule& out, std::string& err) {
+    const cJSON* r = (const cJSON*)rule;
+    out = MemRule();
+    const cJSON* all = cJSON_GetObjectItemCaseSensitive(r, "all");
+    if (!all) {
+        Condition c;
+        if (!parseCondition(r, c, err)) return false;
+        out.all.push_back(c);
+        return true;
+    }
+    if (!cJSON_IsArray(all) || !all->child) { err = "\"all\" must be a list of conditions"; return false; }
+    int i = 0;
+    for (const cJSON* e = all->child; e; e = e->next, i++) {
+        Condition c;
+        std::string e2;
+        if (!cJSON_IsObject(e)) e2 = "not an object";
+        else if (!parseCondition(e, c, e2)) {}
+        if (!e2.empty()) { err = "all[" + std::to_string(i) + "]: " + e2; return false; }
+        out.all.push_back(c);
+    }
+    if (out.all.size() > 16) { err = "at most 16 conditions in \"all\""; return false; }
+    return true;
+}
+
 bool anyHolds(const Condition& c, const std::string& build, const Bases& b, const Reader& read, double& value, bool& readFailed) {
     const BuildAddrs* ba = forBuild(c.builds, build);
     if (!ba) return false;
@@ -254,13 +303,14 @@ void Watcher::reset(const std::vector<Item>& items, const std::set<std::string>&
     m_items = items;
     m_done = alreadyUnlocked;
     m_streak.clear();
+    m_state.clear();
     m_values.clear();
     m_readFailed = false;
 }
 
 size_t Watcher::coverage(const std::string& build) const {
     size_t n = 0;
-    for (const Item& i : m_items) if (i.cond && forBuild(i.cond->builds, build)) n++;
+    for (const Item& i : m_items) if (i.rule && i.rule->covers(build)) n++;
     return n;
 }
 
@@ -270,16 +320,57 @@ size_t Watcher::pending() const {
     return n;
 }
 
+bool Watcher::condHolds(const Condition& c, std::vector<AddrState>& st, const std::string& build, const Bases& b,
+                        const Reader& read, double& value, bool& readFailed) {
+    const BuildAddrs* ba = forBuild(c.builds, build);
+    if (!ba) return false;
+    if (st.size() != ba->addrs.size()) st.assign(ba->addrs.size(), AddrState());
+    bool any = false;
+    // Every address is read on every check (no early exit): "becomes" and "increase" need each one's history.
+    for (size_t k = 0; k < ba->addrs.size(); k++) {
+        AddrState& s = st[k];
+        uint64_t addr;
+        double v;
+        if (!resolve(ba->addrs[k], b, read, addr) || !readValue(c.type, addr, read, v)) { readFailed = true; continue; }
+        if (c.max > 0 && v > c.max) continue;   // garbage (pointer read too soon): neither true nor false
+        bool h;
+        if (c.change == Change::Increase) {
+            if (!s.haveBase || v < s.base) { s.base = v; s.haveBase = true; }
+            h = holds(c.cmp, v - s.base, c.target, 0);
+            if (!any) value = v - s.base;
+        } else {
+            h = holds(c.cmp, v, c.target, 0);
+            if (!any) value = v;
+            if (c.change == Change::Becomes) {
+                if (!h) { if (++s.falseRun >= kStreak) s.armed = true; }
+                else s.falseRun = 0;
+                h = h && s.armed;
+            }
+        }
+        if (h) any = true;
+    }
+    return any;
+}
+
 std::vector<std::string> Watcher::step(const std::string& build, const Bases& b, const Reader& read) {
     std::vector<std::string> now;
     m_readFailed = false;
     for (const Item& i : m_items) {
-        if (!i.cond || m_done.count(i.id)) continue;
-        double v = 0;
-        bool failed = false;
-        bool ok = anyHolds(*i.cond, build, b, read, v, failed);
+        if (!i.rule || i.rule->all.empty() || m_done.count(i.id)) continue;
+        std::vector<std::vector<AddrState>>& st = m_state[i.id];
+        if (st.size() != i.rule->all.size()) st.resize(i.rule->all.size());
+        bool ok = true, failed = false;
+        double first = 0;
+        // All conditions are evaluated on every check, even after one fails, so their history stays current.
+        for (size_t c = 0; c < i.rule->all.size(); c++) {
+            double v = 0;
+            bool f = false;
+            if (!condHolds(i.rule->all[c], st[c], build, b, read, v, f)) ok = false;
+            if (f) failed = true;
+            if (c == 0) first = v;
+        }
         if (failed) m_readFailed = true;
-        if (!failed || ok) m_values[i.id] = v;
+        if (!failed || ok) m_values[i.id] = first;
         if (!ok) { m_streak.erase(i.id); continue; }
         if (++m_streak[i.id] >= kStreak) {
             m_done.insert(i.id);

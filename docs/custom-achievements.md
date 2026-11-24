@@ -261,6 +261,30 @@ the achievement with a popup the moment it holds. No save reader is needed.
 
 The condition has to hold on **3 checks in a row** before it unlocks, for the same reason.
 
+**Several conditions at once.** Put them in an `all` list: each one has its own `value_type`, `cmp`, `target`,
+`max` and `builds`, and **all** of them must hold on the same check (still 3 checks in a row). A version unlocks
+only when every condition has an address for it.
+
+**Events, not states.** Add `"change"` to a condition:
+
+| `change` | The condition holds when… | Use it for |
+|---|---|---|
+| (none) | the value compares as it is now | "have 100,000 coins", "reach level 50" |
+| `"becomes"` | the comparison is true **and** it was seen false (3 checks in a row) since the game started | "finish a race in 1st", "beat a boss": a flag or counter that turns on during play. Already true when the game opens (a results screen, a finished save) → nothing |
+| `"increase"` | `cmp` / `target` apply to how much the value **rose** since the lowest value seen this session | "earn 500 coins in one sitting". Loading a save with less restarts the count from there |
+
+```json
+{ "id": "flawless", "name": "Untouchable", "desc": "Win a race without being hit", "points": 25,
+  "rule": { "type": "memory", "all": [
+    { "value_type": "u8",  "cmp": "==", "target": 1, "change": "becomes", "builds": { "3CA12DFAAF9C82DA": "[main+3A0B10]+58" } },
+    { "value_type": "u8",  "cmp": "==", "target": 1,                      "builds": { "3CA12DFAAF9C82DA": "[main+3A0B10]+5C" } },
+    { "value_type": "u32", "cmp": "==", "target": 0, "max": 999,          "builds": { "3CA12DFAAF9C82DA": "[main+3A0B10]+60" } } ] } }
+```
+
+(race finished, place, hits taken). Put the `becomes` condition on what marks the moment (the race ends) and plain
+conditions on what must be true at that moment. Addresses above are made up: find real ones with a memory search
+tool (EdiZon, Breeze) by watching the value change while you play.
+
 **From a cheat code.** `580F0000 XXXXXXXX` loads the pointer at `main+XXXXXXXX`, each `580F1000 YYYYYYYY` reads the
 next pointer at `+YYYYYYYY`, `780F0000 ZZZZZZZZ` adds `ZZZZZZZZ`, and the final `6T0F0000 …` writes `T` bytes there:
 that's `[[main+XXXXXXXX]+YYYYYYYY]+ZZZZZZZZ` with `value_type` `uT`. A single `04100000 AAAAAAAA …` line writes to
@@ -274,7 +298,7 @@ in game and check that the achievement unlocks at the right moment. Nothing happ
 `builds`: the log says which build ID to add.
 
 Limits: Atmosphère's cheat service (`dmnt:cht`) must be on, the game is watched only while it runs (progress made
-earlier counts as soon as the value is read), and if you use cheats in the same game the module shares the cheat
+earlier counts as soon as the value is read, except for `becomes` / `increase` conditions), and if you use cheats in the same game the module shares the cheat
 service with them (it never turns them off). Addresses can change with a game update: that's why they're per build.
 
 ## 6. Test it

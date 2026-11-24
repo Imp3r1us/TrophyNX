@@ -52,6 +52,14 @@ jobs:
             g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_memrules.cpp source/memrules.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_memrules_ub
             timeout 300 /tmp/test_memrules_ub
           fi
+      - name: Host test (Tesla overlay data)
+        run: |
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_overlay_data.cpp source/overlay_data.cpp -x c source/cJSON.c -o /tmp/test_overlay_data
+          if ! timeout 300 setarch "$(uname -m)" -R /tmp/test_overlay_data; then
+            echo "ASan run failed or ASLR could not be disabled: retrying with UBSan only"
+            g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_overlay_data.cpp source/overlay_data.cpp -x c source/cJSON.c -o /tmp/test_overlay_data_ub
+            timeout 300 /tmp/test_overlay_data_ub
+          fi
       - name: Host test (scan on close = same values as the app)
         run: |
           apt-get install -y -qq python3 >/dev/null
@@ -107,10 +115,17 @@ jobs:
           # the Makefile lists data/ files before its rule creates them: prepare it first
           sh sysmodule/make_data.sh
           make -C sysmodule -j"$(nproc)"
+      - name: Build Tesla overlay
+        # libtesla (GPL-2.0, header only) pinned to a known commit
+        run: |
+          git clone -q https://github.com/WerWolv/libtesla overlay/libtesla
+          git -C overlay/libtesla checkout -q f766e9b607a05e9756843cbd62b3bfb98be1646c
+          make -C overlay -j"$(nproc)"
       - name: Package SD card layout
         run: |
-          mkdir -p sd/switch sd/atmosphere/contents/420000000000AC01/flags
+          mkdir -p sd/switch/.overlays sd/atmosphere/contents/420000000000AC01/flags
           cp TrophyNX.nro sd/switch/
+          cp overlay/TrophyNX.ovl sd/switch/.overlays/
           cp sysmodule/sys-trophynx.nsp sd/atmosphere/contents/420000000000AC01/exefs.nsp
           cp sysmodule/toolbox.json sd/atmosphere/contents/420000000000AC01/
           touch sd/atmosphere/contents/420000000000AC01/flags/boot2.flag

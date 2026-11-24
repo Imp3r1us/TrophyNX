@@ -10,6 +10,18 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.15.0 (2026-11-24)
+
+See your achievements without leaving the game: TrophyNX now has a Tesla / Ultrahand menu.
+
+### New
+- In-game menu: pick TrophyNX in the Tesla or Ultrahand menu to see the running game's achievements, your points and medals, what is in progress (closest to done first), what is locked and what you unlocked (most recent first). A on one shows its medal, description and progress. Needs a Tesla menu and nx-ovlloader, as for any overlay. Open the app once after updating: it prepares every game's list for the menu when it scans.
+- Memory achievements can now watch events, not just values: several conditions at once ("win a race without being hit"), a condition that only counts once it changes during play (nothing already true when the game opens unlocks it), and "gain N in one sitting". See docs/custom-achievements.md.
+
+### Live module 0.10.0
+- Runs the new memory conditions (all / becomes / increase).
+- Writes your progress for the in-game menu while you play: values read on a live save or on close, and memory values (at most every 5 s).
+
 ## 0.14.0 (2026-11-24)
 
 Two new save readers that work for whole game engines: RPG Maker MV / MZ and GameMaker.

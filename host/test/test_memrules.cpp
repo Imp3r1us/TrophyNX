@@ -109,8 +109,9 @@ int main() {
     ok(gd.achs.size() == 3, "3 usable achievements (memory x2 + play time)");
     ok(perr.find("bad1") != std::string::npos && perr.find("bad2") != std::string::npos && perr.find("bad3") != std::string::npos, "bad memory rules reported");
     const Achievement& rich = gd.achs[0];
-    ok(rich.rule.type == RuleType::Memory && rich.rule.mem.builds.size() == 2 && rich.rule.mem.builds[0].addrs.size() == 2 &&
-           rich.rule.target == 200 && rich.rule.mem.max == 99999 && !rich.rule.showProgress && !isSaveRule(rich.rule.type), "memory rule fields");
+    ok(rich.rule.type == RuleType::Memory && rich.rule.mem.all.size() == 1 && rich.rule.mem.all[0].builds.size() == 2 &&
+           rich.rule.mem.all[0].builds[0].addrs.size() == 2 && rich.rule.mem.all[0].change == Change::None &&
+           rich.rule.target == 200 && rich.rule.mem.all[0].max == 99999 && !rich.rule.showProgress && !isSaveRule(rich.rule.type), "memory rule fields");
 
     // --- watcher: 3 checks in a row, once
     std::vector<Watcher::Item> items = {{"rich", &gd.achs[0].rule.mem}, {"flt", &gd.achs[1].rule.mem}};
@@ -152,6 +153,97 @@ int main() {
     int n5 = 0;
     for (int i = 0; i < 5; i++) n5 += (int)w5.step("0123456789ABCDEF", b, rd).size();
     ok(n5 == 0, "other build uses its own address (main+10 unreadable): nothing");
+
+    // --- several conditions, "becomes" and "increase"
+    // heap+100: race finished flag (u8), heap+101: place (u8), heap+104: hits taken (u32), heap+108: coins (u32)
+    auto setRace = [&](uint8_t finished, uint8_t place, uint32_t hits, uint32_t coins) {
+        m.put(b.heap + 0x100, &finished, 1);
+        m.put(b.heap + 0x101, &place, 1);
+        m.put32(b.heap + 0x104, hits);
+        m.put32(b.heap + 0x108, coins);
+    };
+    const char* def2 = R"({ "title_id": "0100000000020000", "name": "Race",
+      "achievements": [
+        { "id": "flawless", "name": "Flawless", "rule": { "type": "memory", "all": [
+            { "value_type": "u8", "cmp": "==", "target": 1, "change": "becomes", "builds": { "3CA12DFA": "heap+100" } },
+            { "value_type": "u8", "cmp": "==", "target": 1, "builds": { "3CA12DFA": "heap+101" } },
+            { "value_type": "u32", "cmp": "==", "target": 0, "max": 999, "builds": { "3CA12DFA": "heap+104" } } ] } },
+        { "id": "coins", "name": "Pocket", "rule": { "type": "memory", "value_type": "u32", "change": "increase", "target": 500,
+            "max": 999999, "builds": { "3CA12DFA": "heap+108" } } },
+        { "id": "half", "name": "Half", "rule": { "type": "memory", "all": [
+            { "value_type": "u8", "target": 1, "builds": { "3CA12DFA": "heap+100" } },
+            { "value_type": "u8", "target": 1, "builds": { "0123456789ABCDEF": "heap+101" } } ] } },
+        { "id": "bad4", "name": "x", "rule": { "type": "memory", "all": [] } },
+        { "id": "bad5", "name": "x", "rule": { "type": "memory", "all": [ { "builds": { "3CA1": "main+1" } }, 5 ] } },
+        { "id": "bad6", "name": "x", "rule": { "type": "memory", "change": "drops", "builds": { "3CA1": "main+1" } } } ] })";
+    GameDef g2;
+    perr.clear();
+    ok(parseGameDef(def2, g2, perr) && g2.achs.size() == 3, "definition with all / change parses");
+    ok(perr.find("bad4") != std::string::npos && perr.find("bad5") != std::string::npos && perr.find("bad6") != std::string::npos,
+       "empty all, non-object condition, unknown change reported");
+    ok(g2.achs[0].rule.mem.all.size() == 3 && g2.achs[0].rule.mem.all[0].change == Change::Becomes &&
+           g2.achs[1].rule.mem.all[0].change == Change::Increase, "conditions and changes parsed");
+    std::vector<Watcher::Item> race = {{"flawless", &g2.achs[0].rule.mem}, {"coins", &g2.achs[1].rule.mem}, {"half", &g2.achs[2].rule.mem}};
+    Watcher wr;
+    wr.reset(race, {});
+    ok(wr.coverage(build) == 2, "coverage needs every condition to have the build");
+    auto steps = [&](Watcher& w, int n) {
+        std::vector<std::string> all;
+        for (int i = 0; i < n; i++) for (const std::string& id : w.step(build, b, rd)) all.push_back(id);
+        return all;
+    };
+    auto has = [](const std::vector<std::string>& v, const char* id) {
+        for (const std::string& x : v) if (x == id) return true;
+        return false;
+    };
+    // the game opens on a results screen already won without a hit, with 1000 coins: nothing
+    setRace(1, 1, 0, 1000);
+    got = steps(wr, 6);
+    ok(!has(got, "flawless") && !has(got, "coins") && !has(got, "half"), "already true at start: becomes / increase / other build stay locked");
+    // next race (flag 0 for 3 checks) is won, but with a hit: nothing
+    setRace(0, 3, 0, 1100);
+    steps(wr, 3);
+    setRace(1, 1, 2, 1200);
+    ok(!has(steps(wr, 5), "flawless"), "won with a hit: locked");
+    // one condition drops for a check: the streak restarts
+    setRace(0, 3, 0, 1300);
+    steps(wr, 3);
+    setRace(1, 1, 0, 1350);
+    steps(wr, 2);
+    setRace(1, 2, 0, 1400);
+    steps(wr, 1);
+    setRace(1, 1, 0, 1450);
+    got = steps(wr, 2);
+    ok(!has(got, "flawless"), "streak restarts when one condition drops");
+    got = steps(wr, 1);
+    ok(has(got, "flawless") && !has(got, "coins"), "won without a hit, 3 checks in a row: unlocked; 450 coins gained: not yet");
+    setRace(0, 0, 0, 1499);
+    ok(!has(steps(wr, 3), "coins"), "499 coins gained: not yet");
+    setRace(0, 0, 0, 1500);
+    ok(has(steps(wr, 3), "coins"), "500 coins gained since the lowest value: unlocked");
+    // "increase": another save with fewer coins restarts the count from there
+    Watcher wc;
+    std::vector<Watcher::Item> coinOnly = {{"coins", &g2.achs[1].rule.mem}};
+    wc.reset(coinOnly, {});
+    setRace(0, 0, 0, 2000);
+    steps(wc, 3);
+    setRace(0, 0, 0, 100);
+    steps(wc, 3);
+    setRace(0, 0, 0, 550);
+    ok(steps(wc, 5).empty(), "450 above the new low: locked (not 2000 -> 550)");
+    setRace(0, 0, 0, 600);
+    ok(steps(wc, 3).size() == 1, "500 above the new low: unlocked");
+    // garbage values (above max) are ignored by increase
+    Watcher wg;
+    wg.reset(coinOnly, {});
+    setRace(0, 0, 0, 10);
+    steps(wg, 2);
+    setRace(0, 0, 0, 5000000);
+    ok(steps(wg, 5).empty(), "garbage above max neither unlocks nor moves the base");
+    setRace(0, 0, 0, 4);
+    steps(wg, 1);
+    setRace(0, 0, 0, 504);
+    ok(steps(wg, 3).size() == 1, "base follows real lows only");
 
     printf(fails ? "%d FAILED\n" : "ALL PASSED\n", fails);
     return fails ? 1 : 0;

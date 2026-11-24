@@ -3,6 +3,7 @@
 #include "history.h"
 #include "byml.h"
 #include "json_doc.h"
+#include "overlay_data.h"
 #include "save_formats.h"
 #include "cJSON.h"
 #include <algorithm>
@@ -116,6 +117,44 @@ static void writeLog(const Library& lib) {
     }
     makeDirs(plat::dataDir());
     writeFile(plat::dataDir() + "/log.txt", out);
+}
+
+// Per-game lists for the Tesla overlay (overlay/), which can't evaluate rules itself: <data>/overlay/<TID>.json.
+// Only games with their own achievements or play time; a file is rewritten only when its content changed.
+static void writeOverlaySnapshots(const Library& lib) {
+    bool madeDir = false;
+    for (size_t gi = 1; gi < lib.games.size(); gi++) {
+        const Game& g = lib.games[gi];
+        if (!g.hasDefinition && g.stats.launches == 0) continue;
+        ov::GameData d;
+        d.titleId = g.id;
+        d.name = g.name;
+        for (const Achievement& a : g.achs) {
+            ov::Ach o;
+            o.id = a.id;
+            o.name = a.name;
+            o.desc = a.desc;
+            o.points = a.points;
+            o.tier = ov::tierFor(a.tier, a.points);
+            o.hidden = a.hidden;
+            o.showProgress = a.rule.showProgress && a.rule.target > 0;
+            o.target = a.rule.target;
+            o.divisor = a.rule.divisor;
+            o.value = a.value;
+            d.achs.push_back(o);
+        }
+        std::string json = ov::snapshotJson(d), path = ov::snapshotPath(plat::dataDir(), g.id);
+        std::vector<uint8_t> old;
+        if (readFile(path, old) && std::string(old.begin(), old.end()) == json) continue;
+        if (!madeDir) { makeDirs(plat::dataDir() + "/overlay"); madeDir = true; }
+        writeFile(path, json);
+    }
+    // Progress the live module wrote is older than this scan: drop it (it writes memory values again while a game runs)
+    for (size_t gi = 1; gi < lib.games.size(); gi++) {
+        std::string live = ov::livePath(plat::dataDir(), lib.games[gi].id);
+        std::vector<uint8_t> tmp;
+        if (readFile(live, tmp)) remove(live.c_str());
+    }
 }
 
 static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
@@ -244,6 +283,7 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
             if (g.achs[ai].isNew) lib.newlyUnlocked.push_back({(int)gi, (int)ai});
     }
     writeLog(lib);
+    writeOverlaySnapshots(lib);
 }
 
 void buildLibrary(Library& lib, plat::ProgressFn progress, void* ctx) {

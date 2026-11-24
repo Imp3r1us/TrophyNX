@@ -52,7 +52,7 @@ struct Rule {
     bool hasEqualsStr = false;  // byml/json: matched values must equal this (string, number, true/false)
     std::string equalsStr;
     // "memory": per-build addresses, value type and comparison (target/max are copied into it)
-    mem::Condition mem;
+    mem::MemRule mem;
 };
 
 struct Achievement {

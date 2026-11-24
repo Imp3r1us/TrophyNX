@@ -223,6 +223,25 @@ Checking it: open the app, press **X** on Overview or BotW. The bottom shows the
 Notes: it uses under 1 MB of system memory and runs on the system core. Attaching through `dmnt:cht`
 takes the cheat service's single slot while BotW runs (cheats still work through it).
 
+### In-game menu (Tesla overlay)
+
+`sdmc:/switch/.overlays/TrophyNX.ovl` (in the SD zip) adds **TrophyNX** to the Tesla / Ultrahand menu: the
+running game's achievements without leaving it. Open the menu (Tesla's default: **L + D-pad Down + Right stick**),
+pick TrophyNX.
+
+- The top shows how many are unlocked, your points and medals for this game.
+- Then **In progress** (closest to done first, with "37 / 120"), **Locked** and **Unlocked** (most recent first, with the date).
+- **A** on one: its medal, description, points and a progress bar. **B** goes back.
+
+It needs a Tesla menu and its loader (nx-ovlloader) installed, as for any overlay. It reads what the app and
+the live module write, and never changes anything:
+
+- The game's list comes from the **app**, which prepares one for every game each time it scans
+  (`overlay/<TITLEID>.json`). **Open the app once** after installing so your games get one.
+- Unlocks come from your unlock file, so a popup you just got shows at once.
+- Progress comes from the live module while you play (`overlay/<TITLEID>.live.json`): values read on a live
+  save or on close, and memory values (at most every 5 s). Otherwise it is the progress at the last app scan.
+
 ## Install
 
 Builds are made by GitHub Actions: download `TrophyNX.nro` from the latest
@@ -265,6 +284,8 @@ sdmc:/switch/TrophyNX/
   theme.txt                     the look you picked with a stick press ("new" or "classic")
   definition_errors.txt         written only if one of your JSON files has a problem
   log.txt                       full report of the last scan (same content as the X debug view)
+  overlay/<TITLEID>.json        the game's achievements for the Tesla overlay (written by the app at each scan)
+  overlay/<TITLEID>.live.json   progress written by the live module while you play (removed by the next app scan)
   update_log.txt                last in-app update: each file replaced (or why not) and the live module restart
   scan_bundle.json              written by ZR: save formats + copies of readable saves (upload for drafts)
   scan_report.txt               written by ZR: the same verdicts in plain text
@@ -393,6 +414,9 @@ checks that the module's low-memory save reading gives the app's values.
 at the top of each file); `test_formats --dump DIR` + `CPP_DUMP=DIR node tools/savelab/test/test_formats.js` checks that
 the app and the Save Lab decode GVAS / NRBF saves into exactly the same tree.
 `node tools/pc2switch/test/test_pc2switch.js` tests the PC → Switch matcher and scripts.
+The Tesla overlay lives in `overlay/` (`make` there produces `TrophyNX.ovl`). It needs libtesla in `overlay/libtesla`:
+see the top of `overlay/Makefile` for the pinned commit. `host/test/test_overlay_data.cpp` tests what it reads
+(`source/overlay_data.cpp`, shared with the app and the module).
 `sysmodule/test/test_flagscan.cpp` tests the heap scanner on a synthetic heap (`g++ -Iinclude test/test_flagscan.cpp source/flagscan.cpp -lz`).
 
 
@@ -472,6 +496,7 @@ changed and drafts the achievements for you. Its **🌐 Share with everyone** bu
 
 - Save layouts and flag names come from [Marc Robledo's savegame editors](https://github.com/marcrobledo/savegame-editors). The BotW names were datamined by MrCheeze, and the TotK hashes were compiled by MacSpazzy, MrCheeze, savage13 and others.
 - Smash Ultimate offsets: [Ultimate-Smasher](https://github.com/CapitanRetraso/Ultimate-Smasher) by CapitanRetraso; MK8D offsets: [EdiZon configs](https://github.com/WerWolv/EdiZon_CheatsConfigsAndScripts) by Ac_K.
+- In-game menu built with [libtesla](https://github.com/WerWolv/libtesla) by WerWolv.
 - Built with [libnx](https://github.com/switchbrew/libnx), [stb](https://github.com/nothings/stb) (truetype, image) and [cJSON](https://github.com/DaveGamble/cJSON).
 - Uses the console's own system font.
 
@@ -484,4 +509,5 @@ repository.
 
 Parts written by others keep their own license: `sysmodule/source/dmntcht.c` and `sysmodule/include/dmntcht.h`
 (Atmosphère-NX, GPL version 2 only, so the built module is distributed under GPLv2), cJSON (MIT), stb (public
-domain / MIT) and libnx (ISC).
+domain / MIT), libnx (ISC) and libtesla (GPL version 2, used by the overlay; fetched at build time, not in this
+repository).

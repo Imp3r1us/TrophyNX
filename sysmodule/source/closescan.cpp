@@ -4,6 +4,7 @@
 #include "rules.h"
 #include "store.h"
 #include "games_bin.h"
+#include "overlay_data.h"
 #include <malloc.h>
 #include <strings.h>
 #include <sys/stat.h>
@@ -153,6 +154,17 @@ int unlockMet(const Game& g, const GameDef& def, const std::string& defSource, c
         fresh.push_back(&a);
     }
     if (!fresh.empty()) saveStore(user, store);
+
+    // Progress for the Tesla overlay (<data>/overlay/<TID>.live.json): the values just read from the save
+    if (g.saveStatus == SaveStatus::Ok && saveAchs > 0) {
+        std::map<std::string, double> vals;
+        for (const Achievement& a : g.achs) if (isSaveRule(a.rule.type)) vals[a.id] = a.value;
+        std::string path = ov::livePath(dataDir(), g.id);
+        std::vector<uint8_t> old;
+        readFile(path, old);
+        mkdir((dataDir() + "/overlay").c_str(), 0777);
+        writeFile(path, ov::mergeLive(std::string(old.begin(), old.end()), vals));
+    }
 
     // Full report for the X debug view / troubleshooting, overwritten each time
     std::string rep = std::string(live ? "Live save read: " : "Scan on close: ") + def.name + " (definition: " + defSource + ", user " + user + ")\n";
