@@ -5,6 +5,7 @@
 #include "achievements.h"
 #include "platform.h"
 #include "render.h"
+#include "popup_config.h"
 
 #include "version.h"
 #include "scan.h"
@@ -81,6 +82,13 @@ struct UI {
     std::vector<CaptureInfo> capList;
     ShareServer server;
     std::string shareIp, shareErr;
+    bool pset = false;        // popup settings panel (right stick)
+    int psSel = 0, psKind = 0;   // selected row, preview kind (unlock / progress / live check / already unlocked)
+    PopupSettings ps;
+    bool psChanged = false;
+    std::string psWarn, psKey;   // psKey: what the cached preview images show
+    Image psBig, psMini;
+    int psMiniX = 0, psMiniY = 0;
 };
 
 static const int SHARE_PORT = 8080;
@@ -312,15 +320,20 @@ static bool saveLook(UI& ui) {
 }
 
 // Header chip that says how to switch look (press either stick)
-static void themeChip(UI& ui, int x, int y) {
+static int chip(UI& ui, int x, int y, const char* btn, const char* label) {
     Canvas& c = ui.cv;
-    const char* label = ui.classic ? "New look" : "Classic look";
-    int bw = ui.font.measure(13, "LS") + 12, lw = ui.font.measure(15, label);
+    int bw = ui.font.measure(13, btn) + 12, lw = ui.font.measure(15, label);
     int w = 6 + bw + 8 + lw + 12;
     c.fillRound(x, y, w, 28, 14, C_PANEL_HI);
     c.fillRound(x + 4, y + 4, bw, 20, 10, C_SUB);
-    ui.font.draw(c, x + 4 + 6, y + 6, 13, "LS", C_BG);
+    ui.font.draw(c, x + 4 + 6, y + 6, 13, btn, C_BG);
     ui.font.draw(c, x + 6 + bw + 8, y + 5, 15, label, C_TEXT);
+    return w;
+}
+
+static void themeChip(UI& ui, int x, int y) {
+    int w = chip(ui, x, y, "LS", ui.classic ? "New look" : "Classic look");
+    chip(ui, x + w + 10, y, "RS", "Popup settings");
 }
 
 // ---------------------------------------------------------------- screens
@@ -650,7 +663,7 @@ static void drawFooter(UI& ui) {
     c.fillRect(0, 668, 1280, 1, C_LINE);
     int x = 28;
     if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "+", "Exit"); return; }
-    if (ui.upd || ui.cap) { buttonHint(ui, x, 680, "+", "Exit"); return; }
+    if (ui.upd || ui.cap || ui.pset) { buttonHint(ui, x, 680, "+", "Exit"); return; }
     bool game = ui.screen == SCR_GAME;
     if (ui.popup) buttonHint(ui, x, 680, "A", "Close");
     else if (game) { buttonHint(ui, x, 680, "B", "Back"); buttonHint(ui, x, 680, "L/R", "Filter"); }
@@ -858,7 +871,7 @@ static void classicFooter(UI& ui) {
     c.fillRect(0, 668, 1280, 1, C_LINE);
     int x = 28;
     if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "+", "Exit"); return; }
-    if (ui.upd || ui.cap) { buttonHint(ui, x, 680, "+", "Exit"); return; }
+    if (ui.upd || ui.cap || ui.pset) { buttonHint(ui, x, 680, "+", "Exit"); return; }
     if (ui.popup) buttonHint(ui, x, 680, "A", "Close");
     else if (ui.screen == SCR_GAME) buttonHint(ui, x, 680, "B", "Back to games");
     else buttonHint(ui, x, 680, "A", "Open");
@@ -1129,6 +1142,309 @@ static void drawCaptures(UI& ui) {
     buttonHint(ui, bx, y + h - 50, "B", "Close");
 }
 
+// ---------------------------------------------------------------- popup settings (right stick)
+// Edits popup.json, which the live module reads before every popup. The preview is drawn by the module's own
+// renderer (source/popup_draw.cpp), so it is exactly what appears in game.
+enum { PS_CARD, PS_SHOW, PS_DURATION, PS_LIVE, PS_PROGRESS, PS_POSITION, PS_CTHEME, PS_ACCENT, PS_OPACITY, PS_BORDER,
+       PS_ICON, PS_LABEL, PS_THEME, PS_ICONSIDE };
+static const char* PS_STYLES[] = {"custom", "both", "ultrahand", "off"};
+static const char* PS_KINDS[] = {"Unlock", "Progress", "Live save check", "Already unlocked"};
+static const int PS_GENERAL = 5;                          // rows before the card's own section
+static const int MINI_W = 512, MINI_H = 288;              // the TV in the preview (1920x1080 scaled down)
+
+static std::string popupJsonPath() { return plat::dataDir() + "/popup.json"; }
+
+static std::vector<int> psRows(const PopupSettings& s) {
+    std::vector<int> r = {PS_CARD, PS_SHOW, PS_DURATION, PS_LIVE, PS_PROGRESS};
+    if (s.compact) r.insert(r.end(), {PS_POSITION, PS_CTHEME, PS_ACCENT, PS_OPACITY, PS_BORDER, PS_ICON, PS_LABEL});
+    else r.insert(r.end(), {PS_THEME, PS_ICONSIDE});
+    return r;
+}
+
+static const char* psLabel(int row) {
+    switch (row) {
+        case PS_CARD: return "Card";
+        case PS_SHOW: return "Show popups";
+        case PS_DURATION: return "Duration";
+        case PS_LIVE: return "Live save check";
+        case PS_PROGRESS: return "Progress popups";
+        case PS_POSITION: return "Position";
+        case PS_CTHEME: return "Theme";
+        case PS_ACCENT: return "Accent colour";
+        case PS_OPACITY: return "Background opacity";
+        case PS_BORDER: return "Border";
+        case PS_ICON: return "Icon";
+        case PS_LABEL: return "Label line";
+        case PS_THEME: return "Theme";
+        default: return "Icon side";
+    }
+}
+
+static const char* psHelp(int row) {
+    switch (row) {
+        case PS_CARD: return "Classic: text bar + tier medal. Compact: small card in a corner.";
+        case PS_SHOW: return "Ultrahand: also (or only) as an Ultrahand notification.";
+        case PS_DURATION: return "Time on screen. Shorter when several popups wait.";
+        case PS_LIVE: return "First read of a session: what live save read + achievements you have.";
+        case PS_PROGRESS: return "A popup when a locked counter goes up (Pet Cerberus 5 / 10).";
+        case PS_POSITION: return "Corner of the screen, 24 px from the edges.";
+        case PS_CTHEME: return "Colours of the card and its text.";
+        case PS_ACCENT: return "Colour of the label. By tier: cyan, gold for gold or secret, violet for platinum.";
+        case PS_OPACITY: return "How much of the game shows through the card.";
+        case PS_BORDER: return "The thin light line around the card.";
+        case PS_ICON: return "The achievement's art or the game icon on the left.";
+        case PS_LABEL: return "The small coloured line above the title (ACHIEVEMENT UNLOCKED...).";
+        case PS_THEME: return "Dark: black bar, white text. Light: white bar, dark text.";
+        default: return "Icon after the text, or at the screen edge.";
+    }
+}
+
+static std::string psOnOff(bool b) { return b ? "On" : "Off"; }
+
+static std::string psValue(const PopupSettings& s, int row) {
+    switch (row) {
+        case PS_CARD: return s.compact ? "Compact" : "Classic";
+        case PS_SHOW: return popupStyleLabel(s.style);
+        case PS_DURATION:
+            if (!s.durationMs) return s.compact ? "Auto (3.3 s)" : "Auto (4 s)";
+            return fmtNum(s.durationMs / 1000.0) + " s";
+        case PS_LIVE: return psOnOff(s.liveCheck);
+        case PS_PROGRESS: return psOnOff(s.progress);
+        case PS_POSITION: return popupCornerLabel(s.corner);
+        case PS_CTHEME:
+            for (const NamedColor& t : popupToastThemes()) if (s.toastTheme == t.name) return t.label;
+            return s.toastTheme;
+        case PS_ACCENT:
+            for (const NamedColor& a : popupAccents()) if (s.accent == a.name) return a.label;
+            return s.accent;
+        case PS_OPACITY: return std::to_string(s.opacity) + " %";
+        case PS_BORDER: return psOnOff(s.border);
+        case PS_ICON: return psOnOff(s.icon);
+        case PS_LABEL: return psOnOff(s.label);
+        case PS_THEME: return s.classicDark ? "Dark" : "Light";
+        default: return s.classicIconLeft ? "Left" : "Right";
+    }
+}
+
+static int psCycle(int i, int n, int dir) { return ((i + dir) % n + n) % n; }
+
+static void psChange(PopupSettings& s, int row, int dir) {
+    switch (row) {
+        case PS_CARD: s.compact = !s.compact; break;
+        case PS_SHOW: {
+            int i = 0;
+            for (int k = 0; k < 4; k++) if (s.style == PS_STYLES[k]) i = k;
+            s.style = PS_STYLES[psCycle(i, 4, dir)];
+            break;
+        }
+        case PS_DURATION: {
+            const std::vector<int>& d = popupDurations();
+            int i = 0;
+            for (size_t k = 0; k < d.size(); k++) if (d[k] == s.durationMs) i = (int)k;
+            s.durationMs = d[psCycle(i, (int)d.size(), dir)];
+            break;
+        }
+        case PS_LIVE: s.liveCheck = !s.liveCheck; break;
+        case PS_PROGRESS: s.progress = !s.progress; break;
+        case PS_POSITION: s.corner = psCycle(s.corner, 4, dir); break;
+        case PS_CTHEME: {
+            const std::vector<NamedColor>& t = popupToastThemes();
+            int i = 0;
+            for (size_t k = 0; k < t.size(); k++) if (s.toastTheme == t[k].name) i = (int)k;
+            s.toastTheme = t[psCycle(i, (int)t.size(), dir)].name;
+            break;
+        }
+        case PS_ACCENT: {
+            const std::vector<NamedColor>& a = popupAccents();
+            int i = 0;
+            for (size_t k = 0; k < a.size(); k++) if (s.accent == a[k].name) i = (int)k;
+            s.accent = a[psCycle(i, (int)a.size(), dir)].name;
+            break;
+        }
+        case PS_OPACITY: s.opacity = std::max(50, std::min(100, s.opacity + 5 * dir)); break;
+        case PS_BORDER: s.border = !s.border; break;
+        case PS_ICON: s.icon = !s.icon; break;
+        case PS_LABEL: s.label = !s.label; break;
+        case PS_THEME: s.classicDark = !s.classicDark; break;
+        default: s.classicIconLeft = !s.classicIconLeft; break;
+    }
+}
+
+static Image psToImage(const PopupImage& p) {   // straight RGBA8 -> the canvas' packed RGBA
+    Image im;
+    im.w = p.w;
+    im.h = p.h;
+    im.px.resize((size_t)p.w * p.h);
+    for (size_t i = 0; i < im.px.size(); i++) {
+        const uint8_t* s = &p.px[i * 4];
+        im.px[i] = (uint32_t)s[0] | ((uint32_t)s[1] << 8) | ((uint32_t)s[2] << 16) | ((uint32_t)s[3] << 24);
+    }
+    return im;
+}
+
+static PopupImage psFromImage(const Image& im) {
+    PopupImage p;
+    p.w = im.w;
+    p.h = im.h;
+    p.px.resize((size_t)im.w * im.h * 4);
+    for (size_t i = 0; i < im.px.size(); i++) {
+        uint32_t v = im.px[i];
+        p.px[i * 4] = v & 255; p.px[i * 4 + 1] = (v >> 8) & 255; p.px[i * 4 + 2] = (v >> 16) & 255; p.px[i * 4 + 3] = v >> 24;
+    }
+    return p;
+}
+
+// A sample popup of the selected game (its first achievement, or one with a counter for "Progress").
+static PopupText psSample(UI& ui, int kind) {
+    PopupText t;
+    t.kind = kind;
+    const Game* g = ui.sel > 0 ? &ui.lib.games[ui.sel] : nullptr;
+    t.game = g ? g->name : "Hades";
+    const Achievement* a = nullptr;
+    if (g)
+        for (const Achievement& x : g->achs)
+            if (kind != POPUP_PROGRESS || (x.rule.showProgress && x.rule.target > 1 && !x.hidden)) { a = &x; break; }
+    if (a) {
+        t.title = a->name; t.desc = a->desc; t.points = a->points; t.tier = tierOf(*a); t.hidden = a->hidden;
+    } else {
+        t.title = kind == POPUP_PROGRESS ? "Pet Cerberus" : "Escaped Tartarus";
+        t.desc = kind == POPUP_PROGRESS ? "Pet Cerberus 10 times" : "Clear Tartarus";
+        t.points = 10;
+    }
+    if (kind == POPUP_PROGRESS) {
+        if (a) {
+            double tgt = a->rule.target / a->rule.divisor;
+            t.line = fmtNum(std::floor(tgt / 2)) + " / " + fmtNum(tgt);
+        } else t.line = "5 / 10";
+    } else if (kind == POPUP_LIVE_CHECK) {
+        int n = g ? (int)g->achs.size() : 41, met = g ? g->unlocked : 3;
+        t.line = std::to_string(met) + "/" + std::to_string(n) + " met \xC2\xB7 read in 80 ms";
+    } else if (kind == POPUP_KNOWN) t.line = "met in your save";
+    return t;
+}
+
+static void psRenderPreview(UI& ui) {
+    std::string key = popupSettingsJson(ui.ps) + std::to_string(ui.psKind) + "/" + std::to_string(ui.sel);
+    if (key == ui.psKey) return;
+    ui.psKey = key;
+    PopupText t = psSample(ui, ui.psKind);
+    PopupImage icon;
+    const Image* gi = ui.sel > 0 ? gameIcon(ui, ui.sel) : nullptr;
+    if (gi && gi->valid()) icon = psFromImage(*gi);
+    PopupImage card;
+    int x, y;
+    if (ui.ps.compact) {
+        ToastInfo ti = popupToastTexts(t, ui.ps);
+        ti.icon = icon.w ? &icon : nullptr;
+        popupRenderToast(ti, card, popupToastStyle(ui.ps));
+        int lw, lh;
+        popupToastLayer(ui.ps.corner, TOAST_W, TOAST_H, x, y, lw, lh);
+        x += popupToastCardX(ui.ps.corner, 1.f);
+        ui.psBig = psToImage(card);   // 1080p pixels shown 1:1 (1.5x its size on a 720p screen)
+    } else {
+        PopupInfo pi;
+        popupClassicTexts(t, pi.title, pi.desc);
+        pi.tier = t.tier;
+        pi.dark = ui.ps.classicDark;
+        pi.iconLeft = ui.ps.classicIconLeft;
+        pi.icon = icon.w ? &icon : nullptr;
+        popupRenderCard(pi, card);
+        x = 0;
+        y = (int)(POPUP_Y720 * POPUP_SCALE + 0.5f);
+        PopupImage s;
+        popupScaleImage(card.px.data(), card.w, card.h, card.w * 2 / 3, card.h * 2 / 3, s);   // its real size on 720p
+        ui.psBig = psToImage(s);
+    }
+    const float k = MINI_W / 1920.f;
+    PopupImage m;
+    popupScaleImage(card.px.data(), card.w, card.h, std::max(1, (int)lroundf(card.w * k)), std::max(1, (int)lroundf(card.h * k)), m);
+    ui.psMini = psToImage(m);
+    ui.psMiniX = (int)lroundf(x * k);
+    ui.psMiniY = (int)lroundf(y * k);
+}
+
+static void openPopupSettings(UI& ui) {
+    ui.ps = PopupSettings();
+    ui.psWarn.clear();
+    std::vector<uint8_t> b;
+    if (readFile(popupJsonPath(), b)) {
+        b.push_back(0);
+        if (!popupSettingsParse((const char*)b.data(), ui.ps, &ui.psWarn)) {
+            ui.ps = PopupSettings();
+            ui.psWarn = "popup.json is not valid JSON: these are the defaults.";
+        }
+    }
+    ui.psSel = 0;
+    ui.psChanged = false;
+    ui.psKey.clear();
+    ui.pset = true;
+}
+
+static void drawPopupSettings(UI& ui) {
+    Canvas& c = ui.cv;
+    psRenderPreview(ui);
+    c.fillRect(0, 0, 1280, 720, 0xC8000000);
+    const int x = 40, y = 26, w = 1200, h = 636;
+    c.fillRound(x, y, w, h, 18, C_PANEL);
+    c.fillRound(x, y, w, 6, 3, 0xFF38BDF8);
+    ui.font.draw(c, x + 32, y + 24, 26, "Popup settings", C_TEXT);
+    ui.font.draw(c, x + 32, y + 62, 16, "What the live module shows in game. Used from the next popup.", C_SUB, 560);
+
+    // settings list
+    std::vector<int> rows = psRows(ui.ps);
+    int ry = y + 104;
+    for (size_t i = 0; i < rows.size(); i++) {
+        if ((int)i == PS_GENERAL) {   // the card's own section
+            ry += 8;
+            ui.font.draw(c, x + 36, ry, 14, ui.ps.compact ? "COMPACT CARD" : "CLASSIC CARD", C_DIM);
+            ry += 24;
+        }
+        bool sel = (int)i == ui.psSel;
+        if (sel) c.fillRound(x + 22, ry - 5, 588, 29, 8, C_PANEL_HI);
+        ui.font.draw(c, x + 36, ry, 17, psLabel(rows[i]), sel ? C_TEXT : C_SUB);
+        std::string v = psValue(ui.ps, rows[i]);
+        int vx = x + 596 - ui.font.measure(17, v) - (sel ? 22 : 0);
+        if (rows[i] == PS_ACCENT || rows[i] == PS_CTHEME) {   // colour swatch
+            uint32_t col = rows[i] == PS_ACCENT ? popupAccent(ui.ps, TIER_GOLD, false) : 0;
+            if (rows[i] == PS_ACCENT && ui.ps.accent == "tier") col = ACCENT_CYAN;
+            if (rows[i] == PS_CTHEME)
+                for (const NamedColor& t : popupToastThemes()) if (ui.ps.toastTheme == t.name) col = t.rgb;
+            c.fillCircle(vx - 14, ry + 11, 7, 0xFF000000 | col);
+            c.ring(vx - 14, ry + 11, 7, 1, 0x40FFFFFF);
+        }
+        ui.font.draw(c, vx, ry, 17, v, sel ? C_GOLD : C_TEXT);
+        if (sel) {
+            ui.font.draw(c, vx - (rows[i] == PS_ACCENT || rows[i] == PS_CTHEME ? 40 : 18), ry, 17, "<", C_DIM);
+            ui.font.draw(c, x + 584, ry, 17, ">", C_DIM);
+        }
+        ry += 30;
+    }
+    if (ui.psSel >= 0 && ui.psSel < (int)rows.size())
+        ui.font.draw(c, x + 32, y + h - 104, 15, psHelp(rows[ui.psSel]), C_SUB, 580);
+    if (!ui.psWarn.empty()) ui.font.draw(c, x + 32, y + h - 80, 14, ui.psWarn, C_RED, 580);
+
+    // preview: the TV with the card where it appears, then the card itself
+    const int px = x + 648, py = y + 104;
+    ui.font.draw(c, px, py - 34, 17, std::string("Preview: ") + PS_KINDS[ui.psKind], C_TEXT);
+    c.fillRound(px - 6, py - 6, MINI_W + 12, MINI_H + 12, 10, 0xFF0B0C10);
+    c.gradientV(px, py, MINI_W, MINI_H, 0xFF3B6EA5, 0xFF7FB07A);   // a bright game scene
+    c.fillRect(px, py + MINI_H - 70, MINI_W, 70, 0xFF4F7A3E);
+    c.fillCircle(px + 400, py + 70, 26, 0xFFF6E7A6);
+    c.blitAlpha(ui.psMini, px + ui.psMiniX, py + ui.psMiniY);
+    int cy = py + MINI_H + 28;
+    ui.font.draw(c, px, cy, 14, ui.ps.compact ? "Close up (1.5x)" : "Real size", C_DIM);
+    cy += 24;
+    c.gradientV(px - 6, cy - 6, MINI_W + 12, ui.psBig.h + 12, 0xFF2B3A55, 0xFF41573C);
+    c.blitAlpha(ui.psBig, px, cy);
+
+    int bx = x + 32;
+    buttonHint(ui, bx, y + h - 46, "A", "Change");
+    buttonHint(ui, bx, y + h - 46, "Y", "Next preview");
+    buttonHint(ui, bx, y + h - 46, "X", "Defaults");
+    buttonHint(ui, bx, y + h - 46, "-", "Cancel");
+    buttonHint(ui, bx, y + h - 46, "B", ui.psChanged ? "Save & close" : "Close");
+}
+
 static void drawAll(UI& ui) {
     int stride;
     ui.cv.px = plat::beginDraw(stride);
@@ -1146,6 +1462,7 @@ static void drawAll(UI& ui) {
     if (ui.confirm) drawConfirm(ui);
     if (ui.upd) drawUpdate(ui);
     if (ui.cap) drawCaptures(ui);
+    if (ui.pset) drawPopupSettings(ui);
     if (ui.classic) classicFooter(ui);
     else drawFooter(ui);
     if (!ui.toast.empty()) {
@@ -1236,6 +1553,7 @@ int main(int argc, char** argv) {
     plat::fontData(0, &f0, &s0);
     plat::fontData(1, &f1, &s1);
     if (f0) ui.font.load(f0, s0, f1, s1);
+    if (f0) popupFontInit(f0);   // the popup settings preview uses the live module's renderer
     if (!ok) {
         if (err != "No user selected.") showFatal(ui, err);
         plat::exit();
@@ -1272,7 +1590,30 @@ int main(int argc, char** argv) {
 
         if (down & plat::BTN_PLUS) break;
         if (down && !ui.toast.empty()) { ui.toast.clear(); dirty = true; }
-        if (ui.cap == 2) {
+        if (ui.pset) {
+            if (down) dirty = true;
+            std::vector<int> rows = psRows(ui.ps);
+            int n = (int)rows.size();
+            if (down & plat::BTN_UP) ui.psSel = (ui.psSel + n - 1) % n;
+            if (down & plat::BTN_DOWN) ui.psSel = (ui.psSel + 1) % n;
+            int dir = (down & (plat::BTN_RIGHT | plat::BTN_A)) ? 1 : (down & plat::BTN_LEFT) ? -1 : 0;
+            if (dir) {
+                psChange(ui.ps, rows[ui.psSel], dir);
+                ui.psChanged = true;
+                ui.psSel = std::min(ui.psSel, (int)psRows(ui.ps).size() - 1);   // the card's section changed size
+            }
+            if (down & plat::BTN_Y) ui.psKind = (ui.psKind + 1) % 4;
+            if (down & plat::BTN_X) { ui.ps = PopupSettings(); ui.psChanged = true; ui.psSel = 0; ui.toast = "Defaults restored: B to save."; }
+            if (down & plat::BTN_MINUS) { ui.pset = false; ui.toast = "Popup settings unchanged."; }
+            else if (down & plat::BTN_B) {
+                ui.pset = false;
+                if (ui.psChanged) {
+                    makeDirs(plat::dataDir());
+                    ui.toast = writeFile(popupJsonPath(), popupSettingsJson(ui.ps)) ? "Popup settings saved: the next popup uses them."
+                                                                                     : "Could not write popup.json";
+                }
+            }
+        } else if (ui.cap == 2) {
             if (ui.server.running() && ui.server.poll() > 0) dirty = true;
             if (down & plat::BTN_B) { ui.server.stop(); plat::keepAwake(false); ui.cap = 1; ui.capList = listCaptures(plat::dataDir(), ui.lib.games[ui.sel].id); dirty = true; }
         } else if (ui.cap == 1) {
@@ -1334,6 +1675,7 @@ int main(int argc, char** argv) {
             }
         } else if (down) {
             dirty = true;
+            if (down & plat::BTN_RSTICK) openPopupSettings(ui);
             if (down & plat::BTN_Y) {
                 ui.loadingLabel = "Rescanning saves";
                 ui.lastProgress = -1;

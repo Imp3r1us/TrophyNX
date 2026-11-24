@@ -10,6 +10,23 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.16.0 (2026-11-25)
+
+Popup settings in the app: choose the card, its colours and position, and what is shown, with a live preview.
+
+### New
+- Popup settings: press the right stick in the app. Card (classic or compact), where popups show (on screen, Ultrahand, off), duration, live save check and progress popups on or off.
+- Compact card, made yours: position (any corner), theme (Dark, Light, Midnight, OLED black, Warm), accent colour (by tier, or Cyan, Gold, Violet, Green, Pink, Orange, Red, White), background opacity, border, icon and label line.
+- Classic card: dark or light, icon on the right or the left.
+- A live preview of the real popup: a small TV shows where it appears, with the selected game's icon and achievements. Y switches it between an unlock, a progress, a live save check and an already unlocked popup.
+- Everything is saved in popup.json and used from the next popup, without restarting.
+
+### Changed
+- The look switch is now on the left stick only; the right stick opens the popup settings.
+
+### Live module 0.11.0
+- Reads the new popup settings (themes, accents, opacity, border, icon, label line).
+
 ## 0.15.2 (2026-11-25)
 
 Popups while you play now really work, a new compact popup style, and popups that show TrophyNX is following your game.

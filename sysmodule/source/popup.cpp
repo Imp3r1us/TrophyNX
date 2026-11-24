@@ -10,6 +10,7 @@
 #include "popup.h"
 #include "store.h"
 #include "popup_draw.h"
+#include "popup_config.h"
 #include "heap.h"
 #include <switch.h>
 #include <algorithm>
@@ -53,11 +54,12 @@ static const size_t POPUP_MIN_HEAP = 1400 * 1024;   // card peak ~1 MB + icon de
 
 // ---------------------------------------------------------------- config
 struct PopupConfig {
+    PopupSettings s;                // popup.json as written by the app (include/popup_config.h)
     std::string style = "custom";   // Ultrahand toast only as fallback
     bool dark = true, iconLeft = false;
     int durationMs = 4000;          // classic card: whole popup
     bool durationSet = false;
-    bool compact = false;           // "card": "compact" (small dark toast) or "classic" (text bar + medal)
+    bool compact = false;           // "card": "compact" (small toast) or "classic" (text bar + medal)
     int corner = CORNER_TOP_LEFT;   // "position" (compact card)
     PopupOptions opts;
 };
@@ -67,26 +69,24 @@ static PopupConfig loadConfig() {
     char path[128];
     snprintf(path, sizeof(path), "%s/popup.json", dataDir().c_str());
     FILE* f = fopen(path, "rb");
-    if (!f) return c;
-    char buf[1024];
-    size_t n = fread(buf, 1, sizeof(buf) - 1, f);
-    fclose(f);
-    buf[n] = 0;
-    cJSON* root = cJSON_Parse(buf);
-    if (!root) { PLOG("popup.json: invalid JSON, using defaults"); return c; }
-    cJSON* v;
-    if (cJSON_IsString(v = cJSON_GetObjectItem(root, "style"))) c.style = v->valuestring;
-    if (cJSON_IsString(v = cJSON_GetObjectItem(root, "theme"))) c.dark = strcmp(v->valuestring, "light") != 0;
-    if (cJSON_IsString(v = cJSON_GetObjectItem(root, "icon"))) c.iconLeft = strcmp(v->valuestring, "left") == 0;
-    if (cJSON_IsNumber(v = cJSON_GetObjectItem(root, "duration_ms"))) { c.durationMs = v->valueint; c.durationSet = true; }
-    if (cJSON_IsString(v = cJSON_GetObjectItem(root, "card"))) c.compact = strcmp(v->valuestring, "compact") == 0;
-    if (cJSON_IsString(v = cJSON_GetObjectItem(root, "position")) && !popupParseCorner(v->valuestring, c.corner))
-        PLOG("popup.json: unknown position '%s' (top-left, top-right, bottom-left, bottom-right)", v->valuestring);
-    if (cJSON_IsBool(v = cJSON_GetObjectItem(root, "live_check"))) c.opts.liveCheck = cJSON_IsTrue(v);
-    if (cJSON_IsBool(v = cJSON_GetObjectItem(root, "progress"))) c.opts.progress = cJSON_IsTrue(v);
-    if (c.durationMs < 1500) c.durationMs = 1500;
-    if (c.durationMs > 15000) c.durationMs = 15000;
-    cJSON_Delete(root);
+    if (f) {
+        char buf[4096];
+        size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+        fclose(f);
+        buf[n] = 0;
+        std::string warnings;
+        if (!popupSettingsParse(buf, c.s, &warnings)) PLOG("popup.json: invalid JSON, using defaults");
+        else if (!warnings.empty()) PLOG("popup.json: %s", warnings.c_str());
+    }
+    c.style = c.s.style;
+    c.dark = c.s.classicDark;
+    c.iconLeft = c.s.classicIconLeft;
+    c.durationSet = c.s.durationMs > 0;
+    c.durationMs = c.durationSet ? c.s.durationMs : 4000;
+    c.compact = c.s.compact;
+    c.corner = c.s.corner;
+    c.opts.liveCheck = c.s.liveCheck;
+    c.opts.progress = c.s.progress;
     return c;
 }
 
@@ -257,26 +257,16 @@ static inline u16 to4444(const uint8_t* p) {   // r in the low nibble (same layo
     return (u16)((p[0] >> 4) | ((p[1] >> 4) << 4) | ((p[2] >> 4) << 8) | ((p[3] >> 4) << 12));
 }
 
-// Texts of the classic card for each kind of popup.
-static void classicTexts(const PopupRequest& r, std::string& title, std::string& desc) {
-    title = r.title;
-    desc = r.desc;
-    if (r.kind == POPUP_PROGRESS) desc = "Progress " + r.line + (r.desc.empty() ? "" : " - " + r.desc);
-    else if (r.kind == POPUP_LIVE_CHECK) { title = "Live save working - " + r.game; desc = r.line; }
-    else if (r.kind == POPUP_KNOWN) desc = "Already unlocked - " + r.line;
-}
-
-// Texts of the compact card: label, title, short line.
-static ToastInfo toastTexts(const PopupRequest& r) {
-    ToastInfo t;
+static PopupText textOf(const PopupRequest& r) {
+    PopupText t;
+    t.kind = r.kind;
     t.title = r.title;
-    t.accent = popupAccentFor(r.tier, r.hidden);
-    switch (r.kind) {
-        case POPUP_PROGRESS: t.label = "PROGRESS"; t.line = r.line; t.accent = ACCENT_CYAN; break;
-        case POPUP_LIVE_CHECK: t.label = "LIVE SAVE"; t.title = "Working: " + r.game; t.line = r.line; t.accent = ACCENT_CYAN; break;
-        case POPUP_KNOWN: t.label = "ALREADY UNLOCKED"; t.line = r.line; break;
-        default: t.label = "ACHIEVEMENT UNLOCKED"; t.line = "+" + std::to_string(r.points) + " pts"; break;
-    }
+    t.desc = r.desc;
+    t.game = r.game;
+    t.line = r.line;
+    t.points = r.points;
+    t.tier = r.tier;
+    t.hidden = r.hidden;
     return t;
 }
 
@@ -291,12 +281,12 @@ static bool othersWaiting() {
 // shifted for the slide, with its alpha scaled for the fade. No allocation in the frame loop.
 static bool showToast(const PopupRequest& r, const PopupConfig& cfg) {
     PopupImage art;
-    ToastInfo info = toastTexts(r);
+    ToastInfo info = popupToastTexts(textOf(r), cfg.s);
     info.icon = achievementArt(r, art) ? &art : gameIcon(r.titleId);
     std::vector<u16> card;
     {
         PopupImage img;
-        popupRenderToast(info, img);
+        popupRenderToast(info, img, popupToastStyle(cfg.s));
         card.resize((size_t)TOAST_W * TOAST_H);
         for (size_t i = 0; i < card.size(); i++) card[i] = to4444(&img.px[i * 4]);
     }
@@ -347,7 +337,7 @@ static bool showCustom(const PopupRequest& r, const PopupConfig& cfg) {
     if (cfg.compact) return showToast(r, cfg);
     PopupImage art;
     PopupInfo info;
-    classicTexts(r, info.title, info.desc);
+    popupClassicTexts(textOf(r), info.title, info.desc);
     info.tier = r.tier;
     info.dark = cfg.dark;
     info.iconLeft = cfg.iconLeft;

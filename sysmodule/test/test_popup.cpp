@@ -1,5 +1,5 @@
 // Host test for the popup renderer: renders every variant to PNG.
-// g++ -std=gnu++17 -Isysmodule/include -Iinclude sysmodule/test/test_popup.cpp sysmodule/source/popup_draw.cpp -o /tmp/test_popup
+// g++ -std=gnu++17 -Isysmodule/include -Iinclude sysmodule/test/test_popup.cpp -DPOPUP_DRAW_STB_IMPL source/popup_draw.cpp -o /tmp/test_popup
 // /tmp/test_popup <out_dir> [font.ttf] [backdrop_1280x720.png]
 #include "popup_draw.h"
 #include <cassert>

@@ -134,6 +134,13 @@ void Canvas::blit(const Image& img, int x, int y, uint8_t alpha, bool gray) {
         blend(x + i, y + j, toArgb(img.px[j * img.w + i], gray), alpha / 255.0f);
 }
 
+void Canvas::blitAlpha(const Image& img, int x, int y) {
+    for (int j = 0; j < img.h; j++) for (int i = 0; i < img.w; i++) {
+        uint32_t p = img.px[j * img.w + i];
+        if (p >> 24) blend(x + i, y + j, toArgb(p, false), (p >> 24) / 255.0f);
+    }
+}
+
 void Canvas::blitRounded(const Image& img, int x, int y, float radius, bool gray) {
     for (int j = 0; j < img.h; j++) for (int i = 0; i < img.w; i++) {
         float px_ = i + 0.5f, py_ = j + 0.5f;
