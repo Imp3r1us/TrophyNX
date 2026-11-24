@@ -42,3 +42,37 @@ int popupTierFor(const char* name, int points);
 
 // Slide position for time t (ms) in an animation of total duration d: 0 = hidden, 1 = fully shown.
 float popupSlide(uint64_t t, uint64_t d);
+
+// ---------------------------------------------------------------- compact toast ("card": "compact")
+// Small dark card, designed directly in 1080p pixels (the layer's space): rounded, thin light border,
+// 44 px icon on the left, then up to 3 lines: an uppercase label in the accent colour, the title, a short line.
+static const int TOAST_W = 360, TOAST_H = 70;
+static const int TOAST_SLIDE = 24;    // px the card slides in from its screen edge (the layer is this much wider)
+static const int TOAST_MARGIN = 24;   // px from the screen edges
+static const uint32_t ACCENT_CYAN = 0x38BDF8, ACCENT_GOLD = 0xFBBF24, ACCENT_VIOLET = 0xC084FC;
+enum PopupCorner { CORNER_TOP_LEFT = 0, CORNER_TOP_RIGHT, CORNER_BOTTOM_LEFT, CORNER_BOTTOM_RIGHT };
+
+struct ToastInfo {
+    std::string label;   // e.g. "ACHIEVEMENT UNLOCKED" (drawn as is: pass it in capitals)
+    std::string title;   // cut with "..." to fit
+    std::string line;    // optional short line, e.g. "+25 pts" or "5 / 10"
+    uint32_t accent = ACCENT_CYAN;
+    const PopupImage* icon = nullptr;   // nullptr: a neutral tile with a star
+};
+
+// Renders the card into a TOAST_W x TOAST_H straight-RGBA8 image.
+void popupRenderToast(const ToastInfo& info, PopupImage& out);
+// Bronze / silver: cyan. Gold, or a hidden (secret) achievement: gold. Platinum: violet.
+uint32_t popupAccentFor(int tier, bool hidden);
+// "top-left", "top-right", "bottom-left", "bottom-right"; false (out unchanged) for anything else.
+bool popupParseCorner(const char* name, int& out);
+// Layer rectangle on the 1920x1080 screen for a card of w x h with the slide room on the screen-edge side.
+void popupToastLayer(int corner, int w, int h, int& x, int& y, int& lw, int& lh);
+// Where the card sits inside that layer (px from the layer's left) when fully shown, and when hidden.
+int popupToastCardX(int corner, float shown);
+// Timing: 220 ms in (slide + fade), hold, 180 ms out. hold = holdMs, or 1700 ms when other popups wait.
+static const int TOAST_IN_MS = 220, TOAST_OUT_MS = 180, TOAST_HOLD_MS = 3300, TOAST_HOLD_BUSY_MS = 1700;
+int popupHoldMs(int holdMs, bool othersWaiting);
+// Visibility at time t (ms) of a toast lasting `total` ms: 0 = hidden, 1 = fully shown (eased).
+// Used for both the slide and the opacity.
+float popupToastShown(uint64_t t, uint64_t total);

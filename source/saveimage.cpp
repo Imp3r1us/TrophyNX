@@ -395,6 +395,7 @@ bool Image::readFile(const FileInfo& f, uint64_t off, void* buf, size_t len) {
 bool ImageSaveSource::open(uint64_t) {
     m_open = m_img.open(m_read);
     m_err = m_open ? "" : "image: " + m_img.error();
+    m_commit = m_open ? m_img.commit() : std::string();
     return m_open;
 }
 

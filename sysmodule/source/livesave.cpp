@@ -1,6 +1,8 @@
 // Live save watch, see include/livesave.h.
 #include "livesave.h"
 #include "closescan.h"
+#include "livepopups.h"
+#include "popup.h"
 #include "rawfat.h"
 #include "rules.h"
 #include "saveimage.h"
@@ -27,6 +29,7 @@ struct State {
     rawfat::File file;
     std::string lastCommit, pending;
     int failures = 0, headerMisses = 0, locates = 0, changedDuringRead = 0;
+    LiveFollow follow;   // live check / progress popups
 };
 State S;
 
@@ -133,7 +136,18 @@ bool readSave(const saveimg::ReadFn& rd, LiveLogFn log) {
         return true;
     }
     S.failures = 0;
+    // what was already unlocked before this read (unlockMet adds the new ones): for the "already unlocked" popups
+    std::set<std::string> before;
+    {
+        char pre[24];
+        snprintf(pre, sizeof(pre), "%016llX/", (unsigned long long)S.tid);
+        for (const auto& kv : loadStore(userKeyOf(S.uid)))
+            if (kv.first.compare(0, 17, pre) == 0) before.insert(kv.first.substr(17));
+    }
     unlockMet(g, S.def, S.defSource, S.uid, "live", ms, "live_save_log.txt", log);
+    std::vector<PopupRequest> extra = livePopups(S.follow, g, before, popupOptions(), ms);
+    for (const PopupRequest& pr : extra) popupEnqueue(pr);
+    if (!extra.empty()) log("live save: %s - %u follow-up popup(s) (live check / already unlocked / progress)", S.def.name.c_str(), (unsigned)extra.size());
     S.lastCommit = S.pending;
     return true;
 }

@@ -100,6 +100,9 @@ jobs:
           apt-get install -y -qq fonts-dejavu-core >/dev/null || true
           g++ -std=gnu++17 -Isysmodule/include -Iinclude sysmodule/test/test_popup.cpp sysmodule/source/popup_draw.cpp -o /tmp/test_popup
           /tmp/test_popup /tmp
+          # live save follow-up popups (live check, already unlocked, progress)
+          g++ -std=gnu++17 -fno-exceptions -Isysmodule/include -Iinclude sysmodule/test/test_livepopups.cpp sysmodule/source/livepopups.cpp sysmodule/source/popup_draw.cpp source/overlay_data.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_livepopups
+          /tmp/test_livepopups
       - name: libcurl (in-app updater)
         # before libnx from source: the package may pull the packaged libnx, which the next step replaces
         # already in the devkitPro image; pkg.devkitpro.org sometimes answers 403 to CI, so only install if missing

@@ -90,15 +90,17 @@ public:
     bool fileSize(const std::string& rel, uint64_t& size) override;
     bool readAt(const std::string& rel, uint64_t off, void* buf, size_t len) override;
     size_t memoryAvailable() override { return m_memory ? m_memory() : (size_t)-1; }
-    // commitId() of the state that was read (to check that the game didn't save meanwhile)
-    const std::string& commit() const { return m_img.commit(); }
+    // commitId() of the state that was read (to check that the game didn't save meanwhile). Kept after
+    // close(): every reader closes its source when done, and Image::close() clears the image's own copy, which
+    // made live save see "" after each read and never finish one.
+    const std::string& commit() const { return m_commit; }
 
 private:
     ReadFn m_read;
     std::function<size_t()> m_memory;
     Image m_img;
     bool m_open = false;
-    std::string m_err;
+    std::string m_err, m_commit;
 };
 
 }  // namespace saveimg

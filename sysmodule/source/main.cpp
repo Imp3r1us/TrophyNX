@@ -31,7 +31,7 @@
 #include "memrules.h"
 #include "overlay_data.h"
 
-#define MODULE_VERSION "0.10.1"
+#define MODULE_VERSION "0.10.2"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -613,6 +613,7 @@ int main(int, char**) {
                         PopupRequest pr;
                         pr.titleId = curTid; pr.achId = id; pr.title = a->name; pr.desc = a->desc; pr.game = memDef.name;
                         pr.points = a->points; pr.tier = popupTierFor(a->tier.empty() ? nullptr : a->tier.c_str(), a->points);
+                        pr.hidden = a->hidden;
                         popupEnqueue(pr);
                     }
                     if (changed) saveStore(user, store);
