@@ -951,6 +951,389 @@ cJSON* sgbToJson(const uint8_t* data, size_t size, std::string& error, SaveForma
     return root;
 }
 
+// ------------------------------------------------------------------ SGB1, streamed and pruned (live module)
+// Same tree as sgbToJson, for a heap of a few MB: the file is read 16 KB at a time, LZ4 is decoded through its
+// 64 KB window (LZ4 never looks further back), and the Lua state is walked as it comes, building only the values
+// the rule paths can reach (a trie of the paths; "[*]" = every value of a table).
+namespace {
+
+struct SgbFileIn {   // buffered reads through ReadAtFn
+    const ReadAtFn& read;
+    uint64_t size, off = 0;   // next file offset to read
+    std::vector<uint8_t> buf;   // on the heap: the live module's stack is small
+    size_t len = 0, pos = 0;
+    bool ok = true;
+    SgbFileIn(const ReadAtFn& r, uint64_t s) : read(r), size(s), buf(16384) {}
+    uint64_t tell() const { return off - len + pos; }
+    bool byte(uint8_t& b) {
+        if (pos == len) {
+            if (!ok || off >= size) { ok = false; return false; }
+            size_t n = (size_t)std::min<uint64_t>(buf.size(), size - off);
+            if (!read(off, buf.data(), n)) { ok = false; return false; }
+            off += n; len = n; pos = 0;
+        }
+        b = buf[pos++];
+        return true;
+    }
+    bool u32(uint32_t& v) {
+        uint8_t b[4];
+        for (int i = 0; i < 4; i++) if (!byte(b[i])) return false;
+        v = b[0] | (b[1] << 8) | (b[2] << 16) | ((uint32_t)b[3] << 24);
+        return true;
+    }
+    bool str(std::string* out) {   // u32 length + bytes (out == nullptr: skipped)
+        uint32_t k;
+        if (!u32(k) || k > size - tell()) { ok = false; return false; }
+        if (out) out->clear();
+        for (uint32_t i = 0; i < k; i++) { uint8_t b; if (!byte(b)) return false; if (out) *out += (char)b; }
+        return true;
+    }
+};
+
+struct Lz4Stream {   // LZ4 block decoder, one byte at a time, 64 KB ring window
+    SgbFileIn& in;
+    uint64_t inEnd;            // file offset where the compressed block ends
+    size_t maxOut, produced = 0;
+    std::vector<uint8_t> win;
+    size_t litLeft = 0, matchLeft = 0, matchOff = 0;
+    uint8_t tok = 0;
+    bool afterLit = false, bad = false;
+    std::string err;
+    Lz4Stream(SgbFileIn& i, uint64_t end, size_t mo) : in(i), inEnd(end), maxOut(mo) { win.resize(65536); }
+    void fail(const char* e) { if (!bad) { bad = true; err = e; } }
+    bool inByte(uint8_t& b) {
+        if (in.tell() >= inEnd || !in.byte(b)) { fail("LZ4 data is corrupted"); return false; }
+        return true;
+    }
+    bool ext(size_t& v) {   // 255-continued length
+        uint8_t b;
+        do { if (!inByte(b)) return false; v += b; } while (b == 255);
+        return true;
+    }
+    bool put(uint8_t b) {
+        if (produced >= maxOut) { fail("LZ4 data is corrupted"); return false; }
+        win[produced & 0xFFFF] = b;
+        produced++;
+        return true;
+    }
+    // false at the end of the data (bad == false) or on an error (bad == true)
+    bool next(uint8_t& b) {
+        for (;;) {
+            if (bad) return false;
+            if (litLeft) {
+                if (!inByte(b) || !put(b)) return false;
+                litLeft--;
+                return true;
+            }
+            if (matchLeft) {
+                b = win[(produced - matchOff) & 0xFFFF];
+                if (!put(b)) return false;
+                matchLeft--;
+                return true;
+            }
+            if (afterLit) {   // literals done: a match follows, unless this was the last sequence
+                afterLit = false;
+                if (in.tell() >= inEnd) return false;
+                uint8_t lo, hi;
+                if (!inByte(lo) || !inByte(hi)) return false;
+                size_t off = lo | (hi << 8);
+                if (off == 0 || off > produced) { fail("LZ4 data is corrupted"); return false; }
+                size_t len = tok & 15;
+                if (len == 15 && !ext(len)) return false;
+                matchOff = off;
+                matchLeft = len + 4;
+                continue;
+            }
+            if (in.tell() >= inEnd) return false;
+            if (!inByte(tok)) return false;
+            size_t lit = tok >> 4;
+            if (lit == 15 && !ext(lit)) return false;
+            litLeft = lit;
+            afterLit = true;
+        }
+    }
+};
+
+struct PathTrie {
+    struct Node {
+        std::map<std::string, int> kids;
+        int star = -1;           // "[*]"
+        bool whole = false;      // a path ends here, or continues with an index / [Field=value]: keep it all
+    };
+    std::vector<Node> nodes;
+    int child(int cur, const std::string& a) {
+        bool star = a == "[*]";
+        int found = star ? nodes[cur].star : -1;
+        if (!star) {
+            auto it = nodes[cur].kids.find(a);
+            if (it != nodes[cur].kids.end()) found = it->second;
+        }
+        if (found >= 0) return found;
+        nodes.push_back(Node());
+        int n = (int)nodes.size() - 1;
+        if (star) nodes[cur].star = n;
+        else nodes[cur].kids[a] = n;
+        return n;
+    }
+    bool build(const std::vector<std::string>& paths) {
+        nodes.assign(1, Node());
+        for (const std::string& p : paths) {
+            std::vector<std::string> atoms;
+            if (!treeSplitPath(p, atoms) || atoms.empty()) return false;
+            int cur = 0;
+            for (const std::string& a : atoms) {
+                if (a[0] == '[' && a != "[*]") break;   // index / selector: the node it applies to is kept whole
+                cur = child(cur, a);
+            }
+            nodes[cur].whole = true;
+        }
+        return true;
+    }
+};
+
+struct PathSet {   // where a value sits in the trie: the nodes it matches, or "keep everything"
+    std::vector<int> at;
+    bool full = false;
+    bool dead() const { return !full && at.empty(); }
+};
+
+PathSet childOf(const PathTrie& t, const PathSet& p, const std::string& key) {
+    PathSet c;
+    if (p.full) { c.full = true; return c; }
+    auto add = [&](int n) {
+        if (t.nodes[n].whole) c.full = true;
+        else if (std::find(c.at.begin(), c.at.end(), n) == c.at.end()) c.at.push_back(n);
+    };
+    for (int n : p.at) {
+        const PathTrie::Node& node = t.nodes[n];
+        auto it = node.kids.find(key);
+        if (it != node.kids.end()) add(it->second);
+        if (node.star >= 0) add(node.star);
+        if (c.full) break;
+    }
+    if (c.full) c.at.clear();
+    return c;
+}
+
+struct LuaStream {
+    Lz4Stream& z;
+    const PathTrie& trie;
+    size_t budget, used = 0;
+    std::string err;
+    bool byte(uint8_t& b) {
+        if (z.next(b)) return true;
+        if (err.empty()) err = z.bad ? z.err : "truncated Lua state";
+        return false;
+    }
+    bool u32(uint32_t& v) {
+        uint8_t b[4];
+        for (int i = 0; i < 4; i++) if (!byte(b[i])) return false;
+        v = b[0] | (b[1] << 8) | (b[2] << 16) | ((uint32_t)b[3] << 24);
+        return true;
+    }
+    bool f64(double& v) {
+        uint8_t b[8];
+        for (int i = 0; i < 8; i++) if (!byte(b[i])) return false;
+        memcpy(&v, b, 8);
+        return true;
+    }
+    bool str(std::string* out) {
+        uint32_t k;
+        if (!u32(k)) return false;
+        if (k > z.maxOut - z.produced) { err = "truncated string"; return false; }
+        if (out) { out->clear(); out->reserve(std::min<uint32_t>(k, 4096)); }
+        for (uint32_t i = 0; i < k; i++) {
+            uint8_t b;
+            if (!byte(b)) { if (!z.bad) err = "truncated string"; return false; }
+            if (out) *out += (char)b;
+        }
+        return true;
+    }
+    bool charge(size_t n) {   // approximate heap use of the pruned tree
+        used += n + 48;
+        if (budget && used > budget) { err = "not enough memory for the rule values (" + std::to_string(budget >> 10) + " KB free)"; return false; }
+        return true;
+    }
+    bool tableSize(uint64_t& total) {
+        uint32_t na, nh;
+        if (!u32(na) || !u32(nh)) return false;
+        total = (uint64_t)na + nh;
+        if (total > (z.maxOut - z.produced) / 2) { err = "bad Lua table size"; return false; }
+        return true;
+    }
+    bool badTag(uint8_t t) {
+        char b[64];
+        snprintf(b, sizeof(b), "unknown Lua value tag 0x%02X at %zu", (unsigned)t, z.produced - 1);
+        err = b;
+        return false;
+    }
+    bool skip(int depth) {
+        if (depth > 64) { err = "Lua tables nested too deep"; return false; }
+        uint8_t t;
+        if (!byte(t)) return false;
+        double d;
+        uint64_t n;
+        switch (t) {
+            case '-': case '0': case '1': return true;
+            case 'N': return f64(d);
+            case 'S': return str(nullptr);
+            case 'T':
+                if (!tableSize(n)) return false;
+                for (uint64_t i = 0; i < 2 * n; i++) if (!skip(depth + 1)) return false;
+                return true;
+            default: return badTag(t);
+        }
+    }
+    // A table key as sgbToJson names it (luabinsKey): strings as is, numbers in decimal, booleans by name, else "".
+    bool key(std::string& out, int depth) {
+        if (depth > 64) { err = "Lua tables nested too deep"; return false; }
+        uint8_t t;
+        if (!byte(t)) return false;
+        out.clear();
+        switch (t) {
+            case '-': return true;
+            case '0': out = "false"; return true;
+            case '1': out = "true"; return true;
+            case 'N': {
+                double v;
+                if (!f64(v)) return false;
+                char b[40];
+                if (v == std::floor(v) && std::fabs(v) < 1e15) snprintf(b, sizeof(b), "%lld", (long long)v);
+                else snprintf(b, sizeof(b), "%.17g", v);
+                out = b;
+                return true;
+            }
+            case 'S':
+                if (!str(&out)) return false;
+                out = std::string(out.c_str());   // cJSON strings stop at a NUL, like sgbToJson's keys
+                return true;
+            case 'T': {
+                uint64_t n;
+                if (!tableSize(n)) return false;
+                for (uint64_t i = 0; i < 2 * n; i++) if (!skip(depth + 1)) return false;
+                return true;
+            }
+            default: return badTag(t);
+        }
+    }
+    // A value under `where` (not dead). nullptr = error (err set).
+    cJSON* value(int depth, const PathSet& where) {
+        if (depth > 64) { err = "Lua tables nested too deep"; return nullptr; }
+        uint8_t t;
+        if (!byte(t)) return nullptr;
+        cJSON* r = nullptr;
+        switch (t) {
+            case '-': r = cJSON_CreateNull(); break;
+            case '0': r = cJSON_CreateFalse(); break;
+            case '1': r = cJSON_CreateTrue(); break;
+            case 'N': {
+                double v;
+                if (!f64(v)) return nullptr;
+                r = cJSON_CreateNumber(v);
+                break;
+            }
+            case 'S': {
+                std::string s;
+                if (!str(&s)) return nullptr;
+                if (!charge(strlen(s.c_str()))) return nullptr;
+                r = cJSON_CreateString(s.c_str());
+                break;
+            }
+            case 'T': {
+                uint64_t n;
+                if (!tableSize(n)) return nullptr;
+                if (!charge(0)) return nullptr;
+                cJSON* o = cJSON_CreateObject();
+                if (!o) { err = "out of memory"; return nullptr; }
+                std::string k;
+                for (uint64_t i = 0; i < n; i++) {
+                    if (!key(k, depth + 1)) { cJSON_Delete(o); return nullptr; }
+                    PathSet c = childOf(trie, where, k);
+                    if (c.dead()) {
+                        if (!skip(depth + 1)) { cJSON_Delete(o); return nullptr; }
+                        continue;
+                    }
+                    cJSON* v = value(depth + 1, c);
+                    if (!v) { cJSON_Delete(o); return nullptr; }
+                    if (!charge(k.size())) { cJSON_Delete(v); cJSON_Delete(o); return nullptr; }
+                    cJSON_AddItemToObject(o, k.c_str(), v);
+                }
+                return o;
+            }
+            default: badTag(t); return nullptr;
+        }
+        if (!r) { err = "out of memory"; return nullptr; }
+        if (!charge(0)) { cJSON_Delete(r); return nullptr; }
+        return r;
+    }
+};
+
+}  // namespace
+
+cJSON* sgbToJsonStream(const ReadAtFn& read, uint64_t size, const std::vector<std::string>& keepPaths, size_t memoryBudget,
+                       std::string& error, SaveFormatInfo* info) {
+    uint8_t sig[16];
+    if (size < 16 || !read(0, sig, 16) || !isSgb(sig, 16)) { error = "not a Supergiant SGB1 save"; return nullptr; }
+    PathTrie trie;
+    if (!trie.build(keepPaths)) { error = "unusable rule path"; return nullptr; }
+    SgbFileIn h(read, size);
+    uint8_t skip8;
+    for (int i = 0; i < 8; i++) h.byte(skip8);   // signature + checksum
+    uint32_t version = 0, runs = 0, meta = 0, shrine = 0, nkeys = 0, packed = 0, lo, hi;
+    h.u32(version);
+    if (version >= 16) { h.u32(lo); h.u32(hi); }   // timestamp
+    std::string location, map;
+    h.str(&location);
+    h.u32(runs); h.u32(meta); h.u32(shrine);
+    uint8_t god = 0, hell = 0;
+    h.byte(god); h.byte(hell);
+    h.u32(nkeys);
+    for (uint32_t i = 0; i < nkeys && h.ok; i++) h.str(nullptr);
+    h.str(&map);
+    h.str(nullptr);   // start_next_map
+    h.u32(packed);
+    if (!h.ok || packed > size - h.tell()) { error = "truncated header"; return nullptr; }
+    Lz4Stream z(h, h.tell() + packed, 9388032);   // same cap as sgbToJson
+    LuaStream L{z, trie, memoryBudget, 0, std::string()};
+    uint8_t count;
+    if (!L.byte(count)) { error = "empty Lua state"; return nullptr; }
+    PathSet top;
+    top.at.push_back(0);
+    if (trie.nodes[0].whole) { top.full = true; top.at.clear(); }
+    cJSON* root = nullptr;
+    for (int i = 0; i < count; i++) {
+        if (root) {   // sgbToJson keeps only the first table too
+            if (!L.skip(0)) { error = L.err; cJSON_Delete(root); return nullptr; }
+            continue;
+        }
+        cJSON* v = L.value(0, top);
+        if (!v) { error = L.err; return nullptr; }
+        if (cJSON_IsObject(v)) root = v;
+        else cJSON_Delete(v);
+    }
+    if (!root) root = cJSON_CreateObject();
+    cJSON* hd = cJSON_CreateObject();
+    cJSON_AddNumberToObject(hd, "version", version);
+    cJSON_AddStringToObject(hd, "location", location.c_str());
+    cJSON_AddNumberToObject(hd, "runs", runs);
+    cJSON_AddNumberToObject(hd, "meta_points", meta);
+    cJSON_AddNumberToObject(hd, "shrine_points", shrine);
+    cJSON_AddNumberToObject(hd, "god_mode", god);
+    cJSON_AddNumberToObject(hd, "hell_mode", hell);
+    cJSON_AddStringToObject(hd, "map", map.c_str());
+    cJSON_AddItemToObject(root, "_header", hd);
+    if (info) info->summary = "Supergiant SGB1 v" + std::to_string(version) + ", " + std::to_string(runs) + " runs, Lua state " +
+                              std::to_string(z.produced / 1024) + " KB (streamed, rule values only)";
+    return root;
+}
+
+bool SgbDoc::parseStream(const ReadAtFn& read, uint64_t size, const std::vector<std::string>& keepPaths, size_t memoryBudget) {
+    cJSON* t = sgbToJsonStream(read, size, keepPaths, memoryBudget, error, &info);
+    if (!t) return false;
+    adopt(t, false);
+    return true;
+}
+
 bool SgbDoc::parse(std::vector<uint8_t>&& data) {
     cJSON* t = sgbToJson(data.data(), data.size(), error, &info);
     if (!t) return false;

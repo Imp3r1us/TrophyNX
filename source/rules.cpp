@@ -522,6 +522,15 @@ static void giveKey(TheatrhythmDoc& d, const std::string& k) { d.password = k; }
 // Live module (small heap): readers that can, build only what the rule paths reach, within `budget` bytes.
 template <class Doc> static void givePruning(Doc&, const std::vector<std::string>&, size_t) {}
 static void givePruning(TheatrhythmDoc& d, const std::vector<std::string>& paths, size_t budget) { d.keepPaths = paths; d.memoryBudget = budget; }
+// Live module: readers that read a file in pieces and keep only the rule values, so any save size fits.
+template <class Doc> static bool readsInPieces(const Doc*) { return false; }
+static bool readsInPieces(const SgbDoc*) { return true; }
+template <class Doc> static bool parseInPieces(Doc&, SaveSource&, const std::string&, uint64_t, const std::vector<std::string>&) { return false; }
+static bool parseInPieces(SgbDoc& d, SaveSource& src, const std::string& f, uint64_t size, const std::vector<std::string>& paths) {
+    size_t avail = src.memoryAvailable();   // already less a safety margin; the reader itself takes ~100 KB
+    size_t budget = avail > 160 * 1024 ? avail - 160 * 1024 : 1;
+    return d.parseStream([&](uint64_t off, void* buf, size_t len) { return src.readAt(f, off, buf, len); }, size, paths, budget);
+}
 
 // Best value of each achievement over the save files (several slots), shared by every reader.
 // Files are read and evaluated one at a time, so only one document is in memory.
@@ -589,7 +598,28 @@ static void evaluateTree(Game& g, SaveSource& src) {
     bv.init(g.achs.size());
     std::vector<std::string> rulePaths;
     for (const Achievement& a : g.achs) if (isSaveRule(a.rule.type)) rulePaths.insert(rulePaths.end(), a.rule.paths.begin(), a.rule.paths.end());
+    auto use = [&](Doc& d, const std::string& f, uint64_t size) {
+        g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes, " + (g.xorKey.empty() ? "" : "XOR key, ") + describeDoc(d) + " -> OK");
+        bv.files.push_back(f);
+        for (size_t i = 0; i < g.achs.size(); i++) {
+            if (!isSaveRule(g.achs[i].rule.type)) continue;
+            size_t found = 0;
+            double v = treeRuleValue(g.achs[i].rule, d, found);
+            bv.add(i, v, found);
+        }
+    };
     for (const std::string& f : g.saveFiles) {
+        if (src.streaming() && g.xorKey.empty() && readsInPieces((const Doc*)nullptr)) {
+            uint64_t size = 0;
+            if (!src.fileSize(f, size)) { g.debug.push_back("  " + f + ": not present"); continue; }
+            Doc d;
+            if (!parseInPieces(d, src, f, size, rulePaths)) {
+                g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> NOT RECOGNISED (" + d.error + ")");
+                continue;
+            }
+            use(d, f, size);
+            continue;
+        }
         if (src.streaming()) {   // background module: don't start what can't fit in its heap
             uint64_t size = 0;
             if (!src.fileSize(f, size)) { g.debug.push_back("  " + f + ": not present"); continue; }
@@ -615,14 +645,7 @@ static void evaluateTree(Game& g, SaveSource& src) {
             g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> NOT RECOGNISED (" + d.error + ")");
             continue;
         }
-        g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes, " + (g.xorKey.empty() ? "" : "XOR key, ") + describeDoc(d) + " -> OK");
-        bv.files.push_back(f);
-        for (size_t i = 0; i < g.achs.size(); i++) {
-            if (!isSaveRule(g.achs[i].rule.type)) continue;
-            size_t found = 0;
-            double v = treeRuleValue(g.achs[i].rule, d, found);
-            bv.add(i, v, found);
-        }
+        use(d, f, size);
     }
     src.close();
     g.saveStatus = bv.files.empty() ? SaveStatus::Unreadable : SaveStatus::Ok;
