@@ -2121,3 +2121,477 @@ bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t
     }
     return false;
 }
+
+// ================================================================== RPG Maker MV / MZ (fileN.rpgsave / fileN.rmmzsave)
+// Mirror of parseRpgMaker in tools/savelab/formats.js. MV: LZString.compressToBase64(JsonEx.stringify(contents)).
+// MZ: zlib (pako level 1) of the same JSON, the binary string often written back as UTF-8. Plain JSON is accepted too.
+// JsonEx markers are removed: {"@a": [...]} -> the list, "@" (class) and "@c" (object id) keys dropped,
+// {"@r": n} (circular reference) -> null. Tree: the save contents (system, switches, variables, actors, party...)
+// plus "_header": {encoding: "lzstring"|"zlib"|"json"} (MV writes LZString, MZ and some MV ports zlib).
+namespace {
+
+int lzB64(char c) {
+    if (c >= 'A' && c <= 'Z') return c - 'A';
+    if (c >= 'a' && c <= 'z') return c - 'a' + 26;
+    if (c >= '0' && c <= '9') return c - '0' + 52;
+    if (c == '+') return 62;
+    if (c == '/') return 63;
+    if (c == '=') return 64;
+    return -1;
+}
+
+// LZString.decompressFromBase64 -> UTF-16 code units. Dictionary entries are slices of the output (or one literal).
+bool lzStringDecompressB64(const char* in, size_t len, std::u16string& out, size_t maxOut) {
+    out.clear();
+    if (!len) return false;
+    struct Ent { uint32_t off, len; char16_t ch; bool lit; };
+    std::vector<Ent> dict;
+    dict.reserve(4096);
+    for (int i = 0; i < 3; i++) dict.push_back({0, 0, (char16_t)i, true});
+    uint32_t val = (uint32_t)std::max(0, lzB64(in[0])), position = 32;
+    size_t index = 1;
+    auto readBits = [&](int n) -> uint32_t {
+        uint32_t bits = 0;
+        for (int i = 0; i < n; i++) {
+            uint32_t resb = val & position;
+            position >>= 1;
+            if (!position) {
+                position = 32;
+                val = index < len ? (uint32_t)std::max(0, lzB64(in[index])) : 0;
+                index++;
+            }
+            bits |= (resb ? 1u : 0u) << i;
+        }
+        return bits;
+    };
+    uint32_t enlargeIn = 4, numBits = 3;
+    uint32_t first = readBits(2);
+    char16_t c0;
+    if (first == 0) c0 = (char16_t)readBits(8);
+    else if (first == 1) c0 = (char16_t)readBits(16);
+    else return false;
+    dict.push_back({0, 1, c0, false});
+    out.push_back(c0);
+    uint32_t wOff = 0, wLen = 1;
+    for (;;) {
+        if (index > len) return false;
+        uint32_t c = readBits((int)numBits);
+        if (c == 0 || c == 1) {
+            dict.push_back({0, 0, (char16_t)readBits(c == 0 ? 8 : 16), true});
+            c = (uint32_t)dict.size() - 1;
+            enlargeIn--;
+        } else if (c == 2) return true;
+        if (!enlargeIn) { enlargeIn = 1u << numBits; numBits++; if (numBits > 31) return false; }
+        uint32_t eOff = (uint32_t)out.size(), eLen;
+        if (c < dict.size()) {
+            const Ent e = dict[c];
+            if (e.lit) { out.push_back(e.ch); eLen = 1; }
+            else { for (uint32_t k = 0; k < e.len; k++) out.push_back(out[e.off + k]); eLen = e.len; }
+        } else if (c == dict.size()) {
+            for (uint32_t k = 0; k < wLen; k++) out.push_back(out[wOff + k]);
+            out.push_back(out[wOff]);
+            eLen = wLen + 1;
+        } else return false;
+        if (out.size() > maxOut) return false;
+        // w + entry[0]: w is just before the entry in the output, so it is the slice wOff .. wLen + 1
+        dict.push_back({wOff, wLen + 1, 0, false});
+        enlargeIn--;
+        wOff = eOff;
+        wLen = eLen;
+        if (!enlargeIn) { enlargeIn = 1u << numBits; numBits++; if (numBits > 31) return false; }
+    }
+}
+
+void utf16ToUtf8(const std::u16string& s, std::string& o) {
+    o.clear();
+    o.reserve(s.size());
+    for (size_t i = 0; i < s.size(); i++) {
+        uint32_t cp = s[i];
+        if (cp >= 0xD800 && cp <= 0xDBFF && i + 1 < s.size() && s[i + 1] >= 0xDC00 && s[i + 1] <= 0xDFFF) {
+            cp = 0x10000 + ((cp - 0xD800) << 10) + (s[i + 1] - 0xDC00);
+            i++;
+        } else if (cp >= 0xD800 && cp <= 0xDFFF) cp = 0xFFFD;
+        if (cp < 0x80) o += (char)cp;
+        else if (cp < 0x800) { o += (char)(0xC0 | cp >> 6); o += (char)(0x80 | (cp & 63)); }
+        else if (cp < 0x10000) { o += (char)(0xE0 | cp >> 12); o += (char)(0x80 | ((cp >> 6) & 63)); o += (char)(0x80 | (cp & 63)); }
+        else { o += (char)(0xF0 | cp >> 18); o += (char)(0x80 | ((cp >> 12) & 63)); o += (char)(0x80 | ((cp >> 6) & 63)); o += (char)(0x80 | (cp & 63)); }
+    }
+}
+
+// The MZ zip string written as UTF-8: every code point <= 0xFF becomes one byte again. false if it is not that.
+bool utf8Latin1(const uint8_t* d, size_t n, std::vector<uint8_t>& out) {
+    out.clear();
+    out.reserve(n);
+    bool multi = false;
+    for (size_t i = 0; i < n; i++) {
+        uint8_t c = d[i];
+        if (c < 0x80) out.push_back(c);
+        else if ((c == 0xC2 || c == 0xC3) && i + 1 < n && (d[i + 1] & 0xC0) == 0x80) { out.push_back((uint8_t)((c & 3) << 6 | (d[i + 1] & 63))); i++; multi = true; }
+        else return false;
+    }
+    return multi;
+}
+
+bool zlibInflate(const uint8_t* d, size_t n, std::vector<uint8_t>& out) {
+    if (n < 6 || (d[0] & 0x0F) != 8 || ((d[0] << 8) | d[1]) % 31 != 0 || (d[1] & 0x20)) return false;
+    return inflateRaw(d + 2, n - 2, out, 64u << 20);
+}
+
+const char* const RM_KEYS[] = {"system", "screen", "timer", "switches", "variables", "selfSwitches", "actors", "party", "map", "player"};
+
+cJSON* jsonExClean(cJSON* n, int depth) {
+    if (depth > 256) { cJSON_Delete(n); return cJSON_CreateNull(); }
+    if (cJSON_IsObject(n)) {
+        if (cJSON_GetObjectItemCaseSensitive(n, "@r")) { cJSON_Delete(n); return cJSON_CreateNull(); }
+        cJSON* a = cJSON_GetObjectItemCaseSensitive(n, "@a");
+        if (a) {
+            cJSON* arr = cJSON_DetachItemViaPointer(n, a);
+            cJSON_Delete(n);
+            return jsonExClean(arr, depth + 1);
+        }
+        cJSON_DeleteItemFromObjectCaseSensitive(n, "@");
+        cJSON_DeleteItemFromObjectCaseSensitive(n, "@c");
+    }
+    if (!cJSON_IsObject(n) && !cJSON_IsArray(n)) return n;
+    bool obj = cJSON_IsObject(n);
+    std::vector<cJSON*> kids;
+    while (n->child) kids.push_back(cJSON_DetachItemViaPointer(n, n->child));
+    for (cJSON* k : kids) {
+        std::string name = k->string ? k->string : "";
+        cJSON* r = (cJSON_IsObject(k) || cJSON_IsArray(k)) ? jsonExClean(k, depth + 1) : k;
+        if (obj) cJSON_AddItemToObject(n, name.c_str(), r);
+        else {
+            if (r->string && !(r->type & cJSON_StringIsConst)) cJSON_free(r->string);
+            r->string = nullptr;
+            cJSON_AddItemToArray(n, r);
+        }
+    }
+    return n;
+}
+
+}  // namespace
+
+static bool rpgMakerDecode(const uint8_t* data, size_t size, std::string& json, std::string& encoding) {
+    size_t s = 0, e = size;
+    if (size >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF) s = 3;
+    while (s < e && (data[s] == ' ' || data[s] == '\r' || data[s] == '\n' || data[s] == '\t')) s++;
+    while (e > s && (data[e - 1] == 0 || data[e - 1] == ' ' || data[e - 1] == '\r' || data[e - 1] == '\n' || data[e - 1] == '\t')) e--;
+    if (e - s < 4) return false;
+    if (data[s] == '{' || data[s] == '[') { json.assign((const char*)data + s, e - s); encoding = "json"; return true; }
+    std::vector<uint8_t> out;
+    if (zlibInflate(data, size, out)) { json.assign(out.begin(), out.end()); encoding = "zlib"; return true; }
+    std::vector<uint8_t> bytes;
+    if (data[0] == 0x78 && utf8Latin1(data, size, bytes) && zlibInflate(bytes.data(), bytes.size(), out)) {
+        json.assign(out.begin(), out.end()); encoding = "zlib"; return true;
+    }
+    for (size_t i = s; i < e; i++) if (lzB64((char)data[i]) < 0) return false;
+    if (e - s < 8) return false;
+    std::u16string u;
+    if (!lzStringDecompressB64((const char*)data + s, e - s, u, 64u << 20)) return false;
+    utf16ToUtf8(u, json);
+    encoding = "lzstring";
+    return true;
+}
+
+bool isRpgMaker(const uint8_t* data, size_t size) {
+    std::string json, enc;
+    if (!rpgMakerDecode(data, size, json, enc)) return false;
+    size_t i = 0;
+    while (i < json.size() && (json[i] == ' ' || json[i] == '\r' || json[i] == '\n' || json[i] == '\t')) i++;
+    if (i >= json.size() || (json[i] != '{' && json[i] != '[')) return false;
+    if (enc != "json") return true;   // LZString / zlib text that decodes to JSON: RPG Maker
+    // plain JSON: only with RPG Maker's save keys or JsonEx markers
+    if (json.find("\"@c\"") != std::string::npos || json.find("\"@a\"") != std::string::npos) return true;
+    int n = 0;
+    for (const char* k : RM_KEYS) if (json.find(std::string("\"") + k + "\"") != std::string::npos) n++;
+    return n >= 4;
+}
+
+cJSON* rpgMakerToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info) {
+    std::string json, enc;
+    if (!rpgMakerDecode(data, size, json, enc)) { error = "not an RPG Maker MV/MZ save (LZString base64, zlib or JSON)"; return nullptr; }
+    cJSON* t = cJSON_ParseWithLength(json.c_str(), json.size());
+    if (!t || (!cJSON_IsObject(t) && !cJSON_IsArray(t))) { if (t) cJSON_Delete(t); error = "decoded text is not JSON"; return nullptr; }
+    t = jsonExClean(t, 0);
+    if (cJSON_IsObject(t)) {
+        cJSON* h = cJSON_CreateObject();
+        cJSON_AddStringToObject(h, "encoding", enc.c_str());
+        cJSON_AddItemToObject(t, "_header", h);
+    }
+    if (info) info->summary = "RPG Maker MV/MZ save (" + enc + ", " + std::to_string(json.size()) + " bytes of JSON)";
+    return t;
+}
+
+bool RpgMakerDoc::parse(std::vector<uint8_t>&& data) {
+    cJSON* t = rpgMakerToJson(data.data(), data.size(), error, &info);
+    if (!t) return false;
+    adopt(t, false);
+    return true;
+}
+
+// ================================================================== GameMaker text saves (ini / lines + ds_list / ds_map hex)
+// Mirror of parseGameMaker in tools/savelab/formats.js. Text cut at the first NUL, BOM and \r removed.
+//   INI (every non-empty line is "[section]", "key=value" or a ;/# comment, at least one section), also when the whole
+//   file is base64 of such a text: {"<section>": {"<key>": value}}, keys before any section under "".
+//   Otherwise: {"lines": [value per line]} (a final empty line dropped).
+// Values: one pair of surrounding quotes removed; numbers (-12, 3.5, 1e3) become numbers; ds_list_write hex -> list,
+// ds_map_write hex -> object (number keys written as integers, e.g. "3"), nested hex strings decoded too (depth 8).
+// Plus "_header": {format: "ini"|"lines", encoding: "text"|"base64"}.
+namespace {
+
+bool gmNumber(const std::string& s, double& v) {
+    size_t i = 0, n = s.size();
+    if (i < n && (s[i] == '-' || s[i] == '+')) i++;
+    size_t d0 = i;
+    while (i < n && s[i] >= '0' && s[i] <= '9') i++;
+    if (i == d0) return false;
+    if (i < n && s[i] == '.') {
+        size_t f0 = ++i;
+        while (i < n && s[i] >= '0' && s[i] <= '9') i++;
+        if (i == f0) return false;
+    }
+    if (i < n && (s[i] == 'e' || s[i] == 'E')) {
+        i++;
+        if (i < n && (s[i] == '-' || s[i] == '+')) i++;
+        size_t e0 = i;
+        while (i < n && s[i] >= '0' && s[i] <= '9') i++;
+        if (i == e0) return false;
+    }
+    if (i != n) return false;
+    v = strtod(s.c_str(), nullptr);
+    return std::isfinite(v);
+}
+
+std::string gmKeyOf(double v) {
+    char b[40];
+    if (v == std::floor(v) && std::fabs(v) < 9007199254740992.0) snprintf(b, sizeof(b), "%.0f", v);
+    else {
+        for (int p = 1; p <= 17; p++) { snprintf(b, sizeof(b), "%.*g", p, v); if (strtod(b, nullptr) == v) break; }
+    }
+    if (!strcmp(b, "-0")) return "0";
+    return b;
+}
+
+cJSON* gmValue(const std::string& raw, int depth);
+
+// ds_list_write (u32 0x12E..0x130) / ds_map_write (u32 0x191..0x193) hex text -> list / object, nullptr if not one
+cJSON* gmDsDecode(const std::string& s, int depth) {
+    if (depth > 8 || s.size() < 16 || (s.size() & 1)) return nullptr;
+    for (char c : s) if (hexDigit(c) < 0) return nullptr;
+    std::vector<uint8_t> b(s.size() / 2);
+    for (size_t i = 0; i < b.size(); i++) b[i] = (uint8_t)(hexDigit(s[2 * i]) * 16 + hexDigit(s[2 * i + 1]));
+    size_t p = 0;
+    auto u32 = [&](uint32_t& v) {
+        if (b.size() - p < 4) return false;
+        v = b[p] | b[p + 1] << 8 | b[p + 2] << 16 | (uint32_t)b[p + 3] << 24;
+        p += 4;
+        return true;
+    };
+    uint32_t head, count;
+    if (!u32(head)) return nullptr;
+    bool isMap = head >= 0x191 && head <= 0x193, isList = head >= 0x12E && head <= 0x130;
+    if (!isMap && !isList) return nullptr;
+    if (!u32(count) || count > (b.size() - 8) / (isMap ? 8 : 4)) return nullptr;
+    // one value: kind 0 number, 1 string, 2 null
+    auto read = [&](int& kind, double& num, std::string& str) {
+        uint32_t type;
+        if (!u32(type)) return false;
+        kind = 0;
+        if (type == 0 || type == 13) {
+            if (b.size() - p < 8) return false;
+            memcpy(&num, b.data() + p, 8);
+            p += 8;
+            if (!std::isfinite(num)) kind = 2;
+        } else if (type == 1) {
+            uint32_t len;
+            if (!u32(len) || len > b.size() - p) return false;
+            kind = 1;
+            str.assign((const char*)b.data() + p, len);
+            p += len;
+            size_t z = str.find('\0');
+            if (z != std::string::npos) str.resize(z);
+        } else if (type == 5) kind = 2;
+        else if (type == 7) { uint32_t x; if (!u32(x)) return false; num = (int32_t)x; }
+        else if (type == 10) { uint32_t lo, hi; if (!u32(lo) || !u32(hi)) return false; num = (double)(int64_t)((uint64_t)hi << 32 | lo); }
+        else return false;
+        return true;
+    };
+    auto node = [&](int kind, double num, const std::string& str) -> cJSON* {
+        if (kind == 2) return cJSON_CreateNull();
+        if (kind == 0) return cJSON_CreateNumber(num);
+        cJSON* inner = gmDsDecode(str, depth + 1);
+        return inner ? inner : cJSON_CreateString(str.c_str());
+    };
+    cJSON* out = isMap ? cJSON_CreateObject() : cJSON_CreateArray();
+    for (uint32_t i = 0; i < count; i++) {
+        int k1, k2; double n1 = 0, n2 = 0; std::string s1, s2;
+        if (!read(k1, n1, s1)) { cJSON_Delete(out); return nullptr; }
+        if (!isMap) { cJSON_AddItemToArray(out, node(k1, n1, s1)); continue; }
+        if (!read(k2, n2, s2)) { cJSON_Delete(out); return nullptr; }
+        std::string key = k1 == 1 ? s1 : k1 == 2 ? "null" : gmKeyOf(n1);
+        cJSON* v = node(k2, n2, s2);
+        if (cJSON_GetObjectItemCaseSensitive(out, key.c_str())) cJSON_ReplaceItemInObjectCaseSensitive(out, key.c_str(), v);
+        else cJSON_AddItemToObject(out, key.c_str(), v);
+    }
+    if (p != b.size()) { cJSON_Delete(out); return nullptr; }
+    if (isMap) jsKeyOrder(out);
+    return out;
+}
+
+std::string gmTrim(const std::string& s) {
+    size_t a = 0, e = s.size();
+    while (a < e && (s[a] == ' ' || s[a] == '\t')) a++;
+    while (e > a && (s[e - 1] == ' ' || s[e - 1] == '\t')) e--;
+    return s.substr(a, e - a);
+}
+
+cJSON* gmValue(const std::string& raw, int depth) {
+    std::string v = gmTrim(raw);
+    if (v.size() >= 2 && v.front() == '"' && v.back() == '"') v = v.substr(1, v.size() - 2);
+    double num;
+    if (gmNumber(v, num)) return cJSON_CreateNumber(num);
+    cJSON* ds = gmDsDecode(v, depth);
+    if (ds) return ds;
+    return cJSON_CreateString(v.c_str());
+}
+
+void gmLines(const uint8_t* data, size_t size, std::vector<std::string>& lines) {
+    size_t s = size >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF ? 3 : 0;
+    size_t e = s;
+    while (e < size && data[e]) e++;
+    std::string t((const char*)data + s, e - s);
+    lines.clear();
+    size_t st = 0;
+    for (;;) {
+        size_t nl = t.find('\n', st);
+        std::string ln = t.substr(st, nl == std::string::npos ? std::string::npos : nl - st);
+        if (!ln.empty() && ln.back() == '\r') ln.pop_back();
+        lines.push_back(ln);
+        if (nl == std::string::npos) break;
+        st = nl + 1;
+    }
+    if (!lines.empty() && lines.back().empty()) lines.pop_back();
+}
+
+bool gmIsSection(const std::string& l) {
+    std::string t = gmTrim(l);
+    return t.size() >= 3 && t.front() == '[' && t.back() == ']' && t.find(']') == t.size() - 1;
+}
+
+bool gmIsIni(const std::vector<std::string>& lines) {
+    int sections = 0;
+    for (const std::string& l : lines) {
+        std::string t = gmTrim(l);
+        if (t.empty() || t[0] == ';' || t[0] == '#') continue;
+        if (gmIsSection(t)) { sections++; continue; }
+        size_t eq = t.find('=');
+        if (eq == std::string::npos || eq == 0) return false;
+    }
+    return sections > 0;
+}
+
+bool gmPrintable(const uint8_t* d, size_t n) {
+    size_t s = n >= 3 && d[0] == 0xEF && d[1] == 0xBB && d[2] == 0xBF ? 3 : 0, e = s, bad = 0;
+    while (e < n && d[e]) e++;
+    for (size_t i = e; i < n; i++) if (d[i]) return false;   // only trailing NULs
+    if (e == s) return false;
+    for (size_t i = s; i < e; i++) { uint8_t c = d[i]; if (c < 32 && c != 9 && c != 10 && c != 13) bad++; }
+    return bad == 0;
+}
+
+// whole text = base64 (line breaks allowed) of an INI text
+bool gmBase64Ini(const std::vector<std::string>& lines, std::vector<uint8_t>& out) {
+    std::string b;
+    for (const std::string& l : lines) b += gmTrim(l);
+    if (b.size() < 8 || b.size() % 4) return false;
+    for (char c : b) if (lzB64(c) < 0) return false;
+    out.clear();
+    uint32_t acc = 0; int bits = 0;
+    for (char c : b) {
+        int v = lzB64(c);
+        if (v == 64) break;
+        acc = acc << 6 | (uint32_t)v; bits += 6;
+        if (bits >= 8) { bits -= 8; out.push_back((uint8_t)(acc >> bits)); }
+    }
+    if (!gmPrintable(out.data(), out.size())) return false;
+    std::vector<std::string> inner;
+    gmLines(out.data(), out.size(), inner);
+    return gmIsIni(inner);
+}
+
+}  // namespace
+
+bool isGameMaker(const uint8_t* data, size_t size) {
+    if (!gmPrintable(data, size)) return false;
+    std::vector<std::string> lines;
+    gmLines(data, size, lines);
+    if (lines.empty()) return false;
+    std::string first = gmTrim(lines[0]);
+    if (!first.empty() && (first[0] == '{' || first[0] == '[') && !gmIsSection(first)) return false;   // JSON
+    if (gmIsIni(lines)) return true;
+    std::vector<uint8_t> dec;
+    if (gmBase64Ini(lines, dec)) return true;
+    for (const std::string& l : lines) {
+        std::string v = gmTrim(l);
+        if (v.size() >= 2 && v.front() == '"' && v.back() == '"') v = v.substr(1, v.size() - 2);
+        cJSON* d = gmDsDecode(v, 0);
+        if (d) { cJSON_Delete(d); return true; }
+    }
+    return false;
+}
+
+cJSON* gameMakerToJson(const uint8_t* data, size_t size, std::string& error, SaveFormatInfo* info) {
+    if (!gmPrintable(data, size)) { error = "not a GameMaker text save (binary data)"; return nullptr; }
+    std::vector<std::string> lines;
+    gmLines(data, size, lines);
+    std::string encoding = "text";
+    std::vector<uint8_t> dec;
+    if (!gmIsIni(lines) && gmBase64Ini(lines, dec)) { gmLines(dec.data(), dec.size(), lines); encoding = "base64"; }
+    cJSON* t = cJSON_CreateObject();
+    bool ini = gmIsIni(lines);
+    int keys = 0;
+    if (ini) {
+        cJSON* sec = nullptr;
+        for (const std::string& l : lines) {
+            std::string tl = gmTrim(l);
+            if (tl.empty() || tl[0] == ';' || tl[0] == '#') continue;
+            if (gmIsSection(tl)) {
+                std::string name = tl.substr(1, tl.size() - 2);
+                sec = cJSON_GetObjectItemCaseSensitive(t, name.c_str());
+                if (!cJSON_IsObject(sec)) {
+                    if (sec) cJSON_DeleteItemFromObjectCaseSensitive(t, name.c_str());
+                    sec = cJSON_AddObjectToObject(t, name.c_str());
+                }
+                continue;
+            }
+            size_t eq = tl.find('=');
+            if (!sec) { sec = cJSON_GetObjectItemCaseSensitive(t, ""); if (!sec) sec = cJSON_AddObjectToObject(t, ""); }
+            std::string key = gmTrim(tl.substr(0, eq));
+            cJSON* v = gmValue(tl.substr(eq + 1), 0);
+            if (cJSON_GetObjectItemCaseSensitive(sec, key.c_str())) cJSON_ReplaceItemInObjectCaseSensitive(sec, key.c_str(), v);
+            else cJSON_AddItemToObject(sec, key.c_str(), v);
+            keys++;
+        }
+        jsKeyOrder(t);
+        for (cJSON* s = t->child; s; s = s->next) jsKeyOrder(s);
+    } else {
+        cJSON* arr = cJSON_AddArrayToObject(t, "lines");
+        for (const std::string& l : lines) cJSON_AddItemToArray(arr, gmValue(l, 0));
+        keys = (int)lines.size();
+    }
+    cJSON* h = cJSON_CreateObject();
+    cJSON_AddStringToObject(h, "format", ini ? "ini" : "lines");
+    cJSON_AddStringToObject(h, "encoding", encoding.c_str());
+    if (cJSON_GetObjectItemCaseSensitive(t, "_header")) cJSON_DeleteItemFromObjectCaseSensitive(t, "_header");
+    cJSON_AddItemToObject(t, "_header", h);
+    if (info) info->summary = std::string("GameMaker ") + (ini ? "INI" : "text") + (encoding == "base64" ? " (base64)" : "") + ", " +
+                              std::to_string(keys) + (ini ? " keys" : " lines");
+    return t;
+}
+
+bool GameMakerDoc::parse(std::vector<uint8_t>&& data) {
+    cJSON* t = gameMakerToJson(data.data(), data.size(), error, &info);
+    if (!t) return false;
+    adopt(t, false);
+    return true;
+}

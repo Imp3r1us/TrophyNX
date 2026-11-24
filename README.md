@@ -330,6 +330,8 @@ Drop a file in `sdmc:/switch/TrophyNX/games/` named after the title ID:
 | `json` | plain-text JSON (optional BOM, trailing NULs ignored) — Unity games such as Hollow Knight `user1.dat` | — (same `path`/`paths` syntax as `byml`) |
 | `gvas` | Unreal Engine 4 / 5 (up to 5.3) SaveGame `.sav` (magic `GVAS`) — property names become keys | — (same `path`/`paths` syntax) |
 | `nrbf` | .NET BinaryFormatter stream (Unity games) — class fields become keys; byte arrays holding JSON text are decoded (Blasphemous) | — (same `path`/`paths` syntax) |
+| `rpgmaker` | RPG Maker MV / MZ save (`.rpgsave` LZString base64, `.rmmzsave` zlib, or plain JSON) — JsonEx markers removed: `switches/_data[12]`, `variables/_data[5]`, `party/_gold`, `party/_items/7`, `actors/_data[1]/_level`, `_header/encoding` | — (same `path`/`paths` syntax) |
+| `gamemaker` | GameMaker text save: INI → `Section/key` (also a base64-wrapped INI), other text → `lines[n]`; numbers parsed, `ds_list_write` / `ds_map_write` hex decoded into lists / objects | — (same `path`/`paths` syntax) |
 | `sgb` | Supergiant Games save (Hades `Profile*.sav`: `SGB1` header + LZ4 + luabins) — the saved Lua globals (`GameState`, `CurrentRun`, `TextLinesRecord`, `CodexStatus`...), number keys written `1`, `2`...; `_header/runs` etc. | — (same `path`/`paths` syntax) |
 
 **`byml` / `json` paths** select values in the tree, segments separated by `/`:
