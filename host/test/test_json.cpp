@@ -75,6 +75,42 @@ int main(int argc, char** argv) {
     }
     std::string deep(5000, '['); deep += std::string(5000, ']');
     { JsonDoc b = load(deep); std::vector<BymlValue> o; b.query("[0][0][0]", o); }
+    // Streamed + pruned parse (live module): same leaves as the whole-file parse for every rule path
+    auto same = [](const std::string& text, const std::vector<std::string>& ps, size_t budget, const char* what) {
+        JsonDoc full = load(text), st;
+        bool ok = st.parseStream([&](uint64_t off, void* b, size_t len) {
+            if (off > text.size() || len > text.size() - off) return false;
+            memcpy(b, text.data() + off, len); return true; }, text.size(), ps, budget);
+        bool eq = ok;
+        for (const std::string& p : ps) {
+            std::vector<BymlValue> a, b;
+            full.query(p, a); st.query(p, b);
+            eq = eq && a.size() == b.size();
+            for (size_t i = 0; eq && i < a.size(); i++) eq = a[i].kind == b[i].kind && a[i].num == b[i].num && a[i].str == b[i].str;
+        }
+        check(eq, (std::string("streamed = whole: ") + what + (ok ? "" : " (" + st.error + ")")).c_str());
+    };
+    same(sample, {"playerData/grubsCollected", "playerData/hasCharm", "playerData/bossDoorStateTier1", "sceneData/persistentBoolItems[id=Battle Scene]/activated",
+                  "sceneData/persistentBoolItems[*]/activated", "sceneData/list[1]", "sceneData/names[=b]", "playerData/empty", "playerData/name", "nope/x"}, 1 << 20, "sample");
+    {
+        std::string big = "{\"noise\":[";   // ~3 MB, the values far apart, strings across 16 KB chunk boundaries
+        for (int i = 0; i < 30000; i++) big += std::string(i ? "," : "") + "{\"s\":\"\\u00e9\\ud83d\\ude00 \\\"x\\\" \\n" + std::to_string(i) + "\",\"n\":-" + std::to_string(i) + ".5e-3,\"b\":[true,false,null]}";
+        big += "],\"keep\":{\"a\":12,\"u\":\"\\u00e9t\\u00e9 \\ud83d\\ude00\",\"list\":[{\"k\":1},{\"k\":0},{\"k\":3}],\"t\":\"True\",\"f\":\"3.25\"},\"keep2\":[[1,2],[3]]}";
+        same(big, {"keep/a", "keep/u", "keep/list[*]/k", "keep/list[k=3]", "keep/t", "keep/f", "keep2[*]", "keep2[1][0]", "keep"}, 512 << 10, "3 MB document, 512 KB budget");
+        JsonDoc t;
+        check(!t.parseStream([&](uint64_t off, void* b, size_t len) { memcpy(b, big.data() + off, len); return true; }, big.size(), {"noise[*]/s"}, 256 << 10) &&
+              t.error.find("not enough memory") == 0, "streamed: too many kept values -> not enough memory");
+        JsonDoc r;
+        check(!r.parseStream([&](uint64_t off, void* b, size_t len) { if (off > 100000) return false; memcpy(b, big.data() + off, len); return true; }, big.size(), {"keep/a"}, 1 << 20) &&
+              r.error == "read error", "streamed: read error reported");
+    }
+    for (const char* bad : {"", "   ", "garbage", "{\"a\":", "[1,2", "{\"a\":[}", "nul", "{\"a\":\"\\q\"}", "{\"a\":\"\\ud800\"}"}) {
+        std::string t = bad;
+        JsonDoc b;
+        bool ok = b.parseStream([&](uint64_t off, void* o, size_t len) { memcpy(o, t.data() + off, len); return true; }, t.size(), {"a"}, 1 << 20);
+        check(!ok && !b.error.empty(), (std::string("streamed rejects: '") + bad + "'").c_str());
+    }
+    { JsonDoc b; bool ok = b.parseStream([&](uint64_t off, void* o, size_t len) { memcpy(o, deep.data() + off, len); return true; }, deep.size(), {"[*]"}, 1 << 20); check(!ok, "streamed: deep nesting rejected"); }
     printf("fuzz ok\n");
 
     const char* paths[] = {"playerData/version", "playerData/completionPercentage", "playerData/grubsCollected", "playerData/charmsOwned",

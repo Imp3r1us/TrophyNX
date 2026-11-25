@@ -61,7 +61,9 @@ w('0100152000022000','userdata.dat',bytes(buf))
 # Hollow Knight: JSON
 pd={'hasCharm':True,'charmsOwned':25,'grubsCollected':30,'killedZote':True,'geo':5000,'completionPercentage':80}
 for i in range(1,6): pd[f'bossDoorStateTier{i}']={'completed': i<3}
-w('0100633007D48000','user1.dat',json.dumps({'playerData':pd,'sceneData':{'x':[1]*5000}}).encode())
+# ~2 MB, with the rule values between big unrelated data (escapes, unicode, numbers in every form): read in pieces
+scene={f'Scene_{i}':{'persistentBoolItems':[{'id':f'Bat\u00e9 \"{j}\"','activated':random.random()<0.5,'v':random.uniform(-1e6,1e6)} for j in range(12)],'name':'Ω\n\t\\/'*3} for i in range(1800)}
+w('0100633007D48000','user1.dat',('\ufeff'+json.dumps({'sceneData':scene,'playerData':pd,'tail':[1e-7,-0.0,12345678901234,True,None]*2000},ensure_ascii=False)+'\0\0').encode())
 w('0100633007D48000','user2.dat',json.dumps({'playerData':{'hasCharm':True,'charmsOwned':40}}).encode())
 # SIGNALIS: XOR JSON
 key=b'ALL WATCHED OVER BY MACHINES OF LOVING GRACE'
@@ -146,3 +148,19 @@ def smo(level):
 for slot, level in ((0, 0.35), (1, 0.8)):
     doc = byml(smo(level)); assert len(doc) + 16 <= 2097164, len(doc)
     w('0100000000010000', f'File{slot}.bin', (struct.pack('<IIII', 0x10, len(doc), 0, 0) + doc).ljust(2097164, b'\0'))
+
+# Every other tree reader, with the Save Lab's fixtures: generic rules over the whole tree ([*] = every value), so the
+# test checks that each reader gives the app's values in the module whatever its memory (definitions in <root>/defs)
+fxr=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','tools','savelab','test','fixtures')
+os.makedirs(f'{R}/defs', exist_ok=True)
+for n,(reader,files) in enumerate([('gvas',['gvas/Slot1.sav','gvas/Options.sav']),('nrbf',['nrbf/save0.dat','nrbf/save1.dat']),
+        ('rpgmaker',['rpgmaker/file1.rpgsave','rpgmaker/file1.rmmzsave']),('gamemaker',['gamemaker/save.ini','gamemaker/save_b64.sav','gamemaker/file0'])]):
+    tid=f'0F000000000{n+1:02d}000'
+    names_=[]
+    for f in files:
+        rel=os.path.basename(f); names_.append(rel); w(tid,rel,open(os.path.join(fxr,f),'rb').read())
+    achs=[]
+    for d_,path in enumerate(['[*]','[*]/[*]','[*]/[*]/[*]','[*]/[*]/[*]/[*]']):
+        achs.append({'id':f'c{d_}','name':f'count {d_}','desc':'x','points':5,'rule':{'type':'count','path':path,'target':1}})
+        achs.append({'id':f's{d_}','name':f'sum {d_}','desc':'x','points':5,'rule':{'type':'sum','path':path,'target':1}})
+    json.dump({'title_id':tid,'name':f'Fixture {reader}','reader':reader,'save_files':names_,'achievements':achs},open(f'{R}/defs/{tid}.json','w'))

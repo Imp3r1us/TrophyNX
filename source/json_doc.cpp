@@ -119,3 +119,198 @@ bool JsonDoc::query(const std::string& path, std::vector<BymlValue>& out) const 
     walk(m_root, atoms, 0, out, 0);
     return true;
 }
+
+// ---------------------------------------------------------------- streamed, pruned parse (live module)
+#include "tree_paths.h"
+#include <cstring>
+
+namespace {
+
+struct JsonStream {
+    const std::function<bool(uint64_t, void*, size_t)>& read;
+    uint64_t size, off = 0;
+    std::vector<uint8_t> buf;
+    size_t len = 0, pos = 0;
+    const PathTrie& trie;
+    size_t budget, used = 0;
+    std::string err;
+    JsonStream(const std::function<bool(uint64_t, void*, size_t)>& r, uint64_t s, const PathTrie& t, size_t b)
+        : read(r), size(s), buf(16384), trie(t), budget(b) {}
+
+    bool fill() {
+        if (pos < len) return true;
+        if (off >= size) return false;
+        size_t n = (size_t)std::min<uint64_t>(buf.size(), size - off);
+        if (!read(off, buf.data(), n)) { if (err.empty()) err = "read error"; off = size; return false; }
+        off += n; len = n; pos = 0;
+        return true;
+    }
+    int peek() { return fill() ? buf[pos] : -1; }
+    int get() { return fill() ? buf[pos++] : -1; }
+    void ws() { for (int c = peek(); c == ' ' || c == '\t' || c == '\n' || c == '\r'; c = peek()) pos++; }
+    bool fail(const char* e) { if (err.empty()) err = e; return false; }
+    bool charge(size_t n) {
+        used += n + sizeof(cJSON) + 48;
+        if (budget && used > budget) return fail("not enough memory");
+        return true;
+    }
+    bool lit(const char* w) {
+        for (const char* p = w; *p; p++) if (get() != *p) return fail("JSON syntax error");
+        return true;
+    }
+    int hex4() {
+        int v = 0;
+        for (int i = 0; i < 4; i++) {
+            int c = get(), d;
+            if (c >= '0' && c <= '9') d = c - '0';
+            else if (c >= 'a' && c <= 'f') d = c - 'a' + 10;
+            else if (c >= 'A' && c <= 'F') d = c - 'A' + 10;
+            else return -1;
+            v = v * 16 + d;
+        }
+        return v;
+    }
+    // After the opening quote. out == nullptr: skipped.
+    bool str(std::string* out) {
+        if (out) out->clear();
+        for (;;) {
+            int c = get();
+            if (c < 0) return fail("JSON syntax error");
+            if (c == '"') return true;
+            if (c != '\\') { if (out) *out += (char)c; continue; }
+            c = get();
+            uint32_t cp;
+            switch (c) {
+                case '"': case '\\': case '/': if (out) *out += (char)c; continue;
+                case 'b': if (out) *out += '\b'; continue;
+                case 'f': if (out) *out += '\f'; continue;
+                case 'n': if (out) *out += '\n'; continue;
+                case 'r': if (out) *out += '\r'; continue;
+                case 't': if (out) *out += '\t'; continue;
+                case 'u': {
+                    int h = hex4();
+                    if (h < 0) return fail("JSON syntax error");
+                    cp = (uint32_t)h;
+                    if (cp >= 0xDC00 && cp <= 0xDFFF) return fail("JSON syntax error");
+                    if (cp >= 0xD800 && cp <= 0xDBFF) {   // surrogate pair
+                        if (get() != '\\' || get() != 'u') return fail("JSON syntax error");
+                        int lo = hex4();
+                        if (lo < 0xDC00 || lo > 0xDFFF) return fail("JSON syntax error");
+                        cp = 0x10000 + (((cp & 0x3FF) << 10) | ((uint32_t)lo & 0x3FF));
+                    }
+                    break;
+                }
+                default: return fail("JSON syntax error");
+            }
+            if (!out) continue;
+            if (cp < 0x80) *out += (char)cp;
+            else if (cp < 0x800) { *out += (char)(0xC0 | (cp >> 6)); *out += (char)(0x80 | (cp & 0x3F)); }
+            else if (cp < 0x10000) { *out += (char)(0xE0 | (cp >> 12)); *out += (char)(0x80 | ((cp >> 6) & 0x3F)); *out += (char)(0x80 | (cp & 0x3F)); }
+            else { *out += (char)(0xF0 | (cp >> 18)); *out += (char)(0x80 | ((cp >> 12) & 0x3F)); *out += (char)(0x80 | ((cp >> 6) & 0x3F)); *out += (char)(0x80 | (cp & 0x3F)); }
+        }
+    }
+    // where == nullptr: parse and build nothing. *out: the built value (only when where != nullptr).
+    bool value(const PathSet* where, cJSON** out, int depth) {
+        if (depth > 200) return fail("JSON nested too deeply");
+        ws();
+        int c = get();
+        bool build = where && !where->dead();
+        if (out) *out = nullptr;
+        if (c == '{' || c == '[') {
+            bool obj = c == '{';
+            cJSON* node = nullptr;
+            if (build) {
+                if (!charge(0)) return false;
+                node = obj ? cJSON_CreateObject() : cJSON_CreateArray();
+                if (!node) return fail("not enough memory");
+            }
+            auto done = [&](bool ok) { if (!ok && node) cJSON_Delete(node); else if (out) *out = node; return ok; };
+            ws();
+            if (peek() == (obj ? '}' : ']')) { pos++; return done(true); }
+            std::string key;
+            for (;;) {
+                ws();
+                if (obj) {
+                    if (get() != '"' || !str(build ? &key : nullptr)) return done(fail("JSON syntax error"));
+                    ws();
+                    if (get() != ':') return done(fail("JSON syntax error"));
+                }
+                PathSet cs;
+                if (build) cs = childOf(trie, *where, obj ? key : std::string());
+                bool keep = build && !cs.dead();
+                cJSON* child = nullptr;
+                if (!value(keep ? &cs : nullptr, keep ? &child : nullptr, depth + 1)) return done(false);
+                if (child) {
+                    if (obj) { if (!charge(key.size())) { cJSON_Delete(child); return done(false); } cJSON_AddItemToObject(node, key.c_str(), child); }
+                    else cJSON_AddItemToArray(node, child);
+                }
+                ws();
+                int e = get();
+                if (e == ',') continue;
+                if (e == (obj ? '}' : ']')) return done(true);
+                return done(fail("JSON syntax error"));
+            }
+        }
+        if (c == '"') {
+            std::string s;
+            if (!str(build ? &s : nullptr)) return false;
+            if (!build) return true;
+            if (!charge(s.size())) return false;
+            *out = cJSON_CreateString(s.c_str());
+            return *out ? true : fail("not enough memory");
+        }
+        if (c == 't' || c == 'f' || c == 'n') {
+            if (!lit(c == 't' ? "rue" : c == 'f' ? "alse" : "ull")) return false;
+            if (!build) return true;
+            if (!charge(0)) return false;
+            *out = c == 'n' ? cJSON_CreateNull() : cJSON_CreateBool(c == 't');
+            return *out ? true : fail("not enough memory");
+        }
+        if (c == '-' || (c >= '0' && c <= '9')) {
+            char t[64];
+            size_t n = 0;
+            t[n++] = (char)c;
+            for (int d = peek(); (d >= '0' && d <= '9') || d == '.' || d == 'e' || d == 'E' || d == '+' || d == '-'; d = peek()) {
+                if (n + 1 >= sizeof(t)) return fail("JSON syntax error");
+                t[n++] = (char)d; pos++;
+            }
+            t[n] = 0;
+            char* end = nullptr;
+            double v = strtod(t, &end);
+            if (end == t) return fail("JSON syntax error");
+            if (!build) return true;
+            if (!charge(0)) return false;
+            *out = cJSON_CreateNumber(v);
+            return *out ? true : fail("not enough memory");
+        }
+        return fail(c < 0 && !err.empty() ? err.c_str() : "JSON syntax error");
+    }
+};
+
+}  // namespace
+
+bool JsonDoc::parseStream(const std::function<bool(uint64_t, void*, size_t)>& read, uint64_t size,
+                          const std::vector<std::string>& keepPaths, size_t memoryBudget) {
+    if (m_root) { cJSON_Delete(m_root); m_root = nullptr; }
+    m_textValues = true;
+    PathTrie trie;
+    if (!trie.build(keepPaths)) { error = "unusable rule path"; return false; }
+    if (memoryBudget && memoryBudget < 16384 + 4096) { error = "not enough memory"; return false; }
+    JsonStream js(read, size, trie, memoryBudget ? memoryBudget - 16384 : 0);
+    if (js.peek() == 0xEF) {   // UTF-8 BOM
+        js.pos++;
+        if (js.get() != 0xBB || js.get() != 0xBF) { error = "not a JSON document"; return false; }
+    }
+    js.ws();
+    int c = js.peek();
+    if (c != '{' && c != '[') { error = js.err.empty() ? "not a JSON document" : js.err; return false; }
+    PathSet root = trieRoot(trie);
+    cJSON* t = nullptr;
+    if (!js.value(&root, &t, 0)) {
+        error = js.err == "not enough memory" ? "not enough memory for the rule values (" + std::to_string(memoryBudget >> 10) + " KB free)" : js.err;
+        if (t) cJSON_Delete(t);
+        return false;
+    }
+    m_root = t ? t : cJSON_CreateObject();
+    return true;
+}

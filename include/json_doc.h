@@ -9,6 +9,7 @@
 // objects/arrays -> Container (num = number of children), null -> Null.
 #include "byml.h"
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,11 @@ public:
 
     // Accepts an optional UTF-8 BOM and trailing NULs/whitespace; the document must start with '{' or '['.
     bool parse(std::vector<uint8_t>&& data);
+    // Live module (small heap): the same tree, read 16 KB at a time through `read` (offset, buffer, length) and
+    // built only where `keepPaths` (rule paths) reach, so memory doesn't grow with the file. `memoryBudget` > 0:
+    // gives up cleanly (error "not enough memory...") if the kept values would need more.
+    bool parseStream(const std::function<bool(uint64_t, void*, size_t)>& read, uint64_t size,
+                     const std::vector<std::string>& keepPaths, size_t memoryBudget);
     bool query(const std::string& path, std::vector<BymlValue>& out) const;
     size_t topLevelCount() const;
     std::string error;

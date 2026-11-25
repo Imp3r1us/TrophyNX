@@ -5,6 +5,7 @@
 #include "store.h"
 #include "games_bin.h"
 #include "overlay_data.h"
+#include "heap.h"
 #include <malloc.h>
 #include <strings.h>
 #include <sys/stat.h>
@@ -24,6 +25,9 @@ size_t moduleMemoryAvailable() {
     const size_t margin = 192 * 1024;
     return total > margin ? total - margin : 0;
 }
+
+// Makes moduleMemoryAvailable() >= bytes (heap.h heapReserve; the caller ends with heapUnreserve()).
+bool moduleReserveMemory(size_t bytes) { return heapReserve(bytes + 192 * 1024, "a save file"); }
 
 // ---------------------------------------------------------------- save access
 // Streaming source: small reads, never more in memory than the heap can take.
@@ -73,6 +77,7 @@ public:
         return readFile(path(rel), out);
     }
     size_t memoryAvailable() override { return moduleMemoryAvailable(); }
+    bool reserveMemory(size_t bytes) override { return moduleReserveMemory(bytes); }
 
 private:
     std::string path(const std::string& rel) const { return "acsave:/" + rel; }
@@ -217,6 +222,7 @@ CloseScanResult closeScan(uint64_t tid, const AccountUid& uid, void (*logf)(cons
     {
         SysSaveSource src(uid);
         evaluateSave(g, src);
+        heapUnreserve();   // memory taken for a big save file (if any) goes back now
         if (g.saveStatus == SaveStatus::NoSave && src.lastRc() != 0x7D402) {
             logf("close scan: %s - %s", def.name.c_str(), src.lastError().c_str());
             return CS_LOCKED;

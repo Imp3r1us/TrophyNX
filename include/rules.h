@@ -26,6 +26,9 @@ public:
     virtual bool fileSize(const std::string& /*rel*/, uint64_t& /*size*/) { return false; }
     virtual bool readAt(const std::string& /*rel*/, uint64_t /*off*/, void* /*buf*/, size_t /*len*/) { return false; }
     virtual size_t memoryAvailable() { return (size_t)-1; }
+    // Streaming sources (live module): try to make memoryAvailable() >= `bytes` (grows the module heap if the
+    // system has room). Lets every reader read a save file too big for the module's usual heap.
+    virtual bool reserveMemory(size_t /*bytes*/) { return false; }
 };
 
 struct GameDef {
