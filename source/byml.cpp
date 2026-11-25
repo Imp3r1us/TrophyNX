@@ -7,62 +7,140 @@ enum : uint8_t {
     T_BOOL = 0xD0, T_INT = 0xD1, T_FLOAT = 0xD2, T_UINT = 0xD3, T_INT64 = 0xD4, T_UINT64 = 0xD5, T_DOUBLE = 0xD6, T_NULL = 0xFF,
 };
 
+static const size_t PAGE = 16 * 1024;
+static const size_t MIN_PAGES = 4, MAX_PAGES = 32;   // 64 KB .. 512 KB of the file in memory
+
+const uint8_t* BymlDoc::page(uint64_t index) const {
+    for (Page& p : m_pages) if (p.index == index) { p.used = ++m_tick; return p.data.data(); }
+    Page* victim = &m_pages[0];
+    for (Page& p : m_pages) if (p.used < victim->used) victim = &p;
+    uint64_t off = index * PAGE;
+    size_t len = (size_t)(m_size - off < PAGE ? m_size - off : PAGE);
+    victim->index = ~0ull;
+    m_pageReads++;
+    if (!m_read(off, victim->data.data(), len)) { m_readFailed = true; return nullptr; }
+    victim->index = index;
+    victim->used = ++m_tick;
+    return victim->data.data();
+}
+
+const uint8_t* BymlDoc::at(size_t off, size_t len) const {
+    if (!inRange(off, len) || len == 0) return nullptr;
+    if (!m_read) return &m_data[off];
+    uint64_t first = off / PAGE, last = (off + len - 1) / PAGE;
+    if (first == last) { const uint8_t* p = page(first); return p ? p + (off - first * PAGE) : nullptr; }
+    if (len > sizeof(m_scratch)) return nullptr;
+    for (size_t i = 0; i < len; i++) {   // straddles two pages (small values only)
+        const uint8_t* p = page((off + i) / PAGE);
+        if (!p) return nullptr;
+        m_scratch[i] = p[(off + i) % PAGE];
+    }
+    return m_scratch;
+}
+
 uint32_t BymlDoc::rd32(size_t off) const {
-    if (!inRange(off, 4)) return 0;
-    const uint8_t* p = &m_data[off];
+    const uint8_t* p = at(off, 4);
+    if (!p) return 0;
     if (m_be) return ((uint32_t)p[0] << 24) | ((uint32_t)p[1] << 16) | ((uint32_t)p[2] << 8) | p[3];
     return p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
 }
 uint32_t BymlDoc::rd24(size_t off) const {
-    if (!inRange(off, 3)) return 0;
-    const uint8_t* p = &m_data[off];
+    const uint8_t* p = at(off, 3);
+    if (!p) return 0;
     if (m_be) return ((uint32_t)p[0] << 16) | ((uint32_t)p[1] << 8) | p[2];
     return p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16);
 }
 
-bool BymlDoc::readStringTable(uint32_t off, std::vector<std::string>& out) {
+bool BymlDoc::readCString(size_t off, std::string& out) const {
     out.clear();
-    if (!off) return true;
-    size_t o = m_base + off;
-    if (!inRange(o, 4) || m_data[o] != T_STRTAB) return false;
-    uint32_t n = rd24(o + 1);
-    if (!inRange(o + 4, (size_t)(n + 1) * 4)) return false;
-    out.reserve(n);
-    for (uint32_t i = 0; i < n; i++) {
-        size_t s = o + rd32(o + 4 + 4 * i);
-        if (s >= m_data.size()) return false;
-        const void* end = memchr(&m_data[s], 0, m_data.size() - s);
-        if (!end) return false;
-        out.emplace_back((const char*)&m_data[s], (const uint8_t*)end - &m_data[s]);
+    while (off < m_size) {
+        size_t chunk = m_read ? PAGE - off % PAGE : m_size - off;
+        if (chunk > m_size - off) chunk = m_size - off;
+        const uint8_t* p = at(off, chunk);
+        if (!p) return false;
+        const void* end = memchr(p, 0, chunk);
+        if (end) { out.append((const char*)p, (const uint8_t*)end - p); return true; }
+        out.append((const char*)p, chunk);
+        if (out.size() > 4096) return false;   // not a key/string of a save
+        off += chunk;
     }
-    return true;
+    return false;
 }
 
-bool BymlDoc::parse(std::vector<uint8_t>&& data) {
-    m_data = std::move(data);
+bool BymlDoc::readKeyTable(uint32_t off) {
+    m_keys.clear();
+    if (!off) return true;
+    size_t o = m_base + off;
+    if (!inRange(o, 4) || rd8(o) != T_STRTAB) return false;
+    uint32_t n = rd24(o + 1);
+    if (!inRange(o + 4, (size_t)(n + 1) * 4)) return false;
+    m_keys.reserve(n);
+    for (uint32_t i = 0; i < n; i++) {
+        std::string k;
+        if (!readCString(o + rd32(o + 4 + 4 * i), k)) return false;
+        m_keys.push_back(std::move(k));
+    }
+    return !m_readFailed;
+}
+
+bool BymlDoc::stringAt(uint32_t i, std::string& out) const {
+    if (!m_strTab || i >= m_strCount) return false;
+    return readCString(m_strTab + rd32(m_strTab + 4 + 4 * (size_t)i), out);
+}
+
+bool BymlDoc::setup() {
     for (size_t b : {(size_t)0, (size_t)0x10}) {
-        if (!inRange(b, 0x10)) continue;
-        if (m_data[b] == 'Y' && m_data[b + 1] == 'B') { m_be = false; m_base = b; }
-        else if (m_data[b] == 'B' && m_data[b + 1] == 'Y') { m_be = true; m_base = b; }
+        const uint8_t* h = at(b, 4);
+        if (!h || !inRange(b, 0x10)) continue;
+        if (h[0] == 'Y' && h[1] == 'B') { m_be = false; m_base = b; }
+        else if (h[0] == 'B' && h[1] == 'Y') { m_be = true; m_base = b; }
         else continue;
-        m_version = m_be ? (m_data[b + 2] << 8 | m_data[b + 3]) : (m_data[b + 3] << 8 | m_data[b + 2]);
+        m_version = m_be ? (h[2] << 8 | h[3]) : (h[3] << 8 | h[2]);
         if (m_version < 1 || m_version > 10) continue;
-        if (!readStringTable(rd32(b + 4), m_keys) || !readStringTable(rd32(b + 8), m_strings)) { error = "bad string table"; return false; }
-        uint32_t root = rd32(b + 12);
+        uint32_t keys = rd32(b + 4), strs = rd32(b + 8), root = rd32(b + 12);
+        if (!readKeyTable(keys)) { error = m_readFailed ? "read error" : "bad string table"; return false; }
+        m_strTab = 0; m_strCount = 0;
+        if (strs) {
+            size_t o = m_base + strs;
+            if (!inRange(o, 4) || rd8(o) != T_STRTAB) { error = "bad string table"; return false; }
+            uint32_t n = rd24(o + 1);
+            if (!inRange(o + 4, (size_t)(n + 1) * 4)) { error = "bad string table"; return false; }
+            m_strTab = (uint32_t)o; m_strCount = n;
+        }
         if (!root || !inRange(m_base + root, 4)) { error = "empty document"; return false; }
-        uint8_t t = m_data[m_base + root];
+        uint8_t t = rd8(m_base + root);
         if (t != T_HASH && t != T_ARRAY) { error = "root is not a container"; return false; }
         m_root = Node{t, root};
         return true;
     }
-    error = "no BYML header (YB/BY) at offset 0 or 0x10";
+    error = m_readFailed ? "read error" : "no BYML header (YB/BY) at offset 0 or 0x10";
     return false;
+}
+
+bool BymlDoc::parse(std::vector<uint8_t>&& data) {
+    m_read = nullptr;
+    m_data = std::move(data);
+    m_size = m_data.size();
+    return setup();
+}
+
+bool BymlDoc::parseStream(std::function<bool(uint64_t, void*, size_t)> read, uint64_t size, size_t budget) {
+    m_data.clear();
+    m_size = (size_t)size;
+    size_t n = budget / (PAGE + 256);
+    if (n > 2 * MIN_PAGES) n -= MIN_PAGES;   // headroom for the key table and query results
+    if (n > MAX_PAGES) n = MAX_PAGES;
+    if (n < MIN_PAGES) { error = "not enough memory (" + std::to_string(budget >> 10) + " KB)"; return false; }
+    m_pages.assign(n, Page());
+    for (Page& p : m_pages) p.data.resize(PAGE);
+    m_read = std::move(read);
+    return setup();
 }
 
 BymlValue BymlDoc::leaf(const Node& n) const {
     BymlValue v;
     switch (n.type) {
-        case T_STRING: v.kind = BymlValue::String; if (n.raw < m_strings.size()) v.str = m_strings[n.raw]; break;
+        case T_STRING: v.kind = BymlValue::String; stringAt(n.raw, v.str); break;
         case T_BOOL: v.kind = BymlValue::Bool; v.num = n.raw ? 1 : 0; break;
         case T_INT: v.kind = BymlValue::Int; v.num = (int32_t)n.raw; break;
         case T_UINT: v.kind = BymlValue::Int; v.num = n.raw; break;
@@ -86,25 +164,27 @@ size_t BymlDoc::listSize(uint32_t off) const { return rd24(m_base + off + 1); }
 
 bool BymlDoc::listItem(uint32_t off, size_t i, Node& out) const {
     size_t o = m_base + off;
-    if (!inRange(o, 4) || m_data[o] != T_ARRAY) return false;
+    if (!inRange(o, 4) || rd8(o) != T_ARRAY) return false;
     size_t n = rd24(o + 1);
     if (i >= n || !inRange(o + 4, n)) return false;
     size_t vals = o + 4 + ((n + 3) & ~(size_t)3);
     if (!inRange(vals + 4 * i, 4)) return false;
-    out = Node{m_data[o + 4 + i], rd32(vals + 4 * i)};
+    out = Node{rd8(o + 4 + i), rd32(vals + 4 * i)};
     return true;
 }
 
 bool BymlDoc::dictGet(uint32_t off, const std::string& key, Node& out) const {
     size_t o = m_base + off;
-    if (!inRange(o, 4) || m_data[o] != T_HASH) return false;
+    if (!inRange(o, 4) || rd8(o) != T_HASH) return false;
     size_t n = rd24(o + 1);
     // Entries are sorted by key, but a linear scan keeps this robust and saves are small.
     for (size_t i = 0; i < n; i++) {
         size_t e = o + 4 + 8 * i;
-        if (!inRange(e, 8)) return false;
-        uint32_t k = m_be ? rd24(e) : (m_data[e] | (m_data[e + 1] << 8) | (m_data[e + 2] << 16));
-        if (k < m_keys.size() && m_keys[k] == key) { out = Node{m_data[e + 3], rd32(e + 4)}; return true; }
+        const uint8_t* p = at(e, 4);
+        if (!p) return false;
+        uint32_t k = m_be ? ((uint32_t)p[0] << 16 | p[1] << 8 | p[2]) : (p[0] | (p[1] << 8) | ((uint32_t)p[2] << 16));
+        uint8_t type = p[3];
+        if (k < m_keys.size() && m_keys[k] == key) { out = Node{type, rd32(e + 4)}; return true; }
     }
     return false;
 }
@@ -192,6 +272,11 @@ bool treeSplitPath(const std::string& path, std::vector<std::string>& atoms) {
 bool BymlDoc::query(const std::string& path, std::vector<BymlValue>& out) const {
     std::vector<std::string> atoms;
     if (!treeSplitPath(path, atoms)) return false;
-    walk(m_root, atoms, 0, out, 0);
+    auto hit = m_cache.find(path);
+    if (hit != m_cache.end()) { out.insert(out.end(), hit->second.begin(), hit->second.end()); return true; }
+    std::vector<BymlValue> vals;
+    walk(m_root, atoms, 0, vals, 0);
+    out.insert(out.end(), vals.begin(), vals.end());
+    m_cache.emplace(path, std::move(vals));
     return true;
 }

@@ -51,16 +51,20 @@ int main(int argc, char** argv) {
     setSaveKeyDir(std::string(argv[2]) + "/../keys");
     int fails = 0, games = 0, compared = 0, met = 0;
     for (auto& kv : defs) {
-        Game full, st, tiny;
-        full.id = st.id = tiny.id = kv.first;
+        Game full, st, tiny, small;
+        full.id = st.id = tiny.id = small.id = kv.first;
         applyGameDef(full, kv.second);
         applyGameDef(st, kv.second);
         applyGameDef(tiny, kv.second);
-        DirSource a(argv[2], false, (size_t)-1), b(argv[2], true, 64u << 20), c(argv[2], true, 1024);
+        applyGameDef(small, kv.second);
+        // 384 KB: about what the live module has left while a game runs; readers that read in pieces must still work
+        DirSource a(argv[2], false, (size_t)-1), b(argv[2], true, 64u << 20), c(argv[2], true, 1024), e(argv[2], true, 384u << 10);
         evaluateSave(full, a);
         if (full.saveStatus != SaveStatus::Ok) continue;
         evaluateSave(st, b);
         evaluateSave(tiny, c);
+        evaluateSave(small, e);
+        bool pieces = kv.second.reader == "byml" || kv.second.reader == "sgb";
         games++;
         bool tree = kv.second.reader == "json" || kv.second.reader == "byml" || kv.second.reader == "gvas" || kv.second.reader == "nrbf" || kv.second.reader == "sgb" ||
                     kv.second.reader == "deltarune" || kv.second.reader == "theatrhythm";
@@ -72,6 +76,10 @@ int main(int argc, char** argv) {
                 printf("FAIL %s %s: full %g, streamed %g\n", kv.second.name.c_str(), full.achs[i].id.c_str(), full.achs[i].value, st.achs[i].value);
                 fails++;
             }
+            if (pieces && full.achs[i].value != small.achs[i].value) {
+                printf("FAIL %s %s with 384 KB: full %g, streamed %g\n", kv.second.name.c_str(), full.achs[i].id.c_str(), full.achs[i].value, small.achs[i].value);
+                fails++;
+            }
             // 1 KB "heap": tree files must be skipped (nothing unlocked), the others still work
             double expect = tree ? 0 : full.achs[i].value;
             if (tiny.achs[i].value != expect) {
@@ -79,8 +87,8 @@ int main(int argc, char** argv) {
                 fails++;
             }
         }
-        printf("%-45s %-14s full = streamed (%llu reads)%s\n", kv.second.name.c_str(), kv.second.reader.c_str(), (unsigned long long)b.reads,
-               tree ? ", skipped with no memory" : "");
+        printf("%-45s %-14s full = streamed (%llu reads)%s%s\n", kv.second.name.c_str(), kv.second.reader.c_str(), (unsigned long long)b.reads,
+               pieces ? (", = 384 KB heap (" + std::to_string(e.reads) + " reads)").c_str() : "", tree ? ", skipped with no memory" : "");
     }
     printf("%d games, %d save achievements compared (%d met), %d failure(s)\n", games, compared, met, fails);
     return fails ? 1 : 0;
