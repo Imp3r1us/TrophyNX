@@ -3,6 +3,7 @@
 // Reads, never writes (see include/overlay_data.h):
 //   <data>/overlay/<TID>.json       the game's list, written by the app after each scan
 //   <data>/overlay/<TID>.live.json  progress written by the live module while you play
+//   <data>/overlay/<TID>.memtest.json  live memory test (version, coverage, values), while the module watches memory
 //   <data>/unlocks/<user>.json      unlocked achievements and when
 // Built with libtesla (GPL-2.0, like TrophyNX). Open Tesla (L + Dpad Down + Right stick by default), pick TrophyNX.
 #define TESLA_INIT_IMPL
@@ -72,7 +73,23 @@ struct Data {
     enum State { NoGame, NoList, Ok } state = NoGame;
     ov::GameData game;
     ov::Sections sec;
+    bool hasMemTest = false;
+    ov::MemTest mem;
+    std::string signature;   // the files it was built from (refreshed when they change)
 };
+
+// Size + modification time of the files a list is built from: cheap to check while the overlay is open.
+std::string filesSignature(uint64_t tid) {
+    std::string dir = dataDir(), sig, user = userKey();
+    std::string paths[] = {ov::livePath(dir, tid), ov::memTestPath(dir, tid), ov::snapshotPath(dir, tid),
+                           user.empty() ? std::string() : dir + "/unlocks/" + user + ".json"};
+    for (const std::string& p : paths) {
+        struct stat st;
+        if (p.empty() || stat(p.c_str(), &st) != 0) { sig += "-;"; continue; }
+        sig += std::to_string((long long)st.st_size) + "@" + std::to_string((long long)st.st_mtime) + ";";
+    }
+    return std::to_string(tid) + ":" + sig;
+}
 
 std::shared_ptr<Data> loadData() {
     auto d = std::make_shared<Data>();
@@ -80,7 +97,10 @@ std::shared_ptr<Data> loadData() {
     uint64_t tid = runningTitle();
     if (!tid) return d;
     d->game.titleId = tid;
+    d->signature = filesSignature(tid);
     std::string dir = dataDir(), text;
+    if (readText(ov::memTestPath(dir, tid), text, 256 * 1024) && ov::parseMemTest(text.c_str(), d->mem) && d->mem.titleId == tid)
+        d->hasMemTest = true;
     if (!readText(ov::snapshotPath(dir, tid), text) || !ov::parseSnapshot(text.c_str(), d->game) || d->game.achs.empty()) {
         d->game.titleId = tid;
         d->state = Data::NoList;
@@ -229,6 +249,12 @@ public:
             requestFocus(m_list, tsl::FocusDirection::None, false);
             return;
         }
+        // While open: rebuild when the live module wrote new progress or unlocked something (checked every ~2 s)
+        if (!g_dirty && m_data && ++m_frames >= 120) {
+            m_frames = 0;
+            uint64_t tid = runningTitle();
+            if (ensureSd() && (tid != m_data->game.titleId || (tid && filesSignature(tid) != m_data->signature))) g_dirty = true;
+        }
         if (!g_dirty) return;
         g_dirty = false;
         removeFocus();   // libtesla: nothing in a list may be focused when it is cleared
@@ -241,6 +267,7 @@ private:
     tsl::elm::List* m_list = nullptr;
     std::shared_ptr<Data> m_data;
     bool m_refill = false;
+    int m_frames = 0;
 
     void message(const std::string& text) {
         auto cache = std::make_shared<Wrapped>();
@@ -260,6 +287,7 @@ private:
         }
         if (d.state == Data::NoList) {
             m_frame->setSubtitle(ov::titleHex(d.game.titleId));
+            if (d.hasMemTest) addMemTest();
             message("No list for this game yet. Open the TrophyNX app once (it prepares every game's list for this "
                     "menu when it scans), then come back.");
             return;
@@ -291,9 +319,45 @@ private:
                 cx -= 20;
             }
         }), 104);
+        if (d.hasMemTest) addMemTest();
         addSection("In progress", d.sec.inProgress);
         addSection("Locked", d.sec.locked);
         addSection("Unlocked", d.sec.unlocked);
+    }
+
+    // Live memory test: the running version, how many memory achievements it covers, and each value read.
+    void addMemTest() {
+        auto data = m_data;
+        const ov::MemTest& t = data->mem;
+        m_list->addItem(new tsl::elm::CategoryHeader("Live memory test"));
+        size_t rows = std::min<size_t>(t.items.size(), 12);
+        m_list->addItem(new tsl::elm::CustomDrawer([data, rows](Renderer* r, s32 x, s32 y, s32 w, s32) {
+            const ov::MemTest& t = data->mem;
+            std::string ver = "Version " + (t.build.empty() ? std::string("?") : t.build);
+            r->drawString(ver.c_str(), false, x + 8, y + 26, 18, r->a(C_TEXT));
+            std::string state = t.reading ? "Watching " + std::to_string(t.watched) + " of " + std::to_string(t.total) + " achievements"
+                                          : (t.note.empty() ? std::string("Not watching") : t.note) + ": add this build to the definition";
+            r->drawString(state.c_str(), false, x + 8, y + 52, 16, r->a(t.reading ? C_GREEN : tierColor(ov::TIER_GOLD)));
+            s32 cy = y + 84;
+            for (size_t k = 0; k < rows; k++, cy += 28) {
+                const ov::MemTestItem& i = t.items[k];
+                std::string name = i.id;
+                for (const ov::Ach& a : data->game.achs) if (a.id == i.id) name = a.name;
+                std::string v;
+                Color c = C_DIM;
+                if (i.done) { v = "Unlocked"; c = C_GREEN; }
+                else if (!i.read) v = t.reading ? "no value" : "-";
+                else {
+                    v = ov::valueText(i.value) + "  " + i.cmp + " " + ov::valueText(i.target);
+                    c = i.holds ? C_GREEN : C_TEXT;
+                }
+                s32 vw = textWidth(r, v, 16);
+                std::string shown = name;
+                while (shown.size() > 4 && textWidth(r, shown, 16) > w - 24 - vw) shown = shown.substr(0, shown.size() - 4) + "...";
+                r->drawString(shown.c_str(), false, x + 8, cy, 16, r->a(C_TEXT));
+                r->drawString(v.c_str(), false, x + w - 8 - vw, cy, 16, r->a(c));
+            }
+        }), (u16)(96 + 28 * rows));
     }
 
     void addSection(const char* title, const std::vector<size_t>& idx) {

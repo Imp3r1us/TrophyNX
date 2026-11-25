@@ -12,10 +12,13 @@ How to write a section (see `tools/release/changelog.py`):
 
 ## 0.17.0 (2026-11-25)
 
-Achievements now play a sound when they unlock, and popups show only unlocks by default.
+Achievements now play a sound when they unlock, play time achievements pop up while you play, and the overlay shows live progress.
 
 ### New
 - Unlock sound: a short chime plays with each achievement popup: a rising whoosh, a soft thump and a two-note bell, with extra sparkle for silver, gold and platinum. Popup settings: Unlock sound (Chime, Fanfare, My sound, Off) and Sound volume.
+- Play time and launch achievements ("Play 10 hours", "Launch 25 times") now unlock while you play, with a popup, instead of waiting for the next time you open the app.
+- Tesla overlay: refreshes by itself while open, and shows live progress for play time and memory achievements ("12,500 / 50,000").
+- Tesla overlay: a Live memory test section for games with memory achievements: the game version (build ID), how many achievements it can watch on that version, and each value it reads. Handy to check a draft from drafts/memory before trusting it.
 - Compact popup: two new positions, Top center and Bottom center. The card drops down from the top edge (or rises from the bottom).
 - My sound: put your own sound in `switch/TrophyNX/sounds/unlock.wav` (uncompressed PCM .wav, 3 seconds at most) and pick My sound.
 
@@ -24,6 +27,8 @@ Achievements now play a sound when they unlock, and popups show only unlocks by 
 
 ### Live module 0.13.0
 - Plays the unlock sound on the console's audio output while the popup is on screen. It is skipped, never the popup, when memory is short.
+- Reads the play log once a minute while a game runs and unlocks play time / launch achievements (the game's own and universal.json).
+- Writes the live memory test for the overlay while it watches a game's memory.
 
 ## 0.16.3 (2026-11-25)
 

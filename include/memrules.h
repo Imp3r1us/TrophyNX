@@ -116,11 +116,15 @@ public:
     bool lastReadFailed() const { return m_readFailed; }
     size_t pending() const;
     const std::map<std::string, double>& lastValues() const { return m_values; }
+    // For the live memory test (overlay): did the item hold on the last check, is it unlocked.
+    bool lastHeld(const std::string& id) const { auto it = m_held.find(id); return it != m_held.end() && it->second; }
+    bool isDone(const std::string& id) const { return m_done.count(id) != 0; }
 
 private:
     std::vector<Item> m_items;
     std::set<std::string> m_done;
     std::map<std::string, int> m_streak;
+    std::map<std::string, bool> m_held;
     // Per achievement, per condition, per address: what "becomes" and "increase" remember.
     struct AddrState {
         int falseRun = 0;        // checks in a row where the comparison was false

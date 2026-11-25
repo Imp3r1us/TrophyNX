@@ -31,6 +31,7 @@ std::string titleHex(uint64_t titleId) {
 
 std::string snapshotPath(const std::string& dataDir, uint64_t titleId) { return dataDir + "/overlay/" + titleHex(titleId) + ".json"; }
 std::string livePath(const std::string& dataDir, uint64_t titleId) { return dataDir + "/overlay/" + titleHex(titleId) + ".live.json"; }
+std::string memTestPath(const std::string& dataDir, uint64_t titleId) { return dataDir + "/overlay/" + titleHex(titleId) + ".memtest.json"; }
 
 static std::string printAndFree(cJSON* root) {
     char* s = cJSON_PrintUnformatted(root);
@@ -99,6 +100,74 @@ bool parseSnapshot(const char* json, GameData& out) {
     }
     cJSON_Delete(root);
     return out.titleId != 0;
+}
+
+// ---------------------------------------------------------------- live memory test
+std::string memTestJson(const MemTest& t) {
+    cJSON* root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "title_id", titleHex(t.titleId).c_str());
+    cJSON_AddStringToObject(root, "build", t.build.c_str());
+    cJSON_AddNumberToObject(root, "watched", t.watched);
+    cJSON_AddNumberToObject(root, "total", t.total);
+    cJSON_AddBoolToObject(root, "reading", t.reading);
+    if (!t.note.empty()) cJSON_AddStringToObject(root, "note", t.note.c_str());
+    cJSON* arr = cJSON_AddArrayToObject(root, "items");
+    for (const MemTestItem& i : t.items) {
+        cJSON* o = cJSON_CreateObject();
+        cJSON_AddStringToObject(o, "id", i.id.c_str());
+        cJSON_AddStringToObject(o, "cmp", i.cmp.c_str());
+        cJSON_AddNumberToObject(o, "target", i.target);
+        if (i.read) cJSON_AddNumberToObject(o, "value", i.value);
+        if (i.holds) cJSON_AddTrueToObject(o, "holds");
+        if (i.done) cJSON_AddTrueToObject(o, "done");
+        cJSON_AddItemToArray(arr, o);
+    }
+    return printAndFree(root);
+}
+
+bool parseMemTest(const char* json, MemTest& out) {
+    out = MemTest();
+    cJSON* root = json ? cJSON_Parse(json) : nullptr;
+    if (!root) return false;
+    out.titleId = strtoull(str(root, "title_id").c_str(), nullptr, 16);
+    out.build = str(root, "build");
+    out.watched = (int)num(root, "watched", 0);
+    out.total = (int)num(root, "total", 0);
+    out.reading = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(root, "reading"));
+    out.note = str(root, "note");
+    const cJSON* o;
+    cJSON_ArrayForEach(o, cJSON_GetObjectItemCaseSensitive(root, "items")) {
+        MemTestItem i;
+        i.id = str(o, "id");
+        if (i.id.empty()) continue;
+        i.cmp = str(o, "cmp");
+        if (i.cmp.empty()) i.cmp = ">=";
+        i.target = num(o, "target", 0);
+        const cJSON* v = cJSON_GetObjectItemCaseSensitive(o, "value");
+        i.read = cJSON_IsNumber(v);
+        i.value = i.read ? v->valuedouble : 0;
+        i.holds = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "holds"));
+        i.done = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "done"));
+        out.items.push_back(i);
+    }
+    cJSON_Delete(root);
+    return out.titleId != 0;
+}
+
+std::string valueText(double v) {
+    char b[48];
+    if (v != v) return "?";
+    if (std::fabs(v - std::round(v)) < 1e-6 && std::fabs(v) < 1e15) {
+        long long n = std::llround(v);
+        std::string digits = std::to_string(n < 0 ? -n : n), out;
+        for (size_t i = 0; i < digits.size(); i++) {
+            if (i && (digits.size() - i) % 3 == 0) out += ',';
+            out += digits[i];
+        }
+        return (n < 0 ? "-" : "") + out;
+    }
+    snprintf(b, sizeof(b), "%.2f", v);
+    return b;
 }
 
 // ---------------------------------------------------------------- live progress

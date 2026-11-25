@@ -138,6 +138,12 @@ static void writeOverlaySnapshots(const Library& lib) {
             o.tier = ov::tierFor(a.tier, a.points);
             o.hidden = a.hidden;
             o.showProgress = a.rule.showProgress && a.rule.target > 0;
+            // memory "at least N": the module sends the live value, so the overlay can show "1,234 / 10,000"
+            if (a.rule.type == RuleType::Memory && a.rule.mem.all.size() == 1 && a.rule.mem.all[0].cmp == mem::Cmp::Ge &&
+                a.rule.mem.all[0].change == mem::Change::None && a.rule.mem.all[0].target > 1 && !a.hidden) {
+                o.showProgress = true;
+                o.target = a.rule.mem.all[0].target;
+            }
             o.target = a.rule.target;
             o.divisor = a.rule.divisor;
             o.value = a.value;

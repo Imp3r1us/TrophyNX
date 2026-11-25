@@ -314,16 +314,39 @@ void applyGameDef(Game& g, const GameDef& d) {
     g.achs = d.achs;
 }
 
-void loadUniversal(const std::string& path, std::vector<Achievement>& perGame, std::vector<Achievement>& global, std::string& errors) {
-    cJSON* root = loadJson(path);
-    if (!root) return;
+static void universalFromJson(cJSON* root, std::vector<Achievement>& perGame, std::vector<Achievement>& global, std::string& errors) {
     perGame.clear();
     global.clear();
     std::string e;
     parseAchList(cJSON_GetObjectItemCaseSensitive(root, "per_game"), perGame, e);
     parseAchList(cJSON_GetObjectItemCaseSensitive(root, "global"), global, e);
     if (!e.empty()) errors += "universal.json: " + e;
+}
+
+void loadUniversal(const std::string& path, std::vector<Achievement>& perGame, std::vector<Achievement>& global, std::string& errors) {
+    cJSON* root = loadJson(path);
+    if (!root) return;
+    universalFromJson(root, perGame, global, errors);
     cJSON_Delete(root);
+}
+
+bool parseUniversal(const char* text, std::vector<Achievement>& perGame, std::vector<Achievement>& global, std::string& errors) {
+    cJSON* root = text ? cJSON_Parse(text) : nullptr;
+    if (!root) return false;
+    universalFromJson(root, perGame, global, errors);
+    cJSON_Delete(root);
+    return true;
+}
+
+std::vector<const Achievement*> playStatsMet(const std::vector<Achievement>& achs, double hours, double launches,
+                                             const std::set<std::string>& done) {
+    std::vector<const Achievement*> out;
+    for (const Achievement& a : achs) {
+        if (!isPlayStatsRule(a.rule.type) || done.count(a.id)) continue;
+        double v = a.rule.type == RuleType::PlaytimeHours ? hours : launches;
+        if (v + 1e-9 >= a.rule.target) out.push_back(&a);
+    }
+    return out;
 }
 
 // ---------------------------------------------------------------- evaluation

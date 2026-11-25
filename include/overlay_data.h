@@ -4,6 +4,8 @@
 //                                   (names, descriptions, points, tier, target, progress at scan time)
 //   <data>/overlay/<TID>.live.json  progress written by the live module while the game runs: {"<id>": value}
 //   <data>/unlocks/<user>.json      the unlock store (the truth for unlocked / when)
+//   <data>/overlay/<TID>.memtest.json  live memory test, written by the live module while it watches the game's
+//                                   memory ("memory" rules): version, coverage, each value read. Deleted when it stops.
 //
 // The overlay merges the three, so unlocks and progress made during play show without opening the app.
 // Pure code (no Switch services): shared by the app, the live module, the overlay and the host tests.
@@ -44,6 +46,7 @@ const char* tierName(int tier);
 std::string titleHex(uint64_t titleId);   // "0100ABCD12345000"
 std::string snapshotPath(const std::string& dataDir, uint64_t titleId);
 std::string livePath(const std::string& dataDir, uint64_t titleId);
+std::string memTestPath(const std::string& dataDir, uint64_t titleId);
 
 // Snapshot (app side writes, overlay reads).
 std::string snapshotJson(const GameData& g);
@@ -52,6 +55,27 @@ bool parseSnapshot(const char* json, GameData& out);
 // Live progress: {"<id>": value}. mergeLive() returns `existing` with `updates` applied (existing may be empty or broken).
 std::string mergeLive(const std::string& existing, const std::map<std::string, double>& updates);
 std::map<std::string, double> parseLive(const char* json);
+
+// Live memory test: what the module reads for each "memory" achievement of the running game.
+struct MemTestItem {
+    std::string id;
+    std::string cmp = ">=";
+    double target = 0, value = 0;
+    bool read = false;    // a value was read this version (false: no address for it, or the read failed)
+    bool holds = false;   // the condition holds right now
+    bool done = false;    // already unlocked
+};
+struct MemTest {
+    uint64_t titleId = 0;
+    std::string build;    // running version's build ID (16 hex)
+    int watched = 0, total = 0;   // achievements with an address for this version / memory achievements
+    bool reading = false; // false: nothing to watch on this version (or the cheat service refused)
+    std::string note;     // why not reading, in a few words
+    std::vector<MemTestItem> items;
+};
+std::string memTestJson(const MemTest& t);
+bool parseMemTest(const char* json, MemTest& out);
+std::string valueText(double v);   // "12,345" / "3.5" (memory values, overlay)
 
 // Unlock times of one game from the unlock store's text ("<TID>/<id>": time), without parsing the whole file:
 // the store holds every game and the overlay's memory is small.
