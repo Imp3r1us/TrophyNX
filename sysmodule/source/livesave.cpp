@@ -1,6 +1,7 @@
 // Live save watch, see include/livesave.h.
 #include "livesave.h"
 #include "closescan.h"
+#include "heap.h"
 #include "livepopups.h"
 #include "popup.h"
 #include "rawfat.h"
@@ -105,8 +106,9 @@ bool readSave(const saveimg::ReadFn& rd, LiveLogFn log) {
     u64 t0 = armGetSystemTick();
     std::string seen, openError;
     {
-        saveimg::ImageSaveSource src(rd, moduleMemoryAvailable);
+        saveimg::ImageSaveSource src(rd, moduleMemoryAvailable, moduleReserveMemory);
         evaluateSave(g, src);
+        heapUnreserve();   // memory taken for a big save file (if any) goes back now
         seen = src.commit();
         openError = src.lastError();
     }

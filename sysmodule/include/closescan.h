@@ -22,5 +22,8 @@ int unlockMet(const Game& g, const GameDef& def, const std::string& defSource, c
 
 // Free bytes in the module's fixed heap, minus a safety margin.
 size_t moduleMemoryAvailable();
+// Grows the module heap so that moduleMemoryAvailable() >= bytes, if the system has room (heap.h).
+// Whoever reads saves calls heapUnreserve() when done.
+bool moduleReserveMemory(size_t bytes);
 
 CloseScanResult closeScan(uint64_t titleId, const AccountUid& uid, void (*logf)(const char* fmt, ...));

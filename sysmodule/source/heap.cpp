@@ -85,6 +85,46 @@ bool heapAcquire(const char* why) {
     return ok;
 }
 
+static bool g_reserved = false;
+
+bool heapReserve(size_t freeBytes, const char* why) {
+    mutexLock(&g_mtx);
+    size_t have = heapFree();
+    if (have >= freeBytes) { mutexUnlock(&g_mtx); return true; }
+    size_t target = (g_size + (freeBytes - have) + GRANULE - 1) / GRANULE * GRANULE;
+    if (target > HEAP_MAX_SIZE) {
+        mutexUnlock(&g_mtx);
+        if (g_log) g_log("memory: %s needs %u KB free, more than the %u KB heap limit", why, (unsigned)(freeBytes >> 10), (unsigned)(HEAP_MAX_SIZE >> 10));
+        return false;
+    }
+    s64 sysFree = 0;
+    size_t grow = target - g_size;
+    if (systemFree(sysFree) && sysFree - (s64)grow < MIN_FREE_AFTER) {
+        mutexUnlock(&g_mtx);
+        if (g_log) g_log("memory: %s needs the heap at %u KB - system memory too low (%lld KB free, needs %u KB + %lld KB spare)", why,
+                         (unsigned)(target >> 10), (long long)(sysFree >> 10), (unsigned)(grow >> 10), (long long)(MIN_FREE_AFTER >> 10));
+        return false;
+    }
+    __malloc_lock(_REENT);
+    bool ok = resize(target);
+    __malloc_unlock(_REENT);
+    if (ok && !g_reserved) { g_reserved = true; g_leases++; }
+    mutexUnlock(&g_mtx);
+    if (g_log) {
+        if (ok) g_log("memory: heap grown to %u KB for %s", (unsigned)(target >> 10), why);
+        else g_log("memory: %s - could not grow the heap to %u KB", why, (unsigned)(target >> 10));
+    }
+    return ok;
+}
+
+void heapUnreserve() {
+    mutexLock(&g_mtx);
+    bool had = g_reserved;
+    g_reserved = false;
+    mutexUnlock(&g_mtx);
+    if (had) heapRelease();
+}
+
 void heapRelease() {
     mutexLock(&g_mtx);
     if (g_leases > 0 && --g_leases == 0) {

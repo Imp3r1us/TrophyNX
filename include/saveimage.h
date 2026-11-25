@@ -80,8 +80,8 @@ private:
 // SaveSource over an image: files of the save by their path inside it.
 class ImageSaveSource : public SaveSource {
 public:
-    explicit ImageSaveSource(ReadFn read, std::function<size_t()> memory = nullptr)
-        : m_read(std::move(read)), m_memory(std::move(memory)) {}
+    explicit ImageSaveSource(ReadFn read, std::function<size_t()> memory = nullptr, std::function<bool(size_t)> reserve = nullptr)
+        : m_read(std::move(read)), m_memory(std::move(memory)), m_reserve(std::move(reserve)) {}
     bool open(uint64_t titleId) override;
     void close() override { m_img.close(); m_open = false; }
     std::string lastError() override { return m_err; }
@@ -90,6 +90,7 @@ public:
     bool fileSize(const std::string& rel, uint64_t& size) override;
     bool readAt(const std::string& rel, uint64_t off, void* buf, size_t len) override;
     size_t memoryAvailable() override { return m_memory ? m_memory() : (size_t)-1; }
+    bool reserveMemory(size_t bytes) override { return m_reserve && m_reserve(bytes); }
     // commitId() of the state that was read (to check that the game didn't save meanwhile). Kept after
     // close(): every reader closes its source when done, and Image::close() clears the image's own copy, which
     // made live save see "" after each read and never finish one.
@@ -98,6 +99,7 @@ public:
 private:
     ReadFn m_read;
     std::function<size_t()> m_memory;
+    std::function<bool(size_t)> m_reserve;
     Image m_img;
     bool m_open = false;
     std::string m_err, m_commit;

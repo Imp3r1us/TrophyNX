@@ -524,21 +524,27 @@ static void giveKey(TheatrhythmDoc& d, const std::string& k) { d.password = k; }
 template <class Doc> static void givePruning(Doc&, const std::vector<std::string>&, size_t) {}
 static void givePruning(TheatrhythmDoc& d, const std::vector<std::string>& paths, size_t budget) { d.keepPaths = paths; d.memoryBudget = budget; }
 // Live module: readers that read a file in pieces and keep only the rule values, so any save size fits.
+// The others read the whole file; when it doesn't fit, the module heap is grown for it (SaveSource::reserveMemory).
+typedef std::function<bool(uint64_t, void*, size_t)> ReadFn;
 template <class Doc> static bool readsInPieces(const Doc*) { return false; }
 static bool readsInPieces(const SgbDoc*) { return true; }
 static bool readsInPieces(const BymlDoc*) { return true; }
-template <class Doc> static bool parseInPieces(Doc&, SaveSource&, const std::string&, uint64_t, const std::vector<std::string>&) { return false; }
-static bool parseInPieces(SgbDoc& d, SaveSource& src, const std::string& f, uint64_t size, const std::vector<std::string>& paths) {
-    size_t avail = src.memoryAvailable();   // already less a safety margin; the reader itself takes ~100 KB
-    size_t budget = avail > 160 * 1024 ? avail - 160 * 1024 : 1;
-    return d.parseStream([&](uint64_t off, void* buf, size_t len) { return src.readAt(f, off, buf, len); }, size, paths, budget);
+static bool readsInPieces(const JsonDoc*) { return true; }   // only plain JSON (GVAS, NRBF... derive from JsonDoc)
+template <class Doc> static bool parseInPieces(Doc&, const ReadFn&, uint64_t, const std::vector<std::string>&, size_t) { return false; }
+static bool parseInPieces(SgbDoc& d, const ReadFn& rd, uint64_t size, const std::vector<std::string>& paths, size_t avail) {
+    size_t budget = avail > 160 * 1024 ? avail - 160 * 1024 : 1;   // the reader itself takes ~100 KB
+    return d.parseStream(rd, size, paths, budget);
+}
+// Plain JSON (Hollow Knight, Unity games...): read 16 KB at a time, only the rule values are built.
+static bool parseInPieces(JsonDoc& d, const ReadFn& rd, uint64_t size, const std::vector<std::string>& paths, size_t avail) {
+    size_t budget = avail > 64 * 1024 ? avail - 64 * 1024 : 1;
+    return d.parseStream(rd, size, paths, budget);
 }
 // BYML (Super Mario Odyssey, ~2 MB per file): offsets everywhere, so the file is read in 16 KB pages as the
 // rule paths are walked; every path is walked here once (results kept by the document) to catch read errors.
-static bool parseInPieces(BymlDoc& d, SaveSource& src, const std::string& f, uint64_t size, const std::vector<std::string>& paths) {
-    size_t avail = src.memoryAvailable();
+static bool parseInPieces(BymlDoc& d, const ReadFn& rd, uint64_t size, const std::vector<std::string>& paths, size_t avail) {
     size_t budget = avail > 96 * 1024 ? avail - 96 * 1024 : 1;
-    if (!d.parseStream([&src, f](uint64_t off, void* buf, size_t len) { return src.readAt(f, off, buf, len); }, size, budget)) return false;
+    if (!d.parseStream(rd, size, budget)) return false;
     std::vector<BymlValue> v;
     for (const std::string& p : paths) { v.clear(); d.query(p, v); }
     if (d.readFailed()) { d.error = "read error"; return false; }
@@ -622,11 +628,27 @@ static void evaluateTree(Game& g, SaveSource& src) {
         }
     };
     for (const std::string& f : g.saveFiles) {
-        if (src.streaming() && g.xorKey.empty() && readsInPieces((const Doc*)nullptr)) {
+        if (src.streaming() && readsInPieces((const Doc*)nullptr)) {
             uint64_t size = 0;
             if (!src.fileSize(f, size)) { g.debug.push_back("  " + f + ": not present"); continue; }
+            const std::string& k = g.xorKey;   // e.g. SIGNALIS: undone as the pieces are read
+            ReadFn rd = [&src, &f, &k](uint64_t off, void* buf, size_t len) {
+                if (!src.readAt(f, off, buf, len)) return false;
+                uint8_t* b = (uint8_t*)buf;
+                if (!k.empty()) for (size_t i = 0; i < len; i++) b[i] ^= (uint8_t)k[(off + i) % k.size()];
+                return true;
+            };
             Doc d;
-            if (!parseInPieces(d, src, f, size, rulePaths)) {
+            bool ok = parseInPieces(d, rd, size, rulePaths, src.memoryAvailable());
+            if (!ok && d.error.find("not enough memory") != std::string::npos) {   // the rule values alone don't fit: more heap
+                size_t want = std::max<size_t>(src.memoryAvailable() * 2, (size_t)4 << 20);
+                if (src.reserveMemory(want)) {
+                    g.debug.push_back("  " + f + ": " + d.error + " - memory grown to " + std::to_string(src.memoryAvailable() >> 10) + " KB, read again");
+                    d = Doc();
+                    ok = parseInPieces(d, rd, size, rulePaths, src.memoryAvailable());
+                }
+            }
+            if (!ok) {
                 g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> NOT RECOGNISED (" + d.error + ")");
                 continue;
             }
@@ -638,23 +660,40 @@ static void evaluateTree(Game& g, SaveSource& src) {
             if (!src.fileSize(f, size)) { g.debug.push_back("  " + f + ": not present"); continue; }
             uint64_t need = size * memoryFactor((const Doc*)nullptr) + size + 128 * 1024;
             size_t avail = src.memoryAvailable();
+            if (need > avail && need < ((uint64_t)1 << 31) && src.reserveMemory((size_t)need)) {   // any reader: grow the heap for this file
+                g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes, needs ~" + std::to_string(need >> 10) + " KB: memory grown from " +
+                                  std::to_string(avail >> 10) + " to " + std::to_string(src.memoryAvailable() >> 10) + " KB");
+                avail = src.memoryAvailable();
+            }
             if (need > avail) {
                 g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> SKIPPED (needs ~" + std::to_string(need >> 10) +
-                                  " KB, " + std::to_string(avail >> 10) + " KB free; the app reads it)");
+                                  " KB, " + std::to_string(avail >> 10) + " KB free even after trying to grow the memory; the app reads it)");
                 continue;
             }
         }
-        std::vector<uint8_t> buf;
-        if (!src.readAll(f, buf)) { g.debug.push_back("  " + f + ": not present"); continue; }
-        size_t size = buf.size();
-        if (!g.xorKey.empty()) {   // e.g. SIGNALIS: JSON XORed with a fixed phrase
-            const std::string& k = g.xorKey;
-            for (size_t i = 0; i < buf.size(); i++) buf[i] ^= (uint8_t)k[i % k.size()];
-        }
         Doc d;
-        giveKey(d, key);
-        if (src.streaming()) givePruning(d, rulePaths, src.memoryAvailable() > size ? src.memoryAvailable() - size : 0);
-        if (!d.parse(std::move(buf))) {
+        size_t size = 0;
+        bool ok = false, present = true;
+        for (int attempt = 0; attempt < 2; attempt++) {
+            std::vector<uint8_t> buf;
+            if (!src.readAll(f, buf)) { present = false; break; }
+            size = buf.size();
+            if (!g.xorKey.empty()) {   // e.g. SIGNALIS: JSON XORed with a fixed phrase
+                const std::string& k = g.xorKey;
+                for (size_t i = 0; i < buf.size(); i++) buf[i] ^= (uint8_t)k[i % k.size()];
+            }
+            d = Doc();
+            giveKey(d, key);
+            if (src.streaming()) givePruning(d, rulePaths, src.memoryAvailable() > size ? src.memoryAvailable() - size : 0);
+            ok = d.parse(std::move(buf));
+            // the reader found it needs more memory than estimated (any reader): grow the heap once and read again
+            if (ok || attempt || !src.streaming() || d.error.find("not enough memory") == std::string::npos) break;
+            size_t want = std::max<size_t>(src.memoryAvailable() * 2, (size_t)4 << 20);
+            if (!src.reserveMemory(want)) break;
+            g.debug.push_back("  " + f + ": " + d.error + " - memory grown to " + std::to_string(src.memoryAvailable() >> 10) + " KB, read again");
+        }
+        if (!present) { g.debug.push_back("  " + f + ": not present"); continue; }
+        if (!ok) {
             g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> NOT RECOGNISED (" + d.error + ")");
             continue;
         }

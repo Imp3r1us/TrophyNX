@@ -2,10 +2,11 @@
 // offset reads for binary_le, tree files skipped when too big. This test checks that it gives exactly
 // the same values as the app's whole-file mode.
 //   python3 host/test/gen_saves.py /tmp/r romfs/games    (synthetic saves)
-//   ./test_stream romfs/games /tmp/r/saves      (passwords of encrypted saves: /tmp/r/keys)
+//   ./test_stream romfs/games /tmp/r/saves /tmp/r/defs   (passwords of encrypted saves: /tmp/r/keys)
 #include "rules.h"
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 
 struct DirSource : SaveSource {
     std::string root, dir;
@@ -40,6 +41,14 @@ struct DirSource : SaveSource {
         return ok;
     }
     size_t memoryAvailable() override { return avail; }
+    size_t growTo = 0;      // > 0: reserveMemory may grow `avail` up to this (the module heap growing)
+    int reserves = 0;
+    bool reserveMemory(size_t bytes) override {
+        if (!growTo || bytes > growTo) return false;
+        reserves++;
+        if (bytes > avail) avail = bytes;
+        return true;
+    }
 };
 
 int main(int argc, char** argv) {
@@ -48,26 +57,29 @@ int main(int argc, char** argv) {
     std::string errors;
     std::vector<std::string> loaded;
     loadGameDefs(argv[1], defs, errors, loaded);
+    if (argc > 3) loadGameDefs(argv[3], defs, errors, loaded);   // gen_saves.py's fixture games (every tree reader)
     setSaveKeyDir(std::string(argv[2]) + "/../keys");
     int fails = 0, games = 0, compared = 0, met = 0;
     for (auto& kv : defs) {
-        Game full, st, tiny, small;
-        full.id = st.id = tiny.id = small.id = kv.first;
+        Game full, st, tiny, small, grow;
+        full.id = st.id = tiny.id = small.id = grow.id = kv.first;
         applyGameDef(full, kv.second);
         applyGameDef(st, kv.second);
         applyGameDef(tiny, kv.second);
         applyGameDef(small, kv.second);
+        applyGameDef(grow, kv.second);
         // 384 KB: about what the live module has left while a game runs; readers that read in pieces must still work
-        DirSource a(argv[2], false, (size_t)-1), b(argv[2], true, 64u << 20), c(argv[2], true, 1024), e(argv[2], true, 384u << 10);
+        DirSource a(argv[2], false, (size_t)-1), b(argv[2], true, 64u << 20), c(argv[2], true, 1024), e(argv[2], true, 384u << 10), h(argv[2], true, 48u << 10);
+        h.growTo = 16u << 20;   // almost nothing free, but the heap can grow to 16 MB (like the module)
         evaluateSave(full, a);
         if (full.saveStatus != SaveStatus::Ok) continue;
         evaluateSave(st, b);
         evaluateSave(tiny, c);
         evaluateSave(small, e);
-        bool pieces = kv.second.reader == "byml" || kv.second.reader == "sgb";
+        evaluateSave(grow, h);
+        bool pieces = kv.second.reader == "byml" || kv.second.reader == "sgb" || kv.second.reader == "json";
         games++;
-        bool tree = kv.second.reader == "json" || kv.second.reader == "byml" || kv.second.reader == "gvas" || kv.second.reader == "nrbf" || kv.second.reader == "sgb" ||
-                    kv.second.reader == "deltarune" || kv.second.reader == "theatrhythm";
+        bool tree = kv.second.reader != "binary_le" && kv.second.reader != "gamedata_hash" && kv.second.reader != "totk_progress";
         for (size_t i = 0; i < full.achs.size(); i++) {
             if (!isSaveRule(full.achs[i].rule.type)) continue;
             compared++;
@@ -80,6 +92,10 @@ int main(int argc, char** argv) {
                 printf("FAIL %s %s with 384 KB: full %g, streamed %g\n", kv.second.name.c_str(), full.achs[i].id.c_str(), full.achs[i].value, small.achs[i].value);
                 fails++;
             }
+            if (full.achs[i].value != grow.achs[i].value) {   // every reader, whatever the save size
+                printf("FAIL %s %s with 48 KB + growing: full %g, streamed %g\n", kv.second.name.c_str(), full.achs[i].id.c_str(), full.achs[i].value, grow.achs[i].value);
+                fails++;
+            }
             // 1 KB "heap": tree files must be skipped (nothing unlocked), the others still work
             double expect = tree ? 0 : full.achs[i].value;
             if (tiny.achs[i].value != expect) {
@@ -87,8 +103,10 @@ int main(int argc, char** argv) {
                 fails++;
             }
         }
+        if (getenv("STREAM_DEBUG")) for (const std::string& l : grow.debug) printf("    | %s\n", l.c_str());
         printf("%-45s %-14s full = streamed (%llu reads)%s%s\n", kv.second.name.c_str(), kv.second.reader.c_str(), (unsigned long long)b.reads,
-               pieces ? (", = 384 KB heap (" + std::to_string(e.reads) + " reads)").c_str() : "", tree ? ", skipped with no memory" : "");
+               pieces ? (", = 384 KB heap (" + std::to_string(e.reads) + " reads)").c_str() :
+               h.reserves ? (", = 48 KB heap grown " + std::to_string(h.reserves) + "x").c_str() : "", tree ? ", skipped with no memory" : "");
     }
     printf("%d games, %d save achievements compared (%d met), %d failure(s)\n", games, compared, met, fails);
     return fails ? 1 : 0;

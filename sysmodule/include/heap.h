@@ -10,12 +10,18 @@
 
 #define HEAP_IDLE_SIZE 0x200000   // 2 MB (svcSetHeapSize granularity): definitions, flag scanner, logs
 #define HEAP_BIG_SIZE  0x400000   // 4 MB: popup layer buffers, scan on close (one save file at a time)
+#define HEAP_MAX_SIZE  0x1000000  // 16 MB: most a save read may grow the heap to (heapReserve), if the system has room
 
 // Tries to take the big heap for `why`. False: not enough free system memory (logged) - the task then
 // runs in the idle heap if it fits (popup ~1 MB; scan on close skips save files that don't fit).
 // Nested/parallel leases (popup thread + main loop) are counted; each successful acquire needs a release.
 bool heapAcquire(const char* why);
 void heapRelease();
+// A save file that doesn't fit (any reader, any game): grows the heap until `freeBytes` are free in it, up to
+// HEAP_MAX_SIZE and only while the system keeps its spare memory. Holds one lease until heapUnreserve(), which
+// the save readers call when they are done (scan on close, live save). False (logged): not enough room.
+bool heapReserve(size_t freeBytes, const char* why);
+void heapUnreserve();
 // Current heap size, and what malloc can still hand out in it.
 size_t heapSize();
 size_t heapFree();

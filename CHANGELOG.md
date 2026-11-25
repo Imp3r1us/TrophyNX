@@ -10,6 +10,18 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.16.3 (2026-11-25)
+
+Live popups no longer depend on how big a game's save is: every supported game is read while you play, not only after you open TrophyNX.
+
+### Fixed
+- Saves too big for the live module's memory were skipped (achievements only unlocked when you opened the app). This now applies to every save format, not game by game: Hollow Knight and other JSON saves are read in pieces like Odyssey and Hades, and any other format gets more memory for the time of the read.
+
+### Live module 0.12.0
+- JSON saves (Hollow Knight, SIGNALIS, Paper Mario: The Origami King, DAVE THE DIVER, Vampire Survivors...) are read 16 KB at a time, and only the values the achievements use are kept, whatever the file size.
+- Every other format (Unreal GVAS, .NET NRBF, RPG Maker, GameMaker, DELTARUNE, THEATRHYTHM...): when a file doesn't fit, the module grows its memory for the read (up to 16 MB, only if the console keeps 6 MB free for itself), then gives it back. Same when a reader finds it needs more than expected.
+- The logs say when this happens (`memory grown from ... to ... KB`); a file is only skipped if the console really has no room, and the log says so.
+
 ## 0.16.2 (2026-11-25)
 
 Super Mario Odyssey achievements now unlock with a popup while you play, not only when you open TrophyNX.
