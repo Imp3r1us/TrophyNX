@@ -10,6 +10,17 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.16.2 (2026-11-25)
+
+Super Mario Odyssey achievements now unlock with a popup while you play, not only when you open TrophyNX.
+
+### Fixed
+- Super Mario Odyssey: the live module skipped its 2 MB save files because they did not fit in its memory, so nothing unlocked (no popup, no progress in the overlay) until you opened the app. It now reads them in small pieces.
+
+### Live module 0.11.2
+- BYML saves (Super Mario Odyssey) are read in 16 KB pages as the achievement paths are walked, with at most 512 KB in memory. Popups come a few seconds after the game saves, and when you quit the game.
+- `live_log.txt` / `close_log.txt` show `BYML v3 LE (read in pages, N page reads)` for each file read.
+
 ## 0.16.1 (2026-11-25)
 
 The compact popup is bigger, and its size is now a setting.

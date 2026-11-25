@@ -11,6 +11,8 @@
 //   ItemCap[*]                           every element of a list of strings
 // A path matches 0..n leaf values.
 #include <cstdint>
+#include <functional>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -32,25 +34,51 @@ class BymlDoc {
 public:
     // Finds the BYML document at offset 0 or 0x10 (SMO saves have a 16-byte header).
     bool parse(std::vector<uint8_t>&& data);
+    // Live module (small heap): the file stays where it is and is read in pages through `read`
+    // (offset, buffer, length) as queries walk it. Only the key table and up to `budget` bytes of
+    // pages are kept in memory, so a 2 MB Odyssey save fits in a few hundred KB. `read` must stay
+    // valid while the document is queried. False (error = "not enough memory...") if `budget` is too small.
+    bool parseStream(std::function<bool(uint64_t, void*, size_t)> read, uint64_t size, size_t budget);
     // Collects every leaf matched by `path`. Returns false if the path is malformed.
     bool query(const std::string& path, std::vector<BymlValue>& out) const;
     size_t base() const { return m_base; }
     bool bigEndian() const { return m_be; }
     int version() const { return m_version; }
+    bool streamed() const { return (bool)m_read; }
+    uint64_t pageReads() const { return m_pageReads; }   // streamed: pages read from the file
+    bool readFailed() const { return m_readFailed; }     // streamed: a page could not be read (values incomplete)
     std::string error;
 private:
     struct Node { uint8_t type; uint32_t raw; };
     std::vector<uint8_t> m_data;
+    size_t m_size = 0;
     size_t m_base = 0;
     bool m_be = false;
     int m_version = 0;
-    std::vector<std::string> m_keys, m_strings;
+    std::vector<std::string> m_keys;
+    uint32_t m_strTab = 0, m_strCount = 0;   // string table (absolute offset), read on demand
     Node m_root{0, 0};
 
+    // Streamed mode: a few pages of the file, least recently used one replaced.
+    std::function<bool(uint64_t, void*, size_t)> m_read;
+    struct Page { uint64_t index = ~0ull; uint64_t used = 0; std::vector<uint8_t> data; };
+    mutable std::vector<Page> m_pages;
+    mutable uint64_t m_tick = 0, m_pageReads = 0;
+    mutable bool m_readFailed = false;
+    mutable uint8_t m_scratch[8];
+    // Same path asked by several rules (ShineData[*]/IsGet...): walked once.
+    mutable std::map<std::string, std::vector<BymlValue>> m_cache;
+
+    bool setup();
+    const uint8_t* at(size_t off, size_t len) const;   // nullptr if out of range or unreadable
+    const uint8_t* page(uint64_t index) const;
+    uint8_t rd8(size_t off) const { const uint8_t* p = at(off, 1); return p ? *p : 0; }
     uint32_t rd32(size_t off) const;
     uint32_t rd24(size_t off) const;
-    bool readStringTable(uint32_t off, std::vector<std::string>& out);
-    bool inRange(size_t off, size_t len) const { return off <= m_data.size() && len <= m_data.size() - off; }
+    bool readCString(size_t off, std::string& out) const;
+    bool readKeyTable(uint32_t off);
+    bool stringAt(uint32_t i, std::string& out) const;
+    bool inRange(size_t off, size_t len) const { return off <= m_size && len <= m_size - off; }
     BymlValue leaf(const Node& n) const;
     bool dictGet(uint32_t off, const std::string& key, Node& out) const;
     size_t listSize(uint32_t off) const;

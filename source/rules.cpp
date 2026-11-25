@@ -457,6 +457,7 @@ double treeRuleValue(const Rule& rule, const Doc& doc, size_t& found) {
 }
 
 static std::string describeDoc(const BymlDoc& d) {
+    if (d.streamed()) return "BYML v" + std::to_string(d.version()) + (d.bigEndian() ? " BE" : " LE") + " (read in pages, " + std::to_string(d.pageReads()) + " page reads)";
     char info[64];
     snprintf(info, sizeof(info), "BYML v%d %s at 0x%zX", d.version(), d.bigEndian() ? "BE" : "LE", d.base());
     return info;
@@ -525,11 +526,23 @@ static void givePruning(TheatrhythmDoc& d, const std::vector<std::string>& paths
 // Live module: readers that read a file in pieces and keep only the rule values, so any save size fits.
 template <class Doc> static bool readsInPieces(const Doc*) { return false; }
 static bool readsInPieces(const SgbDoc*) { return true; }
+static bool readsInPieces(const BymlDoc*) { return true; }
 template <class Doc> static bool parseInPieces(Doc&, SaveSource&, const std::string&, uint64_t, const std::vector<std::string>&) { return false; }
 static bool parseInPieces(SgbDoc& d, SaveSource& src, const std::string& f, uint64_t size, const std::vector<std::string>& paths) {
     size_t avail = src.memoryAvailable();   // already less a safety margin; the reader itself takes ~100 KB
     size_t budget = avail > 160 * 1024 ? avail - 160 * 1024 : 1;
     return d.parseStream([&](uint64_t off, void* buf, size_t len) { return src.readAt(f, off, buf, len); }, size, paths, budget);
+}
+// BYML (Super Mario Odyssey, ~2 MB per file): offsets everywhere, so the file is read in 16 KB pages as the
+// rule paths are walked; every path is walked here once (results kept by the document) to catch read errors.
+static bool parseInPieces(BymlDoc& d, SaveSource& src, const std::string& f, uint64_t size, const std::vector<std::string>& paths) {
+    size_t avail = src.memoryAvailable();
+    size_t budget = avail > 96 * 1024 ? avail - 96 * 1024 : 1;
+    if (!d.parseStream([&src, f](uint64_t off, void* buf, size_t len) { return src.readAt(f, off, buf, len); }, size, budget)) return false;
+    std::vector<BymlValue> v;
+    for (const std::string& p : paths) { v.clear(); d.query(p, v); }
+    if (d.readFailed()) { d.error = "read error"; return false; }
+    return true;
 }
 
 // Best value of each achievement over the save files (several slots), shared by every reader.

@@ -69,6 +69,9 @@ jobs:
           g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_stream.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_stream
           python3 host/test/gen_saves.py /tmp/streamroot romfs/games
           /tmp/test_stream romfs/games /tmp/streamroot/saves
+          # Super Mario Odyssey: the BYML read in pages (live module) gives the same leaves as the whole file
+          g++ -std=gnu++17 -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_byml.cpp source/byml.cpp -o /tmp/test_byml_smo
+          /tmp/test_byml_smo /tmp/streamroot/saves/0100000000010000/File0.bin /tmp/streamroot/saves/0100000000010000/File1.bin
       - name: Host test (live save = save image read from raw NAND while the game runs)
         run: |
           apt-get install -y -qq python3 >/dev/null
