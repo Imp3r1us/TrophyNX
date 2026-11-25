@@ -31,7 +31,7 @@
 #include "memrules.h"
 #include "overlay_data.h"
 
-#define MODULE_VERSION "0.12.0"
+#define MODULE_VERSION "0.13.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {

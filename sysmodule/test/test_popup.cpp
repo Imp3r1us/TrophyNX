@@ -93,9 +93,24 @@ int main(int argc, char** argv) {
         assert(x >= 0 && x + lw <= 1920);
         int hiddenX = popupToastCardX(c, 0.f);
         assert(hiddenX >= 0 && hiddenX + TOAST_W <= lw);   // the slide stays inside the layer
+        assert(popupToastCardY(c, 0.f) == 0 && popupToastCardY(c, 1.f) == 0);
+    }
+    // centered: horizontally centered, TOAST_MARGIN px from the top/bottom edge when shown, sliding vertically
+    for (int c : {CORNER_TOP_CENTER, CORNER_BOTTOM_CENTER}) {
+        int x, y, lw, lh;
+        popupToastLayer(c, TOAST_W, TOAST_H, x, y, lw, lh);
+        assert(lw == TOAST_W && lh == TOAST_H + TOAST_SLIDE && x + TOAST_W / 2 == 1920 / 2);
+        assert(popupToastCardX(c, 0.f) == 0 && popupToastCardX(c, 1.f) == 0);
+        int shownY = y + popupToastCardY(c, 1.f);
+        if (c == CORNER_TOP_CENTER) assert(shownY == TOAST_MARGIN && popupToastCardY(c, 0.f) < popupToastCardY(c, 1.f));    // drops down
+        else assert(shownY + TOAST_H == 1080 - TOAST_MARGIN && popupToastCardY(c, 0.f) > popupToastCardY(c, 1.f));      // rises
+        assert(y >= 0 && y + lh <= 1080);
+        for (float v : {0.f, 0.5f, 1.f}) assert(popupToastCardY(c, v) >= 0 && popupToastCardY(c, v) + TOAST_H <= lh);
     }
     int corner = -1;
     assert(popupParseCorner("bottom-right", corner) && corner == CORNER_BOTTOM_RIGHT && !popupParseCorner("middle", corner));
+    assert(popupParseCorner("top-center", corner) && corner == CORNER_TOP_CENTER);
+    assert(popupParseCorner("bottom-center", corner) && corner == CORNER_BOTTOM_CENTER);
     assert(popupAccentFor(TIER_BRONZE, false) == ACCENT_CYAN && popupAccentFor(TIER_SILVER, false) == ACCENT_CYAN);
     assert(popupAccentFor(TIER_GOLD, false) == ACCENT_GOLD && popupAccentFor(TIER_BRONZE, true) == ACCENT_GOLD);
     assert(popupAccentFor(TIER_PLATINUM, false) == ACCENT_VIOLET);

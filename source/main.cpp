@@ -1146,16 +1146,16 @@ static void drawCaptures(UI& ui) {
 // Edits popup.json, which the live module reads before every popup. The preview is drawn by the module's own
 // renderer (source/popup_draw.cpp), so it is exactly what appears in game.
 enum { PS_CARD, PS_SHOW, PS_DURATION, PS_LIVE, PS_PROGRESS, PS_POSITION, PS_CTHEME, PS_ACCENT, PS_OPACITY, PS_BORDER,
-       PS_ICON, PS_LABEL, PS_THEME, PS_ICONSIDE, PS_SIZE };
+       PS_ICON, PS_LABEL, PS_THEME, PS_ICONSIDE, PS_SIZE, PS_SOUND, PS_VOLUME };
 static const char* PS_STYLES[] = {"custom", "both", "ultrahand", "off"};
 static const char* PS_KINDS[] = {"Unlock", "Progress", "Live save check", "Already unlocked"};
-static const int PS_GENERAL = 5;                          // rows before the card's own section
+static const int PS_GENERAL = 7;                          // rows before the card's own section
 static const int MINI_W = 512, MINI_H = 288;              // the TV in the preview (1920x1080 scaled down)
 
 static std::string popupJsonPath() { return plat::dataDir() + "/popup.json"; }
 
 static std::vector<int> psRows(const PopupSettings& s) {
-    std::vector<int> r = {PS_CARD, PS_SHOW, PS_DURATION, PS_LIVE, PS_PROGRESS};
+    std::vector<int> r = {PS_CARD, PS_SHOW, PS_DURATION, PS_LIVE, PS_PROGRESS, PS_SOUND, PS_VOLUME};
     if (s.compact) r.insert(r.end(), {PS_SIZE, PS_POSITION, PS_CTHEME, PS_ACCENT, PS_OPACITY, PS_BORDER, PS_ICON, PS_LABEL});
     else r.insert(r.end(), {PS_THEME, PS_ICONSIDE});
     return r;
@@ -1168,6 +1168,8 @@ static const char* psLabel(int row) {
         case PS_DURATION: return "Duration";
         case PS_LIVE: return "Live save check";
         case PS_PROGRESS: return "Progress popups";
+        case PS_SOUND: return "Unlock sound";
+        case PS_VOLUME: return "Sound volume";
         case PS_POSITION: return "Position";
         case PS_SIZE: return "Size";
         case PS_CTHEME: return "Theme";
@@ -1187,8 +1189,10 @@ static const char* psHelp(int row) {
         case PS_SHOW: return "Ultrahand: also (or only) as an Ultrahand notification.";
         case PS_DURATION: return "Time on screen. Shorter when several popups wait.";
         case PS_LIVE: return "First read of a session: what live save read + achievements you have.";
-        case PS_PROGRESS: return "A popup when a locked counter goes up (Pet Cerberus 5 / 10).";
-        case PS_POSITION: return "Corner of the screen, 24 px from the edges.";
+        case PS_PROGRESS: return "Off: a popup only when an achievement unlocks. On: also when a counter goes up (5 / 10).";
+        case PS_SOUND: return "Played with each unlock. My sound: a PCM .wav in switch/TrophyNX/sounds/unlock.wav (3 s max).";
+        case PS_VOLUME: return "Loudness of the unlock sound.";
+        case PS_POSITION: return "Where the card shows, 24 px from the edges. Centered cards drop in from the edge.";
         case PS_SIZE: return "How big the card is. Large is 1.5x the original small card.";
         case PS_CTHEME: return "Colours of the card and its text.";
         case PS_ACCENT: return "Colour of the label. By tier: cyan, gold for gold or secret, violet for platinum.";
@@ -1211,7 +1215,11 @@ static std::string psValue(const PopupSettings& s, int row) {
             if (!s.durationMs) return s.compact ? "Auto (3.3 s)" : "Auto (4 s)";
             return fmtNum(s.durationMs / 1000.0) + " s";
         case PS_LIVE: return psOnOff(s.liveCheck);
-        case PS_PROGRESS: return psOnOff(s.progress);
+        case PS_PROGRESS: return s.progress ? "Every progress" : "Unlocks only";
+        case PS_SOUND:
+            for (const NamedOption& o : popupSounds()) if (s.sound == o.name) return o.label;
+            return s.sound;
+        case PS_VOLUME: return std::to_string(s.volume) + " %";
         case PS_POSITION: return popupCornerLabel(s.corner);
         case PS_SIZE:
             for (const NamedSize& z : popupToastSizes()) if (s.size == z.name) return z.label;
@@ -1251,7 +1259,22 @@ static void psChange(PopupSettings& s, int row, int dir) {
         }
         case PS_LIVE: s.liveCheck = !s.liveCheck; break;
         case PS_PROGRESS: s.progress = !s.progress; break;
-        case PS_POSITION: s.corner = psCycle(s.corner, 4, dir); break;
+        case PS_SOUND: {
+            const auto& o = popupSounds();
+            int i = 0;
+            for (int k = 0; k < (int)o.size(); k++) if (s.sound == o[k].name) i = k;
+            s.sound = o[psCycle(i, (int)o.size(), dir)].name;
+            break;
+        }
+        case PS_VOLUME: s.volume = std::min(100, std::max(0, s.volume + dir * 10)); break;
+        case PS_POSITION: {   // left to right, top row then bottom row
+            static const int ORDER[] = {CORNER_TOP_LEFT, CORNER_TOP_CENTER, CORNER_TOP_RIGHT,
+                                        CORNER_BOTTOM_LEFT, CORNER_BOTTOM_CENTER, CORNER_BOTTOM_RIGHT};
+            int i = 0;
+            for (int k = 0; k < 6; k++) if (ORDER[k] == s.corner) i = k;
+            s.corner = ORDER[psCycle(i, 6, dir)];
+            break;
+        }
         case PS_SIZE: {
             const std::vector<NamedSize>& z = popupToastSizes();
             int i = 0;
@@ -1352,6 +1375,7 @@ static void psRenderPreview(UI& ui) {
         int lw, lh;
         popupToastLayer(ui.ps.corner, card.w, card.h, x, y, lw, lh);
         x += popupToastCardX(ui.ps.corner, 1.f);
+        y += popupToastCardY(ui.ps.corner, 1.f);
         PopupImage s;   // its real size on this 720p screen (the layer is in 1080p pixels)
         popupScaleImage(card.px.data(), card.w, card.h, card.w * 2 / 3, card.h * 2 / 3, s);
         ui.psBig = psToImage(s);
@@ -1407,6 +1431,7 @@ static void drawPopupSettings(UI& ui) {
     // settings list
     std::vector<int> rows = psRows(ui.ps);
     int ry = y + 104;
+    const int step = rows.size() > 13 ? 26 : 30;   // compact card: 15 rows must end above the help line
     for (size_t i = 0; i < rows.size(); i++) {
         if ((int)i == PS_GENERAL) {   // the card's own section
             ry += 8;
@@ -1414,7 +1439,7 @@ static void drawPopupSettings(UI& ui) {
             ry += 24;
         }
         bool sel = (int)i == ui.psSel;
-        if (sel) c.fillRound(x + 22, ry - 5, 588, 29, 8, C_PANEL_HI);
+        if (sel) c.fillRound(x + 22, ry - 5, 588, step - 1, 8, C_PANEL_HI);
         ui.font.draw(c, x + 36, ry, 17, psLabel(rows[i]), sel ? C_TEXT : C_SUB);
         std::string v = psValue(ui.ps, rows[i]);
         int vx = x + 596 - ui.font.measure(17, v) - (sel ? 22 : 0);
@@ -1431,7 +1456,7 @@ static void drawPopupSettings(UI& ui) {
             ui.font.draw(c, vx - (rows[i] == PS_ACCENT || rows[i] == PS_CTHEME ? 40 : 18), ry, 17, "<", C_DIM);
             ui.font.draw(c, x + 584, ry, 17, ">", C_DIM);
         }
-        ry += 30;
+        ry += step;
     }
     if (ui.psSel >= 0 && ui.psSel < (int)rows.size())
         ui.font.draw(c, x + 32, y + h - 104, 15, psHelp(rows[ui.psSel]), C_SUB, 580);

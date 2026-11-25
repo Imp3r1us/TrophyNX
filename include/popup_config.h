@@ -28,7 +28,9 @@ struct PopupSettings {
     bool compact = false;          // "card": "compact" or "classic"
     int durationMs = 0;            // "duration_ms": 0 = the card's default (classic 4 s, compact 3.3 s + animation)
     bool liveCheck = true;         // "live_check"
-    bool progress = true;          // "progress"
+    bool progress = false;         // "progress": off = a popup only when an achievement unlocks
+    std::string sound = "chime";   // "sound": "chime" / "fanfare" (built in), "custom" (<data>/sounds/unlock.wav), "off"
+    int volume = 70;               // "volume": 0..100
     // classic card
     bool classicDark = true;       // "theme": "dark" / "light"
     bool classicIconLeft = false;  // "icon": "left" / "right"
@@ -51,6 +53,9 @@ const std::vector<NamedColor>& popupAccents();
 // Compact card sizes: name, label, scale of the 360x70 design.
 struct NamedSize { const char* name; const char* label; float scale; };
 const std::vector<NamedSize>& popupToastSizes();
+// Unlock sounds offered in the app: name, label.
+struct NamedOption { const char* name; const char* label; };
+const std::vector<NamedOption>& popupSounds();
 // Durations offered in the app (ms, 0 = auto).
 const std::vector<int>& popupDurations();
 const char* popupStyleLabel(const std::string& style);   // "On screen", "On screen + Ultrahand", ...

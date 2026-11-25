@@ -31,7 +31,7 @@ static std::vector<uint8_t> readAll(const char* p) {
 int main(int argc, char** argv) {
     // --- defaults: the classic card as before
     PopupSettings d;
-    ok(d.style == "custom" && !d.compact && d.durationMs == 0 && d.liveCheck && d.progress && d.classicDark && !d.classicIconLeft &&
+    ok(d.style == "custom" && !d.compact && d.durationMs == 0 && d.liveCheck && !d.progress && d.classicDark && !d.classicIconLeft &&
            d.corner == CORNER_TOP_LEFT && d.toastTheme == "dark" && d.accent == "tier" && d.opacity == 88 && d.border && d.icon && d.label &&
            d.size == "large",
        "defaults (compact card large)");
@@ -73,6 +73,32 @@ int main(int argc, char** argv) {
     PopupSettings oldFile;   // a popup.json from 0.16.0 has no "size": the card gets the new default
     popupSettingsParse(R"({ "card": "compact", "compact_theme": "oled" })", oldFile);
     ok(oldFile.size == "large", "0.16.0 file without size: large");
+
+    // --- unlock sound and progress popups: unlocks only by default, chime at 70 %
+    ok(d.sound == "chime" && d.volume == 70 && !d.progress, "defaults: chime, 70 %, unlocks only");
+    PopupSettings fan;
+    w.clear();
+    ok(popupSettingsParse(R"({ "sound": "fanfare" })", fan, &w) && w.empty() && fan.sound == "fanfare", "fanfare still offered");
+    PopupSettings snd;
+    w.clear();
+    ok(popupSettingsParse(R"({ "sound": "custom", "volume": 150, "progress": true })", snd, &w) && w.empty() && snd.sound == "custom" &&
+           snd.volume == 100 && snd.progress, "sound, volume (clamped) and progress read");
+    w.clear();
+    popupSettingsParse(R"({ "sound": "airhorn", "volume": -5 })", snd, &w);
+    ok(snd.sound == "custom" && snd.volume == 0 && w.find("unknown sound 'airhorn'") != std::string::npos, "unknown sound: warning, value kept");
+    PopupSettings top;
+    w.clear();
+    ok(popupSettingsParse(R"({ "position": "top-center" })", top, &w) && w.empty() && top.corner == CORNER_TOP_CENTER &&
+           popupSettingsJson(top).find("\"position\": \"top-center\"") != std::string::npos &&
+           std::string(popupCornerLabel(CORNER_BOTTOM_CENTER)) == "Bottom center", "top/bottom center positions");
+    PopupSettings pre17;   // written by the 0.16 settings page: every key, "progress": true was just the default then
+    popupSettingsParse(R"({ "style": "custom", "card": "compact", "live_check": true, "progress": true, "size": "large" })", pre17);
+    ok(!pre17.progress && pre17.compact, "file from before the sound setting: progress popups off (new default), rest kept");
+    PopupSettings rt;
+    rt.sound = "off";
+    rt.volume = 40;
+    PopupSettings back;
+    ok(popupSettingsParse(popupSettingsJson(rt).c_str(), back) && back.sound == "off" && back.volume == 40, "sound and volume written to popup.json");
 
     // --- save and read back: identical
     std::string js = popupSettingsJson(a);

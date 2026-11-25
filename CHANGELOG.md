@@ -10,6 +10,21 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.17.0 (2026-11-25)
+
+Achievements now play a sound when they unlock, and popups show only unlocks by default.
+
+### New
+- Unlock sound: a short chime plays with each achievement popup: a rising whoosh, a soft thump and a two-note bell, with extra sparkle for silver, gold and platinum. Popup settings: Unlock sound (Chime, Fanfare, My sound, Off) and Sound volume.
+- Compact popup: two new positions, Top center and Bottom center. The card drops down from the top edge (or rises from the bottom).
+- My sound: put your own sound in `switch/TrophyNX/sounds/unlock.wav` (uncompressed PCM .wav, 3 seconds at most) and pick My sound.
+
+### Changed
+- Progress popups ("Pet Cerberus 5 / 10") are off by default: a popup shows only when an achievement unlocks. Turn them back on in Popup settings (Progress popups: Every progress). Settings saved with an older version also switch to this default once.
+
+### Live module 0.13.0
+- Plays the unlock sound on the console's audio output while the popup is on screen. It is skipped, never the popup, when memory is short.
+
 ## 0.16.3 (2026-11-25)
 
 Live popups no longer depend on how big a game's save is: every supported game is read while you play, not only after you open TrophyNX.
@@ -32,6 +47,7 @@ Super Mario Odyssey achievements now unlock with a popup while you play, not onl
 ### Live module 0.11.2
 - BYML saves (Super Mario Odyssey) are read in 16 KB pages as the achievement paths are walked, with at most 512 KB in memory. Popups come a few seconds after the game saves, and when you quit the game.
 - `live_log.txt` / `close_log.txt` show `BYML v3 LE (read in pages, N page reads)` for each file read.
+
 
 ## 0.16.1 (2026-11-25)
 
