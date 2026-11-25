@@ -1,0 +1,4 @@
+# Scripts and Makefiles run in Linux containers (devkitPro): keep LF even in Windows checkouts.
+*.sh text eol=lf
+Makefile* text eol=lf
+*.mk text eol=lf

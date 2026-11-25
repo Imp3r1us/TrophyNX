@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -60,4 +61,11 @@ void setSaveKeySearchDirs(const std::vector<std::string>& dirs);
 // Reads the save of g (g.reader, g.saveFiles...) and sets a.value of its save-based achievements,
 // g.saveStatus and g.debug.
 void evaluateSave(Game& g, SaveSource& src);
+// Play-log achievements ("playtime_hours", "launches") of `achs` met by these statistics and not in `done`
+// (ids), in list order. Used by the live module while a game runs; the app evaluates the same rules on its scans.
+std::vector<const Achievement*> playStatsMet(const std::vector<Achievement>& achs, double hours, double launches,
+                                             const std::set<std::string>& done);
+// universal.json from its text (the live module embeds it). False when the text is not JSON.
+bool parseUniversal(const char* text, std::vector<Achievement>& perGame, std::vector<Achievement>& global, std::string& errors);
+inline bool isPlayStatsRule(RuleType t) { return t == RuleType::PlaytimeHours || t == RuleType::Launches; }
 inline bool isSaveRule(RuleType t) { return t == RuleType::Flag || t == RuleType::Count || t == RuleType::Sum; }

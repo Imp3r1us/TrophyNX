@@ -106,6 +106,10 @@ jobs:
           # popup settings (popup.json: parse, save, themes, accents, texts of each kind)
           g++ -std=gnu++17 -DPOPUP_DRAW_STB_IMPL -Iinclude host/test/test_popup_config.cpp source/popup_config.cpp source/popup_draw.cpp -x c source/cJSON.c -o /tmp/test_popup_config
           /tmp/test_popup_config /tmp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+          g++ -std=gnu++17 -Iinclude host/test/test_jingle.cpp source/jingle.cpp -o /tmp/test_jingle
+          /tmp/test_jingle
+          g++ -std=gnu++17 -fno-exceptions -Iinclude host/test/test_playstats.cpp source/overlay_data.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_playstats
+          /tmp/test_playstats
           # live save follow-up popups (live check, already unlocked, progress)
           g++ -std=gnu++17 -fno-exceptions -Isysmodule/include -Iinclude sysmodule/test/test_livepopups.cpp sysmodule/source/livepopups.cpp -DPOPUP_DRAW_STB_IMPL source/popup_draw.cpp source/overlay_data.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_livepopups
           /tmp/test_livepopups

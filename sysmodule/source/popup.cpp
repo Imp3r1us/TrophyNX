@@ -12,6 +12,7 @@
 #include "popup_draw.h"
 #include "popup_config.h"
 #include "heap.h"
+#include "sound.h"
 #include <switch.h>
 #include <algorithm>
 #include <cstdio>
@@ -307,13 +308,15 @@ static bool showToast(const PopupRequest& r, const PopupConfig& cfg) {
         u64 t = armTicksToNs(armGetSystemTick() - t0) / 1000000;
         float v = popupToastShown(t, total);
         int cx = popupToastCardX(cfg.corner, v);
+        int cy = popupToastCardY(cfg.corner, v);   // centered positions slide vertically
         u32 alpha = (u32)(v * 16 + 0.5f);   // 0..16, applied to each pixel's 4-bit alpha
         u32 stride = 0;
         u16* fb = (u16*)framebufferBegin(&ov.fb, &stride);
         for (int y = 0; y < lh; y++) {
             u16* row = fb + (size_t)y * (stride / 2);
             memset(row, 0, (size_t)lw * 2);
-            const u16* src = &card[(size_t)y * cw];
+            if (y < cy || y - cy >= ch) continue;
+            const u16* src = &card[(size_t)(y - cy) * cw];
             u16* dst = row + cx;
             int n = std::min(cw, lw - cx);
             if (alpha >= 16) memcpy(dst, src, (size_t)n * 2);
@@ -402,23 +405,32 @@ static void worker(void*) {
         PopupConfig cfg = loadConfig();
         PLOG("popup: %s (style %s, %s card, kind %d)", r.achId.c_str(), cfg.style.c_str(), cfg.compact ? "compact" : "classic", r.kind);
         if (cfg.style == "off") { g_busy = false; continue; }
-        if (cfg.style == "ultrahand") { ultrahandToast(r); g_busy = false; continue; }
-        if (g_safe && cfg.style != "both") { PLOG("popup: safe mode, toast instead of a display layer"); ultrahandToast(r); g_busy = false; continue; }
-        if (cfg.style == "both") ultrahandToast(r);
-        if (g_safe) { g_busy = false; continue; }
-        // The card (~1 MB: 720x150 render, 16-bit copy, 2 buffers + linear) fits in the idle heap; the big
-        // heap is only a bonus. Toast only if even the idle heap is too full.
-        bool big = heapAcquire("popup layer");
-        if (!big && heapFree() < POPUP_MIN_HEAP) {
-            PLOG("popup: only %u KB free in the heap - Ultrahand toast instead", (unsigned)(heapFree() >> 10));
-            if (cfg.style != "both") ultrahandToast(r);
-            g_busy = false;
-            continue;
+        // The unlock sound plays on its own thread while the card or toast is shown (achievements only, not the
+        // progress / live check popups). It must leave room for the card: started after the heap is taken.
+        const bool sound = r.kind == POPUP_UNLOCK && cfg.s.sound != "off";
+        bool big = false;
+        bool toastOnly = cfg.style == "ultrahand" || g_safe;
+        if (!toastOnly) {
+            // The card (~1 MB: 720x150 render, 16-bit copy, 2 buffers + linear) fits in the idle heap; the big
+            // heap is only a bonus. Toast only if even the idle heap is too full.
+            big = heapAcquire("popup layer");
+            if (!big && heapFree() < POPUP_MIN_HEAP) {
+                PLOG("popup: only %u KB free in the heap - Ultrahand toast instead", (unsigned)(heapFree() >> 10));
+                toastOnly = true;
+            }
         }
-        if (!showCustom(r, cfg)) {
-            PLOG("popup: custom popup failed for %s - Ultrahand toast instead", r.achId.c_str());
-            if (cfg.style != "both") ultrahandToast(r);
+        if (sound) soundStart(cfg.s.sound, cfg.s.volume, r.tier, toastOnly ? 0 : POPUP_MIN_HEAP);
+        if (toastOnly) {
+            if (g_safe && cfg.style != "ultrahand") PLOG("popup: safe mode, toast instead of a display layer");
+            ultrahandToast(r);
+        } else {
+            if (cfg.style == "both") ultrahandToast(r);
+            if (!showCustom(r, cfg)) {
+                PLOG("popup: custom popup failed for %s - Ultrahand toast instead", r.achId.c_str());
+                if (cfg.style != "both") ultrahandToast(r);
+            }
         }
+        soundJoin();                 // the sound's buffer lives in the heap we may be about to shrink
         g_iconTid = 0;               // drop the cached icon: it would keep the big heap from shrinking
         g_gameIcon = PopupImage();
         if (big) heapRelease();
@@ -430,6 +442,7 @@ static void worker(void*) {
 
 void popupStart(void (*logFn)(const char*, ...)) {
     g_log = logFn;
+    soundSetLog(logFn);
     mutexInit(&g_mtx);
     condvarInit(&g_cv);
     // priority 44: above the scanning loop (49) so the animation stays smooth; core 3 (the only one allowed)

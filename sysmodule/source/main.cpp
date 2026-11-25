@@ -30,8 +30,9 @@
 #include "heap.h"
 #include "memrules.h"
 #include "overlay_data.h"
+#include "playlog.h"
 
-#define MODULE_VERSION "0.12.0"
+#define MODULE_VERSION "0.13.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -359,6 +360,7 @@ int main(int, char**) {
     if (R_FAILED(rc = pminfoInitialize())) logf("ERROR pminfo init 0x%X", rc);
     if (R_FAILED(rc = accountInitialize(AccountServiceType_Administrator))) logf("ERROR account init 0x%X", rc);
     bool dmnt = R_SUCCEEDED(rc = dmntchtInitialize());
+    playlogInit(logf);
     if (!dmnt) logf("ERROR dmnt:cht init 0x%X (is Atmosphere's dmnt enabled?)", rc);
 
     std::string gameName = "Breath of the Wild";
@@ -443,10 +445,39 @@ int main(int, char**) {
              (unsigned)items.size(), (unsigned)memWatch.pending());
         return true;
     };
+    // Live memory test for the Tesla overlay (<data>/overlay/<TID>.memtest.json): version, coverage and each value.
+    auto memTestWrite = [&](bool reading, const char* note) {
+        ov::MemTest t;
+        t.titleId = curTid;
+        t.build = memBuild;
+        t.reading = reading;
+        t.note = note ? note : "";
+        for (const Achievement& a : memDef.achs) {
+            if (a.rule.type != RuleType::Memory || a.rule.mem.all.empty()) continue;
+            t.total++;
+            ov::MemTestItem i;
+            i.id = a.id;
+            const mem::Condition& c0 = a.rule.mem.all[0];
+            i.cmp = c0.change != mem::Change::None ? mem::changeName(c0.change) : mem::cmpName(c0.cmp);
+            i.target = c0.target;
+            bool covered = a.rule.mem.covers(memBuild);
+            if (covered) t.watched++;
+            auto v = memWatch.lastValues().find(a.id);
+            i.read = covered && v != memWatch.lastValues().end();
+            i.value = i.read ? v->second : 0;
+            i.holds = memWatch.lastHeld(a.id);
+            i.done = memWatch.isDone(a.id);
+            t.items.push_back(i);
+        }
+        mkdir((dataDir() + "/overlay").c_str(), 0777);
+        writeFile(ov::memTestPath(dataDir(), curTid), ov::memTestJson(t));
+    };
+    auto memTestClear = [&](u64 tid) { if (tid) remove(ov::memTestPath(dataDir(), tid).c_str()); };
     auto memStop = [&](const char* why) {
         if (attached) dmntchtForceCloseCheatProcess();   // only when we opened it: never stop the player's cheats
         attached = memReading = memMode = false;
         logf("memory: stopped watching (%s)", why);
+        memTestClear(curTid);
     };
 
     while (true) {
@@ -494,6 +525,8 @@ int main(int, char**) {
                 if (curReal) gameEnded(curTid, now);
             }
             liveSaveStop();
+            playlogStop();
+            if (memMode) memTestClear(curTid);
             memMode = memReading = false;
             if (attached) dmntchtForceCloseCheatProcess();   // never leave dmnt pointing at a dead process
             ownDetach(); g_own = false;
@@ -503,6 +536,7 @@ int main(int, char**) {
         if (pid != curPid) {
             if (curPid) {
                 logf("game changed (pid %llu -> %llu)", (unsigned long long)curPid, (unsigned long long)pid);
+                if (memMode) memTestClear(curTid);
                 if (curReal) gameEnded(curTid, now);
             }
             curPid = pid;
@@ -524,10 +558,13 @@ int main(int, char**) {
             // homebrew / forwarders: no memory rules, no live save (same as the scan on close); not in safe mode
             memMode = curReal && !watching && dmnt && !safe && memStart(tid, now);
             if (curReal) liveSaveStart(tid, now, logf);
+            if (curReal) playlogStart(tid, now);
+            else playlogStop();
         }
         // Live save (every game with a save reader): reads the save image each time the game saves.
         // Paused in safe mode: each look opens the raw NAND storage (an fs session) and reads the save in our heap.
         if (!safe) liveSaveTick(now, popupIdle() && !closedTid, logf);
+        playlogTick(now);   // play time / launches: popups while playing (every minute)
         if (memMode) {
             // 1) attach (dmnt:cht, read-only) and learn the build ID and region bases
             if (!memReading) {
@@ -561,9 +598,11 @@ int main(int, char**) {
                 if (!cov) {
                     logf("memory: add this version under \"builds\" as \"%s\" to watch it", memBuild.c_str());
                     memStop("no addresses for this version");
+                    memTestWrite(false, "no addresses for this version");   // the overlay shows which build to add
                     continue;
                 }
                 memReading = true;
+                memTestWrite(true, nullptr);
                 memFailRounds = 0;
             }
             // 2) every second: read, unlock what held 3 checks in a row
@@ -581,6 +620,7 @@ int main(int, char**) {
                 writeFile(path, ov::mergeLive(std::string(old.begin(), old.end()), memWatch.lastValues()));
                 memWritten = memWatch.lastValues();
                 memWrittenAt = now;
+                memTestWrite(true, nullptr);
             }
             if (memWatch.lastReadFailed()) {
                 if (++memFailRounds == 30) logf("memory: some reads keep failing (loading screen, or an address that is wrong for this version)");

@@ -51,13 +51,13 @@ const char* popupStyleLabel(const std::string& s) {
 }
 
 const char* popupCornerName(int c) {
-    static const char* N[] = {"top-left", "top-right", "bottom-left", "bottom-right"};
-    return N[std::min(std::max(c, 0), 3)];
+    static const char* N[] = {"top-left", "top-right", "bottom-left", "bottom-right", "top-center", "bottom-center"};
+    return N[std::min(std::max(c, 0), CORNER_COUNT - 1)];
 }
 
 const char* popupCornerLabel(int c) {
-    static const char* N[] = {"Top left", "Top right", "Bottom left", "Bottom right"};
-    return N[std::min(std::max(c, 0), 3)];
+    static const char* N[] = {"Top left", "Top right", "Bottom left", "Bottom right", "Top center", "Bottom center"};
+    return N[std::min(std::max(c, 0), CORNER_COUNT - 1)];
 }
 
 static const ThemeColors& themeOf(const std::string& name) {
@@ -112,7 +112,17 @@ bool popupSettingsParse(const char* json, PopupSettings& out, std::string* warni
     v = cJSON_GetObjectItemCaseSensitive(root, "opacity");
     if (cJSON_IsNumber(v)) out.opacity = std::min(std::max(v->valueint, 50), 100);
     boolean("live_check", out.liveCheck);
-    boolean("progress", out.progress);
+    // Files written before 0.17 (no "sound" key) have "progress": true only because it was the default then:
+    // they get the new default (a popup only when an achievement unlocks). Newer files keep their choice.
+    if (cJSON_GetObjectItemCaseSensitive(root, "sound")) boolean("progress", out.progress);
+    if ((s = str("sound"))) {
+        bool known = false;
+        for (const NamedOption& o : popupSounds()) if (!strcmp(o.name, s)) known = true;
+        if (known) out.sound = s;
+        else warn(std::string("unknown sound '") + s + "'");
+    }
+    v = cJSON_GetObjectItemCaseSensitive(root, "volume");
+    if (cJSON_IsNumber(v)) out.volume = std::min(std::max(v->valueint, 0), 100);
     boolean("border", out.border);
     boolean("show_icon", out.icon);
     boolean("show_label", out.label);
@@ -138,13 +148,21 @@ std::string popupSettingsJson(const PopupSettings& s) {
              "  \"border\": %s,\n"
              "  \"show_icon\": %s,\n"
              "  \"show_label\": %s,\n"
-             "  \"size\": \"%s\"\n"
+             "  \"size\": \"%s\",\n"
+             "  \"sound\": \"%s\",\n"
+             "  \"volume\": %d\n"
              "}\n",
              s.style.c_str(), s.compact ? "compact" : "classic", s.durationMs, s.liveCheck ? "true" : "false",
              s.progress ? "true" : "false", s.classicDark ? "dark" : "light", s.classicIconLeft ? "left" : "right",
              popupCornerName(s.corner), s.toastTheme.c_str(), s.accent.c_str(), s.opacity, s.border ? "true" : "false",
-             s.icon ? "true" : "false", s.label ? "true" : "false", s.size.c_str());
+             s.icon ? "true" : "false", s.label ? "true" : "false", s.size.c_str(), s.sound.c_str(), s.volume);
     return b;
+}
+
+const std::vector<NamedOption>& popupSounds() {
+    static const std::vector<NamedOption> v = {
+        {"chime", "Chime"}, {"fanfare", "Fanfare"}, {"custom", "My sound (sounds/unlock.wav)"}, {"off", "Off"}};
+    return v;
 }
 
 ToastStyle popupToastStyle(const PopupSettings& s) {

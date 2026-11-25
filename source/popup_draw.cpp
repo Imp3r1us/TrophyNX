@@ -335,14 +335,24 @@ bool popupParseCorner(const char* name, int& out) {
     else if (!strcmp(name, "top-right")) out = CORNER_TOP_RIGHT;
     else if (!strcmp(name, "bottom-left")) out = CORNER_BOTTOM_LEFT;
     else if (!strcmp(name, "bottom-right")) out = CORNER_BOTTOM_RIGHT;
+    else if (!strcmp(name, "top-center")) out = CORNER_TOP_CENTER;
+    else if (!strcmp(name, "bottom-center")) out = CORNER_BOTTOM_CENTER;
     else return false;
     return true;
 }
 
 static bool cornerRight(int c) { return c == CORNER_TOP_RIGHT || c == CORNER_BOTTOM_RIGHT; }
-static bool cornerBottom(int c) { return c == CORNER_BOTTOM_LEFT || c == CORNER_BOTTOM_RIGHT; }
+static bool cornerBottom(int c) { return c == CORNER_BOTTOM_LEFT || c == CORNER_BOTTOM_RIGHT || c == CORNER_BOTTOM_CENTER; }
+static bool cornerCenter(int c) { return c == CORNER_TOP_CENTER || c == CORNER_BOTTOM_CENTER; }
 
 void popupToastLayer(int corner, int w, int h, int& x, int& y, int& lw, int& lh) {
+    if (cornerCenter(corner)) {   // the layer is taller: the card drops in from the screen edge
+        lw = w;
+        lh = h + TOAST_SLIDE;
+        x = (1920 - w) / 2;
+        y = cornerBottom(corner) ? 1080 - TOAST_MARGIN - h : TOAST_MARGIN - TOAST_SLIDE;
+        return;
+    }
     lw = w + TOAST_SLIDE;
     lh = h;
     x = cornerRight(corner) ? 1920 - TOAST_MARGIN - w : TOAST_MARGIN - TOAST_SLIDE;
@@ -351,7 +361,14 @@ void popupToastLayer(int corner, int w, int h, int& x, int& y, int& lw, int& lh)
 
 int popupToastCardX(int corner, float shown) {
     shown = std::min(std::max(shown, 0.f), 1.f);
+    if (cornerCenter(corner)) return 0;
     return cornerRight(corner) ? (int)lroundf(TOAST_SLIDE * (1 - shown)) : (int)lroundf(TOAST_SLIDE * shown);
+}
+
+int popupToastCardY(int corner, float shown) {
+    if (!cornerCenter(corner)) return 0;
+    shown = std::min(std::max(shown, 0.f), 1.f);
+    return cornerBottom(corner) ? (int)lroundf(TOAST_SLIDE * (1 - shown)) : (int)lroundf(TOAST_SLIDE * shown);
 }
 
 int popupHoldMs(int holdMs, bool othersWaiting) { return othersWaiting ? std::min(holdMs, TOAST_HOLD_BUSY_MS) : holdMs; }

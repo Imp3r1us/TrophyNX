@@ -50,7 +50,10 @@ static const int TOAST_W = 360, TOAST_H = 70;
 static const int TOAST_SLIDE = 24;    // px the card slides in from its screen edge (the layer is this much wider)
 static const int TOAST_MARGIN = 24;   // px from the screen edges
 static const uint32_t ACCENT_CYAN = 0x38BDF8, ACCENT_GOLD = 0xFBBF24, ACCENT_VIOLET = 0xC084FC;
-enum PopupCorner { CORNER_TOP_LEFT = 0, CORNER_TOP_RIGHT, CORNER_BOTTOM_LEFT, CORNER_BOTTOM_RIGHT };
+// Where the compact card shows. The centered ones drop down from the top edge / rise from the bottom edge;
+// the others slide in sideways. (Values are stored by name in popup.json, so new ones go at the end.)
+enum PopupCorner { CORNER_TOP_LEFT = 0, CORNER_TOP_RIGHT, CORNER_BOTTOM_LEFT, CORNER_BOTTOM_RIGHT, CORNER_TOP_CENTER,
+                   CORNER_BOTTOM_CENTER, CORNER_COUNT };
 
 struct ToastInfo {
     std::string label;   // e.g. "ACHIEVEMENT UNLOCKED" (drawn as is: pass it in capitals)
@@ -84,6 +87,8 @@ bool popupParseCorner(const char* name, int& out);
 void popupToastLayer(int corner, int w, int h, int& x, int& y, int& lw, int& lh);
 // Where the card sits inside that layer (px from the layer's left) when fully shown, and when hidden.
 int popupToastCardX(int corner, float shown);
+// Same, vertically (centered positions only; 0 for the corners).
+int popupToastCardY(int corner, float shown);
 // Timing: 220 ms in (slide + fade), hold, 180 ms out. hold = holdMs, or 1700 ms when other popups wait.
 static const int TOAST_IN_MS = 220, TOAST_OUT_MS = 180, TOAST_HOLD_MS = 3300, TOAST_HOLD_BUSY_MS = 1700;
 int popupHoldMs(int holdMs, bool othersWaiting);

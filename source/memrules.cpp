@@ -371,6 +371,7 @@ std::vector<std::string> Watcher::step(const std::string& build, const Bases& b,
         }
         if (failed) m_readFailed = true;
         if (!failed || ok) m_values[i.id] = first;
+        m_held[i.id] = ok;
         if (!ok) { m_streak.erase(i.id); continue; }
         if (++m_streak[i.id] >= kStreak) {
             m_done.insert(i.id);
