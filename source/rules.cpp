@@ -392,9 +392,9 @@ static void evaluateBinary(Game& g, SaveSource& src) {
     }
     g.debug.push_back("Save mounted (read-only).");
     const bool stream = src.streaming();
-    std::vector<uint8_t> data;   // whole file (app)
-    std::string used;            // file in use
-    uint64_t usedSize = 0;
+    // every recognised file (save slots): each achievement takes its best value over them, like the tree readers
+    struct BinFile { std::string name; uint64_t size; std::vector<uint8_t> data; };   // data: whole file (app only)
+    std::vector<BinFile> usable;
     for (const std::string& f : g.saveFiles) {
         std::vector<uint8_t> buf;
         uint64_t size = 0;
@@ -415,12 +415,11 @@ static void evaluateBinary(Game& g, SaveSource& src) {
             why = "header is not '" + g.magic + "'";
         if (!why.empty()) { g.debug.push_back("  " + f + ": " + why + " -> NOT RECOGNISED"); continue; }
         g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> OK");
-        if (!stream) data = std::move(buf);
-        used = f;
-        usedSize = size;
-        break;
+        BinFile bf{f, size, {}};
+        if (!stream) bf.data = std::move(buf);
+        usable.push_back(std::move(bf));
     }
-    if (used.empty()) {
+    if (usable.empty()) {
         src.close();
         g.saveStatus = SaveStatus::Unreadable;
         g.debug.push_back("No usable save file: nothing is unlocked from the save (safety).");
@@ -432,38 +431,48 @@ static void evaluateBinary(Game& g, SaveSource& src) {
     for (Achievement& a : g.achs) {
         RuleType t = a.rule.type;
         if (!isSaveRule(t)) continue;
-        double total = 0;
-        bool bad = false;
-        auto readLe = [&](uint32_t off, int size, uint32_t& v) {
-            if ((uint64_t)off + size > usedSize) return false;
-            uint8_t b[4] = {0, 0, 0, 0};
-            if (stream) { if (!src.readAt(used, off, b, size)) return false; }
-            else memcpy(b, &data[off], size);
-            v = 0;
-            for (int i = 0; i < size; i++) v |= (uint32_t)b[i] << (8 * i);
-            return true;
-        };
-        if (a.rule.hasNeeds) {
-            uint32_t nv = 0;
-            if (!readLe(a.rule.needsOffset, a.rule.needsSize, nv) || nv < a.rule.needsMin) {
-                a.value = 0;
-                g.debug.push_back("  " + a.id + ": 0 / " + fmtd(a.rule.target) + "  [not in this save: needs " +
-                                  fmtd(a.rule.needsMin) + ", has " + std::to_string(nv) + "]");
-                continue;
+        double best = 0;
+        int bestFile = -1;
+        bool anyBad = false, allSkipped = true;
+        std::string skipNote;
+        for (size_t fi = 0; fi < usable.size(); fi++) {
+            const BinFile& bf = usable[fi];
+            auto readLe = [&](uint32_t off, int size, uint32_t& v) {
+                if ((uint64_t)off + size > bf.size) return false;
+                uint8_t b[4] = {0, 0, 0, 0};
+                if (stream) { if (!src.readAt(bf.name, off, b, size)) return false; }
+                else memcpy(b, &bf.data[off], size);
+                v = 0;
+                for (int i = 0; i < size; i++) v |= (uint32_t)b[i] << (8 * i);
+                return true;
+            };
+            if (a.rule.hasNeeds) {
+                uint32_t nv = 0;
+                if (!readLe(a.rule.needsOffset, a.rule.needsSize, nv) || nv < a.rule.needsMin) {
+                    skipNote = "not in this save: needs " + fmtd(a.rule.needsMin) + ", has " + std::to_string(nv);
+                    continue;
+                }
             }
+            allSkipped = false;
+            double total = 0;
+            bool bad = false;
+            for (uint32_t off : a.rule.offsets) {
+                uint32_t v = 0;
+                if (!readLe(off, a.rule.size, v)) { bad = true; continue; }
+                if (a.rule.maxSane > 0 && v > a.rule.maxSane) { bad = true; continue; }
+                if (a.rule.mask) v = (v & a.rule.mask) ? 1 : 0;
+                if (t == RuleType::Count) total += v ? 1 : 0;
+                else total += v;
+            }
+            if (bad) { anyBad = true; continue; }   // a suspicious value never unlocks anything
+            if (bestFile < 0 || total > best) { best = total; bestFile = (int)fi; }
         }
-        for (uint32_t off : a.rule.offsets) {
-            uint32_t v = 0;
-            if (!readLe(off, a.rule.size, v)) { bad = true; continue; }
-            if (a.rule.maxSane > 0 && v > a.rule.maxSane) { bad = true; continue; }
-            if (a.rule.mask) v = (v & a.rule.mask) ? 1 : 0;
-            if (t == RuleType::Count) total += v ? 1 : 0;
-            else total += v;
-        }
-        a.value = bad ? 0 : total;   // a suspicious value never unlocks anything
+        a.value = best;
         std::string line = "  " + a.id + ": " + fmtd(a.value) + " / " + fmtd(a.rule.target);
         line += a.value + 1e-9 >= a.rule.target ? "  [MET]" : "  [not yet]";
-        if (bad) line += "  !! value out of range: offset probably moved in a game update";
+        if (bestFile >= 0 && usable.size() > 1 && best > 0) line += "  in " + usable[bestFile].name;
+        if (allSkipped && !skipNote.empty()) line += "  [" + skipNote + "]";
+        if (anyBad) line += "  !! value out of range: offset probably moved in a game update";
         g.debug.push_back(line);
     }
     src.close();

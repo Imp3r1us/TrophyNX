@@ -4,15 +4,17 @@
  "reader": "binary_le",
  "magic": "ISAACNGSAVE0",
  "save_files": [
+  "rep_gamedata1.dat",
+  "rep_gamedata2.dat",
+  "rep_gamedata3.dat",
+  "gamedata1.dat",
+  "gamedata2.dat",
+  "gamedata3.dat",
   "persistentgamedata1.dat",
   "persistentgamedata2.dat",
-  "persistentgamedata3.dat",
-  "persistentgamedata.dat",
-  "rep_persistentgamedata1.dat",
-  "rep_persistentgamedata2.dat",
-  "rep_persistentgamedata3.dat"
+  "persistentgamedata3.dat"
  ],
- "_note": "Issue #32. Official achievements (Steam 250900, ids 1-637: Rebirth, Afterbirth, Afterbirth+, Booster Packs, Repentance DLC). The save keeps one byte per achievement id at 0x20 + id; \"needs\" skips ids beyond the save's achievement table (no DLC yet). Layout from PC saves (zamiell/isaac-save-installer); the Switch file names are a guess: not checked on a console yet, the header check keeps a different layout locked.",
+ "_note": "Issue #32. Official achievements (Steam 250900, ids 1-637: Rebirth, Afterbirth, Afterbirth+, Booster Packs, Repentance DLC). Switch save: rep_gamedata1-3.dat (one file per save slot, best slot counts; checked on a console backup), same layout as PC: one byte per achievement id at 0x20 + id; \"needs\" skips ids beyond the save's achievement table (no DLC yet). Layout from PC saves (zamiell/isaac-save-installer).",
  "achievements": [
   {
    "id": "ach_1",
