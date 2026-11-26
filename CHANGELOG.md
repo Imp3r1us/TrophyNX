@@ -29,6 +29,7 @@ New achievement lists for Isaac, Heavenly Bodies, Skyward Sword HD, Pillars of t
 
 ### Live module 0.14.0
 - Reads the new save formats and achievement lists above, and checks every save slot.
+- Encrypted saves (Heavenly Bodies, THEATRHYTHM FINAL BAR LINE) now also unlock live, a few seconds after the game saves, instead of only when you open the app. Open TrophyNX once after installing so it can find the game's password.
 
 ## 0.17.0 (2026-11-25)
 
