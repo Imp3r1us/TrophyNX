@@ -1,0 +1,309 @@
+{
+ "title_id": "01004CA01B77E000",
+ "name": "Heavenly Bodies",
+ "reader": "es3",
+ "key_file": "heavenlybodies.txt",
+ "save_files": [
+  "slot_0",
+  "slot_1",
+  "slot_2"
+ ],
+ "_note": "Issue #33. Easy Save 3 slots (AES); the game lists the official achievements it awarded (Steam API names) in progressData/unlockedAchievements. The password is the game's ES3 setting: never shipped, the app finds it in the game's dumped resources.assets (keys folder or nxdumptool output) or reads keys/heavenlybodies.txt.",
+ "achievements": [
+  {
+   "id": "first_contact",
+   "name": "First Contact",
+   "desc": "Board the space station.",
+   "points": 10,
+   "steam": "first_contact",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=first_contact]"
+   }
+  },
+  {
+   "id": "complete_sunlight",
+   "name": "Power Restored",
+   "desc": "Complete Sunlight.",
+   "points": 10,
+   "steam": "complete_sunlight",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_sunlight]"
+   }
+  },
+  {
+   "id": "complete_data",
+   "name": "Data Systems Online",
+   "desc": "Complete Data.",
+   "points": 10,
+   "steam": "complete_data",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_data]"
+   }
+  },
+  {
+   "id": "complete_vision",
+   "name": "First Images Received",
+   "desc": "Complete Vision.",
+   "points": 10,
+   "steam": "complete_vision",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_vision]"
+   }
+  },
+  {
+   "id": "complete_minerals",
+   "name": "Samples Retrieved",
+   "desc": "Complete Minerals.",
+   "points": 10,
+   "steam": "complete_minerals",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_minerals]"
+   }
+  },
+  {
+   "id": "complete_oxygen",
+   "name": "Oxygen Levels Nominal",
+   "desc": "Complete Oxygen.",
+   "points": 10,
+   "steam": "complete_oxygen",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_oxygen]"
+   }
+  },
+  {
+   "id": "complete_energy",
+   "name": "Not to Plan",
+   "desc": "Complete Energy.",
+   "points": 25,
+   "steam": "complete_energy",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_energy]"
+   }
+  },
+  {
+   "id": "complete_evacuation",
+   "name": "Gravity's Embrace",
+   "desc": "Complete Evacuation.",
+   "points": 25,
+   "steam": "complete_evacuation",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_evacuation]"
+   }
+  },
+  {
+   "id": "bring_trophy_to_escape_pod",
+   "name": "Bring Home Gold",
+   "desc": "Bring the trophy to the escape pod during Evacuation.",
+   "points": 25,
+   "steam": "bring_trophy_to_escape_pod",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=bring_trophy_to_escape_pod]"
+   }
+  },
+  {
+   "id": "eject_gardening_tool",
+   "name": "Bon Voyage",
+   "desc": "Eject a gardening tool via the disposal chute.",
+   "points": 50,
+   "steam": "eject_gardening_tool",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=eject_gardening_tool]"
+   }
+  },
+  {
+   "id": "complete_mission_in_newtonian",
+   "name": "A Classical Mechanic",
+   "desc": "Complete any level in Newtonian mode.",
+   "points": 25,
+   "steam": "complete_mission_in_newtonian",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_mission_in_newtonian]"
+   }
+  },
+  {
+   "id": "collect_all_collectables",
+   "name": "Proud Souvenirs",
+   "desc": "Find all the mission collectables.",
+   "points": 50,
+   "steam": "collect_all_collectables",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=collect_all_collectables]"
+   }
+  },
+  {
+   "id": "recover_near_death_experience",
+   "name": "Back From Outer Space",
+   "desc": "Recover from a near-death experience.",
+   "points": 25,
+   "steam": "recover_near_death_experience",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=recover_near_death_experience]"
+   }
+  },
+  {
+   "id": "safety_first",
+   "name": "Safety First",
+   "desc": "Safely perform an airlock decompression sequence.",
+   "points": 10,
+   "steam": "safety_first",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=safety_first]"
+   }
+  },
+  {
+   "id": "explosive_decompress",
+   "name": "A Minor Incident",
+   "desc": "Cause an explosive decompression from the airlock.",
+   "points": 10,
+   "steam": "explosive_decompress",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=explosive_decompress]"
+   }
+  },
+  {
+   "id": "plant_navigation_flag",
+   "name": "Charting the Stars",
+   "desc": "Plant a navigation flag into an asteroid.",
+   "points": 50,
+   "steam": "plant_navigation_flag",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=plant_navigation_flag]"
+   }
+  },
+  {
+   "id": "greetings_viewers",
+   "name": "Greetings, Viewers",
+   "desc": "Film yourself with the film camera.",
+   "points": 10,
+   "steam": "greetings_viewers",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=greetings_viewers]"
+   }
+  },
+  {
+   "id": "enter_cargo_bay_assembly_zone",
+   "name": "Going Up?",
+   "desc": "Get into the telescope assembly bay.",
+   "points": 10,
+   "steam": "enter_cargo_bay_assembly_zone",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=enter_cargo_bay_assembly_zone]"
+   }
+  },
+  {
+   "id": "complete_sunlight_challenges",
+   "name": "Shining Brightly",
+   "desc": "Complete all challenges in Sunlight.",
+   "points": 50,
+   "steam": "complete_sunlight_challenges",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_sunlight_challenges]"
+   }
+  },
+  {
+   "id": "complete_data_challenges",
+   "name": "Perfect Signal",
+   "desc": "Complete all challenges in Data.",
+   "points": 50,
+   "steam": "complete_data_challenges",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_data_challenges]"
+   }
+  },
+  {
+   "id": "complete_vision_challenges",
+   "name": "Crisp Imagery",
+   "desc": "Complete all challenges in Vision.",
+   "points": 50,
+   "steam": "complete_vision_challenges",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_vision_challenges]"
+   }
+  },
+  {
+   "id": "complete_minerals_challenges",
+   "name": "Diligent Prospector",
+   "desc": "Complete all challenges in Minerals.",
+   "points": 50,
+   "steam": "complete_minerals_challenges",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_minerals_challenges]"
+   }
+  },
+  {
+   "id": "complete_oxygen_challenges",
+   "name": "Clear Breathing",
+   "desc": "Complete all challenges in Oxygen.",
+   "points": 50,
+   "steam": "complete_oxygen_challenges",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_oxygen_challenges]"
+   }
+  },
+  {
+   "id": "complete_energy_challenges",
+   "name": "The Plumber",
+   "desc": "Complete all challenges in Energy.",
+   "points": 50,
+   "steam": "complete_energy_challenges",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_energy_challenges]"
+   }
+  },
+  {
+   "id": "complete_evac_challenges",
+   "name": "Last Orders",
+   "desc": "Complete all challenges in Evacuation.",
+   "points": 50,
+   "steam": "complete_evac_challenges",
+   "rule": {
+    "type": "flag",
+    "path": "progressData/unlockedAchievements[=complete_evac_challenges]"
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Zero-G Worker",
+   "desc": "Play for 3 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_12",
+   "name": "Cosmonaut of the Year",
+   "desc": "Play for 12 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 12
+   }
+  }
+ ]
+}

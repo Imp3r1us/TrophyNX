@@ -1,0 +1,533 @@
+{
+ "title_id": "010000C013C42000",
+ "name": "Ken Follett's The Pillars of the Earth",
+ "reader": "gamemaker",
+ "save_files": [
+  "Savegames/profile.dat"
+ ],
+ "_note": "Visionaire engine profile (Lua-like text, read line by line). Each rule matches the game's own sys_achievement_unlocked_N flag, which mirrors Steam's tpote_achievement_N. The whole line is compared, so a moved line stays locked instead of unlocking the wrong achievement. Issue #36.",
+ "achievements": [
+  {
+   "id": "tpote_achievement_1",
+   "name": "Good midwife",
+   "desc": "Be especially supportive during birth.",
+   "points": 25,
+   "steam": "tpote_achievement_1",
+   "rule": {
+    "type": "flag",
+    "path": "lines[39]",
+    "equals": "Conditions[\"sys_achievement_unlocked_1\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_2",
+   "name": "Yet another secret",
+   "desc": "Unlock a secret room in Kingsbridge.",
+   "points": 10,
+   "steam": "tpote_achievement_2",
+   "rule": {
+    "type": "flag",
+    "path": "lines[40]",
+    "equals": "Conditions[\"sys_achievement_unlocked_2\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_3",
+   "name": "Let there be darkness",
+   "desc": "Dim the lights in the cathedral.",
+   "points": 10,
+   "steam": "tpote_achievement_3",
+   "rule": {
+    "type": "flag",
+    "path": "lines[41]",
+    "equals": "Conditions[\"sys_achievement_unlocked_3\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_4",
+   "name": "Tattletale",
+   "desc": "Report a crime to the monks in Kingsbridge.",
+   "points": 10,
+   "steam": "tpote_achievement_4",
+   "rule": {
+    "type": "flag",
+    "path": "lines[42]",
+    "equals": "Conditions[\"sys_achievement_unlocked_4\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_5",
+   "name": "Garden of Eden",
+   "desc": "Support Milius' dream of a garden.",
+   "points": 25,
+   "steam": "tpote_achievement_5",
+   "rule": {
+    "type": "flag",
+    "path": "lines[43]",
+    "equals": "Conditions[\"sys_achievement_unlocked_5\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_6",
+   "name": "Full house",
+   "desc": "Invite everybody to the chapter meeting.",
+   "points": 10,
+   "steam": "tpote_achievement_6",
+   "rule": {
+    "type": "flag",
+    "path": "lines[44]",
+    "equals": "Conditions[\"sys_achievement_unlocked_6\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_7",
+   "name": "Silentium est aureum",
+   "desc": "Let the others do the talking.",
+   "points": 25,
+   "steam": "tpote_achievement_7",
+   "rule": {
+    "type": "flag",
+    "path": "lines[45]",
+    "equals": "Conditions[\"sys_achievement_unlocked_7\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_8",
+   "name": "Help an old friend",
+   "desc": "Take care of your pony.",
+   "points": 25,
+   "steam": "tpote_achievement_8",
+   "rule": {
+    "type": "flag",
+    "path": "lines[46]",
+    "equals": "Conditions[\"sys_achievement_unlocked_8\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_9",
+   "name": "Man of politics",
+   "desc": "Get involved in your brother's politics.",
+   "points": 10,
+   "steam": "tpote_achievement_9",
+   "rule": {
+    "type": "flag",
+    "path": "lines[47]",
+    "equals": "Conditions[\"sys_achievement_unlocked_9\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_10",
+   "name": "Rebel without a cause",
+   "desc": "Get into trouble with the Earl of Shiring.",
+   "points": 25,
+   "steam": "tpote_achievement_10",
+   "rule": {
+    "type": "flag",
+    "path": "lines[48]",
+    "equals": "Conditions[\"sys_achievement_unlocked_10\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_11",
+   "name": "Wannabe knight",
+   "desc": "Try becoming a knight.",
+   "points": 25,
+   "steam": "tpote_achievement_11",
+   "rule": {
+    "type": "flag",
+    "path": "lines[49]",
+    "equals": "Conditions[\"sys_achievement_unlocked_11\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_12",
+   "name": "Staring contest champion",
+   "desc": "Return the stare.",
+   "points": 25,
+   "steam": "tpote_achievement_12",
+   "rule": {
+    "type": "flag",
+    "path": "lines[50]",
+    "equals": "Conditions[\"sys_achievement_unlocked_12\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_13",
+   "name": "Lone wolf",
+   "desc": "Become enemies with Alfred.",
+   "points": 25,
+   "steam": "tpote_achievement_13",
+   "rule": {
+    "type": "flag",
+    "path": "lines[51]",
+    "equals": "Conditions[\"sys_achievement_unlocked_13\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_14",
+   "name": "Friends of sorts",
+   "desc": "Become friends with Alfred.",
+   "points": 10,
+   "steam": "tpote_achievement_14",
+   "rule": {
+    "type": "flag",
+    "path": "lines[52]",
+    "equals": "Conditions[\"sys_achievement_unlocked_14\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_15",
+   "name": "Care, like a brother cares",
+   "desc": "Use every opportunity to teach Martha how to use your slingshot.",
+   "points": 50,
+   "steam": "tpote_achievement_15",
+   "rule": {
+    "type": "flag",
+    "path": "lines[53]",
+    "equals": "Conditions[\"sys_achievement_unlocked_15\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_16",
+   "name": "Twist of Fate",
+   "desc": "Wisen up before you cause great disaster.",
+   "points": 25,
+   "steam": "tpote_achievement_16",
+   "rule": {
+    "type": "flag",
+    "path": "lines[54]",
+    "equals": "Conditions[\"sys_achievement_unlocked_16\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_17",
+   "name": "Everything's in order",
+   "desc": "Bring order into William's chaos.",
+   "points": 25,
+   "steam": "tpote_achievement_17",
+   "rule": {
+    "type": "flag",
+    "path": "lines[55]",
+    "equals": "Conditions[\"sys_achievement_unlocked_17\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_18",
+   "name": "Friar Tuck",
+   "desc": "Steal from the bishop at every opportunity.",
+   "points": 25,
+   "steam": "tpote_achievement_18",
+   "rule": {
+    "type": "flag",
+    "path": "lines[56]",
+    "equals": "Conditions[\"sys_achievement_unlocked_18\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_19",
+   "name": "Negotiation skills",
+   "desc": "Negotiate the best deal for Kingsbridge.",
+   "points": 25,
+   "steam": "tpote_achievement_19",
+   "rule": {
+    "type": "flag",
+    "path": "lines[57]",
+    "equals": "Conditions[\"sys_achievement_unlocked_19\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_20",
+   "name": "Boy of mystery",
+   "desc": "Keep quiet about your past.",
+   "points": 50,
+   "steam": "tpote_achievement_20",
+   "rule": {
+    "type": "flag",
+    "path": "lines[58]",
+    "equals": "Conditions[\"sys_achievement_unlocked_20\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_21",
+   "name": "End of Book One",
+   "desc": "Complete Book One.",
+   "points": 10,
+   "steam": "tpote_achievement_21",
+   "rule": {
+    "type": "flag",
+    "path": "lines[59]",
+    "equals": "Conditions[\"sys_achievement_unlocked_21\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_22",
+   "name": "Two of us",
+   "desc": "Stay together.",
+   "points": 25,
+   "steam": "tpote_achievement_22",
+   "rule": {
+    "type": "flag",
+    "path": "lines[60]",
+    "equals": "Conditions[\"sys_achievement_unlocked_22\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_23",
+   "name": "A brush with death",
+   "desc": "Escape the knights.",
+   "points": 50,
+   "steam": "tpote_achievement_23",
+   "rule": {
+    "type": "flag",
+    "path": "lines[61]",
+    "equals": "Conditions[\"sys_achievement_unlocked_23\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_24",
+   "name": "First profit",
+   "desc": "Make a profit.",
+   "points": 25,
+   "steam": "tpote_achievement_24",
+   "rule": {
+    "type": "flag",
+    "path": "lines[62]",
+    "equals": "Conditions[\"sys_achievement_unlocked_24\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_25",
+   "name": "Revenge",
+   "desc": "Take revenge.",
+   "points": 25,
+   "steam": "tpote_achievement_25",
+   "rule": {
+    "type": "flag",
+    "path": "lines[63]",
+    "equals": "Conditions[\"sys_achievement_unlocked_25\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_26",
+   "name": "Exterminator",
+   "desc": "Take care of Kingsbridge's insect problem.",
+   "points": 25,
+   "steam": "tpote_achievement_26",
+   "rule": {
+    "type": "flag",
+    "path": "lines[64]",
+    "equals": "Conditions[\"sys_achievement_unlocked_26\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_27",
+   "name": "Workers' union",
+   "desc": "Help the fullers.",
+   "points": 25,
+   "steam": "tpote_achievement_27",
+   "rule": {
+    "type": "flag",
+    "path": "lines[65]",
+    "equals": "Conditions[\"sys_achievement_unlocked_27\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_28",
+   "name": "Whodunnit",
+   "desc": "Catch the suspect.",
+   "points": 25,
+   "steam": "tpote_achievement_28",
+   "rule": {
+    "type": "flag",
+    "path": "lines[66]",
+    "equals": "Conditions[\"sys_achievement_unlocked_28\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_29",
+   "name": "Skilled merchant",
+   "desc": "Negotiate well.",
+   "points": 25,
+   "steam": "tpote_achievement_29",
+   "rule": {
+    "type": "flag",
+    "path": "lines[67]",
+    "equals": "Conditions[\"sys_achievement_unlocked_29\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_30",
+   "name": "Team player",
+   "desc": "Give moral support to the knights.",
+   "points": 25,
+   "steam": "tpote_achievement_30",
+   "rule": {
+    "type": "flag",
+    "path": "lines[68]",
+    "equals": "Conditions[\"sys_achievement_unlocked_30\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_31",
+   "name": "End of Book Two",
+   "desc": "Complete Book Two.",
+   "points": 25,
+   "steam": "tpote_achievement_31",
+   "rule": {
+    "type": "flag",
+    "path": "lines[69]",
+    "equals": "Conditions[\"sys_achievement_unlocked_31\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_32",
+   "name": "Jack was here!",
+   "desc": "Find Jack's tracks.",
+   "points": 25,
+   "steam": "tpote_achievement_32",
+   "rule": {
+    "type": "flag",
+    "path": "lines[70]",
+    "equals": "Conditions[\"sys_achievement_unlocked_32\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_33",
+   "name": "Nothing but make-believe",
+   "desc": "Find all telling clues.",
+   "points": 25,
+   "steam": "tpote_achievement_33",
+   "rule": {
+    "type": "flag",
+    "path": "lines[71]",
+    "equals": "Conditions[\"sys_achievement_unlocked_33\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_34",
+   "name": "A cry for help",
+   "desc": "Take care of a kindred soul.",
+   "points": 25,
+   "steam": "tpote_achievement_34",
+   "rule": {
+    "type": "flag",
+    "path": "lines[72]",
+    "equals": "Conditions[\"sys_achievement_unlocked_34\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_35",
+   "name": "Self-defense",
+   "desc": "Prepare Elizabeth for the worst.",
+   "points": 25,
+   "steam": "tpote_achievement_35",
+   "rule": {
+    "type": "flag",
+    "path": "lines[73]",
+    "equals": "Conditions[\"sys_achievement_unlocked_35\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_36",
+   "name": "Brother Marcus",
+   "desc": "Meet the consequences of your past.",
+   "points": 25,
+   "steam": "tpote_achievement_36",
+   "rule": {
+    "type": "flag",
+    "path": "lines[74]",
+    "equals": "Conditions[\"sys_achievement_unlocked_36\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_37",
+   "name": "Vox Populi",
+   "desc": "Gather an army.",
+   "points": 25,
+   "steam": "tpote_achievement_37",
+   "rule": {
+    "type": "flag",
+    "path": "lines[75]",
+    "equals": "Conditions[\"sys_achievement_unlocked_37\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_38",
+   "name": "Countess Aliena",
+   "desc": "Become countess.",
+   "points": 25,
+   "steam": "tpote_achievement_38",
+   "rule": {
+    "type": "flag",
+    "path": "lines[76]",
+    "equals": "Conditions[\"sys_achievement_unlocked_38\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_39",
+   "name": "The oath",
+   "desc": "Fulfill your vow.",
+   "points": 25,
+   "steam": "tpote_achievement_39",
+   "rule": {
+    "type": "flag",
+    "path": "lines[77]",
+    "equals": "Conditions[\"sys_achievement_unlocked_39\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_40",
+   "name": "The truth revealed",
+   "desc": "Reveal the conspiracy.",
+   "points": 25,
+   "steam": "tpote_achievement_40",
+   "rule": {
+    "type": "flag",
+    "path": "lines[78]",
+    "equals": "Conditions[\"sys_achievement_unlocked_40\"].Value = true"
+   }
+  },
+  {
+   "id": "tpote_achievement_41",
+   "name": "The End.",
+   "desc": "Complete Book Three!",
+   "points": 25,
+   "steam": "tpote_achievement_41",
+   "rule": {
+    "type": "flag",
+    "path": "lines[79]",
+    "equals": "Conditions[\"sys_achievement_unlocked_41\"].Value = true"
+   }
+  },
+  {
+   "id": "t_launch",
+   "name": "Kingsbridge Calling",
+   "desc": "Launch The Pillars of the Earth 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Apprentice Mason",
+   "desc": "Play for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_15",
+   "name": "Master Builder",
+   "desc": "Play for 15 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 15
+   }
+  }
+ ]
+}

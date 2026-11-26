@@ -1,0 +1,738 @@
+{
+ "title_id": "01002DA013484000",
+ "name": "The Legend of Zelda: Skyward Sword HD",
+ "reader": "binary_le",
+ "magic": "PROJ",
+ "file_size": 122400,
+ "save_files": [
+  "wiiking2.sav"
+ ],
+ "_note": "Issue #34. Offsets from SSWeb-Editor (github.com/Libra2393/SSWeb-Editor, defs/layout-hd.json, inventory.json, dungeons.json): slots at 0x20 + n * 0x53C0 (files 1-3 + autosave), little-endian u16 flag words; each rule reads all 4 slots, any slot counts.",
+ "achievements": [
+  {
+   "id": "sword_goddess",
+   "name": "Chosen by the Goddess",
+   "desc": "Obtain the Goddess Sword",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA04",
+     "0x5DC4",
+     "0xB184",
+     "0x10544"
+    ],
+    "size": 2,
+    "mask": "0x0100",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "sword_longsword",
+   "name": "Sharper Edge",
+   "desc": "Obtain the Goddess Longsword",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA04",
+     "0x5DC4",
+     "0xB184",
+     "0x10544"
+    ],
+    "size": 2,
+    "mask": "0x0200",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "sword_white",
+   "name": "Blade of Light",
+   "desc": "Obtain the Goddess White Sword",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA1A",
+     "0x5DDA",
+     "0xB19A",
+     "0x1055A"
+    ],
+    "size": 2,
+    "mask": "0x0010",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "sword_master",
+   "name": "The Blade of Evil's Bane",
+   "desc": "Obtain the Master Sword",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA04",
+     "0x5DC4",
+     "0xB184",
+     "0x10544"
+    ],
+    "size": 2,
+    "mask": "0x0400",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "sword_true",
+   "name": "True Master Sword",
+   "desc": "Obtain the True Master Sword",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA12",
+     "0x5DD2",
+     "0xB192",
+     "0x10552"
+    ],
+    "size": 2,
+    "mask": "0x0080",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "boss_skyview",
+   "name": "Skyview Temple",
+   "desc": "Clear Skyview Temple",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xB34",
+     "0x5EF4",
+     "0xB2B4",
+     "0x10674"
+    ],
+    "size": 2,
+    "mask": "0x0004",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "boss_earth",
+   "name": "Earth Temple",
+   "desc": "Clear the Earth Temple",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xB64",
+     "0x5F24",
+     "0xB2E4",
+     "0x106A4"
+    ],
+    "size": 2,
+    "mask": "0x0004",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "boss_lmf",
+   "name": "Lanayru Mining Facility",
+   "desc": "Clear the Lanayru Mining Facility",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xB94",
+     "0x5F54",
+     "0xB314",
+     "0x106D4"
+    ],
+    "size": 2,
+    "mask": "0x0004",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "boss_cistern",
+   "name": "Ancient Cistern",
+   "desc": "Clear the Ancient Cistern",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xB44",
+     "0x5F04",
+     "0xB2C4",
+     "0x10684"
+    ],
+    "size": 2,
+    "mask": "0x0004",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "boss_sandship",
+   "name": "Sandship",
+   "desc": "Clear the Sandship",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xBA4",
+     "0x5F64",
+     "0xB324",
+     "0x106E4"
+    ],
+    "size": 2,
+    "mask": "0x0004",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "boss_fire",
+   "name": "Fire Sanctuary",
+   "desc": "Clear the Fire Sanctuary",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xB74",
+     "0x5F34",
+     "0xB2F4",
+     "0x106B4"
+    ],
+    "size": 2,
+    "mask": "0x0004",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "tri_courage",
+   "name": "Triforce of Courage",
+   "desc": "Obtain the Triforce of Courage",
+   "points": 50,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0C",
+     "0x5DCC",
+     "0xB18C",
+     "0x1054C"
+    ],
+    "size": 2,
+    "mask": "0x0080",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "tri_power",
+   "name": "Triforce of Power",
+   "desc": "Obtain the Triforce of Power",
+   "points": 50,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0C",
+     "0x5DCC",
+     "0xB18C",
+     "0x1054C"
+    ],
+    "size": 2,
+    "mask": "0x0040",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "tri_wisdom",
+   "name": "Triforce of Wisdom",
+   "desc": "Obtain the Triforce of Wisdom",
+   "points": 50,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0C",
+     "0x5DCC",
+     "0xB18C",
+     "0x1054C"
+    ],
+    "size": 2,
+    "mask": "0x0020",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "song_ballad",
+   "name": "Ballad of the Goddess",
+   "desc": "Learn the Ballad of the Goddess",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA1A",
+     "0x5DDA",
+     "0xB19A",
+     "0x1055A"
+    ],
+    "size": 2,
+    "mask": "0x0020",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "song_farore",
+   "name": "Farore's Courage",
+   "desc": "Learn Farore's Courage",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA1A",
+     "0x5DDA",
+     "0xB19A",
+     "0x1055A"
+    ],
+    "size": 2,
+    "mask": "0x0040",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "song_nayru",
+   "name": "Nayru's Wisdom",
+   "desc": "Learn Nayru's Wisdom",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA1A",
+     "0x5DDA",
+     "0xB19A",
+     "0x1055A"
+    ],
+    "size": 2,
+    "mask": "0x0080",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "song_din",
+   "name": "Din's Power",
+   "desc": "Learn Din's Power",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA1A",
+     "0x5DDA",
+     "0xB19A",
+     "0x1055A"
+    ],
+    "size": 2,
+    "mask": "0x0100",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "song_hero",
+   "name": "Song of the Hero",
+   "desc": "Learn the complete Song of the Hero",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA1A",
+     "0x5DDA",
+     "0xB19A",
+     "0x1055A"
+    ],
+    "size": 2,
+    "mask": "0x1000",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_sailcloth",
+   "name": "Sailcloth",
+   "desc": "Receive the Sailcloth",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA14",
+     "0x5DD4",
+     "0xB194",
+     "0x10554"
+    ],
+    "size": 2,
+    "mask": "0x0100",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_slingshot",
+   "name": "Slingshot",
+   "desc": "Obtain the Slingshot",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA06",
+     "0x5DC6",
+     "0xB186",
+     "0x10546"
+    ],
+    "size": 2,
+    "mask": "0x1000",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_beetle",
+   "name": "Beetle",
+   "desc": "Obtain the Beetle",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA06",
+     "0x5DC6",
+     "0xB186",
+     "0x10546"
+    ],
+    "size": 2,
+    "mask": "0x2000",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_hook_beetle",
+   "name": "Hook Beetle",
+   "desc": "Upgrade to the Hook Beetle",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0A",
+     "0x5DCA",
+     "0xB18A",
+     "0x1054A"
+    ],
+    "size": 2,
+    "mask": "0x0002",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_tough_beetle",
+   "name": "Tough Beetle",
+   "desc": "Upgrade to the Tough Beetle",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0A",
+     "0x5DCA",
+     "0xB18A",
+     "0x1054A"
+    ],
+    "size": 2,
+    "mask": "0x0008",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_mitts",
+   "name": "Digging Mitts",
+   "desc": "Obtain the Digging Mitts",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA06",
+     "0x5DC6",
+     "0xB186",
+     "0x10546"
+    ],
+    "size": 2,
+    "mask": "0x4000",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_mogma",
+   "name": "Mogma Mitts",
+   "desc": "Upgrade to the Mogma Mitts",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0C",
+     "0x5DCC",
+     "0xB18C",
+     "0x1054C"
+    ],
+    "size": 2,
+    "mask": "0x0200",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_bombs",
+   "name": "Bomb Bag",
+   "desc": "Obtain the Bomb Bag",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0C",
+     "0x5DCC",
+     "0xB18C",
+     "0x1054C"
+    ],
+    "size": 2,
+    "mask": "0x0004",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_bellows",
+   "name": "Gust Bellows",
+   "desc": "Obtain the Gust Bellows",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA06",
+     "0x5DC6",
+     "0xB186",
+     "0x10546"
+    ],
+    "size": 2,
+    "mask": "0x0200",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_whip",
+   "name": "Whip",
+   "desc": "Obtain the Whip",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA12",
+     "0x5DD2",
+     "0xB192",
+     "0x10552"
+    ],
+    "size": 2,
+    "mask": "0x0010",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_clawshots",
+   "name": "Clawshots",
+   "desc": "Obtain the Clawshots",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA04",
+     "0x5DC4",
+     "0xB184",
+     "0x10544"
+    ],
+    "size": 2,
+    "mask": "0x2000",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_bow",
+   "name": "Bow",
+   "desc": "Obtain the Bow",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA04",
+     "0x5DC4",
+     "0xB184",
+     "0x10544"
+    ],
+    "size": 2,
+    "mask": "0x1000",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_sacred_bow",
+   "name": "Sacred Bow",
+   "desc": "Upgrade to the Sacred Bow",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0C",
+     "0x5DCC",
+     "0xB18C",
+     "0x1054C"
+    ],
+    "size": 2,
+    "mask": "0x0002",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_scattershot",
+   "name": "Scattershot",
+   "desc": "Upgrade to the Scattershot",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0C",
+     "0x5DCC",
+     "0xB18C",
+     "0x1054C"
+    ],
+    "size": 2,
+    "mask": "0x8000",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_big_net",
+   "name": "Big Bug Net",
+   "desc": "Upgrade to the Big Bug Net",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA12",
+     "0x5DD2",
+     "0xB192",
+     "0x10552"
+    ],
+    "size": 2,
+    "mask": "0x0200",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_harp",
+   "name": "Goddess's Harp",
+   "desc": "Receive the Goddess's Harp",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA14",
+     "0x5DD4",
+     "0xB194",
+     "0x10554"
+    ],
+    "size": 2,
+    "mask": "0x0200",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_scale",
+   "name": "Water Dragon's Scale",
+   "desc": "Receive the Water Dragon's Scale",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA08",
+     "0x5DC8",
+     "0xB188",
+     "0x10548"
+    ],
+    "size": 2,
+    "mask": "0x0020",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "item_earrings",
+   "name": "Fireshield Earrings",
+   "desc": "Obtain the Fireshield Earrings",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA12",
+     "0x5DD2",
+     "0xB192",
+     "0x10552"
+    ],
+    "size": 2,
+    "mask": "0x0020",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "wallet_tycoon",
+   "name": "Tycoon",
+   "desc": "Get the Tycoon Wallet",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0xA0E",
+     "0x5DCE",
+     "0xB18E",
+     "0x1054E"
+    ],
+    "size": 2,
+    "mask": "0x0020",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "hero_mode",
+   "name": "Hero Mode",
+   "desc": "Play a file in Hero Mode",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "offsets": [
+     "0x91E",
+     "0x5CDE",
+     "0xB09E",
+     "0x1045E"
+    ],
+    "size": 2,
+    "mask": "0x0800",
+    "show_progress": false
+   }
+  },
+  {
+   "id": "t_hours_10",
+   "name": "Knight Academy Graduate",
+   "desc": "Play for 10 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_hours_40",
+   "name": "Hero of the Sky",
+   "desc": "Play for 40 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 40
+   }
+  }
+ ]
+}
