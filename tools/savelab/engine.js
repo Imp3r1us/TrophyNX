@@ -494,6 +494,7 @@ const TREE_FORMATS = [
   { reader: 'sgb', label: 'Supergiant SGB1 (Hades)', parse: (b) => F.parseSgb(b) },
   { reader: 'deltarune', label: 'DELTARUNE (deltarune.sav)', parse: (b) => F.parseDeltarune(b) },
   { reader: 'theatrhythm', label: 'THEATRHYTHM FINAL BAR LINE (AES + DEFLATE + MessagePack)', parse: (b) => F.parseTheatrhythm(b) },
+  { reader: 'es3', label: 'Easy Save 3 (Unity, AES)', parse: (b) => F.parseEs3(b) },
   { reader: 'rpgmaker', label: 'RPG Maker MV/MZ', parse: (b, explicit) => { if (!explicit && !F.isRpgMaker(b)) return null; try { return F.parseRpgMaker(b); } catch (e) { if (explicit) throw e; return null; } } },
   { reader: 'json', label: 'JSON', parse: parseJson },
   { reader: 'gamemaker', label: 'GameMaker (INI / text)', parse: (b, explicit) => { if (!explicit && !F.isGameMaker(b)) return null; try { return F.parseGameMaker(b); } catch (e) { if (explicit) throw e; return null; } } },
@@ -894,6 +895,9 @@ function compileRule(r, fn) {
   if (r.offset !== undefined) rule.offsets.push(parseOff(r.offset));
   if (Array.isArray(r.offsets)) for (const o of r.offsets) rule.offsets.push(parseOff(o));
   rule.size = [1, 2, 4].includes(r.size) ? r.size : 4;
+  rule.mask = r.mask !== undefined ? parseOff(r.mask) >>> 0 : 0;   // bit flags: value -> 1 when any bit of mask is set
+  // needs: the rule only counts when the value at needs.offset is >= needs.min (same as the app)
+  if (r.needs && typeof r.needs === 'object') rule.needs = { offset: parseOff(r.needs.offset), size: [1, 2, 4].includes(r.needs.size) ? r.needs.size : 4, min: r.needs.min ?? 1 };
   return rule;
 }
 const SAVE_TYPES = ['flag', 'value', 'count', 'sum'];
@@ -923,11 +927,16 @@ function evaluate(def, files, opts = {}) {
       if (!SAVE_TYPES.includes(t)) { res.push({ id: a.id, skip: true }); continue; }
       if (!file) { res.push({ id: a.id, value: 0, met: false, note: why || T('none of the save_files was found', 'aucun fichier de save_files trouvé') }); continue; }
       const r = compileRule(a.rule, fn);
+      if (r.needs) {
+        const nv = r.needs.offset + r.needs.size <= file.data.length ? rd(file.data, r.needs.offset, r.needs.size) : 0;
+        if (nv < r.needs.min) { res.push({ id: a.id, value: 0, met: false, note: T('not in this save: needs ', 'absent de cette sauvegarde : il faut ') + r.needs.min + T(', has ', ', a ') + nv }); continue; }
+      }
       let total = 0, bad = false;
       for (const o of r.offsets) {
         if (o + r.size > file.data.length) { bad = true; continue; }
-        const v = rd(file.data, o, r.size);
+        let v = rd(file.data, o, r.size);
         if (r.max > 0 && v > r.max) { bad = true; continue; }
+        if (r.mask) v = (v & r.mask) ? 1 : 0;
         if (t === 'count') total += v ? 1 : 0; else total += v;
       }
       const value = bad ? 0 : total;

@@ -1292,7 +1292,68 @@ function parseGameMaker(buf) {
   return { gamemaker: true, tree, meta: { format: ini ? 'ini' : 'lines', encoding, keys } };
 }
 
-const api = { Reader, parseRpgMaker, isRpgMaker, parseGameMaker, isGameMaker, lzStringDecompressB64, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor,
+// ================================================================== Easy Save 3 (Unity asset), encrypted
+// Mirror of es3ToJson / es3FindPassword (save_formats.cpp). File = 16-byte IV + AES-128-CBC (PKCS#7),
+// key = PBKDF2-HMAC-SHA1(password, IV, 100, 16); plaintext = ES3 JSON, optionally gzip. The password is the game's
+// ES3 setting (ES3Defaults in resources.assets), never bundled: setPassword('es3', …).
+function decryptEs3(buf, password) {
+  if (buf.length < 32 || (buf.length - 16) % 16) return null;
+  const iv = buf.subarray(0, 16), ct = buf.subarray(16);
+  const key = pbkdf2Sha1(new TextEncoder().encode(password), iv, 100, 16);
+  const tail = aes128CbcDecrypt(key, ct.length >= 32 ? ct.subarray(ct.length - 32, ct.length - 16) : iv, ct.subarray(ct.length - 16));
+  const pad = tail[15];
+  if (pad < 1 || pad > 16) return null;
+  for (let i = 16 - pad; i < 16; i++) if (tail[i] !== pad) return null;
+  let pt = aes128CbcDecrypt(key, iv, ct).subarray(0, ct.length - pad);
+  if (pt.length >= 18 && pt[0] === 0x1f && pt[1] === 0x8b && pt[2] === 8) {
+    const fl = pt[3]; let p = 10;
+    if (fl & 4) p += 2 + (pt[p] | (pt[p + 1] << 8));
+    if (fl & 8) { while (p < pt.length && pt[p]) p++; p++; }
+    if (fl & 16) { while (p < pt.length && pt[p]) p++; p++; }
+    if (fl & 2) p += 2;
+    pt = inflateRawSync(pt.subarray(p));
+  }
+  let s = 0; while (s < pt.length && (pt[s] === 0x20 || pt[s] === 9 || pt[s] === 10 || pt[s] === 13)) s++;
+  if (pt[s] !== 0x7B && pt[s] !== 0x5B) return null;
+  for (const c of pt) if (c < 32 && c !== 9 && c !== 10 && c !== 13) return null;
+  return new TextDecoder().decode(pt);
+}
+function parseEs3(buf) {
+  const pw = PASSWORDS.es3;
+  if (!pw) return null;
+  let text;
+  try { text = decryptEs3(buf, pw); } catch (e) { return null; }
+  if (!text) return null;
+  let tree;
+  try { tree = JSON.parse(text.replace(/[\s\0]+$/, '')); } catch (e) { return null; }
+  return { es3: true, tree, meta: { bytes: text.length } };
+}
+// Password: the strings (u32 length + text) right after each "ES3Defaults" in the game's resources.assets.
+function es3FindPassword(asset, save) {
+  const tag = new TextEncoder().encode('ES3Defaults'), tried = new Set();
+  for (let i = 0; i + tag.length <= asset.length; i++) {
+    let hit = true;
+    for (let k = 0; hit && k < tag.length; k++) if (asset[i + k] !== tag[k]) hit = false;
+    if (!hit) continue;
+    const end = Math.min(asset.length, i + tag.length + 1024);
+    for (let o = i + tag.length; o + 4 < end; o++) {
+      const len = asset[o] | (asset[o + 1] << 8) | (asset[o + 2] << 16) | (asset[o + 3] << 24);
+      if (len < 1 || len > 128 || o + 4 + len > asset.length) continue;
+      let text = true;
+      for (let k = 0; text && k < len; k++) { const c = asset[o + 4 + k]; text = c >= 32 && c < 127; }
+      if (!text) continue;
+      const pw = new TextDecoder().decode(asset.subarray(o + 4, o + 4 + len));
+      if (tried.has(pw)) continue;
+      tried.add(pw);
+      let ok = null;
+      try { ok = decryptEs3(save, pw); } catch (e) { }
+      if (ok) return { password: pw };
+    }
+  }
+  return null;
+}
+
+const api = { decryptEs3, parseEs3, es3FindPassword, Reader, parseRpgMaker, isRpgMaker, parseGameMaker, isGameMaker, lzStringDecompressB64, parseGvas, isGvas, parseNrbf, isNrbf, parseSgb, isSgb, parseDeltarune, isDeltarune, lz4Block, KNOWN_XOR_KEYS, xorBytes, looksXorText, guessXorKey, unwrapXor,
   parseMsgpack, inflateRawSync, sha1, pbkdf2Sha1, aes128CbcDecrypt, setPassword, isTheatrhythm, parseTheatrhythm, decryptTheatrhythm, theatrhythmFindPassword, TH_FILES };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.SaveFormats = api;

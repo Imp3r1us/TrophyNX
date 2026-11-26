@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <ctime>
 #include <memory>
+#include <algorithm>
 #include "render.h"
 #include <curl/curl.h>
 
@@ -424,6 +425,43 @@ int plat::httpGet(const std::string& url, const std::vector<std::string>& header
 void plat::setSelfPath(const std::string& p) { g_self = p; }
 std::string plat::selfPath() { return g_self; }
 std::string plat::sdRoot() { return "sdmc:/"; }
+
+// The game's romfs, update applied (OpenFileSystemWithPatch), read-only: used to find a save password (ES3Defaults in
+// Data/resources.assets, global-metadata.dat) without asking the player to dump anything.
+bool plat::readGameFile(uint64_t titleId, const std::string& rel, std::vector<uint8_t>& out, std::string& why) {
+    char msg[96];
+    FsFileSystem fs;
+    Result rc = fsOpenFileSystemWithPatch(&fs, titleId, FsFileSystemType_ContentData);
+    if (R_FAILED(rc)) {
+        snprintf(msg, sizeof(msg), "the system didn't open the game's files: 0x%X", (unsigned)rc);
+        why = msg;
+        return false;
+    }
+    char path[FS_MAX_PATH] = {0};
+    snprintf(path, sizeof(path), "/%s", rel.c_str());
+    FsFile f;
+    rc = fsFsOpenFile(&fs, path, FsOpenMode_Read, &f);
+    if (R_FAILED(rc)) {
+        snprintf(msg, sizeof(msg), "%s isn't in this game: 0x%X", path, (unsigned)rc);
+        why = msg;
+        fsFsClose(&fs);
+        return false;
+    }
+    s64 size = 0;
+    bool ok = R_SUCCEEDED(fsFileGetSize(&f, &size)) && size > 0 && size <= (s64)(256u << 20);
+    if (!ok) why = "unexpected file size";
+    if (ok) out.resize((size_t)size);
+    for (s64 off = 0; ok && off < size;) {
+        u64 got = 0;
+        u64 want = (u64)std::min<s64>(size - off, 1 << 20);
+        if (R_FAILED(fsFileRead(&f, off, out.data() + off, want, FsReadOption_None, &got)) || got == 0) { ok = false; why = "read error"; }
+        off += (s64)got;
+    }
+    fsFileClose(&f);
+    fsFsClose(&fs);
+    if (!ok) out.clear();
+    return ok;
+}
 
 bool plat::restartLiveModule(std::string& msg) {
     const u64 LIVE_ID = 0x420000000000AC01ULL;

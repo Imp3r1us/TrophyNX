@@ -47,6 +47,13 @@ struct Rule {
     std::vector<uint32_t> offsets;
     int size = 4;          // bytes per value (1, 2 or 4)
     double maxSane = 0;    // > 0: values above this are treated as garbage (offset moved in a game update)
+    uint32_t mask = 0;     // != 0: each value becomes 1 when any of these bits is set, else 0 (bit flags)
+    // "needs": the rule only counts when the value at needsOffset is >= needsMin (e.g. a table long enough
+    // to hold this entry: DLC achievements in Binding of Isaac)
+    bool hasNeeds = false;
+    uint32_t needsOffset = 0;
+    int needsSize = 4;
+    double needsMin = 1;
     // "byml" / "json" readers: paths into the document tree (see byml.h, json_doc.h), e.g. "ShineData[*]/IsGet"
     std::vector<std::string> paths;
     bool hasEqualsStr = false;  // byml/json: matched values must equal this (string, number, true/false)

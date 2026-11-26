@@ -151,6 +151,10 @@ static std::string g_self;
 void plat::setSelfPath(const std::string& p) { g_self = p; }
 std::string plat::selfPath() { return g_self.empty() ? g_root + "/sd/switch/TrophyNX.nro" : g_self; }
 std::string plat::sdRoot() { return g_root + "/sd/"; }
+bool plat::readGameFile(uint64_t, const std::string&, std::vector<uint8_t>&, std::string& why) {
+    why = "not on a Switch";
+    return false;
+}
 bool plat::restartLiveModule(std::string& msg) { msg = "live module restarted (PC: nothing to do)"; return true; }
 void plat::relaunchSelf() {}
 
