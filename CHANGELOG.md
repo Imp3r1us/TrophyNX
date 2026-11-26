@@ -10,6 +10,26 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.18.0 (2026-11-27)
+
+New achievement lists for Isaac, Heavenly Bodies, Skyward Sword HD, Pillars of the Earth and more, read from your saves.
+
+### New
+- The Binding of Isaac: Afterbirth+: the 637 official achievements up to Repentance, read from your save (all 3 save slots). Repentance ones count once you have the Repentance DLC.
+- Heavenly Bodies: the 25 official achievements, exactly as the game awards them.
+- The Legend of Zelda: Skyward Sword HD: 39 achievements for your progress: swords, dungeons, Triforce pieces, songs, items, Tycoon Wallet and Hero Mode (any of your files counts).
+- Ken Follett's The Pillars of the Earth: the 41 official achievements, exactly as the game awards them.
+- We Love Katamari REROLL+ Royal Reverie, Once Upon A KATAMARI and Poppy Playtime: Chapter 1: play time, launch, play day and screenshot achievements.
+- Encrypted saves of Unity games that use Easy Save 3 (Heavenly Bodies) can now be read. Their password is never included with TrophyNX: the app finds it in the installed game by itself the first time and keeps it in `switch/TrophyNX/keys/`.
+- Save Lab: Captures → Encrypted saves → Unity "Easy Save 3" games finds such a password in the game's `resources.assets` and downloads the key file, if the app can't find it by itself.
+
+### Changed
+- Save passwords (THEATRHYTHM FINAL BAR LINE too) are now looked for in the installed game first, so most players no longer need to dump anything. A dump in the keys folder or nxdumptool's folder still works.
+- Games with several save slots in a fixed-layout save now count your best slot, not only the first one.
+
+### Live module 0.14.0
+- Reads the new save formats and achievement lists above, and checks every save slot.
+
 ## 0.17.0 (2026-11-25)
 
 Achievements now play a sound when they unlock, play time achievements pop up while you play, and the overlay shows live progress.

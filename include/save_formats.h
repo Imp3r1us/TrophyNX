@@ -97,6 +97,21 @@ bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t
 cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info = nullptr,
                          const std::vector<std::string>* keepPaths = nullptr, size_t memoryBudget = 0);
 
+// Easy Save 3 (Unity asset) with encryption on: 16-byte IV + AES-128-CBC, key = PBKDF2-HMAC-SHA1(password, IV, 100, 16),
+// plaintext = ES3 JSON (optionally gzip). Tree = that JSON (like the json reader). The password is the game's ES3
+// setting, never built in: the app reads it from sdmc:/switch/TrophyNX/keys/<key_file>.
+cJSON* es3ToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info = nullptr);
+// Finds the password in the game's resources.assets (romfs Data/, e.g. dumped with nxdumptool): the strings right after
+// "ES3Defaults" are tried on one save file. false if none decrypts it.
+bool es3FindPassword(const uint8_t* asset, size_t assetSize, const uint8_t* save, size_t saveSize, std::string& password);
+
+class Es3Doc : public JsonDoc {
+public:
+    bool parse(std::vector<uint8_t>&& data);   // needs `password` set first
+    std::string password;
+    SaveFormatInfo info;
+};
+
 class GvasDoc : public JsonDoc {
 public:
     bool parse(std::vector<uint8_t>&& data);

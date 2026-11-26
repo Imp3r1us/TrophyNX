@@ -142,6 +142,7 @@ When several save files are listed (slots), **the best one counts**.
 | RPG Maker MV / MZ `fileN.rpgsave` / `fileN.rmmzsave` (LZString base64 or zlib) | `rpgmaker` |
 | GameMaker text save: INI (`[Section]` / `key="value"`, also base64), or one value per line | `gamemaker` |
 | THEATRHYTHM FINAL BAR LINE `backup.inf` / `musicBackup.inf` (encrypted MessagePack) | `theatrhythm` + `"key_file": "theatrhythm.txt"` |
+| Unity Easy Save 3 with encryption (random-looking file, size = 16 + a multiple of 16; Heavenly Bodies) | `es3` + `"key_file": "<game>.txt"` |
 | Nintendo BYML (`YB` / `BY` at the start or at 0x10) | `byml` |
 | anything else with values at fixed positions | `binary_le` (see the main README) |
 
@@ -166,6 +167,14 @@ Step by step for beginners: [Getting game files from your Switch](dumping-guide.
 leave it where nxdumptool saves it (`sdmc:/nxdumptool/...`), or copy it to `sdmc:/switch/TrophyNX/keys/`: the app finds the password in it and
 writes the key file itself. The Save Lab can do the same (*Find it in global-metadata.dat*). Details:
 [tools/theatrhythm/README.md](../tools/theatrhythm/README.md).
+
+**Easy Save 3 games** (`es3`, e.g. Heavenly Bodies) are encrypted with a password stored in the game's own
+`resources.assets` (romfs `Data/`). Usually there is **nothing to do**: when the key file is missing, the app reads that
+file straight from the installed game, finds the password and writes `sdmc:/switch/TrophyNX/keys/<key_file>` itself
+(the game's X page says so). If the system refuses (the log says why), dump `resources.assets` with nxdumptool (or copy
+it to `sdmc:/switch/TrophyNX/keys/`) and the app finds it there, or use the Save Lab: *Captures → Encrypted saves →
+Unity “Easy Save 3” games*, give a capture and `resources.assets`, download the key file. The app tries the installed
+game first for THEATRHYTHM too (`global-metadata.dat`).
 
 ### Point at a value (paths)
 

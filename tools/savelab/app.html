@@ -175,6 +175,16 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
       <p class="mute small l-fr">Vous ne l'avez pas ? Donnez le <b>global-metadata.dat</b> du jeu (romfs <code>Data/Managed/Metadata/</code>, extrait par ex. avec nxdumptool) avec une capture THEATRHYTHM chargée ci-dessus : le mot de passe y est retrouvé, enregistré ici, et vous pouvez télécharger <code>theatrhythm.txt</code> pour <code>sdmc:/switch/TrophyNX/keys/</code>.</p>
       <div class="row"><span class="btn sm file fix"><span class="l-en">Find it in global-metadata.dat</span><span class="l-fr">Le trouver dans global-metadata.dat</span><input type="file" id="thMeta"></span><span class="mute small" id="thMetaOut"></span></div>
     </details>
+    <details id="es3Box" style="margin-top:6px">
+      <summary class="small"><span class="l-en">Encrypted saves: Unity “Easy Save 3” games (Heavenly Bodies…)</span><span class="l-fr">Saves chiffrées : jeux Unity « Easy Save 3 » (Heavenly Bodies…)</span></summary>
+      <p class="mute small l-en"><b>Usually nothing to do:</b> TrophyNX reads the password from the installed game by itself. Use this only if the game page (X) says the password file is missing.</p>
+      <p class="mute small l-fr"><b>En général rien à faire :</b> TrophyNX lit le mot de passe dans le jeu installé tout seul. Ne servez-vous de ceci que si la page du jeu (X) dit que le fichier de mot de passe manque.</p>
+      <ol class="small l-en"><li>Load a capture of the game above (e.g. its <code>slot_0</code>).</li><li>Give the game's <b>resources.assets</b> (romfs <code>Data/</code>, dumped with nxdumptool).</li><li>Download the key file and copy it to <code>sdmc:/switch/TrophyNX/keys/</code>.</li></ol>
+      <ol class="small l-fr"><li>Chargez une capture du jeu ci-dessus (par ex. son <code>slot_0</code>).</li><li>Donnez le <b>resources.assets</b> du jeu (romfs <code>Data/</code>, extrait avec nxdumptool).</li><li>Téléchargez le fichier de clé et copiez-le dans <code>sdmc:/switch/TrophyNX/keys/</code>.</li></ol>
+      <div class="row"><span class="btn sm file fix"><span class="l-en">Find it in resources.assets</span><span class="l-fr">Le trouver dans resources.assets</span><input type="file" id="es3Asset"></span><span class="mute small" id="es3Out"></span></div>
+      <p class="mute small l-en">The password stays in this browser (localStorage) and is never sent anywhere.</p>
+      <p class="mute small l-fr">Le mot de passe reste dans ce navigateur (localStorage) et n'est envoyé nulle part.</p>
+    </details>
   </div>
 
   <div class="card">
@@ -345,6 +355,8 @@ const E = SaveLab;
 // save passwords typed by the user (never bundled): set before anything is parsed
 const TH_KEY = 'savelab-key-theatrhythm';
 (() => { let k = ''; try { k = localStorage.getItem(TH_KEY) || ''; } catch (e) { } SaveFormats.setPassword('theatrhythm', k); })();
+const ES3_KEY = 'savelab-key-es3';
+(() => { let k = ''; try { k = localStorage.getItem(ES3_KEY) || ''; } catch (e) { } SaveFormats.setPassword('es3', k); })();
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -378,6 +390,39 @@ $('#thMeta').addEventListener('change', async (ev) => {
       setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     });
     $('#thKeyReload').addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
+  } catch (e) { out.textContent = T('Error: ', 'Erreur : ') + e.message; }
+});
+$('#es3Asset').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0];
+  ev.target.value = '';
+  if (!f) return;
+  const out = $('#es3Out');
+  // ES3 encrypted files: 16-byte IV + whole AES blocks, random-looking
+  const saves = S.caps.flatMap(c => c.files).filter(x => x.data.length >= 32 && (x.data.length - 16) % 16 === 0);
+  if (!saves.length) { out.textContent = T('Load a capture of the game first (slot_0…).', 'Chargez d\'abord une capture du jeu (slot_0…).'); return; }
+  out.textContent = T('Searching…', 'Recherche…');
+  await new Promise(r => setTimeout(r, 30));
+  try {
+    const asset = new Uint8Array(await f.arrayBuffer());
+    let r = null;
+    for (const s of saves) { r = SaveFormats.es3FindPassword(asset, s.data); if (r) break; }
+    if (!r) { out.textContent = T('No Easy Save 3 password in this file decrypts the save (other game, or not resources.assets?).', 'Aucun mot de passe Easy Save 3 de ce fichier ne déchiffre la sauvegarde (autre jeu, ou pas resources.assets ?).'); return; }
+    try { localStorage.setItem(ES3_KEY, r.password); } catch (e) { }
+    SaveFormats.setPassword('es3', r.password);
+    // file name expected by the game's built-in list ("key_file"), else a generic one
+    const tid = (S.game.title_id || '').toUpperCase();
+    const def = Object.values(BUILTIN).find(d => d.reader === 'es3' && (!tid || d.title_id.toUpperCase() === tid));
+    const name = (def && def.key_file) || 'es3.txt';
+    out.innerHTML = esc(T('Found, saved in this browser. ', 'Trouvé, enregistré dans ce navigateur. ')) + '<a href="#" id="es3Dl">' + esc(T('Download ', 'Télécharger ') + name) + '</a> · <a href="#" id="es3Reload">' + esc(T('Reload to decode', 'Recharger pour décoder')) + '</a>';
+    $('#es3Dl').addEventListener('click', (e) => {
+      e.preventDefault();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([r.password], { type: 'text/plain' }));
+      a.download = name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    });
+    $('#es3Reload').addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
   } catch (e) { out.textContent = T('Error: ', 'Erreur : ') + e.message; }
 });
 $('#thKeySave').addEventListener('click', () => { try { const v = $('#thKey').value.trim(); if (v) localStorage.setItem(TH_KEY, v); else localStorage.removeItem(TH_KEY); } catch (e) { } location.reload(); });

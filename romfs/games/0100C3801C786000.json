@@ -1,0 +1,69 @@
+{
+ "title_id": "0100C3801C786000",
+ "name": "Poppy Playtime: Chapter 1",
+ "reader": "",
+ "save_files": [],
+ "_note": "Play statistics only (issue #37): the save could not be read yet. A Save batch issue with labelled backups can turn this into save-based achievements.",
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Back at the Factory",
+   "desc": "Launch the game 3 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Night Shift",
+   "desc": "Play for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Factory Regular",
+   "desc": "Play for 3 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_6",
+   "name": "Employee of the Month",
+   "desc": "Play for 6 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 6
+   }
+  },
+  {
+   "id": "t_days_3",
+   "name": "Coming Back for More",
+   "desc": "Play on 3 different days",
+   "points": 10,
+   "rule": {
+    "type": "days_played",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_shots_5",
+   "name": "Evidence",
+   "desc": "Take 5 screenshots of the game",
+   "points": 10,
+   "rule": {
+    "type": "screenshots",
+    "target": 5
+   }
+  }
+ ]
+}

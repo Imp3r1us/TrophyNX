@@ -2445,6 +2445,99 @@ bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t
     return false;
 }
 
+// ================================================================== Easy Save 3 (Unity asset), encrypted
+// Mirror of parseEs3 / es3FindPassword in tools/savelab/formats.js. File = 16-byte IV + AES-128-CBC (PKCS#7) with
+// key = PBKDF2-HMAC-SHA1(password, IV, 100, 16); the plaintext is ES3's JSON, optionally gzip-compressed.
+// The password is the game's own ES3 setting (Resources/ES3/ES3Defaults in resources.assets): never built in.
+namespace {
+
+bool es3Decrypt(const uint8_t* d, size_t n, const std::string& pw, std::vector<uint8_t>& out, std::string& error) {
+    if (n < 32 || (n - 16) % 16) { error = "size " + std::to_string(n) + " is not a 16-byte IV + AES blocks"; return false; }
+    uint8_t key[16], tail[16];
+    pbkdf2Sha1(pw, d, 16, 100, key, 16);
+    const uint8_t* ct = d + 16;
+    size_t clen = n - 16;
+    aes128CbcDecrypt(key, clen >= 32 ? ct + clen - 32 : d, ct + clen - 16, 16, tail);   // padding check first
+    int pad = tail[15];
+    bool ok = pad >= 1 && pad <= 16;
+    for (int i = 16 - pad; ok && i < 16; i++) if (tail[i] != pad) ok = false;
+    if (!ok) { error = "wrong password or not an Easy Save 3 file (bad padding)"; return false; }
+    out.resize(clen);
+    aes128CbcDecrypt(key, d, ct, clen, out.data());
+    out.resize(clen - (size_t)pad);
+    if (out.size() >= 18 && out[0] == 0x1F && out[1] == 0x8B && out[2] == 8) {   // gzip (ES3 compression)
+        uint8_t fl = out[3];
+        size_t p = 10;
+        if (fl & 4) { if (p + 2 > out.size()) { error = "bad gzip header"; return false; } p += 2 + (out[p] | out[p + 1] << 8); }
+        if (fl & 8) { while (p < out.size() && out[p]) p++; p++; }
+        if (fl & 16) { while (p < out.size() && out[p]) p++; p++; }
+        if (fl & 2) p += 2;
+        if (p >= out.size()) { error = "bad gzip header"; return false; }
+        std::vector<uint8_t> raw;
+        if (!inflateRaw(out.data() + p, out.size() - p, raw, 64u << 20, &error)) return false;
+        out.swap(raw);
+    }
+    return true;
+}
+
+bool es3LooksLikeJson(const std::vector<uint8_t>& t) {
+    size_t s = 0, bad = 0;
+    while (s < t.size() && (t[s] == ' ' || t[s] == '\t' || t[s] == '\r' || t[s] == '\n')) s++;
+    if (s >= t.size() || (t[s] != '{' && t[s] != '[')) return false;
+    for (uint8_t c : t) if (c < 32 && c != 9 && c != 10 && c != 13) bad++;
+    return bad == 0;
+}
+
+}  // namespace
+
+cJSON* es3ToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info) {
+    std::vector<uint8_t> pt;
+    if (!es3Decrypt(data, size, password, pt, error)) return nullptr;
+    if (!es3LooksLikeJson(pt)) { error = "decrypted, but not JSON (wrong password?)"; return nullptr; }
+    size_t e = pt.size();
+    while (e && (pt[e - 1] == 0 || pt[e - 1] == ' ' || pt[e - 1] == '\n' || pt[e - 1] == '\r' || pt[e - 1] == '\t')) e--;
+    cJSON* t = cJSON_ParseWithLength((const char*)pt.data(), e);
+    if (!t) { error = "decrypted, but JSON syntax error"; return nullptr; }
+    if (info) info->summary = "Easy Save 3 (AES), " + std::to_string(pt.size()) + " bytes of JSON";
+    return t;
+}
+
+bool Es3Doc::parse(std::vector<uint8_t>&& data) {
+    cJSON* t = es3ToJson(data.data(), data.size(), password, error, &info);
+    std::vector<uint8_t>().swap(data);
+    if (!t) return false;
+    adopt(t, true);   // JSON: "true" / "12" as text read like the json reader
+    return true;
+}
+
+// The password is a field of the ES3Defaults MonoBehaviour (Unity strings: u32 length + bytes, 4-aligned) a few
+// fields after its name; every length-prefixed string just after each "ES3Defaults" is tried on the save.
+bool es3FindPassword(const uint8_t* asset, size_t assetSize, const uint8_t* save, size_t saveSize, std::string& password) {
+    static const char tag[] = "ES3Defaults";
+    const size_t tl = sizeof(tag) - 1;
+    std::set<std::string> tried;
+    for (size_t i = 0; i + tl <= assetSize; i++) {
+        if (memcmp(asset + i, tag, tl) != 0) continue;
+        size_t end = std::min(assetSize, i + tl + 1024);
+        for (size_t o = i + tl; o + 4 < end; o++) {
+            uint32_t len;
+            memcpy(&len, asset + o, 4);
+            if (len < 1 || len > 128 || o + 4 + len > assetSize) continue;
+            bool text = true;
+            for (uint32_t k = 0; text && k < len; k++) { uint8_t c = asset[o + 4 + k]; text = c >= 32 && c < 127; }
+            if (!text) continue;
+            std::string pw((const char*)asset + o + 4, len);
+            if (!tried.insert(pw).second) continue;
+            std::vector<uint8_t> pt;
+            std::string err;
+            if (!es3Decrypt(save, saveSize, pw, pt, err) || !es3LooksLikeJson(pt)) continue;
+            password = pw;
+            return true;
+        }
+    }
+    return false;
+}
+
 // ================================================================== RPG Maker MV / MZ (fileN.rpgsave / fileN.rmmzsave)
 // Mirror of parseRpgMaker in tools/savelab/formats.js. MV: LZString.compressToBase64(JsonEx.stringify(contents)).
 // MZ: zlib (pako level 1) of the same JSON, the binary string often written back as UTF-8. Plain JSON is accepted too.
