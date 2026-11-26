@@ -42,3 +42,5 @@ local/
 /TrophyNX-sd*/
 __pycache__/
 /sound-preview/
+# tools/unityhook hook-make output: holds the game's own main.npdm (from your dump), never commit it
+out/

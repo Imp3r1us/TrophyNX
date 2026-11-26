@@ -1,0 +1,26 @@
+{
+  "title_id": "010086A022444000",
+  "name": "BALL x PIT",
+  "steam_appid": 2062430,
+  "_note": "AchMgr::Earn(AchType): hook_ids in romfs/games/010086A022444000.json map each AchType value (read from global-metadata.dat) to its Steam name; enum order = Steam schema order, cross-checked by name",
+  "hooks": [
+    {
+      "method": "AchMgr::Earn",
+      "arg": "x1",
+      "type": "int32"
+    }
+  ],
+  "ids": {},
+  "builds": {
+    "ED9090F18AE37A5A": {
+      "build_id": "ED9090F18AE37A5A0966F5CFE5A07CC200000000",
+      "offsets": {
+        "AchMgr::Earn": {
+          "offset": "0x31D4630",
+          "sig": "FD7BBCA9F85F01A9F65702A9F44F03A9",
+          "calls": 33
+        }
+      }
+    }
+  }
+}

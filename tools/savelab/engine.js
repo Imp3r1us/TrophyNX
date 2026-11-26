@@ -1210,7 +1210,7 @@ function validate(def) {
   const errs = [];
   if (!/^[0-9A-Fa-f]{16}$/.test(def.title_id || '')) errs.push(T('title_id must be 16 hexadecimal characters', 'title_id doit faire 16 caractères hexadécimaux'));
   const ids = new Set();
-  const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches', 'days_played', 'streak_days', 'comeback_days', 'screenshots', 'videos', 'memory'];
+  const types = ['flag', 'value', 'count', 'sum', 'playtime_hours', 'launches', 'days_played', 'streak_days', 'comeback_days', 'screenshots', 'videos', 'memory', 'hook'];
   for (const a of def.achievements || []) {
     if (!a.id) errs.push(T('an achievement has no id', 'un succès n\'a pas d\'id'));
     else if (ids.has(a.id)) errs.push(T('duplicate id: ', 'id en double : ') + a.id);
@@ -1218,6 +1218,7 @@ function validate(def) {
     const r = a.rule || {};
     if (!types.includes(r.type)) { errs.push(a.id + T(': unknown rule type “', ' : type de règle inconnu « ') + r.type + T('”', ' »')); continue; }
     if (r.type === 'memory') validateMemRule(a.id, r, errs);
+    if (r.type === 'hook' && !a.steam) errs.push(a.id + T(': a hook rule needs the achievement\'s "steam" name', ' : une règle hook a besoin du nom "steam" du succès'));
     if (SAVE_TYPES.includes(r.type)) {
       const hasSrc = r.name || r.hash || (r.names && r.names.length) || r.pattern || r.offset !== undefined || (r.offsets && r.offsets.length) || r.path || (r.paths && r.paths.length);
       if (!hasSrc) errs.push(a.id + T(': needs an offset, a hash or a name', ' : il faut un offset, un hash ou un nom'));

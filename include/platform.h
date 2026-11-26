@@ -53,6 +53,9 @@ namespace plat {
     // HTTPS GET into memory. Returns the HTTP status, or 0 on a network/TLS error (err says why).
     int httpGet(const std::string& url, const std::vector<std::string>& headers, std::vector<uint8_t>& out,
                 ProgressFn progress, void* ctx, std::string& err);
+    // HTTP POST of `body` (plain http on the local network: "Send logs"). Returns the HTTP status, 0 on error.
+    int httpPost(const std::string& url, const std::vector<std::string>& headers, const std::string& body,
+                 std::string& response, std::string& err);
     // Sockets (shared by httpGet and the Wi-Fi share server). Starts them once; false + err if no network.
     bool netInit(std::string& err);
     std::string localIp();

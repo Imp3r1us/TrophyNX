@@ -8,6 +8,8 @@
 #include <ctime>
 #include <sstream>
 #include <unistd.h>
+#include <netdb.h>
+#include <sys/socket.h>
 #include "stb_image_write.h"
 
 static std::vector<uint32_t> g_px(1280 * 720);
@@ -147,6 +149,52 @@ int plat::httpGet(const std::string& url, const std::vector<std::string>& header
     if (progress) progress((int)(out.size() >> 10), (int)(out.size() >> 10), ctx);
     return 200;
 }
+// PC: a real HTTP POST over plain sockets (to test "Send logs" against tools/logserver on this machine).
+int plat::httpPost(const std::string& url, const std::vector<std::string>& headers, const std::string& body,
+                   std::string& response, std::string& err) {
+    response.clear();
+    if (url.compare(0, 7, "http://") != 0) { err = "only http://"; return 0; }
+    std::string rest = url.substr(7), path = "/";
+    size_t sl = rest.find('/');
+    if (sl != std::string::npos) { path = rest.substr(sl); rest.erase(sl); }
+    std::string host = rest, port = "80";
+    size_t co = rest.rfind(':');
+    if (co != std::string::npos) { host = rest.substr(0, co); port = rest.substr(co + 1); }
+    struct addrinfo hints = {}, *res = nullptr;
+    hints.ai_socktype = SOCK_STREAM;
+    if (getaddrinfo(host.c_str(), port.c_str(), &hints, &res) != 0 || !res) { err = "Could not resolve host"; return 0; }
+    int fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    if (fd < 0 || connect(fd, res->ai_addr, res->ai_addrlen) != 0) {
+        freeaddrinfo(res);
+        if (fd >= 0) close(fd);
+        err = "Couldn't connect to server";
+        return 0;
+    }
+    freeaddrinfo(res);
+    std::string req = "POST " + path + " HTTP/1.1\r\nHost: " + host + "\r\nContent-Length: " + std::to_string(body.size()) +
+                      "\r\nConnection: close\r\n";
+    for (const std::string& h : headers) req += h + "\r\n";
+    req += "\r\n";
+    req += body;
+    size_t sent = 0;
+    while (sent < req.size()) {
+        ssize_t n = send(fd, req.data() + sent, req.size() - sent, 0);
+        if (n <= 0) { close(fd); err = "send failed"; return 0; }
+        sent += (size_t)n;
+    }
+    std::string all;
+    char buf[4096];
+    ssize_t n;
+    while ((n = recv(fd, buf, sizeof(buf), 0)) > 0 && all.size() < 64 * 1024) all.append(buf, (size_t)n);
+    close(fd);
+    int code = 0;
+    if (all.compare(0, 5, "HTTP/") == 0) code = atoi(all.c_str() + all.find(' ') + 1);
+    size_t hb = all.find("\r\n\r\n");
+    if (hb != std::string::npos) response = all.substr(hb + 4);
+    if (!code) err = "no HTTP answer";
+    return code;
+}
+
 static std::string g_self;
 void plat::setSelfPath(const std::string& p) { g_self = p; }
 std::string plat::selfPath() { return g_self.empty() ? g_root + "/sd/switch/TrophyNX.nro" : g_self; }

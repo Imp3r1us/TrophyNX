@@ -171,6 +171,13 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
     else if (t == "days_total") rule.type = RuleType::DaysTotal;
     else if (t == "streak_total") rule.type = RuleType::StreakTotal;
     else if (t == "captures_total") rule.type = RuleType::CapturesTotal;
+    else if (t == "hook") {
+        // live only: the injected hook reports the game's own unlock call (the achievement's "steam" name)
+        rule.type = RuleType::Hook;
+        rule.target = 1;
+        rule.showProgress = false;
+        return true;
+    }
     else if (t == "memory") {
         // live only: the background module reads the game's memory; the app shows the unlocks it stored
         rule.type = RuleType::Memory;
@@ -253,10 +260,15 @@ static bool parseAchList(cJSON* arr, std::vector<Achievement>& out, std::string&
         ach.points = (int)jnum(a, "points", 10);
         ach.hidden = jbool(a, "hidden", false);
         ach.tier = jstr(a, "tier");
+        ach.steam = jstr(a, "steam");
         cJSON* r = cJSON_GetObjectItemCaseSensitive(a, "rule");
         std::string e;
         if (ach.id.empty() || !cJSON_IsObject(r) || !parseRule(r, ach.rule, e, fn)) {
             err += "achievement '" + ach.id + "': " + (e.empty() ? "missing id or rule" : e) + "\n";
+            continue;
+        }
+        if (ach.rule.type == RuleType::Hook && ach.steam.empty()) {
+            err += "achievement '" + ach.id + "': a hook rule needs the achievement's \"steam\" name\n";
             continue;
         }
         out.push_back(ach);
@@ -285,6 +297,8 @@ static bool gameDefFromJson(cJSON* root, GameDef& d, std::string& err) {
     cJSON* sf = cJSON_GetObjectItemCaseSensitive(root, "save_files");
     cJSON* s;
     if (cJSON_IsArray(sf)) cJSON_ArrayForEach(s, sf) if (cJSON_IsString(s)) d.saveFiles.push_back(s->valuestring);
+    cJSON* hid = cJSON_GetObjectItemCaseSensitive(root, "hook_ids");
+    if (cJSON_IsObject(hid)) cJSON_ArrayForEach(s, hid) if (s->string && cJSON_IsString(s)) d.hookIds[s->string] = s->valuestring;
     HashFn fn = d.reader == "totk_progress" ? murmur3str : crc32str;
     parseAchList(cJSON_GetObjectItemCaseSensitive(root, "achievements"), d.achs, err, fn);
     if (!d.id) { err += "missing title_id\n"; return false; }

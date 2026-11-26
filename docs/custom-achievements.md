@@ -202,6 +202,7 @@ The save is read as a tree; a path walks it with `/`:
 | `days_played` / `streak_days` / `comeback_days` | days played, most days in a row, longest break before coming back (system play log) | `{ "type": "streak_days", "target": 7 }` |
 | `screenshots` / `videos` | captures of the game in the album | `{ "type": "screenshots", "target": 10 }` |
 | `memory` | a value in the game's memory, while you play | section 5b |
+| `hook` | the game itself awards the official achievement named by the achievement's `"steam"` | section 5c |
 
 Inside a rule, `"show_progress": false` hides the "37 / 100" counter (shown by default when `target` is above 1),
 and `"divisor": 4` divides the shown value (e.g. quarter hearts shown as hearts).
@@ -309,6 +310,24 @@ in game and check that the achievement unlocks at the right moment. Nothing happ
 Limits: Atmosphère's cheat service (`dmnt:cht`) must be on, the game is watched only while it runs (progress made
 earlier counts as soon as the value is read, except for `becomes` / `increase` conditions), and if you use cheats in the same game the module shares the cheat
 service with them (it never turns them off). Addresses can change with a game update: that's why they're per build.
+
+## 5c. Official achievements through the hook (experimental, Unity games)
+
+Some Unity ports still call their own "unlock achievement" function on Switch, it just does nothing there. An
+optional per-game module (`hook/`, made with [tools/unityhook](../tools/unityhook/README.md)) catches that call and
+the live module unlocks the matching achievement, at the moment the game awards it.
+
+- `"steam": "<API name>"` on any achievement: the official name (from `data/pc2switch/steam/<appid>.json`). The hook
+  unlocks it when the game awards that name, even if its own rule (save, play time...) isn't met yet.
+- `"rule": { "type": "hook" }`: an achievement only the hook can unlock (needs `"steam"`). Without the hook it stays
+  locked.
+- `"hook_ids": { "5": "complete_graveyards" }` at the top of the definition: for games whose call passes a number
+  instead of the name.
+
+```json
+{ "id": "steam_STEELSOUL", "name": "Steel Soul", "desc": "Finish the game in Steel Soul mode", "points": 100,
+  "steam": "STEELSOUL", "rule": { "type": "hook" } }
+```
 
 ## 6. Test it
 

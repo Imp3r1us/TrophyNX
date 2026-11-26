@@ -522,6 +522,10 @@ changed and drafts the achievements for you. Its **🌐 Share with everyone** bu
   [HomeNX's achievement packs](https://github.com/ad3333m/homenx/blob/master/docs/achievement-packs.md) by ad3333m
   (reimplemented here, no HomeNX code copied). Imported addresses come from the codes in
   [switch-cheats-db](https://github.com/HamletDuFromage/switch-cheats-db), written by their respective cheat authors.
+- Unity hook experiment ([tools/unityhook](tools/unityhook)): finding IL2CPP method addresses follows
+  [Il2CppDumper](https://github.com/Perfare/Il2CppDumper) by Perfare (reimplemented, no code copied); hooking the
+  game's own unlock call is the idea of the [Goldberg Steam Emulator](https://gitlab.com/Mr_Goldberg/goldberg_emulator);
+  the optional hook module ([hook/](hook/TROPHYNX.md)) is built on [exlaunch](https://github.com/shadowninja108/exlaunch) by shadowninja108 (GPL-2.0, vendored), following the `subsdk` + npdm pattern of [Skyline](https://github.com/skyline-dev/skyline).
 - Live mode: BotW flag layout from the zeldaret/botw decompilation; `dmntcht.c/h` client from Atmosphère/EdiZon (GPLv2); popup layer technique from Tesla (libtesla); fallback toasts via Ultrahand's `.notify` files.
 
 - Save layouts and flag names come from [Marc Robledo's savegame editors](https://github.com/marcrobledo/savegame-editors). The BotW names were datamined by MrCheeze, and the TotK hashes were compiled by MacSpazzy, MrCheeze, savage13 and others.
@@ -540,4 +544,5 @@ repository.
 Parts written by others keep their own license: `sysmodule/source/dmntcht.c` and `sysmodule/include/dmntcht.h`
 (Atmosphère-NX, GPL version 2 only, so the built module is distributed under GPLv2), cJSON (MIT), stb (public
 domain / MIT), libnx (ISC) and libtesla (GPL version 2, used by the overlay; fetched at build time, not in this
-repository).
+repository), and exlaunch in `hook/` (GPL version 2, so the optional hook module is distributed
+under GPLv2).

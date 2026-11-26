@@ -14,6 +14,7 @@
    "name": "Lucky Trinket",
    "desc": "Obtain your first charm",
    "points": 5,
+   "steam": "CHARMED",
    "rule": {
     "type": "flag",
     "path": "playerData/hasCharm",
@@ -25,6 +26,7 @@
    "name": "Charm Hoarder",
    "desc": "Own 20 charms",
    "points": 10,
+   "steam": "ENCHANTED",
    "rule": {
     "type": "flag",
     "path": "playerData/charmsOwned",
@@ -36,6 +38,7 @@
    "name": "Salubra's Favourite",
    "desc": "Collect every charm and receive Salubra's blessing",
    "points": 50,
+   "steam": "BLESSED",
    "rule": {
     "type": "flag",
     "path": "playerData/salubraBlessing",
@@ -48,6 +51,7 @@
    "name": "Thicker Shell",
    "desc": "Complete a new mask from 4 Mask Shards",
    "points": 5,
+   "steam": "PROTECTED",
    "rule": {
     "type": "flag",
     "path": "playerData/maxHealthBase",
@@ -59,6 +63,7 @@
    "name": "Unbreakable",
    "desc": "Reach the maximum of 9 masks",
    "points": 25,
+   "steam": "MASKED",
    "rule": {
     "type": "flag",
     "path": "playerData/maxHealthBase",
@@ -70,6 +75,7 @@
    "name": "Spare Soul",
    "desc": "Complete a Soul Vessel from 3 Vessel Fragments",
    "points": 5,
+   "steam": "SOULFUL",
    "rule": {
     "type": "flag",
     "path": "playerData/MPReserveMax",
@@ -81,6 +87,7 @@
    "name": "Brimming Soul",
    "desc": "Fill all three Soul Vessels",
    "points": 25,
+   "steam": "WORLDSOUL",
    "rule": {
     "type": "flag",
     "path": "playerData/MPReserveMax",
@@ -92,6 +99,7 @@
    "name": "Armour Without a Knight",
    "desc": "Defeat the False Knight",
    "points": 5,
+   "steam": "FK_DEFEAT",
    "rule": {
     "type": "flag",
     "path": "playerData/falseKnightDefeated",
@@ -103,6 +111,7 @@
    "name": "Duel in Greenpath",
    "desc": "Defeat Hornet in Greenpath",
    "points": 10,
+   "steam": "HORNET_1",
    "rule": {
     "type": "flag",
     "path": "playerData/hornet1Defeated",
@@ -114,6 +123,7 @@
    "name": "Lights Out at the Sanctum",
    "desc": "Defeat the Soul Master",
    "points": 10,
+   "steam": "SOUL_MASTER_DEFEAT",
    "rule": {
     "type": "flag",
     "path": "playerData/mageLordDefeated",
@@ -125,6 +135,7 @@
    "name": "Bow to the Lords",
    "desc": "Defeat the Mantis Lords",
    "points": 10,
+   "steam": "MANTIS_LORDS",
    "rule": {
     "type": "flag",
     "path": "playerData/killedMantisLord",
@@ -136,6 +147,7 @@
    "name": "Hero of the Waterways",
    "desc": "Defeat the Dung Defender",
    "points": 10,
+   "steam": "DUNG_DEFENDER",
    "rule": {
     "type": "flag",
     "path": "playerData/killedDungDefender",
@@ -147,6 +159,7 @@
    "name": "Shattered",
    "desc": "Defeat the Broken Vessel",
    "points": 10,
+   "steam": "BROKEN_VESSEL",
    "rule": {
     "type": "flag",
     "path": "playerData/killedInfectedKnight",
@@ -158,6 +171,7 @@
    "name": "Rematch at the Edge",
    "desc": "Defeat Hornet in Kingdom's Edge",
    "points": 25,
+   "steam": "HORNET_2",
    "rule": {
     "type": "flag",
     "path": "playerData/hornetOutskirtsDefeated",
@@ -170,6 +184,7 @@
    "name": "Jar Smasher",
    "desc": "Defeat the Collector",
    "points": 25,
+   "steam": "COLLECTOR",
    "rule": {
     "type": "flag",
     "path": "playerData/killedJarCollector",
@@ -182,6 +197,7 @@
    "name": "Garden Justice",
    "desc": "Defeat the Traitor Lord",
    "points": 25,
+   "steam": "TRAITOR_LORD",
    "rule": {
     "type": "flag",
     "path": "playerData/killedTraitorLord",
@@ -193,6 +209,7 @@
    "name": "Old Glory",
    "desc": "Defeat the Failed Champion",
    "points": 25,
+   "steam": "DREAM_FK",
    "rule": {
     "type": "flag",
     "path": "playerData/falseKnightDreamDefeated",
@@ -205,6 +222,7 @@
    "name": "Tyranny Ended",
    "desc": "Defeat the Soul Tyrant",
    "points": 25,
+   "steam": "DREAM_SOUL_MASTER_DEFEAT",
    "rule": {
     "type": "flag",
     "path": "playerData/mageLordDreamDefeated",
@@ -217,6 +235,7 @@
    "name": "Kin No More",
    "desc": "Defeat the Lost Kin",
    "points": 25,
+   "steam": "DREAM_BROKEN_VESSEL",
    "rule": {
     "type": "flag",
     "path": "playerData/infectedKnightDreamDefeated",
@@ -229,6 +248,7 @@
    "name": "Dung Forever",
    "desc": "Defeat the White Defender",
    "points": 25,
+   "steam": "WHITE_DEFENDER",
    "rule": {
     "type": "flag",
     "path": "playerData/killedWhiteDefender",
@@ -241,6 +261,7 @@
    "name": "Zote the Mightiest",
    "desc": "Defeat Grey Prince Zote",
    "points": 25,
+   "steam": "GREY_PRINCE",
    "rule": {
     "type": "flag",
     "path": "playerData/killedGreyPrince",
@@ -253,6 +274,7 @@
    "name": "Lesson Learned",
    "desc": "Put Monomon the Teacher to rest",
    "points": 10,
+   "steam": "TEACHER",
    "rule": {
     "type": "flag",
     "path": "playerData/monomonDefeated",
@@ -264,6 +286,7 @@
    "name": "Eyes Closed",
    "desc": "Put Lurien the Watcher to rest",
    "points": 10,
+   "steam": "WATCHER",
    "rule": {
     "type": "flag",
     "path": "playerData/lurienDefeated",
@@ -275,6 +298,7 @@
    "name": "Deep Slumber",
    "desc": "Put Herrah the Beast to rest",
    "points": 10,
+   "steam": "BEAST",
    "rule": {
     "type": "flag",
     "path": "playerData/hegemolDefeated",
@@ -286,6 +310,7 @@
    "name": "One with the Void",
    "desc": "Obtain the Void Heart",
    "points": 25,
+   "steam": "VOID",
    "rule": {
     "type": "flag",
     "path": "playerData/gotShadeCharm",
@@ -298,6 +323,7 @@
    "name": "Vessel",
    "desc": "Defeat the Hollow Knight",
    "points": 50,
+   "steam": "ENDING_A",
    "rule": {
     "type": "flag",
     "path": "playerData/killedHollowKnight",
@@ -310,6 +336,7 @@
    "name": "Light Consumed",
    "desc": "Defeat the Radiance",
    "points": 100,
+   "steam": "ENDING_C",
    "rule": {
     "type": "flag",
     "path": "playerData/killedFinalBoss",
@@ -322,6 +349,7 @@
    "name": "Dreamcatcher",
    "desc": "Collect 600 Essence",
    "points": 10,
+   "steam": "ATTUNEMENT",
    "rule": {
     "type": "flag",
     "path": "playerData/dreamOrbs",
@@ -333,6 +361,7 @@
    "name": "Wide Awake",
    "desc": "Awaken the Dream Nail",
    "points": 25,
+   "steam": "AWAKENING",
    "rule": {
     "type": "flag",
     "path": "playerData/dreamNailUpgraded",
@@ -344,6 +373,7 @@
    "name": "Seer's Farewell",
    "desc": "Collect 2400 Essence and hear the Seer's last words",
    "points": 50,
+   "steam": "ASCENSION",
    "rule": {
     "type": "flag",
     "path": "playerData/mothDeparted",
@@ -356,6 +386,7 @@
    "name": "Grub Buddy",
    "desc": "Free 23 grubs",
    "points": 10,
+   "steam": "GRUBFRIEND",
    "rule": {
     "type": "flag",
     "path": "playerData/grubsCollected",
@@ -367,6 +398,7 @@
    "name": "Grubfather Approved",
    "desc": "Free all 46 grubs",
    "points": 50,
+   "steam": "METAMORPHOSIS",
    "rule": {
     "type": "flag",
     "path": "playerData/grubsCollected",
@@ -378,6 +410,7 @@
    "name": "Ticket Holder",
    "desc": "Open 4 Stag Stations",
    "points": 10,
+   "steam": "STAG_STATION_HALF",
    "rule": {
     "type": "flag",
     "path": "playerData/stationsOpened",
@@ -389,6 +422,7 @@
    "name": "Return to the Nest",
    "desc": "Open every Stag Station and find the Stag Nest",
    "points": 25,
+   "steam": "STAG_STATION_ALL",
    "rule": {
     "type": "flag",
     "path": "playerData/openedStagNest",
@@ -400,6 +434,7 @@
    "name": "Map Maker",
    "desc": "Own the map of all 13 areas",
    "points": 25,
+   "steam": "MAP",
    "rule": {
     "type": "count",
     "paths": [
@@ -425,6 +460,7 @@
    "name": "Field Biologist",
    "desc": "Complete every Hunter's Journal entry",
    "points": 50,
+   "steam": "HUNTER_1",
    "rule": {
     "type": "flag",
     "path": "playerData/journalEntriesCompleted",
@@ -437,6 +473,7 @@
    "name": "Hunter's Respect",
    "desc": "Receive the Hunter's Mark",
    "points": 50,
+   "steam": "HUNTER_2",
    "rule": {
     "type": "flag",
     "path": "playerData/killedHunterMark",
@@ -449,6 +486,7 @@
    "name": "Not My Problem",
    "desc": "Let Zote meet his fate",
    "points": 10,
+   "steam": "NEGLECT",
    "rule": {
     "type": "flag",
     "path": "playerData/zoteDead",
@@ -461,6 +499,7 @@
    "name": "Precepts Refuted",
    "desc": "Defeat Zote in the Colosseum of Fools",
    "points": 25,
+   "steam": "ZOTE",
    "rule": {
     "type": "flag",
     "path": "playerData/killedZote",
@@ -473,6 +512,7 @@
    "name": "A Quiet Goodbye",
    "desc": "Share a last moment with Quirrel",
    "points": 25,
+   "steam": "QUIRREL_EPILOGUE",
    "rule": {
     "type": "flag",
     "path": "playerData/quirrelEpilogueCompleted",
@@ -485,6 +525,7 @@
    "name": "Delivered",
    "desc": "Bring the Grey Mourner her flower",
    "points": 25,
+   "steam": "MOURNER",
    "rule": {
     "type": "flag",
     "path": "playerData/xunRewardGiven",
@@ -496,6 +537,7 @@
    "name": "Perfect Edge",
    "desc": "Slay the Nailsmith with the Pure Nail",
    "points": 25,
+   "steam": "NAILSMITH_KILL",
    "rule": {
     "type": "flag",
     "path": "playerData/nailsmithKilled",
@@ -508,6 +550,7 @@
    "name": "New Calling",
    "desc": "Let the Nailsmith find a new calling",
    "points": 25,
+   "steam": "NAILSMITH_SPARE",
    "rule": {
     "type": "flag",
     "path": "playerData/nailsmithConvoArt",
@@ -520,6 +563,7 @@
    "name": "Warrior",
    "desc": "Complete the Trial of the Warrior",
    "points": 10,
+   "steam": "COLOSSEUM_1",
    "rule": {
     "type": "flag",
     "path": "playerData/colosseumBronzeCompleted",
@@ -531,6 +575,7 @@
    "name": "Conqueror",
    "desc": "Complete the Trial of the Conqueror",
    "points": 25,
+   "steam": "COLOSSEUM_2",
    "rule": {
     "type": "flag",
     "path": "playerData/colosseumSilverCompleted",
@@ -542,6 +587,7 @@
    "name": "Fool",
    "desc": "Complete the Trial of the Fool",
    "points": 50,
+   "steam": "COLOSSEUM_3",
    "rule": {
     "type": "flag",
     "path": "playerData/colosseumGoldCompleted",
@@ -553,6 +599,7 @@
    "name": "Encore",
    "desc": "Defeat Troupe Master Grimm",
    "points": 25,
+   "steam": "GRIMM",
    "rule": {
     "type": "flag",
     "path": "playerData/killedGrimm",
@@ -565,6 +612,7 @@
    "name": "Ritual Complete",
    "desc": "Defeat the Nightmare King and finish the ritual",
    "points": 50,
+   "steam": "NIGHTMARE_GRIMM",
    "rule": {
     "type": "flag",
     "path": "playerData/defeatedNightmareGrimm",
@@ -577,6 +625,7 @@
    "name": "Show Cancelled",
    "desc": "Banish the Grimm Troupe from Hallownest",
    "points": 50,
+   "steam": "BANISHMENT",
    "rule": {
     "type": "flag",
     "path": "playerData/destroyedNightmareLantern",
@@ -589,6 +638,7 @@
    "name": "Master Class",
    "desc": "Complete the Pantheon of the Master",
    "points": 25,
+   "steam": "PANTHEON1",
    "rule": {
     "type": "flag",
     "path": "playerData/bossDoorStateTier1/completed",
@@ -601,6 +651,7 @@
    "name": "Muse",
    "desc": "Complete the Pantheon of the Artist",
    "points": 25,
+   "steam": "PANTHEON2",
    "rule": {
     "type": "flag",
     "path": "playerData/bossDoorStateTier2/completed",
@@ -613,6 +664,7 @@
    "name": "Sage Advice",
    "desc": "Complete the Pantheon of the Sage",
    "points": 50,
+   "steam": "PANTHEON3",
    "rule": {
     "type": "flag",
     "path": "playerData/bossDoorStateTier3/completed",
@@ -625,6 +677,7 @@
    "name": "Knightly Virtue",
    "desc": "Complete the Pantheon of the Knight",
    "points": 50,
+   "steam": "PANTHEON4",
    "rule": {
     "type": "flag",
     "path": "playerData/bossDoorStateTier4/completed",
@@ -637,6 +690,7 @@
    "name": "Godhome Summit",
    "desc": "Complete the Pantheon of Hallownest",
    "points": 100,
+   "steam": "ENDINGD",
    "rule": {
     "type": "flag",
     "path": "playerData/bossDoorStateTier5/completed",
@@ -649,6 +703,7 @@
    "name": "Hundred Percent",
    "desc": "Reach 100% game completion",
    "points": 50,
+   "steam": "COMPLETION",
    "rule": {
     "type": "flag",
     "path": "playerData/completionPercentage",
@@ -660,6 +715,7 @@
    "name": "Beyond Complete",
    "desc": "Reach 112% game completion",
    "points": 100,
+   "steam": "COMPLETIONGG",
    "rule": {
     "type": "flag",
     "path": "playerData/completionPercentage",
@@ -705,6 +761,78 @@
    "rule": {
     "type": "playtime_hours",
     "target": 40
+   }
+  },
+  {
+   "id": "steam_ENDING_B",
+   "name": "Sealed Siblings",
+   "desc": "Obtain the Sealed Siblings ending",
+   "points": 50,
+   "steam": "ENDING_B",
+   "rule": {
+    "type": "hook"
+   },
+   "hidden": true
+  },
+  {
+   "id": "steam_MR_MUSHROOM",
+   "name": "Passing of the Age",
+   "desc": "Complete the journey of Mister Mushroom",
+   "points": 25,
+   "steam": "MR_MUSHROOM",
+   "rule": {
+    "type": "hook"
+   },
+   "hidden": true
+  },
+  {
+   "id": "steam_SPEEDRUN_1",
+   "name": "Speedrun 1",
+   "desc": "Complete the game in under 10 hours",
+   "points": 50,
+   "steam": "SPEEDRUN_1",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_SPEEDRUN_2",
+   "name": "Speedrun 2",
+   "desc": "Complete the game in under 5 hours",
+   "points": 100,
+   "steam": "SPEEDRUN_2",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_SPEED_COMPLETION",
+   "name": "Speed Completion",
+   "desc": "Achieve 100% game completion and finish the game in under 20 hours",
+   "points": 100,
+   "steam": "SPEED_COMPLETION",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_STEELSOUL",
+   "name": "Steel Soul",
+   "desc": "Finish the game in Steel Soul mode",
+   "points": 100,
+   "steam": "STEELSOUL",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_STEELSOUL_COMPLETION",
+   "name": "Steel Heart",
+   "desc": "Achieve 100% game completion and finish the game in Steel Soul mode",
+   "points": 100,
+   "steam": "STEELSOUL_COMPLETION",
+   "rule": {
+    "type": "hook"
    }
   }
  ]
