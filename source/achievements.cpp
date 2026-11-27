@@ -265,13 +265,24 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
     appendLiveLog(ov.debug);
     for (Game& g : lib.games) {
         int live = 0;
-        int hooked = 0;
+        int hooked = 0, hookOnly = 0;
         for (const Achievement& a : g.achs) if (a.rule.type == RuleType::Memory) live++;
         for (const Achievement& a : g.achs) if (!a.steam.empty()) hooked++;
+        for (const Achievement& a : g.achs) if (a.rule.type == RuleType::Hook) hookOnly++;
+        // the hook only matters once it is installed for this game (atmosphere/contents/<TID>/exefs/subsdk9),
+        // or when some achievements can't be read any other way
+        char hp[96];
+        snprintf(hp, sizeof(hp), "%satmosphere/contents/%016llX/exefs/subsdk9", plat::sdRoot().c_str(), (unsigned long long)g.id);
+        FILE* hf = fopen(hp, "rb");
+        bool hookInstalled = hf != nullptr;
+        if (hf) fclose(hf);
+        if (!hookInstalled && !hookOnly) hooked = 0;
         if (g.id != 0x01007EF00011E000ULL && !live && !hooked) continue;
         g.debug.push_back("");
-        if (hooked) g.debug.push_back(std::to_string(hooked) + " official achievements: the optional hook (tools/unityhook) unlocks them "
-                                      "when the game itself awards them;");
+        if (hooked && hookInstalled) g.debug.push_back("Achievement hook installed: " + std::to_string(hooked) + " official achievements also unlock "
+                                                       "the moment the game itself awards them;");
+        else if (hooked) g.debug.push_back(std::to_string(hookOnly) + " official achievements need the optional achievement hook "
+                                           "(experimental, tools/unityhook) to unlock;");
         if (live) g.debug.push_back(std::to_string(live) + " live (memory) achievements: unlocked by sys-trophynx while you play;");
         if (live) g.debug.push_back("  its log below names the game's build ID (\"build ...\") and the values it reads.");
         g.debug.push_back("Live module (sys-trophynx): " + lib.liveStatus);
