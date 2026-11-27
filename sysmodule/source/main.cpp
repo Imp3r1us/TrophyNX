@@ -32,7 +32,7 @@
 #include "overlay_data.h"
 #include "playlog.h"
 
-#define MODULE_VERSION "0.14.2"
+#define MODULE_VERSION "0.15.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {

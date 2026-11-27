@@ -896,8 +896,11 @@ function compileRule(r, fn) {
   if (Array.isArray(r.offsets)) for (const o of r.offsets) rule.offsets.push(parseOff(o));
   rule.size = [1, 2, 4].includes(r.size) ? r.size : 4;
   rule.mask = r.mask !== undefined ? parseOff(r.mask) >>> 0 : 0;   // bit flags: value -> 1 when any bit of mask is set
+  rule.masks = Array.isArray(r.masks) ? r.masks.map(m => parseOff(m) >>> 0) : [];   // one mask per offset
+  rule.bits = !!r.bits;   // value -> its number of set bits (within mask, if any), same as the app
   // needs: the rule only counts when the value at needs.offset is >= needs.min (same as the app)
   if (r.needs && typeof r.needs === 'object') rule.needs = { offset: parseOff(r.needs.offset), size: [1, 2, 4].includes(r.needs.size) ? r.needs.size : 4, min: r.needs.min ?? 1 };
+  rule.file = typeof r.file === 'string' ? r.file : '';   // only this save file (and its slots) counts
   return rule;
 }
 const SAVE_TYPES = ['flag', 'value', 'count', 'sum'];
@@ -919,10 +922,26 @@ function evaluate(def, files, opts = {}) {
     let why = '';
     for (const p of def.save_files || []) {
       const f = pick([p]);
-      if (!f || files.includes(f)) continue;
+      if (!f || files.some(x => x.data === f.data)) continue;
       if (def.file_size && f.data.length !== def.file_size) { why = p + T(': size ', ' : taille ') + f.data.length + ' ≠ ' + def.file_size; continue; }
       if (def.magic && asciiAt(f.data, 0, def.magic.length) !== def.magic) { why = p + T(': header differs from “', ' : en-tête différent de « ') + def.magic + T('”', ' »'); continue; }
-      files.push(f);
+      const L = def.slots && def.slots[p];
+      if (!L) { files.push(Object.assign({}, f, { file: p, base: 0, size: f.data.length })); continue; }
+      // "slots": one file holding save slots at base + i * stride; each valid slot is read like a file (same as the app)
+      const base = parseOff(L.base), stride = parseOff(L.stride), count = parseOff(L.count);
+      for (let i = 0; i < count && stride > 0; i++) {
+        const start = base + i * stride;
+        if (start >= f.data.length) break;
+        const len = Math.min(stride, f.data.length - start);
+        if (L.magic && (L.magic.length > len || asciiAt(f.data, start, L.magic.length) !== L.magic)) continue;
+        if (L.check && typeof L.check === 'object') {
+          const co = parseOff(L.check.offset), cs = [1, 2, 4].includes(L.check.size) ? L.check.size : 4;
+          if (co + cs > len) continue;
+          const v = rd(f.data, start + co, cs);
+          if (v < (L.check.min ?? 1) || (L.check.max > 0 && v > L.check.max)) continue;
+        }
+        files.push({ path: p + ' slot ' + i, data: f.data, file: p, base: start, size: len });
+      }
     }
     for (const a of def.achievements || []) {
       const t = a.rule && a.rule.type;
@@ -931,17 +950,20 @@ function evaluate(def, files, opts = {}) {
       const r = compileRule(a.rule, fn);
       let best = 0, bestFile = null, anyBad = false, skipNote = '', allSkipped = true;
       for (const file of files) {
+        if (r.file && r.file !== file.file) continue;
         if (r.needs) {
-          const nv = r.needs.offset + r.needs.size <= file.data.length ? rd(file.data, r.needs.offset, r.needs.size) : 0;
+          const nv = r.needs.offset + r.needs.size <= file.size ? rd(file.data, file.base + r.needs.offset, r.needs.size) : 0;
           if (nv < r.needs.min) { skipNote = T('not in this save: needs ', 'absent de cette sauvegarde : il faut ') + r.needs.min + T(', has ', ', a ') + nv; continue; }
         }
         allSkipped = false;
         let total = 0, bad = false;
-        for (const o of r.offsets) {
-          if (o + r.size > file.data.length) { bad = true; continue; }
-          let v = rd(file.data, o, r.size);
+        for (let oi = 0; oi < r.offsets.length; oi++) {
+          const o = r.offsets[oi], mask = oi < r.masks.length ? r.masks[oi] : r.mask;
+          if (o + r.size > file.size) { bad = true; continue; }
+          let v = rd(file.data, file.base + o, r.size);
           if (r.max > 0 && v > r.max) { bad = true; continue; }
-          if (r.mask) v = (v & r.mask) ? 1 : 0;
+          if (r.bits) { let x = (mask ? v & mask : v) >>> 0, c = 0; while (x) { c += x & 1; x >>>= 1; } v = c; }
+          else if (mask) v = (v & mask) ? 1 : 0;
           if (t === 'count') total += v ? 1 : 0; else total += v;
         }
         if (bad) { anyBad = true; continue; }

@@ -56,6 +56,7 @@ at the root of the SD card. Then update from the app with ZL.
 | Save file | **Blasphemous** (45 + 4 play-time) | the 45 Steam achievements, from the game's own achievement tracker |
 | Save file | **Slay the Spire** (46 + 4), **Vampire Survivors** (243 + 4), **Vampire Crawlers** (161 + 4) | every Steam achievement, from the game's own record |
 | Save file | **OCTOPATH TRAVELER** (22) | travelers, levels, story chapters, chests, side stories, enemy weaknesses |
+| Save file | **KINGDOM HEARTS HD 1.5+2.5 ReMIX** (53 + 5 play-time) | 53 of the 197 Steam achievements of Kingdom Hearts Final Mix and Kingdom Hearts II Final Mix: keyholes, episodes, cups, superbosses, Data Organization XIII, game clear by difficulty, level, chests, synthesis... (every save slot counts) |
 | Save file | **Paper Mario: The Origami King** (22 + 4 play-time) | coins, battles, enemies, Excellent hits, ring puzzles, museum... |
 
 Unlocks are permanent: if you later delete or overwrite a save, what you unlocked stays unlocked.
@@ -376,7 +377,7 @@ Drop a file in `sdmc:/switch/TrophyNX/games/` named after the title ID:
 |---|---|---|
 | `gamedata_hash` | BotW `game_data.sav`: u32 hash / u32 value pairs from 0x0C | CRC32 |
 | `totk_progress` | TotK `progress.sav`: magic `01020304`, pairs from 0x28 to `MetaData.SaveTypeHash` | Murmur3 |
-| `binary_le` | little-endian integers at fixed offsets; optional `file_size` / `magic` checks | — (rules use `offset`/`offsets`, `size`, `max`, optional `mask` (`"0x0004"`: the value counts as 1 when any of these bits is set, else 0, for bit flags), optional `needs`: `{ "offset": "0x1C", "size": 4, "min": 405 }` keeps the rule locked unless the value there is ≥ `min`, e.g. a table long enough to hold this entry) |
+| `binary_le` | little-endian integers at fixed offsets; optional `file_size` / `magic` checks | — (rules use `offset`/`offsets`, `size`, `max`, optional `mask` (`"0x0004"`: the value counts as 1 when any of these bits is set, else 0, for bit flags), optional `needs`: `{ "offset": "0x1C", "size": 4, "min": 405 }` keeps the rule locked unless the value there is ≥ `min`, e.g. a table long enough to hold this entry); `bits: true` adds up the set bits of each value (chests opened, reports found); `masks`: one mask per offset, same order as `offsets`; `file`: only that save file counts. Game-level `slots` reads a file holding many save slots: `{ "<save file>": { "base", "stride", "count", "magic", "check": { "offset", "size", "min", "max" } } }`, each slot at `base + i × stride` read like a file of its own (offsets relative to the slot), the best slot counts — Kingdom Hearts HD 1.5+2.5 ReMIX `KHFM.png`) |
 | `byml` | Nintendo BYML tree (`YB`/`BY`) at offset 0 or 0x10 — Super Mario Odyssey `File*.bin` | — (rules use `path`/`paths`, optional `equals`) |
 | `json` | plain-text JSON (optional BOM, trailing NULs ignored) — Unity games such as Hollow Knight `user1.dat` | — (same `path`/`paths` syntax as `byml`) |
 | `gvas` | Unreal Engine 4 / 5 (up to 5.3) SaveGame `.sav` (magic `GVAS`) — property names become keys | — (same `path`/`paths` syntax) |
