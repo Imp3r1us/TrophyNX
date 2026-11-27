@@ -75,7 +75,7 @@ struct Achievement {
     uint64_t unlockTime = 0;
 };
 
-enum class SaveStatus { None, Ok, NoSave, Unreadable };
+enum class SaveStatus { None, Ok, NoSave, Unreadable, NeedsKey };   // NeedsKey: encrypted save, its password file is missing
 
 struct Game {
     uint64_t id = 0;

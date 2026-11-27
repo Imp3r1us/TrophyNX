@@ -173,7 +173,9 @@ writes the key file itself. The Save Lab can do the same (*Find it in global-met
 file straight from the installed game, finds the password and writes `sdmc:/switch/TrophyNX/keys/<key_file>` itself
 (the game's X page says so). If the system refuses (the log says why), dump `resources.assets` with nxdumptool (or copy
 it to `sdmc:/switch/TrophyNX/keys/`) and the app finds it there, or use the Save Lab: *Captures → Encrypted saves →
-Unity “Easy Save 3” games*, give a capture and `resources.assets`, download the key file. The app tries the installed
+Unity “Easy Save 3” games*, give a capture and `resources.assets`, download the key file. Simplest for players: the
+Save Lab's **🔑 Save password** tab (<https://imp3r1us.github.io/TrophyNX/#key>) does it for any game with a `key_file`
+from the game file and one save; see [the beginner guide](dumping-guide.md#encrypted-saves-in-short-theatrhythm-heavenly-bodies). The app tries the installed
 game first for THEATRHYTHM too (`global-metadata.dat`).
 
 ### Point at a value (paths)
