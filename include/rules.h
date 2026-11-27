@@ -41,6 +41,7 @@ struct GameDef {
     bool closeScan = true;   // "close_scan": false -> the background module doesn't scan it when the game closes
     bool liveSave = true;    // "live_save": false -> the background module doesn't read the save while the game runs
     std::vector<std::string> saveFiles;
+    std::map<std::string, SlotLayout> slots;   // binary_le "slots": save file -> slot layout
     std::vector<Achievement> achs;
 };
 

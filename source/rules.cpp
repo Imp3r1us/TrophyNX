@@ -229,6 +229,9 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
     rule.maxSane = jnum(r, "max", 0);
     cJSON* mask = cJSON_GetObjectItemCaseSensitive(r, "mask");
     if (mask) rule.mask = parseOff(mask);
+    rule.bits = jbool(r, "bits", false);
+    cJSON* masks = cJSON_GetObjectItemCaseSensitive(r, "masks");
+    if (cJSON_IsArray(masks)) { cJSON* m; cJSON_ArrayForEach(m, masks) rule.masks.push_back(parseOff(m)); }
     cJSON* needs = cJSON_GetObjectItemCaseSensitive(r, "needs");
     if (cJSON_IsObject(needs)) {
         rule.hasNeeds = true;
@@ -237,6 +240,7 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
         if (rule.needsSize != 1 && rule.needsSize != 2 && rule.needsSize != 4) rule.needsSize = 4;
         rule.needsMin = jnum(needs, "min", 1);
     }
+    rule.file = jstr(r, "file");
     bool saveRule = rule.type == RuleType::Flag || rule.type == RuleType::Count || rule.type == RuleType::Sum;
     if (saveRule && rule.hashes.empty() && rule.offsets.empty() && rule.paths.empty()) { err = "rule needs name, hash, names, pattern, offset(s) or path(s)"; return false; }
     return true;
@@ -285,6 +289,35 @@ static bool gameDefFromJson(cJSON* root, GameDef& d, std::string& err) {
     cJSON* sf = cJSON_GetObjectItemCaseSensitive(root, "save_files");
     cJSON* s;
     if (cJSON_IsArray(sf)) cJSON_ArrayForEach(s, sf) if (cJSON_IsString(s)) d.saveFiles.push_back(s->valuestring);
+    // "slots": { "<save file>": { "base", "stride", "count", "magic", "check": { "offset", "size", "min", "max" } } }
+    auto num = [](cJSON* o, const char* k, double def) -> double {
+        cJSON* v = cJSON_GetObjectItemCaseSensitive(o, k);
+        if (cJSON_IsNumber(v)) return v->valuedouble;
+        if (cJSON_IsString(v)) return (double)strtoull(v->valuestring, nullptr, 0);
+        return def;
+    };
+    cJSON* slots = cJSON_GetObjectItemCaseSensitive(root, "slots");
+    if (cJSON_IsObject(slots)) {
+        cJSON_ArrayForEach(s, slots) {
+            if (!cJSON_IsObject(s) || !s->string) continue;
+            SlotLayout L;
+            L.base = (uint64_t)num(s, "base", 0);
+            L.stride = (uint64_t)num(s, "stride", 0);
+            L.count = (int)num(s, "count", 0);
+            L.magic = jstr(s, "magic");
+            cJSON* c = cJSON_GetObjectItemCaseSensitive(s, "check");
+            if (cJSON_IsObject(c)) {
+                L.hasCheck = true;
+                L.checkOffset = (uint32_t)num(c, "offset", 0);
+                L.checkSize = (int)num(c, "size", 4);
+                if (L.checkSize != 1 && L.checkSize != 2 && L.checkSize != 4) L.checkSize = 4;
+                L.checkMin = num(c, "min", 1);
+                L.checkMax = num(c, "max", 0);
+            }
+            if (L.stride == 0 || L.count <= 0) { err += std::string("slots '") + s->string + "': needs stride and count\n"; continue; }
+            d.slots[s->string] = L;
+        }
+    }
     HashFn fn = d.reader == "totk_progress" ? murmur3str : crc32str;
     parseAchList(cJSON_GetObjectItemCaseSensitive(root, "achievements"), d.achs, err, fn);
     if (!d.id) { err += "missing title_id\n"; return false; }
@@ -321,6 +354,7 @@ void applyGameDef(Game& g, const GameDef& d) {
     g.xorKey = d.xorKey;
     g.keyFile = d.keyFile;
     g.saveFiles = d.saveFiles;
+    g.slots = d.slots;
     g.achs = d.achs;
 }
 
@@ -393,7 +427,9 @@ static void evaluateBinary(Game& g, SaveSource& src) {
     g.debug.push_back("Save mounted (read-only).");
     const bool stream = src.streaming();
     // every recognised file (save slots): each achievement takes its best value over them, like the tree readers
-    struct BinFile { std::string name; uint64_t size; std::vector<uint8_t> data; };   // data: whole file (app only)
+    // A "slots" file gives one BinFile per valid slot: offsets are relative to `base`, limited to the slot's size.
+    struct BinFile { std::string name, file; uint64_t base, size; int buf; };   // buf: index in bufs (app only)
+    std::vector<std::vector<uint8_t>> bufs;   // whole files (app only), shared by their slots
     std::vector<BinFile> usable;
     for (const std::string& f : g.saveFiles) {
         std::vector<uint8_t> buf;
@@ -414,10 +450,42 @@ static void evaluateBinary(Game& g, SaveSource& src) {
         else if (!g.magic.empty() && (buf.size() < g.magic.size() || memcmp(buf.data(), g.magic.data(), g.magic.size()) != 0))
             why = "header is not '" + g.magic + "'";
         if (!why.empty()) { g.debug.push_back("  " + f + ": " + why + " -> NOT RECOGNISED"); continue; }
-        g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> OK");
-        BinFile bf{f, size, {}};
-        if (!stream) bf.data = std::move(buf);
-        usable.push_back(std::move(bf));
+        int bi = -1;
+        if (!stream) { bufs.push_back(std::move(buf)); bi = (int)bufs.size() - 1; }
+        auto layout = g.slots.find(f);
+        if (layout == g.slots.end()) {
+            g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> OK");
+            usable.push_back(BinFile{f, f, 0, size, bi});
+            continue;
+        }
+        const SlotLayout& L = layout->second;
+        int found = 0;
+        for (int i = 0; i < L.count; i++) {
+            uint64_t start = L.base + (uint64_t)i * L.stride;
+            if (start >= size) break;
+            uint64_t len = std::min<uint64_t>(L.stride, size - start);
+            auto readSlot = [&](uint32_t off, void* out, size_t n) {
+                if ((uint64_t)off + n > len) return false;
+                if (stream) return src.readAt(f, start + off, out, n);
+                memcpy(out, &bufs[bi][start + off], n);
+                return true;
+            };
+            if (!L.magic.empty()) {
+                std::string m(L.magic.size(), '\0');
+                if (!readSlot(0, &m[0], m.size()) || m != L.magic) continue;
+            }
+            if (L.hasCheck) {
+                uint8_t b[4] = {0, 0, 0, 0};
+                if (!readSlot(L.checkOffset, b, L.checkSize)) continue;
+                uint32_t v = 0;
+                for (int k = 0; k < L.checkSize; k++) v |= (uint32_t)b[k] << (8 * k);
+                if (v < L.checkMin || (L.checkMax > 0 && v > L.checkMax)) continue;
+            }
+            usable.push_back(BinFile{f + " slot " + std::to_string(i), f, start, len, bi});
+            found++;
+        }
+        g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes, " + std::to_string(found) + " save slot(s) -> " +
+                          (found ? "OK" : "NONE"));
     }
     if (usable.empty()) {
         src.close();
@@ -437,11 +505,12 @@ static void evaluateBinary(Game& g, SaveSource& src) {
         std::string skipNote;
         for (size_t fi = 0; fi < usable.size(); fi++) {
             const BinFile& bf = usable[fi];
+            if (!a.rule.file.empty() && a.rule.file != bf.file) continue;
             auto readLe = [&](uint32_t off, int size, uint32_t& v) {
                 if ((uint64_t)off + size > bf.size) return false;
                 uint8_t b[4] = {0, 0, 0, 0};
-                if (stream) { if (!src.readAt(bf.name, off, b, size)) return false; }
-                else memcpy(b, &bf.data[off], size);
+                if (stream) { if (!src.readAt(bf.file, bf.base + off, b, size)) return false; }
+                else memcpy(b, &bufs[bf.buf][bf.base + off], size);
                 v = 0;
                 for (int i = 0; i < size; i++) v |= (uint32_t)b[i] << (8 * i);
                 return true;
@@ -456,11 +525,13 @@ static void evaluateBinary(Game& g, SaveSource& src) {
             allSkipped = false;
             double total = 0;
             bool bad = false;
-            for (uint32_t off : a.rule.offsets) {
-                uint32_t v = 0;
+            for (size_t oi = 0; oi < a.rule.offsets.size(); oi++) {
+                uint32_t off = a.rule.offsets[oi], v = 0;
+                uint32_t mask = oi < a.rule.masks.size() ? a.rule.masks[oi] : a.rule.mask;
                 if (!readLe(off, a.rule.size, v)) { bad = true; continue; }
                 if (a.rule.maxSane > 0 && v > a.rule.maxSane) { bad = true; continue; }
-                if (a.rule.mask) v = (v & a.rule.mask) ? 1 : 0;
+                if (a.rule.bits) v = (uint32_t)__builtin_popcount(mask ? v & mask : v);
+                else if (mask) v = (v & mask) ? 1 : 0;
                 if (t == RuleType::Count) total += v ? 1 : 0;
                 else total += v;
             }

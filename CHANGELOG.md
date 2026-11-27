@@ -10,6 +10,21 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.19.0 (2026-11-27)
+
+KINGDOM HEARTS HD 1.5+2.5 ReMIX now unlocks 53 of its Steam achievements from your saves, from every save slot.
+
+### New
+- KINGDOM HEARTS HD 1.5+2.5 ReMIX (Switch version, not the Cloud Version): 25 achievements from Kingdom Hearts Final Mix (every keyhole, Monstro, the four cups, Ice Titan, Sephiroth, Kurt Zisa, the Phantom, the Mysterious Man, Oathkeeper, chests, Heartless defeated, Ansem Reports, synthesis) and 23 from Kingdom Hearts II Final Mix (every world's episodes, Roxas, the four cups, the Lingering Will, Data Organization XIII, level 99, game clear on Proud and Critical). Plus 5 play-time achievements. Every one of your save slots is read and the best one counts, so a save from any point of your game unlocks what it has reached. Thanks to the player who shared a full playthrough save.
+- Re:Chain of Memories and Birth by Sleep aren't in yet: their save layout still has to be mapped. Achievements the save can't prove (no continue, under 15 hours, gummi ship scores...) are left out.
+- The Cloud Version keeps its saves on the server, so only the play-time achievements work there.
+
+### Changed
+- Custom lists (binary_le reader): `slots` reads a file that holds many save slots, `file` limits a rule to one save file, `bits` counts set bits, and `masks` gives each offset its own mask. The Save Lab understands them too. See the README's reader table.
+
+### Live module 0.15.0
+- Knows the KINGDOM HEARTS list and reads its save slots while you play, so the achievements pop up after the game saves.
+
 ## 0.18.3 (2026-11-27)
 
 Poppy Playtime: Chapter 1 now unlocks its official achievements from your save, live while you play.

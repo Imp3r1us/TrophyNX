@@ -58,6 +58,24 @@ for a in md['achievements']:
         o=int(o,0) if isinstance(o,str) else o
         buf[o:o+r.get('size',4)]=random.randrange(0,int(r.get('target',1))*2+1).to_bytes(8,'little')[:r.get('size',4)]
 w('0100152000022000','userdata.dat',bytes(buf))
+# KINGDOM HEARTS HD 1.5+2.5 ReMIX: "slots" (one PNG per game, many save slots in it) and per-rule "file"; slot 0 of
+# each file is a valid save, the next one is invalid (wrong magic / check 0), then valid ones with random values
+kd=d('010090C022978000')
+for f,L in kd['slots'].items():
+    base,stride=int(L['base'],0),int(L['stride'],0); n=5
+    buf=bytearray(base+stride*n)
+    for i in range(n):
+        st=base+i*stride; ok=i!=1
+        if L.get('magic') and ok: buf[st:st+len(L['magic'])]=L['magic'].encode()
+        if 'check' in L and ok: buf[st+int(L['check']['offset'],0)]=random.randrange(1,200)
+        for a in kd['achievements']:
+            r=a['rule']
+            if r.get('file')!=f: continue
+            offs=r.get('offsets',[])+([r['offset']] if 'offset' in r else [])
+            for o in offs:
+                o=int(o,0); sz=r.get('size',4)
+                if random.random()<0.5: buf[st+o:st+o+sz]=random.randrange(0,int(r.get('target',1))*2+2).to_bytes(4,'little')[:sz]
+    w('010090C022978000',f,bytes(buf))
 # Hollow Knight: JSON
 pd={'hasCharm':True,'charmsOwned':25,'grubsCollected':30,'killedZote':True,'geo':5000,'completionPercentage':80}
 for i in range(1,6): pd[f'bossDoorStateTier{i}']={'completed': i<3}
