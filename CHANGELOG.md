@@ -10,6 +10,17 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.18.3 (2026-11-27)
+
+Poppy Playtime: Chapter 1 now unlocks its official achievements from your save, live while you play.
+
+### New
+- Poppy Playtime: Chapter 1: Use Responsibly (complete the GrabPack), Made-A-Friend (assemble the Cat-Bee toy), Narrow Escape (escape from Huggy Wuggy) and Time to Play (complete the game), plus Hands On (pick up the blue hand). They come from the checkpoint your save reached, so a save made after those moments unlocks them right away. Thanks to the player who shared labelled saves in issue #43.
+- Avid Listener (every VHS tape) and Your Friend Huggy (his theme) can't be added: the game doesn't write them to its save.
+
+### Live module 0.14.2
+- Knows the new Poppy Playtime list, so these achievements pop up a few seconds after the game saves.
+
 ## 0.18.2 (2026-11-27)
 
 The app can no longer freeze while reading your games, and a startup log shows where it stops if it ever does.

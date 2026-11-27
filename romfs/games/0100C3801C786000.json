@@ -1,10 +1,79 @@
 {
  "title_id": "0100C3801C786000",
  "name": "Poppy Playtime: Chapter 1",
- "reader": "",
- "save_files": [],
- "_note": "Play statistics only (issue #37): the save could not be read yet. A Save batch issue with labelled backups can turn this into save-based achievements.",
+ "reader": "gvas",
+ "save_files": [
+  "Chap1Checkpoint",
+  "SG ReplayEncounter"
+ ],
+ "_note": "Issues #37 and #43. Unreal Engine 5 GVAS saves. Chap1Checkpoint holds only the checkpoint reached (IntProperty Checkpoint): 1 first tape, 2 blue hand, 7 red hand (GrabPack complete), 9 Cat-Bee toy, 10 after the Huggy Wuggy chase, from the labelled saves of issue #43. SG ReplayEncounter's GameCleared is set once the chapter is finished. VHS tapes and Huggy's theme are not in the save, so Avid Listener and Your Friend Huggy are left out.",
  "achievements": [
+  {
+   "id": "ch1_hands_on",
+   "name": "Hands On",
+   "desc": "Pick up the GrabPack's blue hand",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 2,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ch1_use_responsibly",
+   "name": "Use Responsibly",
+   "desc": "Complete the GrabPack",
+   "points": 25,
+   "hidden": true,
+   "steam": "CH1_USE_RESPONSIBLY",
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 7,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ch1_made_a_friend",
+   "name": "Made-A-Friend",
+   "desc": "Assemble the Cat-Bee toy",
+   "points": 25,
+   "hidden": true,
+   "steam": "CH1_MADE_A_FRIEND",
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 9,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ch1_narrow_escape",
+   "name": "Narrow Escape",
+   "desc": "Escape from Huggy Wuggy",
+   "points": 50,
+   "hidden": true,
+   "steam": "CH1_NARROW_ESCAPE",
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 10,
+    "show_progress": false
+   }
+  },
+  {
+   "id": "ch1_time_to_play",
+   "name": "Time to Play",
+   "desc": "Complete the game",
+   "points": 100,
+   "hidden": true,
+   "steam": "CH1_TIME_TO_PLAY",
+   "rule": {
+    "type": "flag",
+    "path": "GameCleared"
+   }
+  },
   {
    "id": "t_launch",
    "name": "Back at the Factory",
