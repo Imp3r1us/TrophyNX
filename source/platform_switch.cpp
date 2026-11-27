@@ -476,6 +476,41 @@ int plat::httpGet(const std::string& url, const std::vector<std::string>& header
     return (int)code;
 }
 
+static size_t httpWriteStr(char* p, size_t sz, size_t n, void* ud) {
+    std::string* s = (std::string*)ud;
+    if (s->size() < 64 * 1024) s->append(p, std::min(sz * n, 64 * 1024 - s->size()));
+    return sz * n;
+}
+
+int plat::httpPost(const std::string& url, const std::vector<std::string>& headers, const std::string& body,
+                   std::string& response, std::string& err) {
+    response.clear();
+    if (!netInit(err)) return 0;
+    CURL* c = curl_easy_init();
+    if (!c) { err = "curl init failed"; return 0; }
+    struct curl_slist* hl = nullptr;
+    for (const std::string& h : headers) hl = curl_slist_append(hl, h.c_str());
+    hl = curl_slist_append(hl, "Expect:");   // no 100-continue round trip
+    char ebuf[CURL_ERROR_SIZE] = "";
+    curl_easy_setopt(c, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(c, CURLOPT_HTTPHEADER, hl);
+    curl_easy_setopt(c, CURLOPT_POST, 1L);
+    curl_easy_setopt(c, CURLOPT_POSTFIELDS, body.data());
+    curl_easy_setopt(c, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)body.size());
+    curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, httpWriteStr);
+    curl_easy_setopt(c, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(c, CURLOPT_ERRORBUFFER, ebuf);
+    curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 5L);
+    curl_easy_setopt(c, CURLOPT_TIMEOUT, 30L);
+    CURLcode r = curl_easy_perform(c);
+    long code = 0;
+    if (r == CURLE_OK) curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &code);
+    else err = std::string(curl_easy_strerror(r)) + (ebuf[0] ? std::string(": ") + ebuf : "");
+    curl_slist_free_all(hl);
+    curl_easy_cleanup(c);
+    return (int)code;
+}
+
 void plat::setSelfPath(const std::string& p) { g_self = p; }
 std::string plat::selfPath() { return g_self; }
 std::string plat::sdRoot() { return "sdmc:/"; }

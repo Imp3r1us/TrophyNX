@@ -32,6 +32,9 @@ enum class RuleType {
     CapturesTotal, // album screenshots + videos, all games
     // Live: a value in the running game's memory (memrules.h), checked by the background module only
     Memory,
+    // Live: the game's own achievement call, caught by the optional injected hook (hook/, tools/unityhook).
+    // Unlocked by the background module when the hook reports the achievement's "steam" name; never by a scan.
+    Hook,
 };
 
 struct Rule {
@@ -64,6 +67,7 @@ struct Rule {
 
 struct Achievement {
     std::string id, name, desc;
+    std::string steam;     // "steam": the official (Steam API) name; the hook unlocks the achievement that has it
     int points = 10;
     bool hidden = false;   // description hidden until unlocked
     std::string tier;      // optional popup medal ("bronze"...); default from points

@@ -55,6 +55,25 @@ jobs:
             g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_memrules.cpp source/memrules.cpp source/rules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_memrules_ub
             timeout 300 /tmp/test_memrules_ub
           fi
+      - name: Host test (hook ring)
+        # events of the optional injected hook (hook/, tools/unityhook): order, partial writes, overflow, id -> achievement
+        run: |
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_hookring.cpp source/hookring.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_hookring
+          if ! timeout 300 setarch "$(uname -m)" -R /tmp/test_hookring; then
+            echo "ASan run failed or ASLR could not be disabled: retrying with UBSan only"
+            g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_hookring.cpp source/hookring.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_hookring_ub
+            timeout 300 /tmp/test_hookring_ub
+          fi
+      - name: Host test (send logs)
+        # what the debug screen's "Send logs" collects (never saves or keys), the bundle, and a real POST to
+        # tools/logserver/trophynx_logserver.py running in the job
+        run: |
+          apt-get install -y -qq python3 >/dev/null
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude -Ihost host/test/test_logbundle.cpp source/logbundle.cpp source/fileutil.cpp source/platform_host.cpp source/history.cpp host/host_impl.cpp -o /tmp/test_logbundle
+          python3 tools/logserver/trophynx_logserver.py --port 8421 --dir /tmp/logrx &
+          sleep 1
+          /tmp/test_logbundle http://127.0.0.1:8421/trophynx/logs
+          test -f /tmp/logrx/latest/live_log.txt
       - name: Host test (Tesla overlay data)
         run: |
           g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_overlay_data.cpp source/overlay_data.cpp -x c source/cJSON.c -o /tmp/test_overlay_data
@@ -137,6 +156,15 @@ jobs:
           git clone -q https://github.com/WerWolv/libtesla overlay/libtesla
           git -C overlay/libtesla checkout -q f766e9b607a05e9756843cbd62b3bfb98be1646c
           make -C overlay -j"$(nproc)"
+      - name: Build hook module (experimental, not in the SD zip)
+        # generic exlaunch module; tools/unityhook hook-make turns it into one game's subsdk9 (with that game's npdm)
+        run: |
+          cd hook && make -j"$(nproc)"
+          test -f deploy/subsdk9 && ! test -f deploy/main.npdm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TrophyNX-hook-module
+          path: hook/deploy/subsdk9
       - name: Package SD card layout
         run: |
           mkdir -p sd/switch/.overlays sd/atmosphere/contents/420000000000AC01/flags

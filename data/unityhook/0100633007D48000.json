@@ -1,0 +1,26 @@
+{
+  "title_id": "0100633007D48000",
+  "name": "Hollow Knight",
+  "steam_appid": 367520,
+  "_note": "ids: empty = the hooked key is already the Steam API name",
+  "hooks": [
+    {
+      "method": "AchievementHandler::AwardAchievementToPlayer",
+      "arg": "x1",
+      "type": "string"
+    }
+  ],
+  "ids": {},
+  "builds": {
+    "FB968CFB649A5842": {
+      "build_id": "FB968CFB649A58429A1F8C2AEE8D2AC100000000",
+      "offsets": {
+        "AchievementHandler::AwardAchievementToPlayer": {
+          "offset": "0x226E20",
+          "sig": "F50F1DF8F44F01A9FD7B02A9FD830091",
+          "calls": 47
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,8 @@
 // Any game: "memory" rules, values at per-build addresses (include/memrules.h). For every game with a
 // save reader it also reads the save each time the game saves, from the save image in NAND ("live save",
 // livesave.cpp), and once more as soon as the game closes ("scan on close", closescan.cpp).
+// Games with the optional injected hook (hook/, tools/unityhook): official achievements from the game's own unlock
+// call, read from the hook's ring through the same read-only dmnt attach as memory rules (hookwatch.cpp).
 #include <switch.h>
 #include <cmath>
 #include <cstdarg>
@@ -31,6 +33,7 @@
 #include "memrules.h"
 #include "overlay_data.h"
 #include "playlog.h"
+#include "hookwatch.h"
 
 #define MODULE_VERSION "0.14.1"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
@@ -414,6 +417,10 @@ int main(int, char**) {
     int memTries = 0, memFailRounds = 0;
     std::map<std::string, double> memWritten;   // memory values last written for the overlay
     u64 memWrittenAt = 0;
+    size_t memItems = 0;            // memory achievements of the running game
+    HookWatch hook;                 // official achievements reported by the injected hook (when installed)
+    bool hookOn = false;
+    u64 memMainEnd = 0;
     const mem::Reader memRead = [](uint64_t addr, void* out, size_t size) {
         return R_SUCCEEDED(dmntchtReadCheatProcessMemory(addr, out, size));
     };
@@ -424,7 +431,10 @@ int main(int, char**) {
         std::vector<mem::Watcher::Item> items;
         for (const Achievement& a : memDef.achs)
             if (a.rule.type == RuleType::Memory) items.push_back({a.id, &a.rule.mem});
-        if (items.empty()) return false;
+        memItems = items.size();
+        hook.reset();
+        hookOn = HookWatch::wanted(tid, memDef);
+        if (items.empty() && !hookOn) return false;
         user = userKey();
         char pre[24];
         snprintf(pre, sizeof(pre), "%016llX/", (unsigned long long)tid);
@@ -435,8 +445,18 @@ int main(int, char**) {
         memWatch.reset(items, done);
         memWritten.clear();
         memWrittenAt = 0;
-        if (!memWatch.pending()) {
-            logf("memory: %s - all %u live achievements already unlocked", memDef.name.c_str(), (unsigned)items.size());
+        size_t official = 0, officialLeft = 0;
+        for (const Achievement& a : memDef.achs)
+            if (!a.steam.empty()) { official++; if (!done.count(a.id)) officialLeft++; }
+        if (hookOn && !officialLeft) {
+            logf("hook: %s - all %u official achievements already unlocked", memDef.name.c_str(), (unsigned)official);
+            hookOn = false;
+        }
+        if (hookOn) logf("hook: %s - installed, %u official achievements, %u to go", memDef.name.c_str(),
+                         (unsigned)official, (unsigned)officialLeft);
+        if (!memWatch.pending() && !hookOn) {
+            if (!items.empty())
+                logf("memory: %s - all %u live achievements already unlocked", memDef.name.c_str(), (unsigned)items.size());
             return false;
         }
         // Not during the game's first 20 s: attaching while Atmosphere sets the game up is what made
@@ -596,16 +616,18 @@ int main(int, char**) {
                 memBases.heap = md.heap_extents.base;
                 memBases.alias = md.alias_extents.base;
                 size_t cov = memWatch.coverage(memBuild);
+                memMainEnd = md.main_nso_extents.base + md.main_nso_extents.size;
                 logf("memory: %s build %s%s: %u achievements have addresses for this version", memDef.name.c_str(),
                      memBuild.c_str(), had ? " (sharing the player's cheats)" : "", (unsigned)cov);
-                if (!cov) {
+                if (!cov && memItems)
                     logf("memory: add this version under \"builds\" as \"%s\" to watch it", memBuild.c_str());
+                if (!cov && !hookOn) {
                     memStop("no addresses for this version");
                     memTestWrite(false, "no addresses for this version");   // the overlay shows which build to add
                     continue;
                 }
                 memReading = true;
-                memTestWrite(true, nullptr);
+                if (memItems) memTestWrite(true, nullptr);
                 memFailRounds = 0;
             }
             // 2) every second: read, unlock what held 3 checks in a row
@@ -662,7 +684,33 @@ int main(int, char**) {
                     if (changed) saveStore(user, store);
                 }
             }
-            if (!memWatch.pending()) memStop("every live achievement is unlocked");
+            // 3) the injected hook: the game's own unlock calls since the last second
+            if (hookOn) {
+                if (!hook.found()) hook.locate(memMainEnd, logf);
+                std::vector<std::string> ids = hook.poll(logf);
+                if (!ids.empty() && user.empty()) user = userKey();
+                if (!ids.empty() && !user.empty()) {
+                    char pre[24];
+                    snprintf(pre, sizeof(pre), "%016llX/", (unsigned long long)curTid);
+                    std::map<std::string, uint64_t> store = loadStore(user);   // re-read: the app may have re-locked things
+                    bool changed = false;
+                    for (const std::string& raw : ids) {
+                        const Achievement* a = hookring::achievementFor(memDef, raw);
+                        if (!a) { logf("hook: the game awarded '%s', not in the definition", raw.c_str()); continue; }
+                        if (store.count(pre + a->id)) continue;
+                        store[pre + a->id] = now;
+                        changed = true;
+                        logf("UNLOCKED %s (%s) [hook: %s]", a->id.c_str(), a->name.c_str(), raw.c_str());
+                        PopupRequest pr;
+                        pr.titleId = curTid; pr.achId = a->id; pr.title = a->name; pr.desc = a->desc; pr.game = memDef.name;
+                        pr.points = a->points; pr.tier = popupTierFor(a->tier.empty() ? nullptr : a->tier.c_str(), a->points);
+                        pr.hidden = a->hidden;
+                        popupEnqueue(pr);
+                    }
+                    if (changed) saveStore(user, store);
+                }
+            }
+            if (!memWatch.pending() && !hookOn) memStop("every live achievement is unlocked");
             continue;
         }
         if (!watching) continue;

@@ -3,6 +3,71 @@
  "name": "BALL x PIT",
  "reader": "",
  "save_files": [],
+ "hook_ids": {
+  "0": "complete_graveyards",
+  "1": "complete_snowy",
+  "2": "complete_desert",
+  "3": "complete_savanna",
+  "4": "complete_shroom",
+  "5": "complete_fiery",
+  "6": "complete_heaven",
+  "7": "complete_void",
+  "8": "complete_graveyards10",
+  "9": "complete_snowy10",
+  "10": "complete_desert10",
+  "11": "complete_savanna10",
+  "12": "complete_shroom10",
+  "13": "complete_fiery10",
+  "14": "complete_heaven10",
+  "15": "complete_void10",
+  "16": "warrior_all_levels",
+  "17": "recaller_all_levels",
+  "18": "itchyfinger_all_levels",
+  "19": "cogitator_all_levels",
+  "20": "tactician_all_levels",
+  "21": "spendthrift_all_levels",
+  "22": "embedded_all_levels",
+  "23": "radicalai_all_levels",
+  "24": "emptynester_all_levels",
+  "25": "shade_all_levels",
+  "26": "cohabitants_all_levels",
+  "27": "physicist_all_levels",
+  "28": "brickhead_all_levels",
+  "29": "sisyphus_all_levels",
+  "30": "flagellant_all_levels",
+  "31": "wimp_all_levels",
+  "32": "first_evo",
+  "33": "first_fusion",
+  "34": "create_nosferatu",
+  "35": "create_nuclearbomb",
+  "36": "create_satan",
+  "37": "create_soulreaver",
+  "38": "create_deadeyescross",
+  "39": "100000_kills",
+  "40": "5000_gold",
+  "41": "1000_wheat",
+  "42": "1000_wood",
+  "43": "1000_stone",
+  "44": "1000_gold_harvest",
+  "45": "100_wheat_harvest",
+  "46": "100_wood_harvest",
+  "47": "100_stone_harvest",
+  "48": "collect_all_blueprints",
+  "49": "construct_trophy",
+  "50": "construct_monument",
+  "51": "construct_workersguild",
+  "52": "construct_evochamber",
+  "53": "construct_reliccollector",
+  "54": "construct_bagmaker",
+  "55": "construct_carpenter",
+  "56": "expand5",
+  "57": "stat_building_full_upgrade",
+  "58": "stat_scaling_full_upgrade",
+  "59": "place_15_houses",
+  "60": "fuse_evolved_balls",
+  "61": "complete_encyclopedia",
+  "62": "complete_game"
+ },
  "achievements": [
   {
    "id": "t_launch",
@@ -42,6 +107,671 @@
    "rule": {
     "type": "playtime_hours",
     "target": 30
+   }
+  },
+  {
+   "id": "steam_complete_graveyards",
+   "name": "BONExYARD",
+   "desc": "Complete the BONExYARD",
+   "points": 10,
+   "steam": "complete_graveyards",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_snowy",
+   "name": "SNOWYxSHORES",
+   "desc": "Complete the SNOWYxSHORES",
+   "points": 10,
+   "hidden": true,
+   "steam": "complete_snowy",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_desert",
+   "name": "LIMINALxDESERT",
+   "desc": "Complete the LIMINALxDESERT",
+   "points": 10,
+   "hidden": true,
+   "steam": "complete_desert",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_savanna",
+   "name": "GORYxGRASSLANDS",
+   "desc": "Complete the GORYxGRASSLANDS",
+   "points": 10,
+   "hidden": true,
+   "steam": "complete_savanna",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_shroom",
+   "name": "FUNGALxFOREST",
+   "desc": "Complete the FUNGALxFOREST",
+   "points": 10,
+   "hidden": true,
+   "steam": "complete_shroom",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_fiery",
+   "name": "SMOLDERINGxDEPTHS",
+   "desc": "Complete the SMOLDERINGxDEPTHS",
+   "points": 10,
+   "hidden": true,
+   "steam": "complete_fiery",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_heaven",
+   "name": "HEAVENLYxGATES",
+   "desc": "Complete the HEAVENLYxGATES",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_heaven",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_void",
+   "name": "VASTxVOID",
+   "desc": "Complete the VASTxVOID",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_void",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_graveyards10",
+   "name": "BONExYARD Conquered",
+   "desc": "Complete the BONExYARD with 10 different characters",
+   "points": 25,
+   "steam": "complete_graveyards10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_snowy10",
+   "name": "SNOWYxSHORES Conquered",
+   "desc": "Complete the SNOWYxSHORES with 10 different characters",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_snowy10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_desert10",
+   "name": "LIMINALxDESERT Conquered",
+   "desc": "Complete the LIMINALxDESERT with 10 different characters",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_desert10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_savanna10",
+   "name": "GORYxGRASSLANDS Conquered",
+   "desc": "Complete the GORYxGRASSLANDS with 10 different characters",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_savanna10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_shroom10",
+   "name": "FUNGALxFOREST Conquered",
+   "desc": "Complete the FUNGALxFOREST with 10 different characters",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_shroom10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_fiery10",
+   "name": "SMOLDERINGxDEPTHS Conquered",
+   "desc": "Complete the SMOLDERINGxDEPTHS with 10 different characters",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_fiery10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_heaven10",
+   "name": "HEAVENLYxGATES Conquered",
+   "desc": "Complete the HEAVENLYxGATES with 10 different characters",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_heaven10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_void10",
+   "name": "VASTxVOID Conquered",
+   "desc": "Complete the VASTxVOID with 10 different characters",
+   "points": 25,
+   "hidden": true,
+   "steam": "complete_void10",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_warrior_all_levels",
+   "name": "True Warrior",
+   "desc": "Complete every level with The Warrior",
+   "points": 25,
+   "steam": "warrior_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_recaller_all_levels",
+   "name": "Repentance",
+   "desc": "Complete every level with The Repentant",
+   "points": 25,
+   "hidden": true,
+   "steam": "recaller_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_itchyfinger_all_levels",
+   "name": "Itch Scratched",
+   "desc": "Complete every level with The Itchy Finger",
+   "points": 25,
+   "hidden": true,
+   "steam": "itchyfinger_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_cogitator_all_levels",
+   "name": "Cogitated",
+   "desc": "Complete every level with The Cogitator",
+   "points": 25,
+   "hidden": true,
+   "steam": "cogitator_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_tactician_all_levels",
+   "name": "Master General",
+   "desc": "Complete every level with The Tactician",
+   "points": 25,
+   "hidden": true,
+   "steam": "tactician_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_spendthrift_all_levels",
+   "name": "All Spent",
+   "desc": "Complete every level with The Spendthrift",
+   "points": 25,
+   "hidden": true,
+   "steam": "spendthrift_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_embedded_all_levels",
+   "name": "Embedder",
+   "desc": "Complete every level with The Embedded",
+   "points": 25,
+   "hidden": true,
+   "steam": "embedded_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_radicalai_all_levels",
+   "name": "Radicalized",
+   "desc": "Complete every level with The Radical",
+   "points": 25,
+   "hidden": true,
+   "steam": "radicalai_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_emptynester_all_levels",
+   "name": "Golden Years",
+   "desc": "Complete every level with The Empty Nester",
+   "points": 25,
+   "hidden": true,
+   "steam": "emptynester_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_shade_all_levels",
+   "name": "Long Shadow",
+   "desc": "Complete every level with The Shade",
+   "points": 25,
+   "hidden": true,
+   "steam": "shade_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_cohabitants_all_levels",
+   "name": "Unpacked",
+   "desc": "Complete every level with The Cohabitants",
+   "points": 25,
+   "hidden": true,
+   "steam": "cohabitants_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_physicist_all_levels",
+   "name": "Gravity's Rainbow",
+   "desc": "Complete every level with The Physicist",
+   "points": 25,
+   "hidden": true,
+   "steam": "physicist_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_brickhead_all_levels",
+   "name": "Brick Breaker",
+   "desc": "Complete every level with a specific character",
+   "points": 25,
+   "hidden": true,
+   "steam": "brickhead_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_sisyphus_all_levels",
+   "name": "Herculean",
+   "desc": "Complete every level with The Makeshift Sisyphus",
+   "points": 25,
+   "hidden": true,
+   "steam": "sisyphus_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_flagellant_all_levels",
+   "name": "Masochist",
+   "desc": "Complete every level with The Flagellant",
+   "points": 25,
+   "hidden": true,
+   "steam": "flagellant_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_wimp_all_levels",
+   "name": "Entertainer",
+   "desc": "Complete every level with a specific character",
+   "points": 25,
+   "hidden": true,
+   "steam": "wimp_all_levels",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_first_evo",
+   "name": "Evolution",
+   "desc": "Create your first evolution",
+   "points": 5,
+   "steam": "first_evo",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_first_fusion",
+   "name": "Fusion",
+   "desc": "Fuse two balls for the first time",
+   "points": 5,
+   "steam": "first_fusion",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_create_nosferatu",
+   "name": "Nosferatu",
+   "desc": "Create the Nosferatu evolution",
+   "points": 10,
+   "hidden": true,
+   "steam": "create_nosferatu",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_create_nuclearbomb",
+   "name": "Nuclear Bomb",
+   "desc": "Create the Nuclear Bomb evolution",
+   "points": 10,
+   "hidden": true,
+   "steam": "create_nuclearbomb",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_create_satan",
+   "name": "Satan",
+   "desc": "Create the Satan evolution",
+   "points": 10,
+   "hidden": true,
+   "steam": "create_satan",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_create_soulreaver",
+   "name": "Soul Reaver",
+   "desc": "Create the Soul Reaver evolution",
+   "points": 10,
+   "hidden": true,
+   "steam": "create_soulreaver",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_create_deadeyescross",
+   "name": "Deadeye's Cross",
+   "desc": "Create the Deadeye's Cross evolution",
+   "points": 10,
+   "hidden": true,
+   "steam": "create_deadeyescross",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_100000_kills",
+   "name": "Legion Slayer",
+   "desc": "Kill 100,000 enemies",
+   "points": 25,
+   "steam": "100000_kills",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_5000_gold",
+   "name": "Riches",
+   "desc": "Collect 5000 gold in total",
+   "points": 10,
+   "steam": "5000_gold",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_1000_wheat",
+   "name": "Wheat Farmer",
+   "desc": "Collect 1000 wheat in total",
+   "points": 10,
+   "steam": "1000_wheat",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_1000_wood",
+   "name": "Woodcutter",
+   "desc": "Collect 1000 wood in total",
+   "points": 10,
+   "steam": "1000_wood",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_1000_stone",
+   "name": "Stone Miner",
+   "desc": "Collect 1000 stone in total",
+   "points": 10,
+   "steam": "1000_stone",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_1000_gold_harvest",
+   "name": "Gold Miner",
+   "desc": "Mine 1000 gold in a single harvest",
+   "points": 10,
+   "steam": "1000_gold_harvest",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_100_wheat_harvest",
+   "name": "Bountiful Harvest",
+   "desc": "Collect 100 wheat in a single harvest",
+   "points": 10,
+   "steam": "100_wheat_harvest",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_100_wood_harvest",
+   "name": "Deforestation",
+   "desc": "Collect 100 wood in a single harvest",
+   "points": 10,
+   "steam": "100_wood_harvest",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_100_stone_harvest",
+   "name": "Boulder Breaker",
+   "desc": "Collect 100 stone in a single harvest",
+   "points": 10,
+   "steam": "100_stone_harvest",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_collect_all_blueprints",
+   "name": "City Planner",
+   "desc": "Collect 50 blueprints",
+   "points": 25,
+   "steam": "collect_all_blueprints",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_construct_trophy",
+   "name": "Trophy",
+   "desc": "Construct a trophy",
+   "points": 10,
+   "steam": "construct_trophy",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_construct_monument",
+   "name": "Monument",
+   "desc": "Construct an infinitely upgradeable building",
+   "points": 10,
+   "steam": "construct_monument",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_construct_workersguild",
+   "name": "Worker's Guild",
+   "desc": "Construct the Worker's Guild",
+   "points": 10,
+   "steam": "construct_workersguild",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_construct_evochamber",
+   "name": "Evolution Chamber",
+   "desc": "Construct the Evolution Chamber",
+   "points": 10,
+   "steam": "construct_evochamber",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_construct_reliccollector",
+   "name": "Relic Collector",
+   "desc": "Construct the Relic Collector",
+   "points": 10,
+   "steam": "construct_reliccollector",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_construct_bagmaker",
+   "name": "Bag Maker",
+   "desc": "Construct the Bag Maker",
+   "points": 10,
+   "steam": "construct_bagmaker",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_construct_carpenter",
+   "name": "Carpenter",
+   "desc": "Construct the Carpenter",
+   "points": 10,
+   "steam": "construct_carpenter",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_expand5",
+   "name": "Land Grabber",
+   "desc": "Expand your base 5 times",
+   "points": 10,
+   "steam": "expand5",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_stat_building_full_upgrade",
+   "name": "Structural Power",
+   "desc": "Reach +5 bonus in any attribute from a building",
+   "points": 25,
+   "steam": "stat_building_full_upgrade",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_stat_scaling_full_upgrade",
+   "name": "S Rank",
+   "desc": "Reach S stat scaling in any attribute",
+   "points": 25,
+   "steam": "stat_scaling_full_upgrade",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_place_15_houses",
+   "name": "Neighborhood",
+   "desc": "Build 15 housing structures",
+   "points": 10,
+   "steam": "place_15_houses",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_fuse_evolved_balls",
+   "name": "Fusion Evolution",
+   "desc": "Fuse two evolved balls",
+   "points": 10,
+   "steam": "fuse_evolved_balls",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_encyclopedia",
+   "name": "Scholar",
+   "desc": "Unlock every entry in the Encyclopedia",
+   "points": 50,
+   "steam": "complete_encyclopedia",
+   "rule": {
+    "type": "hook"
+   }
+  },
+  {
+   "id": "steam_complete_game",
+   "name": "Ballbylon Has Risen",
+   "desc": "Finish the game",
+   "points": 100,
+   "hidden": true,
+   "steam": "complete_game",
+   "rule": {
+    "type": "hook"
    }
   }
  ]

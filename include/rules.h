@@ -42,6 +42,9 @@ struct GameDef {
     bool liveSave = true;    // "live_save": false -> the background module doesn't read the save while the game runs
     std::vector<std::string> saveFiles;
     std::vector<Achievement> achs;
+    // "hook_ids": the hooked call's raw id -> Steam name (games that pass a number); empty when the call already
+    // passes the Steam name. See hookring.h.
+    std::map<std::string, std::string> hookIds;
 };
 
 // One definition file (romfs/games/<TITLEID>.json). Returns false if the text isn't usable JSON or

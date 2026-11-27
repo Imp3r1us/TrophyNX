@@ -12,6 +12,7 @@
 #include "update.h"
 #include "captures.h"
 #include "share_server.h"
+#include "logbundle.h"
 
 // ---------------------------------------------------------------- theme
 static const uint32_t C_BG = 0xFF12141A, C_PANEL = 0xFF1B1E26, C_PANEL_HI = 0xFF272B36, C_LINE = 0xFF2E3340;
@@ -663,7 +664,7 @@ static void drawFooter(UI& ui) {
     Canvas& c = ui.cv;
     c.fillRect(0, 668, 1280, 1, C_LINE);
     int x = 28;
-    if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "+", "Exit"); return; }
+    if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "Y", "Send logs"); buttonHint(ui, x, 680, "+", "Exit"); return; }
     if (ui.upd || ui.cap || ui.pset) { buttonHint(ui, x, 680, "+", "Exit"); return; }
     bool game = ui.screen == SCR_GAME;
     if (ui.popup) buttonHint(ui, x, 680, "A", "Close");
@@ -872,7 +873,7 @@ static void classicFooter(UI& ui) {
     Canvas& c = ui.cv;
     c.fillRect(0, 668, 1280, 1, C_LINE);
     int x = 28;
-    if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "+", "Exit"); return; }
+    if (ui.debug) { buttonHint(ui, x, 680, "B", "Close debug"); buttonHint(ui, x, 680, "Y", "Send logs"); buttonHint(ui, x, 680, "+", "Exit"); return; }
     if (ui.upd || ui.cap || ui.pset) { buttonHint(ui, x, 680, "+", "Exit"); return; }
     if (ui.popup) buttonHint(ui, x, 680, "A", "Close");
     else if (ui.screen == SCR_GAME) buttonHint(ui, x, 680, "B", "Back to games");
@@ -1066,6 +1067,32 @@ static void drawUpdate(UI& ui) {
     }
     int bx = x + 32;
     for (auto& b : btns) buttonHint(ui, bx, y + h - 50, b.first, b.second);
+}
+
+static void drawLoading(UI& ui, int done, int total);
+
+// Debug screen, Y: every log in one POST to the receiver named in <data>/log_server.txt (include/logbundle.h).
+static void sendLogs(UI& ui) {
+    std::vector<uint8_t> cfg;
+    std::string url, err;
+    if (!readFile(plat::dataDir() + "/log_server.txt", cfg)) {
+        ui.toast = "No log receiver: put its address (192.168.1.20:8421) in switch/TrophyNX/log_server.txt";
+        return;
+    }
+    if (!logbundle::serverUrl(std::string(cfg.begin(), cfg.end()), url, err)) { ui.toast = "Send logs: " + err; return; }
+    ui.loadingLabel = "Sending logs";
+    drawLoading(ui, 0, 0);
+    time_t t = (time_t)plat::now();
+    char when[40];
+    strftime(when, sizeof(when), "%Y-%m-%d %H:%M:%S", localtime(&t));
+    std::string info = std::string("TrophyNX ") + APP_VERSION + "\nsent " + when + "\nconsole " + plat::localIp() +
+                       "\nlive module pid " + std::to_string(plat::liveModulePid()) + "\n";
+    std::vector<logbundle::File> files = logbundle::collect(plat::dataDir(), plat::sdRoot(), info);
+    std::string body = logbundle::encode(files), resp;
+    int code = plat::httpPost(url, {"Content-Type: application/octet-stream", "X-TrophyNX: " APP_VERSION}, body, resp, err);
+    if (code == 200) ui.toast = std::to_string(files.size()) + " files (" + std::to_string(body.size() >> 10) + " KB) sent to " + url.substr(7, url.find('/', 7) - 7);
+    else if (code) ui.toast = "Send logs: the receiver answered HTTP " + std::to_string(code);
+    else ui.toast = "Send logs failed: " + err;
 }
 
 static void openCaptures(UI& ui) {
@@ -1712,6 +1739,7 @@ int main(int argc, char** argv) {
                 dirty = true;
                 int n = (int)ui.lib.games[ui.sel].debug.size();
                 if (down & (plat::BTN_B | plat::BTN_X)) ui.debug = false;
+                if (down & plat::BTN_Y) sendLogs(ui);
                 if (down & plat::BTN_UP) ui.debugScroll--;
                 if (down & plat::BTN_DOWN) ui.debugScroll++;
                 if (down & plat::BTN_L) ui.debugScroll -= DBG_LINES;
