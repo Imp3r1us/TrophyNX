@@ -461,16 +461,53 @@ void plat::setSelfPath(const std::string& p) { g_self = p; }
 std::string plat::selfPath() { return g_self; }
 std::string plat::sdRoot() { return "sdmc:/"; }
 
-// The game's romfs, update applied (OpenFileSystemWithPatch), read-only: used to find a save password (ES3Defaults in
-// Data/resources.assets, global-metadata.dat) without asking the player to dump anything.
+// Path of the installed game's program NCA (SD card, then console memory), for fsOpenFileSystemWithId.
+static bool gameProgramPath(uint64_t titleId, char* path, size_t size) {
+    if (R_FAILED(ncmInitialize())) return false;
+    bool ok = false;
+    const NcmStorageId storages[] = {NcmStorageId_SdCard, NcmStorageId_BuiltInUser};
+    for (NcmStorageId sid : storages) {
+        NcmContentMetaDatabase db;
+        if (R_FAILED(ncmOpenContentMetaDatabase(&db, sid))) continue;
+        NcmContentMetaKey key;
+        NcmContentId cid;
+        bool found = R_SUCCEEDED(ncmContentMetaDatabaseGetLatestContentMetaKey(&db, &key, titleId)) &&
+                     R_SUCCEEDED(ncmContentMetaDatabaseGetContentIdByType(&db, &cid, &key, NcmContentType_Program));
+        ncmContentMetaDatabaseClose(&db);
+        if (!found) continue;
+        NcmContentStorage cs;
+        if (R_FAILED(ncmOpenContentStorage(&cs, sid))) continue;
+        ok = R_SUCCEEDED(ncmContentStorageGetPath(&cs, path, size, &cid));
+        ncmContentStorageClose(&cs);
+        if (ok) break;
+    }
+    ncmExit();
+    return ok;
+}
+
+// The game's romfs, read-only: used to find a save password (ES3Defaults in Data/resources.assets,
+// global-metadata.dat) without asking the player to dump anything. With its update when the system allows it
+// (OpenFileSystemWithPatch answers 2002-3001 "not implemented" on some firmwares), else the base game's program NCA
+// opened by path (the settings these passwords come from are in the base game).
 bool plat::readGameFile(uint64_t titleId, const std::string& rel, std::vector<uint8_t>& out, std::string& why) {
-    char msg[96];
+    char msg[160];
     FsFileSystem fs;
     Result rc = fsOpenFileSystemWithPatch(&fs, titleId, FsFileSystemType_ContentData);
     if (R_FAILED(rc)) {
-        snprintf(msg, sizeof(msg), "the system didn't open the game's files: 0x%X", (unsigned)rc);
-        why = msg;
-        return false;
+        char nca[FS_MAX_PATH] = {0};
+        if (!gameProgramPath(titleId, nca, sizeof(nca))) {
+            snprintf(msg, sizeof(msg), "the system didn't open the game's files (0x%X), and the game isn't installed on the SD card or "
+                     "console memory (game card?)", (unsigned)rc);
+            why = msg;
+            return false;
+        }
+        Result rc2 = fsOpenFileSystemWithId(&fs, titleId, FsFileSystemType_ContentData, nca, FsContentAttributes_All);
+        if (R_FAILED(rc2)) {
+            snprintf(msg, sizeof(msg), "the system didn't open the game's files: 0x%X with its update, 0x%X for the base game",
+                     (unsigned)rc, (unsigned)rc2);
+            why = msg;
+            return false;
+        }
     }
     char path[FS_MAX_PATH] = {0};
     snprintf(path, sizeof(path), "/%s", rel.c_str());
