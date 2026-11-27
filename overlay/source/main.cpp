@@ -10,6 +10,7 @@
 #include <tesla.hpp>
 
 #include "overlay_data.h"
+#include "title_id.h"
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
@@ -66,7 +67,7 @@ uint64_t runningTitle() {
     u64 pid = 0, tid = 0;
     if (!g_pminfo || R_FAILED(pmdmntGetApplicationProcessId(&pid)) || !pid) return 0;
     if (R_FAILED(pminfoGetProgramId(&tid, pid))) return 0;
-    return tid;
+    return titleid::applicationId(tid);   // a game inside a collection runs as program …001, …002 of the same application
 }
 
 struct Data {

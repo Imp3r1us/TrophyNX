@@ -3,6 +3,7 @@
 // Any game: "memory" rules, values at per-build addresses (include/memrules.h). For every game with a
 // save reader it also reads the save each time the game saves, from the save image in NAND ("live save",
 // livesave.cpp), and once more as soon as the game closes ("scan on close", closescan.cpp).
+#include "title_id.h"
 #include <switch.h>
 #include <cmath>
 #include <cstdarg>
@@ -32,7 +33,7 @@
 #include "overlay_data.h"
 #include "playlog.h"
 
-#define MODULE_VERSION "0.15.0"
+#define MODULE_VERSION "0.15.1"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -537,22 +538,32 @@ int main(int, char**) {
             continue;
         }
         if (pid != curPid) {
+            u64 prog = 0;
+            pminfoGetProgramId(&prog, pid);
+            // collections (KINGDOM HEARTS HD 1.5+2.5): each game is its own program (…001, …002) of the
+            // same application; its save, list and play time belong to the application id
+            u64 tid = titleid::applicationId(prog);
+            // launcher -> game inside the same collection: the session goes on, no scan on close
+            // (the new program holds the save anyway)
+            bool sameApp = curPid && curReal && tid == curTid;
             if (curPid) {
-                logf("game changed (pid %llu -> %llu)", (unsigned long long)curPid, (unsigned long long)pid);
+                logf("game changed (pid %llu -> %llu)%s", (unsigned long long)curPid, (unsigned long long)pid,
+                     sameApp ? ", same application" : "");
                 if (memMode) memTestClear(curTid);
-                if (curReal) gameEnded(curTid, now);
+                if (curReal && !sameApp) gameEnded(curTid, now);
             }
             curPid = pid;
-            u64 tid = 0;
-            pminfoGetProgramId(&tid, pid);
             curTid = tid;
-            diagnosed = false; startedAt = now;
+            diagnosed = false;
+            if (!sameApp) startedAt = now;
             if (attached) { dmntchtForceCloseCheatProcess(); attached = false; }
             ownDetach(); g_own = false;
             bool hbl = isHomebrewProcess(pid);
             curReal = isRealGameId(tid) && !hbl;
             watching = curReal && (tid == BOTW_ID) && dmnt && !achs.empty();
             ready = false; attempts = 0; seenAt = now; lastScan = 0;
+            if (prog != tid) logf("program %016llX = program %u of application %016llX", (unsigned long long)prog,
+                                  titleid::programIndex(prog), (unsigned long long)tid);
             logf("game started: %016llX%s", (unsigned long long)tid,
                  watching ? " -> watching (live achievements)"
                  : curReal ? "" : hbl ? " (homebrew through this game: ignored)" : " (homebrew/forwarder: ignored)");

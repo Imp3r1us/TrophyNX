@@ -24,6 +24,7 @@ jobs:
       - name: Host tests (BYML reader)
         run: |
           apt-get update -qq && apt-get install -y -qq g++ zip >/dev/null
+          g++ -std=gnu++17 -Iinclude host/test/test_title_id.cpp -o /tmp/test_title_id && /tmp/test_title_id
           g++ -std=gnu++17 -Iinclude host/test/test_byml.cpp source/byml.cpp -o /tmp/test_byml
           /tmp/test_byml   # no save fixtures in CI: checks that it builds and survives junk input
           g++ -std=gnu++17 -Iinclude host/test/test_json.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_json

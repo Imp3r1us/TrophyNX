@@ -10,6 +10,17 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.19.1 (2026-11-28)
+
+KINGDOM HEARTS HD 1.5+2.5 ReMIX is now recognised once you pick a game in its menu, not only on the menu itself.
+
+### Fixed
+- Collections such as KINGDOM HEARTS HD 1.5+2.5 ReMIX run each game (Final Mix, Re:Chain of Memories, II Final Mix...) as its own program. The overlay and the live module took it for an unknown program as soon as you entered a game, so the overlay showed nothing and no achievement popped up. Every game of a collection now counts as the collection.
+- Days played now include the time spent inside the games of a collection, not only in its menu.
+
+### Live module 0.15.1
+- Follows you from the collection's menu into its games and back without ending the session: achievements keep popping up after each save, and the scan on close runs once, when you close the collection. The log shows `program … = program N of application …` when it happens.
+
 ## 0.19.0 (2026-11-27)
 
 KINGDOM HEARTS HD 1.5+2.5 ReMIX now unlocks 53 of its Steam achievements from your saves, from every save slot.
