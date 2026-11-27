@@ -1,4 +1,5 @@
 #ifdef __SWITCH__
+#include "title_id.h"
 #include "platform.h"
 #include "history.h"
 #include <switch.h>
@@ -259,7 +260,7 @@ void plat::playHistory(PlayHistory& out) {
             read++;
             if (memcmp(&e.uid, &g_uid, sizeof(AccountUid)) != 0) continue;
             mine++;
-            uint64_t pid = e.program_id;
+            uint64_t pid = titleid::applicationId(e.program_id);   // games inside a collection count for it
             if (pid) withProgram++;
             if (!pid) continue;
             if (e.type == 0) {
@@ -297,7 +298,7 @@ void plat::playHistory(PlayHistory& out) {
             if (e.event_type != PdmAppletEventType_Launch && e.event_type != PdmAppletEventType_InFocus) continue;
             if (!e.program_id || !e.timestamp_user) continue;
             appEvents++;
-            addSessionDays(out.days[e.program_id], e.timestamp_user, e.timestamp_user, off);
+            addSessionDays(out.days[titleid::applicationId(e.program_id)], e.timestamp_user, e.timestamp_user, off);
         }
         s32 next = (s32)ae[n - 1].entry_index + 1;
         if (next <= idx) break;
