@@ -7,6 +7,9 @@
 #include <ctime>
 #include <memory>
 #include <algorithm>
+#include <string>
+#include <sys/stat.h>
+#include "version.h"
 #include "render.h"
 #include <curl/curl.h>
 
@@ -41,9 +44,40 @@ static uint32_t mapButtons(uint64_t k) {
     return b;
 }
 
+static std::string hexRc(Result rc) { char b[16]; snprintf(b, sizeof(b), "0x%X", rc); return b; }
+static std::string fwVersion() {
+    u32 v = hosversionGet();
+    char b[48];
+    snprintf(b, sizeof(b), "%u.%u.%u%s", HOSVER_MAJOR(v), HOSVER_MINOR(v), HOSVER_MICRO(v), hosversionIsAtmosphere() ? " (Atmosphere)" : "");
+    return b;
+}
+static u64 g_traceStart = 0;
+void plat::trace(const std::string& step) {
+    if (!g_traceStart) {
+        g_traceStart = armGetSystemTick();
+        mkdir("sdmc:/switch", 0777);
+        mkdir("sdmc:/switch/TrophyNX", 0777);
+        FILE* f = fopen("sdmc:/switch/TrophyNX/startup_log.txt", "w");   // one file per launch
+        if (f) {
+            time_t t = time(NULL);
+            char d[32];
+            strftime(d, sizeof(d), "%Y-%m-%d %H:%M:%S", gmtime(&t));
+            fprintf(f, "TrophyNX %s startup, %s UTC, firmware %s\n", APP_VERSION, d, fwVersion().c_str());
+            fclose(f);
+        }
+    }
+    FILE* f = fopen("sdmc:/switch/TrophyNX/startup_log.txt", "a");
+    if (!f) return;
+    fprintf(f, "%7llu ms  %s\n", (unsigned long long)armTicksToNs(armGetSystemTick() - g_traceStart) / 1000000ULL, step.c_str());
+    fflush(f);
+    fclose(f);
+}
+
 bool plat::init(std::string& err) {
+    trace("init: input");
     padConfigureInput(1, HidNpadStyleSet_NpadStandard);
     padInitializeDefault(&g_pad);
+    trace("init: framebuffer");
 
     if (R_FAILED(framebufferCreate(&g_fb, nwindowGetDefault(), 1280, 720, PIXEL_FORMAT_RGBA_8888, 2))) {
         err = "Could not create the framebuffer.";
@@ -52,16 +86,22 @@ bool plat::init(std::string& err) {
     framebufferMakeLinear(&g_fb);
     g_fbReady = true;
 
+    trace("init: romfs");
     g_romfs = R_SUCCEEDED(romfsInit());
+    trace("init: pl (system font)");
     g_pl = R_SUCCEEDED(plInitialize(PlServiceType_User));
+    trace("init: ns");
     g_ns = R_SUCCEEDED(nsInitialize());
+    trace("init: pdm");
     g_pdm = R_SUCCEEDED(pdmqryInitialize());
+    trace("init: account");
     g_acc = R_SUCCEEDED(accountInitialize(AccountServiceType_Administrator));
     if (!g_acc) g_acc = R_SUCCEEDED(accountInitialize(AccountServiceType_Application));
     if (!g_acc) { err = "Account service unavailable."; return false; }
     if (!g_ns) { err = "NS service unavailable."; return false; }
 
     // Pick the user: preselected (title override launch) or ask with the system selector.
+    trace("init: user");
     Result rc = accountGetPreselectedUser(&g_uid);
     if (R_FAILED(rc) || !accountUidIsValid(&g_uid)) {
         PselUserSelectionSettings s;
@@ -78,6 +118,7 @@ bool plat::init(std::string& err) {
             }
         }
     }
+    trace("init: profile");
     AccountProfile prof;
     if (R_SUCCEEDED(accountGetProfile(&prof, g_uid))) {
         AccountProfileBase base;
@@ -115,17 +156,29 @@ void plat::listGames(std::vector<GameInfo>& out, ProgressFn progress, void* ctx)
     std::vector<NsApplicationRecord> recs;
     NsApplicationRecord buf[64];
     s32 offset = 0;
-    while (true) {
+    u64 prevFirst = 0;
+    trace("games: listing installed applications");
+    // Guarded: a firmware that ignores the offset (always the same page) must not loop forever.
+    for (int page = 0; page < 64; page++) {
         s32 n = 0;
-        if (R_FAILED(nsListApplicationRecord(buf, 64, offset, &n)) || n <= 0) break;
+        Result rc = nsListApplicationRecord(buf, 64, offset, &n);
+        trace("games: page " + std::to_string(page) + " rc=" + hexRc(rc) + " n=" + std::to_string(n));
+        if (R_FAILED(rc) || n <= 0) break;
+        if (page > 0 && buf[0].application_id == prevFirst) { trace("games: same page again, stopping"); break; }
+        prevFirst = buf[0].application_id;
         recs.insert(recs.end(), buf, buf + n);
         offset += n;
+        if (n < 64) break;
     }
+    trace("games: " + std::to_string(recs.size()) + " records");
     std::unique_ptr<NsApplicationControlData> ctl(new NsApplicationControlData);
     for (size_t i = 0; i < recs.size(); i++) {
         if (progress) progress((int)i, (int)recs.size(), ctx);
         GameInfo g;
         g.id = recs[i].application_id;
+        char tid[40];
+        snprintf(tid, sizeof(tid), "games: %zu %016lX", i, (unsigned long)g.id);
+        trace(tid);
         u64 sz = 0;
         if (R_SUCCEEDED(nsGetApplicationControlData(NsApplicationControlSource_Storage, g.id, ctl.get(), sizeof(NsApplicationControlData), &sz))) {
             NacpLanguageEntry* le = NULL;
@@ -152,6 +205,7 @@ void plat::listGames(std::vector<GameInfo>& out, ProgressFn progress, void* ctx)
         out.push_back(std::move(g));
     }
     if (progress) progress((int)recs.size(), (int)recs.size(), ctx);
+    trace("games: listed");
 }
 
 PlayStats plat::playStats(uint64_t id) {

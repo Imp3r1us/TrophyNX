@@ -702,11 +702,12 @@ static void evaluateTree(Game& g, SaveSource& src) {
         if (key.empty() && !src.streaming() && !g_keyDir.empty()) key = findKeyFromGame(g, src, kp);
         if (key.empty()) {
             src.close();
-            g.saveStatus = SaveStatus::Unreadable;
-            g.debug.push_back("Encrypted save: password file " + kp + " is missing or empty.");
-            g.debug.push_back(std::string("  Put the game's save password in it (one line), or the game's ") +
-                              (g.reader == "es3" ? "resources.assets" : "global-metadata.dat") + " in the keys folder");
-            g.debug.push_back("  (TrophyNX then finds the password itself; see the TrophyNX docs). Save skipped.");
+            g.saveStatus = SaveStatus::NeedsKey;
+            const char* gameFile = g.reader == "es3" ? "Data/resources.assets" : "Data/Managed/Metadata/global-metadata.dat";
+            g.debug.push_back("Encrypted save: password file " + kp + " is missing or empty. Save skipped.");
+            g.debug.push_back(std::string("  Easiest, on the Switch: dump the game's RomFS file ") + gameFile + " with nxdumptool,");
+            g.debug.push_back("  then reopen TrophyNX: it finds the password in sdmc:/nxdumptool and writes the key file itself.");
+            g.debug.push_back("  With a phone or PC: imp3r1us.github.io/TrophyNX/#key makes " + g.keyFile + " from that file and a save.");
             return;
         }
         g.debug.push_back("Save password: " + kp + " (" + std::to_string(key.size()) + " bytes).");

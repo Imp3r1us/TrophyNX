@@ -35,7 +35,7 @@
 #include "playlog.h"
 #include "hookwatch.h"
 
-#define MODULE_VERSION "0.14.0"
+#define MODULE_VERSION "0.14.1"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {

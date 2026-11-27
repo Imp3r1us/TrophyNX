@@ -10,6 +10,33 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.18.2 (2026-11-27)
+
+The app can no longer freeze while reading your games, and a startup log shows where it stops if it ever does.
+
+### Fixed
+- The app could loop forever on "Reading your games" if the system kept returning the same page of installed games. The list now stops after the last page.
+
+### Changed
+- New `switch/TrophyNX/startup_log.txt`: each startup step with its time and your firmware version. If the app freezes or the console turns off while it starts, its last line shows where.
+
+## 0.18.1 (2026-11-27)
+
+Encrypted saves (Heavenly Bodies, THEATRHYTHM) now unlock live, and a new page makes their password in a minute.
+
+### New
+- Save Lab: a new **🔑 Save password** tab (<https://imp3r1us.github.io/TrophyNX/#key>, works on a phone): pick the game, give the game file and one save, and it downloads the key file to copy to `switch/TrophyNX/keys/`.
+- The beginner guide now covers Heavenly Bodies (dump `resources.assets` with nxdumptool, TrophyNX does the rest) and sums up the three ways to get a save password.
+
+### Fixed
+- Finding the save password in the installed game now also tries the base game when the system refuses to open it with its update.
+
+### Changed
+- A game whose encrypted save has no password yet now says so on its page ("Encrypted save: needs its password once"), with what to do in its log (X), instead of "Save found but not readable".
+
+### Live module 0.14.1
+- Encrypted saves (Heavenly Bodies, THEATRHYTHM FINAL BAR LINE) now really unlock live, a few seconds after the game saves: the live module now reads the key files in `switch/TrophyNX/keys/`.
+
 ## 0.18.0 (2026-11-27)
 
 New achievement lists for Isaac, Heavenly Bodies, Skyward Sword HD, Pillars of the Earth and more, read from your saves.

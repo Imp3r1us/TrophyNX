@@ -122,6 +122,7 @@ void plat::listSaveFiles(std::vector<std::pair<std::string, uint64_t>>& out) {
 }
 void plat::closeSave() { g_mounted = 0; }
 std::string plat::lastError() { return "no save folder (host)"; }
+void plat::trace(const std::string& step) { fprintf(stderr, "[trace] %s\n", step.c_str()); }
 std::string plat::liveModuleStatus() { return "not available on PC"; }
 // Updates on PC: https://api.github.com/repos/<repo>/contents/<path>?ref=<branch> is read from
 // $ACH_UPDATE_DIR/<path> (a copy of the "builds" branch). A token "bad" in update.json -> 401.

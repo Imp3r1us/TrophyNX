@@ -154,7 +154,7 @@ int main() {
         evaluateSave(g, src);
         bool said = false;
         for (const std::string& l : g.debug) if (l.find("theatrhythm.txt") != std::string::npos && l.find("missing") != std::string::npos) said = true;
-        check(g.saveStatus == SaveStatus::Unreadable && said, "no password file: save skipped with a clear message");
+        check(g.saveStatus == SaveStatus::NeedsKey && said, "no password file: save skipped with a clear message");
         Game h;
         applyGameDef(h, def);
         h.keyFile = "password.txt";   // the fixtures' dummy password
