@@ -10,6 +10,23 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.18.1 (2026-11-27)
+
+Encrypted saves (Heavenly Bodies, THEATRHYTHM) now unlock live, and a new page makes their password in a minute.
+
+### New
+- Save Lab: a new **🔑 Save password** tab (<https://imp3r1us.github.io/TrophyNX/#key>, works on a phone): pick the game, give the game file and one save, and it downloads the key file to copy to `switch/TrophyNX/keys/`.
+- The beginner guide now covers Heavenly Bodies (dump `resources.assets` with nxdumptool, TrophyNX does the rest) and sums up the three ways to get a save password.
+
+### Fixed
+- Finding the save password in the installed game now also tries the base game when the system refuses to open it with its update.
+
+### Changed
+- A game whose encrypted save has no password yet now says so on its page ("Encrypted save: needs its password once"), with what to do in its log (X), instead of "Save found but not readable".
+
+### Live module 0.14.1
+- Encrypted saves (Heavenly Bodies, THEATRHYTHM FINAL BAR LINE) now really unlock live, a few seconds after the game saves: the live module now reads the key files in `switch/TrophyNX/keys/`.
+
 ## 0.18.0 (2026-11-27)
 
 New achievement lists for Isaac, Heavenly Bodies, Skyward Sword HD, Pillars of the Earth and more, read from your saves.
@@ -29,6 +46,7 @@ New achievement lists for Isaac, Heavenly Bodies, Skyward Sword HD, Pillars of t
 
 ### Live module 0.14.0
 - Reads the new save formats and achievement lists above, and checks every save slot.
+- Encrypted saves (Heavenly Bodies, THEATRHYTHM FINAL BAR LINE) now also unlock live, a few seconds after the game saves, instead of only when you open the app. Open TrophyNX once after installing so it can find the game's password.
 
 ## 0.17.0 (2026-11-25)
 

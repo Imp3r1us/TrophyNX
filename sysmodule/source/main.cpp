@@ -32,7 +32,7 @@
 #include "overlay_data.h"
 #include "playlog.h"
 
-#define MODULE_VERSION "0.14.0"
+#define MODULE_VERSION "0.14.1"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -352,6 +352,9 @@ static bool healthCheck(const char* why, bool log) {
 int main(int, char**) {
     mkdir(dataDir().c_str(), 0777);
     logf("sys-trophynx " MODULE_VERSION " started");
+    // passwords of encrypted saves (keys/<key_file>, written by the app the first time it finds one): without this,
+    // encrypted saves (Easy Save 3, THEATRHYTHM) were only read by the app, never live
+    setSaveKeyDir(dataDir() + "/keys");
     heapSetLog(logf);
     finishPendingAppUpdate();
     popupStart(logf);

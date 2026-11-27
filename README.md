@@ -138,9 +138,10 @@ Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come fro
   and left to the app (`close_log.txt` says so). MessagePack saves (THEATRHYTHM FINAL BAR LINE) are built with
   only the values the rules use (~2.3 MB instead of ~11 MB for its song records), and the reader stops cleanly
   if even that would not fit. `host/test/test_stream.cpp` checks that the values are identical to the app's.
-- Encrypted saves (THEATRHYTHM) need their password in `sdmc:/switch/TrophyNX/keys/` (never shipped): the app
-  finds it by itself in the game's `global-metadata.dat` dumped with nxdumptool (see
-  `tools/theatrhythm/README.md`).
+- Encrypted saves (THEATRHYTHM, Heavenly Bodies) need their password in `sdmc:/switch/TrophyNX/keys/` (never shipped):
+  the app finds it by itself in the installed game or in the game file dumped with nxdumptool, or the Save Lab's
+  **🔑 Save password** page (<https://imp3r1us.github.io/TrophyNX/#key>) makes the key file from that file and one save
+  (see [docs/dumping-guide.md](docs/dumping-guide.md)).
 - More than 4 new unlocks at once (first scan of an advanced save): 3 cards, then a "+N more achievements" card.
 - `"close_scan": false` in a definition turns it off for that game (set for Mario Kart 8 Deluxe until its
   offsets are fixed).

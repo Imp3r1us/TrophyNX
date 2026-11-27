@@ -548,6 +548,7 @@ static void drawGamePage(UI& ui) {
             case SaveStatus::Ok: status = "Save data read"; scol = C_GREEN; break;
             case SaveStatus::NoSave: status = "No save data for this user yet (if the game is suspended, close it and press Y)"; scol = C_GOLD; break;
             case SaveStatus::Unreadable: status = "Save found but not readable (unsupported version?)"; scol = C_RED; break;
+            case SaveStatus::NeedsKey: status = "Encrypted save: needs its password once (X for how, or imp3r1us.github.io/TrophyNX/#key)"; scol = C_GOLD; break;
             default: break;
         }
     } else {
@@ -792,6 +793,7 @@ static void classicDetails(UI& ui) {
             case SaveStatus::Ok: status = "Save data read"; scol = C_GREEN; break;
             case SaveStatus::NoSave: status = "No save data for this user yet (if the game is suspended, close it and press Y)"; scol = C_GOLD; break;
             case SaveStatus::Unreadable: status = "Save found but not readable (unsupported version?)"; scol = C_RED; break;
+            case SaveStatus::NeedsKey: status = "Encrypted save: needs its password once (X for how, or imp3r1us.github.io/TrophyNX/#key)"; scol = C_GOLD; break;
             default: break;
         }
     } else {

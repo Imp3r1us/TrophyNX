@@ -177,7 +177,7 @@ int unlockMet(const Game& g, const GameDef& def, const std::string& defSource, c
     for (const Achievement* a : fresh) rep += "NEW UNLOCK: " + a->id + " (" + a->name + ")\n";
     writeFile(dataDir() + "/" + reportName, rep);
 
-    const char* status = g.saveStatus == SaveStatus::Ok ? "save read" : g.saveStatus == SaveStatus::NoSave ? "no save" : "save NOT recognised";
+    const char* status = g.saveStatus == SaveStatus::Ok ? "save read" : g.saveStatus == SaveStatus::NoSave ? "no save" : g.saveStatus == SaveStatus::NeedsKey ? "save password missing" : "save NOT recognised";
     logf("%s: %s - %s in %llu ms, %d/%d met, %u new", live ? "live save" : "close scan", def.name.c_str(), status, ms, met,
          saveAchs, (unsigned)fresh.size());
 
