@@ -103,6 +103,14 @@ int main(int argc, char** argv) {
                 fails++;
             }
         }
+        if (kv.first == 0x0100D3801E6CE000ULL) {   // "requires": same file, missing value = 0
+            auto val = [&](const char* id) { for (const Achievement& x : full.achs) if (x.id == id) return x.value; return -1.0; };
+            if (val("cp_end") != 36 || val("ahead_of_schedule") != 36 || val("undefeated") != 0) {
+                printf("FAIL Poppy Playtime 2 requires: cp_end %g, ahead_of_schedule %g (want 36), undefeated %g (want 0, has died)\n",
+                       val("cp_end"), val("ahead_of_schedule"), val("undefeated"));
+                fails++;
+            }
+        }
         if (getenv("STREAM_DEBUG")) for (const std::string& l : grow.debug) printf("    | %s\n", l.c_str());
         printf("%-45s %-14s full = streamed (%llu reads)%s%s\n", kv.second.name.c_str(), kv.second.reader.c_str(), (unsigned long long)b.reads,
                pieces ? (", = 384 KB heap (" + std::to_string(e.reads) + " reads)").c_str() :

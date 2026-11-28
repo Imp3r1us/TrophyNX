@@ -208,8 +208,18 @@ The save is read as a tree; a path walks it with `/`:
 Inside a rule, `"show_progress": false` hides the "37 / 100" counter (shown by default when `target` is above 1),
 and `"divisor": 4` divides the shown value (e.g. quarter hearts shown as hearts).
 
-**One rule = one condition.** There is no AND yet ("beat the game AND all charms"), and nothing that the save
-doesn't remember (no-damage runs, speedruns) can be checked.
+**Extra conditions: `requires`** (path readers). The achievement only counts in a save file where every condition
+also holds. Each condition reads the largest value at its `path` (a missing value counts as 0) and checks
+`"min"` (value ≥ min) and/or `"below"` (value < below):
+
+```json
+{ "type": "flag", "path": "Checkpoint", "target": 36,
+  "requires": [ { "path": "HasDied", "below": 1 }, { "path": "SpeedrunTime", "below": 2700 } ] }
+```
+
+This reads as "reached the last checkpoint, never died, in under 45 minutes". The conditions are checked file by file,
+so one slot that finished and another that never died don't add up. Things the save doesn't remember (a no-damage
+boss fight the game never writes down) still can't be checked.
 
 ### Getting saves without JKSV: save captures
 
