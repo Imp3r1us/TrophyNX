@@ -202,6 +202,22 @@ ok(!E.identify(rnd).analyzable, 'random data flagged as encrypted/compressed');
     ok(r0.every(x => !x.met), 'fresh JSON save: nothing met');
     ok(['g', 'm', 'd', 'maps'].every(id => r2.find(x => x.id === id).met) && !r2.find(x => x.id === 'miss').met, 'best slot wins, missing path not met');
     ok(r2.find(x => x.id === 'miss').note.includes('not found'), 'missing JSON path reported');
+    // "requires": every condition must hold in the same file (missing value = 0)
+    const js = (o) => new Uint8Array(Buffer.from(JSON.stringify(o)));
+    const qdef = { title_id: '0100633007D48000', reader: 'json', save_files: ['a.json', 'b.json'], achievements: [
+      { id: 'clean', rule: { type: 'flag', path: 'cp', target: 36, requires: [{ path: 'died', below: 1 }] } },
+      { id: 'fast', rule: { type: 'flag', path: 'cp', target: 36, requires: [{ path: 'time', below: 2700 }, { path: 'cp', min: 36 }] } }] };
+    ok(E.validate(qdef).length === 0, 'requires validates');
+    ok(E.validate({ ...qdef, achievements: [{ id: 'x', rule: { type: 'flag', path: 'cp', requires: [{ path: 'died' }] } }] }).length > 0, 'requires without min/below rejected');
+    const qv = (...saves) => E.evaluate(qdef, saves.map((o, i) => ({ path: 'ab'[i] + '.json', data: js(o) }))).results;
+    let q = qv({ cp: 36, time: 2448 });
+    ok(q.find(x => x.id === 'clean').met && q.find(x => x.id === 'fast').met, 'requires: missing "died" counts as 0, time under the limit');
+    q = qv({ cp: 36, time: 2448, died: true });
+    ok(!q.find(x => x.id === 'clean').met && q.find(x => x.id === 'clean').note.includes('died < 1'), 'requires: died blocks, and says why');
+    q = qv({ cp: 36, time: 2800 });
+    ok(!q.find(x => x.id === 'fast').met, 'requires: over the time limit');
+    q = qv({ cp: 36, time: 100, died: true }, { cp: 20, time: 100 });
+    ok(!q.find(x => x.id === 'clean').met, 'requires: conditions are checked within one file, not across slots');
   }
   // ZIP writer (captures from the Switch) round-trips through the reader
   {

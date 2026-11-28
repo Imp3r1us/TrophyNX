@@ -229,6 +229,21 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
     rule.maxSane = jnum(r, "max", 0);
     bool saveRule = rule.type == RuleType::Flag || rule.type == RuleType::Count || rule.type == RuleType::Sum;
     if (saveRule && rule.hashes.empty() && rule.offsets.empty() && rule.paths.empty()) { err = "rule needs name, hash, names, pattern, offset(s) or path(s)"; return false; }
+    cJSON* reqs = cJSON_GetObjectItemCaseSensitive(r, "requires");
+    if (reqs) {
+        if (!cJSON_IsArray(reqs) || rule.paths.empty()) { err = "\"requires\" is a list of conditions for path rules"; return false; }
+        cJSON* q;
+        cJSON_ArrayForEach(q, reqs) {
+            Rule::Require c;
+            c.path = jstr(q, "path");
+            cJSON* mn = cJSON_GetObjectItemCaseSensitive(q, "min");
+            cJSON* bl = cJSON_GetObjectItemCaseSensitive(q, "below");
+            if (cJSON_IsNumber(mn)) { c.hasMin = true; c.min = mn->valuedouble; }
+            if (cJSON_IsNumber(bl)) { c.hasBelow = true; c.below = bl->valuedouble; }
+            if (c.path.empty() || (!c.hasMin && !c.hasBelow)) { err = "each \"requires\" condition needs a path and min and/or below"; return false; }
+            rule.reqs.push_back(c);
+        }
+    }
     return true;
 }
 
@@ -479,6 +494,24 @@ double treeRuleValue(const Rule& rule, const Doc& doc, size_t& found) {
     return rule.type == RuleType::Flag ? best : total;
 }
 
+// First "requires" condition that fails on this document (nullptr: all hold). Value = largest at the path, missing = 0.
+template <class Doc>
+const Rule::Require* failedRequire(const Rule& rule, const Doc& doc) {
+    for (const Rule::Require& c : rule.reqs) {
+        std::vector<BymlValue> vals;
+        double v = 0;
+        bool any = false;
+        if (doc.query(c.path, vals))
+            for (const BymlValue& w : vals) {
+                double x = w.kind == BymlValue::String ? (w.str.empty() ? 0 : 1) : w.num;
+                if (!any || x > v) v = x;
+                any = true;
+            }
+        if ((c.hasMin && v < c.min) || (c.hasBelow && !(v < c.below))) return &c;
+    }
+    return nullptr;
+}
+
 static std::string describeDoc(const BymlDoc& d) {
     if (d.streamed()) return "BYML v" + std::to_string(d.version()) + (d.bigEndian() ? " BE" : " LE") + " (read in pages, " + std::to_string(d.pageReads()) + " page reads)";
     char info[64];
@@ -639,14 +672,24 @@ static void evaluateTree(Game& g, SaveSource& src) {
     BestValues bv;
     bv.init(g.achs.size());
     std::vector<std::string> rulePaths;
-    for (const Achievement& a : g.achs) if (isSaveRule(a.rule.type)) rulePaths.insert(rulePaths.end(), a.rule.paths.begin(), a.rule.paths.end());
+    for (const Achievement& a : g.achs) if (isSaveRule(a.rule.type)) {
+        rulePaths.insert(rulePaths.end(), a.rule.paths.begin(), a.rule.paths.end());
+        for (const Rule::Require& c : a.rule.reqs) rulePaths.push_back(c.path);
+    }
     auto use = [&](Doc& d, const std::string& f, uint64_t size) {
         g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes, " + (g.xorKey.empty() ? "" : "XOR key, ") + describeDoc(d) + " -> OK");
         bv.files.push_back(f);
         for (size_t i = 0; i < g.achs.size(); i++) {
-            if (!isSaveRule(g.achs[i].rule.type)) continue;
+            const Achievement& a = g.achs[i];
+            if (!isSaveRule(a.rule.type)) continue;
             size_t found = 0;
-            double v = treeRuleValue(g.achs[i].rule, d, found);
+            double v = treeRuleValue(a.rule, d, found);
+            if (const Rule::Require* c = failedRequire(a.rule, d)) {
+                if (v + 1e-9 >= a.rule.target)
+                    g.debug.push_back("    " + a.id + ": not counted, requires " + c->path +
+                                      (c->hasMin ? " >= " + fmtd(c->min) : "") + (c->hasBelow ? " < " + fmtd(c->below) : ""));
+                v = 0;
+            }
             bv.add(i, v, found);
         }
     };

@@ -92,6 +92,7 @@ std::string hex8(uint32_t v) { char t[16]; snprintf(t, sizeof t, "%08X", v); ret
 struct GvasCtx {
     uint32_t ue4 = 0, ue5 = 0;
     bool lwc = false;
+    bool tags54 = false;   // UE 5.4+ property tags (complete type names)
     int skipped = 0;
     long budget = 2000000;
 };
@@ -146,6 +147,7 @@ bool validType(const std::string& t) {
 
 struct Tag {
     std::string name, type, structName, enumName, inner, key, value;
+    std::string innerStruct, keyStruct, valueStruct;   // UE 5.4+: struct names of containers
     int32_t size = 0, index = 0;
     uint8_t boolVal = 0;
 };
@@ -153,11 +155,49 @@ struct Tag {
 cJSON* readProps(Reader& r, GvasCtx& c, int depth);
 cJSON* readStruct(Reader& r, const std::string& name, GvasCtx& c, int depth, double size);
 
+// UE 5.4+ type name tree: name, parameter count, parameters (see formats.js readTypeName)
+struct TypeName { std::string name; std::vector<TypeName> params; };
+bool readTypeName(Reader& r, TypeName& tn, int depth = 0) {
+    if (depth > 16) { r.fail("property type nested too deeply"); return false; }
+    tn.name = fstr(r);
+    int32_t n = r.i32();
+    if (r.bad) return false;
+    if (n < 0 || n > 64) { r.fail("invalid property type"); return false; }
+    tn.params.resize(n);
+    for (int32_t i = 0; i < n; i++) if (!readTypeName(r, tn.params[i], depth + 1)) return false;
+    return true;
+}
+static const TypeName* tparam(const TypeName* tn, size_t i) { return tn && i < tn->params.size() ? &tn->params[i] : nullptr; }
+static std::string tpname(const TypeName* tn, size_t i) { const TypeName* p = tparam(tn, i); return p ? p->name : std::string(); }
+
+bool readTag54(Reader& r, Tag& t) {
+    TypeName tn;
+    if (!readTypeName(r, tn)) return false;
+    t.type = tn.name;
+    if (!validType(t.type)) { r.fail("invalid property type"); return false; }
+    t.size = r.i32();
+    uint8_t flags = r.u8();
+    if (flags & 1) t.index = r.i32();
+    if (flags & 2) r.skip(16);
+    if (flags & 4) { uint8_t ext = r.u8(); if (ext & 2) { r.u8(); r.u32(); } }   // overridable information
+    if (t.type == "StructProperty") t.structName = tpname(&tn, 0);
+    else if (t.type == "BoolProperty") t.boolVal = (flags & 0x10) ? 1 : 0;
+    else if (t.type == "ByteProperty") { t.enumName = tpname(&tn, 0); if (t.enumName.empty()) t.enumName = "None"; }
+    else if (t.type == "EnumProperty") t.enumName = tpname(&tn, 0);
+    else if (t.type == "ArrayProperty" || t.type == "SetProperty") { t.inner = tpname(&tn, 0); t.innerStruct = tpname(tparam(&tn, 0), 0); }
+    else if (t.type == "MapProperty") {
+        t.key = tpname(&tn, 0); t.value = tpname(&tn, 1);
+        t.keyStruct = tpname(tparam(&tn, 0), 0); t.valueStruct = tpname(tparam(&tn, 1), 0);
+    }
+    return !r.bad;
+}
+
 // false at "None" or on error (r.bad)
-bool readTag(Reader& r, Tag& t) {
+bool readTag(Reader& r, Tag& t, const GvasCtx& c) {
     t.name = fstr(r);
     if (r.bad || t.name == "None") return false;
     if (!validName(t.name)) { char m[64]; snprintf(m, sizeof m, "invalid property name at 0x%zX", r.o); r.fail(m); return false; }
+    if (c.tags54) return readTag54(r, t);
     t.type = fstr(r);
     if (r.bad) return false;
     if (!validType(t.type)) { r.fail("invalid property type"); return false; }
@@ -288,12 +328,15 @@ cJSON* readElem(Reader& r, const std::string& type, GvasCtx& c, int depth, const
     return v;
 }
 
-cJSON* readArray(Reader& r, const std::string& inner, int32_t size, GvasCtx& c, int depth) {
+cJSON* readArray(Reader& r, const std::string& inner, int32_t size, GvasCtx& c, int depth, const std::string& innerStruct) {
     int32_t n = r.i32();
     if (r.bad) return nullptr;
     if (n < 0 || n > size) { r.fail("invalid array"); return nullptr; }
     cJSON* out = cJSON_CreateArray();
-    if (inner == "StructProperty") {
+    if (inner == "StructProperty" && c.tags54) {   // 5.4+: no inner tag, the struct name is in the type
+        double each = n ? (double)(size - 4) / n : 0;
+        for (int32_t i = 0; i < n && !r.bad; i++) { cJSON* e = readStruct(r, innerStruct, c, depth, each); if (e) cJSON_AddItemToArray(out, e); }
+    } else if (inner == "StructProperty") {
         fstr(r); fstr(r);
         double total = r.i64();
         std::string sname = fstr(r);
@@ -353,22 +396,25 @@ cJSON* readValue(Reader& r, const Tag& t, GvasCtx& c, int depth, long end) {
         return r.bad ? nullptr : cJSON_CreateString(s.c_str());
     }
     if (t.type == "StructProperty") return readStruct(r, t.structName, c, depth, t.size);
-    if (t.type == "ArrayProperty") return readArray(r, t.inner, t.size, c, depth);
+    if (t.type == "ArrayProperty") return readArray(r, t.inner, t.size, c, depth, t.innerStruct);
     if (t.type == "SetProperty" || t.type == "MapProperty") {
         bool map = t.type == "MapProperty";
         const std::string& kt = map ? t.key : t.inner;
+        const std::string& ks = map ? t.keyStruct : t.innerStruct;
+        const std::string* kS = ks.empty() ? nullptr : &ks;
+        const std::string* vS = t.valueStruct.empty() ? nullptr : &t.valueStruct;
         int32_t rm = r.i32();
         if (r.bad) return nullptr;
         if (rm < 0 || rm > t.size) { r.fail("invalid set/map"); return nullptr; }
-        for (int32_t i = 0; i < rm && !r.bad; i++) { cJSON* x = readElem(r, kt, c, depth); if (x) cJSON_Delete(x); }
+        for (int32_t i = 0; i < rm && !r.bad; i++) { cJSON* x = readElem(r, kt, c, depth, kS); if (x) cJSON_Delete(x); }
         int32_t n = r.i32();
         if (r.bad) return nullptr;
         if (n < 0 || n > t.size) { r.fail("invalid set/map"); return nullptr; }
         cJSON* out = cJSON_CreateArray();
         for (int32_t i = 0; i < n && !r.bad; i++) {
-            cJSON* k = readElem(r, kt, c, depth);
+            cJSON* k = readElem(r, kt, c, depth, kS);
             if (!map) { if (k) cJSON_AddItemToArray(out, k); continue; }
-            cJSON* v = r.bad ? nullptr : readElem(r, t.value, c, depth);
+            cJSON* v = r.bad ? nullptr : readElem(r, t.value, c, depth, vS);
             if (r.bad) { if (k) cJSON_Delete(k); if (v) cJSON_Delete(v); break; }
             cJSON* kv = cJSON_CreateObject();
             cJSON_AddItemToObject(kv, "Key", k);
@@ -391,7 +437,7 @@ cJSON* readProps(Reader& r, GvasCtx& c, int depth) {
     std::set<std::string> multi;
     for (;;) {
         Tag t;
-        if (!readTag(r, t)) break;
+        if (!readTag(r, t, c)) break;
         if (t.size < 0 || (size_t)t.size > r.n - r.o) { r.fail("invalid size for " + t.name); break; }
         size_t start = r.o, end = start + t.size;
         cJSON* v = nullptr;
@@ -705,7 +751,6 @@ cJSON* gvasToJson(const uint8_t* data, size_t size, std::string& error, SaveForm
     GvasCtx c;
     c.ue4 = r.u32();
     c.ue5 = sgv >= 3 ? r.u32() : 0;
-    if (c.ue5 >= 1012) { error = "Unreal Engine 5.4+ save (new property format, not supported yet)"; return nullptr; }
     c.lwc = c.ue5 >= 1004;
     uint16_t major = r.u16(), minor = r.u16(), patch = r.u16();
     r.u32();
@@ -714,6 +759,8 @@ cJSON* gvasToJson(const uint8_t* data, size_t size, std::string& error, SaveForm
     if (!r.bad && ncv > 10000) r.fail("invalid GVAS header");
     for (uint32_t i = 0; i < ncv && !r.bad; i++) { if (cvf == 1) r.skip(8); else { r.skip(20); if (cvf == 2) fstr(r); } }
     std::string cls = fstr(r);
+    c.tags54 = c.ue5 >= 1012;
+    if (c.tags54) r.u8();   // 5.4+: one byte after the class name (0 in every save seen)
     cJSON* tree = r.bad ? nullptr : readProps(r, c, 0);
     if (r.bad || !tree) { error = r.err.empty() ? "invalid GVAS file" : r.err; if (tree) cJSON_Delete(tree); return nullptr; }
     if (info) {

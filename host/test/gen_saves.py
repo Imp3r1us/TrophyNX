@@ -153,6 +153,8 @@ for slot, level in ((0, 0.35), (1, 0.8)):
 # test checks that each reader gives the app's values in the module whatever its memory (definitions in <root>/defs)
 fxr=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','tools','savelab','test','fixtures')
 os.makedirs(f'{R}/defs', exist_ok=True)
+# Poppy Playtime Chapter 2 (Unreal 5.4, "requires" rules): the reporter's last save, Checkpoint 36 at 2448 s, has died
+w('0100D3801E6CE000','Chap2Checkpoint',open(os.path.join(fxr,'gvas','ue54_checkpoint.sav'),'rb').read())
 for n,(reader,files) in enumerate([('gvas',['gvas/Slot1.sav','gvas/Options.sav']),('nrbf',['nrbf/save0.dat','nrbf/save1.dat']),
         ('rpgmaker',['rpgmaker/file1.rpgsave','rpgmaker/file1.rmmzsave']),('gamemaker',['gamemaker/save.ini','gamemaker/save_b64.sav','gamemaker/file0'])]):
     tid=f'0F000000000{n+1:02d}000'

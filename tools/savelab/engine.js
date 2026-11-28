@@ -593,6 +593,17 @@ function bymlRuleValue(rule, tree, eqStr) {
   }
   return { value: rule.type === 'flag' || rule.type === 'value' ? best : total, found };
 }
+// "requires": first condition { path, min?, below? } that fails on this tree (null: all hold). Value = largest at the
+// path, missing = 0 (same as the app).
+function failedRequire(reqs, tree) {
+  for (const c of reqs || []) {
+    const vals = queryByml(tree, c.path) || [];
+    const v = vals.length ? Math.max(...vals.map(leafNum)) : 0;
+    if ((c.min !== undefined && v < c.min) || (c.below !== undefined && !(v < c.below))) return c;
+  }
+  return null;
+}
+const describeRequire = (c) => c.path + (c.min !== undefined ? ' >= ' + c.min : '') + (c.below !== undefined ? ' < ' + c.below : '');
 function patternOf(path) { return path.replace(/\[[^\]]*\]/g, '[*]'); }
 function isTimestampPath(p, vals) { return /Time(Total)?$|Date$|IdFor/i.test(p) || vals.some(v => typeof v === 'number' && v > 1e9); }
 function diffByml(flats, opts = {}) {
@@ -945,10 +956,19 @@ function evaluate(def, files, opts = {}) {
       const r = a.rule;
       const rule = { type: t, paths: [].concat(r.path ? [r.path] : [], Array.isArray(r.paths) ? r.paths : []) };
       const eq = r.equals === undefined ? undefined : typeof r.equals === 'boolean' ? String(r.equals) : String(r.equals);
-      let best = -Infinity, foundMax = 0;
-      for (const tree of docs) { const v = bymlRuleValue(rule, tree, eq); if (v.value > best) best = v.value; foundMax = Math.max(foundMax, v.found); }
+      let best = -Infinity, foundMax = 0, blocked = null;
       const target = r.target ?? 1;
-      res.push({ id: a.id, value: best, met: best + 1e-9 >= target, note: foundMax < rule.paths.length ? (rule.paths.length - foundMax) + '/' + rule.paths.length + T(' path(s) not found', ' chemin(s) introuvable(s)') : '' });
+      for (const tree of docs) {
+        const v = bymlRuleValue(rule, tree, eq);
+        const c = failedRequire(r.requires, tree);
+        if (c) { if (v.value + 1e-9 >= target) blocked = c; v.value = 0; }
+        if (v.value > best) best = v.value;
+        foundMax = Math.max(foundMax, v.found);
+      }
+      const met = best + 1e-9 >= target;
+      const note = foundMax < rule.paths.length ? (rule.paths.length - foundMax) + '/' + rule.paths.length + T(' path(s) not found', ' chemin(s) introuvable(s)')
+        : !met && blocked ? T('requires ', 'il faut ') + describeRequire(blocked) : '';
+      res.push({ id: a.id, value: best, met, note });
     }
     return { results: res };
   }
@@ -1209,6 +1229,11 @@ function validate(def) {
       if (tree && !hasPath) errs.push(a.id + T(': the ', ' : le lecteur ') + def.reader + T(' reader uses paths (path / paths)', ' utilise des chemins (path / paths)'));
       if (!tree && hasPath) errs.push(a.id + T(': path/paths only work with the readers ', ' : path/paths ne servent qu\'aux lecteurs ') + TREE_READERS.join(', '));
       if (tree && hasPath) for (const pp of [].concat(r.path || [], r.paths || [])) if (!/^(?:[^[\]/]+(?:\[[^\]]*\])*|(?:\[[^\]]*\])+)(?:\/[^[\]/]*(?:\[[^\]]*\])*)*$/.test(pp)) errs.push(a.id + T(': malformed path “', ' : chemin mal formé « ') + pp + T('”', ' »'));
+      if (r.requires !== undefined) {
+        if (!Array.isArray(r.requires) || !hasPath) errs.push(a.id + T(': "requires" is a list of conditions for path rules', ' : "requires" est une liste de conditions pour les règles à chemins'));
+        else for (const c of r.requires) if (!c || typeof c.path !== 'string' || !c.path || (typeof c.min !== 'number' && typeof c.below !== 'number'))
+          errs.push(a.id + T(': each "requires" condition needs a path and min and/or below', ' : chaque condition "requires" a besoin d\'un path et de min et/ou below'));
+      }
       if (def.reader === 'binary_le' && (r.name || r.hash || r.names || r.pattern)) errs.push(a.id + T(': the binary_le reader only uses offsets', ' : le lecteur binary_le n\'utilise que des offsets'));
       if (def.reader !== 'binary_le' && !TREE_READERS.includes(def.reader) && (r.offset !== undefined || r.offsets)) errs.push(a.id + T(': this reader only uses hashes/names', ' : ce lecteur n\'utilise que des hashes/noms'));
       if (!def.reader) errs.push(a.id + T(': save rule but no reader chosen', ' : règle de sauvegarde mais aucun lecteur (reader) choisi'));

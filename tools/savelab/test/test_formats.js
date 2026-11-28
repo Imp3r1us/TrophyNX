@@ -26,6 +26,9 @@ ok(E.queryByml(E.parseTree(load('gvas/tagcontainer.sav')).tree, 'TagTest[=Charac
 ok(one(E.parseTree(load('gvas/regression_01.bin')).tree, 'Thing') === 'B38299D449D53DDFC757AEB4E438581D', 'Guid as hex');
 const vd = E.parseGvas(load('gvas/vector2d.sav'));
 ok(vd.meta.skipped === 0 && vd.tree.SettingsChanged === null, 'UE 5.3 file, delegates read as null');
+const u54 = E.parseGvas(load('gvas/ue54_checkpoint.sav'));
+ok(u54.meta.ue5 === 1012 && u54.meta.skipped === 0 && u54.tree.Checkpoint === 36 && u54.tree.TrophyDataWrapper.length === 9 &&
+   u54.tree.TrophyDataWrapper[3].Collected_17_531EBC9943642622D65F1BB1ECB9B21E === true && u54.tree.HasDied === true, 'UE 5.4 file (complete type names, struct array without inner tag)');
 let threw = false; try { E.parseGvas(s1.slice(0, 200)); } catch (e) { threw = true; }
 ok(threw, 'truncated GVAS rejected');
 ok(E.identify(s1.slice(0, 200)).treeError, 'identify reports the GVAS error');
@@ -149,7 +152,7 @@ if (process.env.CPP_DUMP) {
   // THEATRHYTHM files need a password: THEATRHYTHM_KEY=<file> (default: the dummy one of the fixtures)
   F.setPassword('theatrhythm', fs.readFileSync(process.env.THEATRHYTHM_KEY || path.join(fx, 'theatrhythm/password.txt'), 'utf8'));
   const files = process.argv.slice(2).length ? process.argv.slice(2) : ['gvas/Slot1.sav', 'gvas/assert_failed.sav', 'gvas/tagcontainer.sav', 'gvas/regression_01.bin',
-    'gvas/vector2d.sav', 'gvas/Options.sav', 'nrbf/save0.dat', 'nrbf/save1.dat', 'nrbf/string.dat', 'nrbf/list.dat',
+    'gvas/vector2d.sav', 'gvas/Options.sav', 'gvas/ue54_checkpoint.sav', 'nrbf/save0.dat', 'nrbf/save1.dat', 'nrbf/string.dat', 'nrbf/list.dat',
     'theatrhythm/backup.inf', 'theatrhythm/musicBackup.inf', 'theatrhythm/proficaBackup.inf', 'theatrhythm/edge.inf',
     'rpgmaker/file1.rpgsave', 'rpgmaker/file1.rmmzsave', 'rpgmaker/global.rpgsave', 'gamemaker/save.ini', 'gamemaker/save_b64.sav', 'gamemaker/file0'].map(f => path.join(fx, f));
   const same = (x, y, p) => {

@@ -55,6 +55,9 @@ int main(int argc, char** argv) {
         check(v.size() == 1 && v[0].str == "B38299D449D53DDFC757AEB4E438581D", "Guid as hex");
         GvasDoc vd = load<GvasDoc>(fx + "gvas/vector2d.sav");
         check(vd.error.empty() && vd.info.skipped == 0 && q(vd, "SettingsChanged").size() == 1, "UE 5.3 file, delegates read as null");
+        GvasDoc u54 = load<GvasDoc>(fx + "gvas/ue54_checkpoint.sav");
+        check(u54.error.empty() && u54.info.skipped == 0 && one(u54, "Checkpoint") == 36 && q(u54, "TrophyDataWrapper[*]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E").size() == 9,
+              "UE 5.4 file (complete type names, struct array without inner tag)");
         {
             v = q(s, "u8_test");
             std::vector<BymlValue> n;
@@ -134,7 +137,7 @@ int main(int argc, char** argv) {
             check(!isGameMaker((const uint8_t*)json.data(), json.size()) && !isGameMaker((const uint8_t*)txt.data(), txt.size()), "JSON / plain text not taken");
         }
         const char* all[] = {"gvas/Slot1.sav", "gvas/assert_failed.sav", "gvas/tagcontainer.sav", "gvas/regression_01.bin", "gvas/vector2d.sav",
-                             "gvas/Options.sav", "nrbf/save0.dat", "nrbf/save1.dat", "nrbf/string.dat", "nrbf/list.dat",
+                             "gvas/Options.sav", "gvas/ue54_checkpoint.sav", "nrbf/save0.dat", "nrbf/save1.dat", "nrbf/string.dat", "nrbf/list.dat",
                              "theatrhythm/backup.inf", "theatrhythm/musicBackup.inf", "theatrhythm/proficaBackup.inf", "theatrhythm/edge.inf",
                              "rpgmaker/file1.rpgsave", "rpgmaker/file1.rmmzsave", "rpgmaker/global.rpgsave",
                              "gamemaker/save.ini", "gamemaker/save_b64.sav", "gamemaker/file0"};

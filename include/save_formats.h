@@ -1,7 +1,7 @@
 #pragma once
 // Binary save formats decoded into a JSON tree, then queried with the JSON reader's path language
 // (see json_doc.h / byml.h). The trees are identical to the Save Lab's (tools/savelab/formats.js):
-//   "gvas" reader: Unreal Engine 4 / 5 (< 5.4) SaveGame files (.sav starting with "GVAS")
+//   "gvas" reader: Unreal Engine 4 / 5 SaveGame files (5.4+ complete type names too) (.sav starting with "GVAS")
 //   "nrbf" reader: .NET BinaryFormatter streams (Unity games)
 //   "sgb" reader: Supergiant Games saves (Hades: "SGB1" header + LZ4 block + luabins Lua state)
 //   "deltarune" reader: DELTARUNE deltarune.sav (JSON of GameMaker text files; see deltaruneToJson below)

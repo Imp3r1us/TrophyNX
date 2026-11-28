@@ -1,7 +1,7 @@
 // Save Lab format modules — binary save formats decoded into the same kind of tree as BYML / JSON,
 // so that every path-based tool (differences, ⚡ generate, rules) works on them unchanged.
 // Each module mirrors a reader of the Switch app; the trees must be identical on both sides:
-//   gvas  Unreal Engine 4 / 5 (< 5.4) SaveGame files (.sav, magic "GVAS")  — source/gvas.cpp
+//   gvas  Unreal Engine 4 / 5 SaveGame files (.sav, magic "GVAS")  — source/gvas.cpp
 //   nrbf  .NET BinaryFormatter streams (Unity games)                       — source/nrbf.cpp
 (function (root) {
 'use strict';
@@ -56,10 +56,43 @@ function gvasFstr(r) {
 function gvasGuid(r) { let s = ''; for (let i = 0; i < 4; i++) s += hex8(r.u32()); return s; }
 const PROP_NAME = /^[\x20-\x7e -￿]{1,256}$/;
 
-function readTag(r) {
+// UE 5.4+ (package version 1012, PROPERTY_TAG_COMPLETE_TYPE_NAME): the type is a tree of names
+// (name, number of parameters, parameters...), e.g. ArrayProperty(StructProperty(TrophyData(/Game/...), <guid>)).
+function readTypeName(r, depth = 0) {
+  if (depth > 16) throw new Error(T('property type nested too deeply', 'type de propriété trop imbriqué'));
+  const name = gvasFstr(r), n = r.i32();
+  if (n < 0 || n > 64) throw new Error(T('invalid property type', 'type de propriété invalide'));
+  const params = [];
+  for (let i = 0; i < n; i++) params.push(readTypeName(r, depth + 1));
+  return { name, params };
+}
+const param = (tn, i) => (tn && tn.params[i]) || null;
+const pname = (tn, i) => { const p = param(tn, i); return p ? p.name : ''; };
+// Flags byte: 1 array index, 2 property GUID, 4 extensions, 8 binary/native serialize, 0x10 bool true, 0x20 skipped.
+function readTag54(r, name) {
+  const tn = readTypeName(r);
+  const type = tn.name;
+  if (!/^[A-Za-z0-9_]{1,64}Property$/.test(type)) throw new Error(T('invalid property type “', 'type de propriété invalide « ') + type.slice(0, 40) + T('”', ' »'));
+  const t = { name, type, size: r.i32(), index: 0 };
+  const flags = r.u8();
+  if (flags & 1) t.index = r.i32();
+  if (flags & 2) r.skip(16);
+  if (flags & 4) { const ext = r.u8(); if (ext & 2) { r.u8(); r.u32(); } }   // overridable information
+  switch (type) {
+    case 'StructProperty': t.struct = pname(tn, 0); break;
+    case 'BoolProperty': t.bool = flags & 0x10 ? 1 : 0; break;
+    case 'ByteProperty': t.enumName = pname(tn, 0) || 'None'; break;
+    case 'EnumProperty': t.enumName = pname(tn, 0); break;
+    case 'ArrayProperty': case 'SetProperty': t.inner = pname(tn, 0); t.innerStruct = pname(param(tn, 0), 0); break;
+    case 'MapProperty': t.key = pname(tn, 0); t.value = pname(tn, 1); t.keyStruct = pname(param(tn, 0), 0); t.valueStruct = pname(param(tn, 1), 0); break;
+  }
+  return t;
+}
+function readTag(r, ctx) {
   const name = gvasFstr(r);
   if (name === 'None') return null;
   if (!PROP_NAME.test(name)) throw new Error(T('invalid property name at 0x', 'nom de propriété invalide à 0x') + r.o.toString(16).toUpperCase());
+  if (ctx.tags54) return readTag54(r, name);
   const type = gvasFstr(r);
   if (!/^[A-Za-z0-9_]{1,64}Property$/.test(type)) throw new Error(T('invalid property type “', 'type de propriété invalide « ') + type.slice(0, 40) + T('”', ' »'));
   const t = { name, type, size: r.i32(), index: r.i32() };
@@ -83,7 +116,7 @@ function readProps(r, ctx, depth) {
   if (depth > 48) throw new Error(T('structure nested too deeply', 'structure trop profonde'));
   const obj = {}, multi = new Set();
   for (;;) {
-    const t = readTag(r);
+    const t = readTag(r, ctx);
     if (!t) return obj;
     let v = null;
     if (t.type === 'BoolProperty') v = !!t.bool;
@@ -102,20 +135,20 @@ function readValue(r, t, ctx, depth, end) {
   switch (t.type) {
     case 'ByteProperty': return t.enumName === 'None' || t.size === 1 ? r.u8() : gvasFstr(r);
     case 'StructProperty': return readStruct(r, t.struct, ctx, depth, t.size);
-    case 'ArrayProperty': return readArray(r, t.inner, t.size, ctx, depth);
+    case 'ArrayProperty': return readArray(r, t.inner, t.size, ctx, depth, t.innerStruct);
     case 'SetProperty': {
       const rm = r.i32(); if (rm < 0 || rm > t.size) throw new Error(T('invalid set', 'set invalide'));
-      for (let i = 0; i < rm; i++) readElem(r, t.inner, ctx, depth);
+      for (let i = 0; i < rm; i++) readElem(r, t.inner, ctx, depth, t.innerStruct);
       const n = r.i32(); if (n < 0 || n > t.size) throw new Error(T('invalid set', 'set invalide'));
-      const out = []; for (let i = 0; i < n; i++) out.push(readElem(r, t.inner, ctx, depth));
+      const out = []; for (let i = 0; i < n; i++) out.push(readElem(r, t.inner, ctx, depth, t.innerStruct));
       return out;
     }
     case 'MapProperty': {
       const rm = r.i32(); if (rm < 0 || rm > t.size) throw new Error(T('invalid map', 'map invalide'));
-      for (let i = 0; i < rm; i++) readElem(r, t.key, ctx, depth);
+      for (let i = 0; i < rm; i++) readElem(r, t.key, ctx, depth, t.keyStruct);
       const n = r.i32(); if (n < 0 || n > t.size) throw new Error(T('invalid map', 'map invalide'));
       const out = [];
-      for (let i = 0; i < n; i++) { const Key = readElem(r, t.key, ctx, depth); const Value = readElem(r, t.value, ctx, depth); out.push({ Key, Value }); }
+      for (let i = 0; i < n; i++) { const Key = readElem(r, t.key, ctx, depth, t.keyStruct); const Value = readElem(r, t.value, ctx, depth, t.valueStruct); out.push({ Key, Value }); }
       return out;
     }
     case 'TextProperty': return readText(r, end, ctx);
@@ -183,10 +216,15 @@ function readText(r, end, ctx, depth = 0) {
     default: throw new Error(T('unsupported text (history ', 'texte non géré (historique ') + h + ')');
   }
 }
-function readArray(r, inner, size, ctx, depth) {
+function readArray(r, inner, size, ctx, depth, innerStruct) {
   const n = r.i32();
   if (n < 0 || n > size) throw new Error(T('invalid array', 'tableau invalide'));
   const out = [];
+  if (inner === 'StructProperty' && ctx.tags54) {   // 5.4+: no inner tag, the struct name is in the type
+    const each = n ? (size - 4) / n : 0;
+    for (let i = 0; i < n; i++) out.push(readStruct(r, innerStruct, ctx, depth, each));
+    return out;
+  }
   if (inner === 'StructProperty') {
     gvasFstr(r); gvasFstr(r); const total = r.i64();
     const sname = gvasFstr(r); r.skip(16); if (r.u8()) r.skip(16);
@@ -236,13 +274,14 @@ function parseGvas(buf) {
   const sgv = r.u32();
   if (sgv < 2 || sgv > 3) throw new Error(T('unsupported GVAS version ', 'version GVAS ') + sgv + T('', ' non gérée'));
   const ue4 = r.u32(), ue5 = sgv >= 3 ? r.u32() : 0;
-  if (ue5 >= 1012) throw new Error(T('Unreal 5.4 or newer save (new property format, not supported yet)', 'sauvegarde Unreal 5.4 ou plus récente (nouveau format des propriétés, pas encore géré)'));
   const major = r.u16(), minor = r.u16(), patch = r.u16(); r.u32(); const branch = gvasFstr(r);
   const cvf = r.u32(), ncv = r.u32();
   if (ncv > 10000) throw new Error(T('invalid GVAS header', 'en-tête GVAS invalide'));
   for (let i = 0; i < ncv; i++) { if (cvf === 1) r.skip(8); else { r.skip(20); if (cvf === 2) gvasFstr(r); } }
   const cls = gvasFstr(r);
-  const ctx = { ue4, ue5, lwc: ue5 >= 1004, skipped: 0, why: [], budget: 2e6 };
+  const tags54 = ue5 >= 1012;
+  if (tags54) r.u8();    // 5.4+: one byte after the class name (0 in every save seen)
+  const ctx = { ue4, ue5, lwc: ue5 >= 1004, tags54, skipped: 0, why: [], budget: 2e6 };
   const tree = readProps(r, ctx, 0);
   return { gvas: true, tree, meta: { saveClass: cls, engine: major + '.' + minor + '.' + patch + (branch ? ' (' + branch + ')' : ''), ue4, ue5, skipped: ctx.skipped, why: ctx.why } };
 }

@@ -51,6 +51,15 @@ struct Rule {
     std::vector<std::string> paths;
     bool hasEqualsStr = false;  // byml/json: matched values must equal this (string, number, true/false)
     std::string equalsStr;
+    // "requires" (path readers): the rule only counts in a file where every condition holds. A condition
+    // reads the largest value at its path (missing = 0) and checks value >= min and/or value < below,
+    // e.g. reached the last checkpoint and never died.
+    struct Require {
+        std::string path;
+        bool hasMin = false, hasBelow = false;
+        double min = 0, below = 0;
+    };
+    std::vector<Require> reqs;
     // "memory": per-build addresses, value type and comparison (target/max are copied into it)
     mem::MemRule mem;
 };

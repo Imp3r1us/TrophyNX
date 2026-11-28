@@ -1,0 +1,275 @@
+{
+ "title_id": "0100D3801E6CE000",
+ "name": "Poppy Playtime: Chapter 2",
+ "reader": "gvas",
+ "save_files": [
+  "Chap2Checkpoint"
+ ],
+ "_note": "Save-based from issue #54 (17 JKSV backups, v1.4, Unreal 5.4.1 save). Chap2Checkpoint/Checkpoint goes 1-7, 13, 14, 18, 24, 30, 32, 34, 35, 36 across the reporter's labelled backups (story names below follow those labels). TrophyDataWrapper lists the 9 collectible trophies in a fixed order (Barry, Bunzo, Claw, Daisy, GreenHand, Kissy, Mommy, PJ, Train) with a Collected bool each; names and descriptions are the official Steam ones. HasNoWrongAnswers appears after Musical Memory (false for the reporter, who made errors): mapped to Memory Master, not seen true yet. Game files (v1.4 Switch build, blueprints) list 32 achievement ids; Undefeated and Escape fire in the final train sequence, after the last save (Checkpoint 36), so the end is only ever seen as Checkpoint 36. HasDied appears once the player dies and stays true; SpeedrunTime is in seconds and Ahead of Schedule compares it with 2700 (45 minutes). Both are read at the last save (Checkpoint 36 plus 'requires': HasDied not true / SpeedrunTime < 2700); the time there is a little below the real finish time. The save class also has 'Watched VHS' (Avid Listener, all tapes) and inventory items, absent from these saves (no tape watched); documents, cutouts and the other event achievements are not saved.",
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Back to the Factory",
+   "desc": "Launch the game 3 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Overtime",
+   "desc": "Play for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_3",
+   "name": "Playtime Regular",
+   "desc": "Play for 3 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_days_3",
+   "name": "Coming Back for More",
+   "desc": "Play on 3 different days",
+   "points": 10,
+   "rule": {
+    "type": "days_played",
+    "target": 3
+   }
+  },
+  {
+   "id": "t_shots_5",
+   "name": "Evidence",
+   "desc": "Take 5 screenshots of the game",
+   "points": 10,
+   "rule": {
+    "type": "screenshots",
+    "target": 5
+   }
+  },
+  {
+   "id": "cp_mommy",
+   "name": "Long Legs",
+   "desc": "Meet Mommy Long Legs",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 4
+   }
+  },
+  {
+   "id": "cp_green_hand",
+   "name": "Green Light",
+   "desc": "Build the green hand",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 6
+   }
+  },
+  {
+   "id": "cp_musical_memory",
+   "name": "Musical Memory",
+   "desc": "Beat Musical Memory",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 13
+   }
+  },
+  {
+   "id": "cp_whack",
+   "name": "Whack-A-Wuggy",
+   "desc": "Beat Whack-A-Wuggy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 18
+   }
+  },
+  {
+   "id": "cp_statues",
+   "name": "Statues",
+   "desc": "Beat Statues with PJ Pug-A-Pillar",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 24
+   }
+  },
+  {
+   "id": "cp_chase",
+   "name": "Run!",
+   "desc": "Escape the first part of Mommy's chase",
+   "points": 25,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 30
+   }
+  },
+  {
+   "id": "cp_end",
+   "name": "End of the Line",
+   "desc": "Get away from Mommy Long Legs and meet Poppy",
+   "points": 50,
+   "hidden": true,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 36
+   }
+  },
+  {
+   "id": "memory_master",
+   "name": "Memory Master",
+   "desc": "Beat Musical Memory without making any errors",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "HasNoWrongAnswers",
+    "equals": true
+   }
+  },
+  {
+   "id": "undefeated",
+   "name": "Undefeated",
+   "desc": "Beat Chapter 2 without dying",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 36,
+    "requires": [
+     {
+      "path": "HasDied",
+      "below": 1
+     }
+    ]
+   }
+  },
+  {
+   "id": "ahead_of_schedule",
+   "name": "Ahead of Schedule",
+   "desc": "Beat Chapter 2 in under 45 minutes",
+   "points": 50,
+   "rule": {
+    "type": "flag",
+    "path": "Checkpoint",
+    "target": 36,
+    "requires": [
+     {
+      "path": "SpeedrunTime",
+      "below": 2700
+     }
+    ]
+   }
+  },
+  {
+   "id": "trophy_daisy",
+   "name": "Daisy Trophy",
+   "desc": "Pick up the Daisy trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[3]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_train",
+   "name": "Train Trophy",
+   "desc": "Pick up the Train trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[8]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_green_hand",
+   "name": "Green Hand Trophy",
+   "desc": "Pick up the Green Hand trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[4]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_bunzo",
+   "name": "Bunzo Bunny Trophy",
+   "desc": "Pick up the Bunzo Bunny trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[1]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_kissy",
+   "name": "Kissy Missy Trophy",
+   "desc": "Pick up the Kissy Missy trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[5]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_pj",
+   "name": "PJ Pug-A-Pillar Trophy",
+   "desc": "Pick up the PJ Pug-A-Pillar trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[7]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_barry",
+   "name": "Barry Cart Trophy",
+   "desc": "Pick up the Barry Cart trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[0]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_mommy",
+   "name": "Mommy Long Legs Trophy",
+   "desc": "Pick up the Mommy Long Legs trophy",
+   "points": 25,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[6]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  },
+  {
+   "id": "trophy_claw",
+   "name": "Claw Trophy",
+   "desc": "Pick up the Claw trophy",
+   "points": 10,
+   "rule": {
+    "type": "flag",
+    "path": "TrophyDataWrapper[2]/Collected_17_531EBC9943642622D65F1BB1ECB9B21E"
+   }
+  }
+ ]
+}
