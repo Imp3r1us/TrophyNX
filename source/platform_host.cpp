@@ -1,5 +1,6 @@
 // PC test harness: fake games and stats, scripted input, frames written as PNG.
 #ifndef __SWITCH__
+#include "gamefile.h"
 #include "platform.h"
 #include "history.h"
 #include <cstdio>
@@ -152,7 +153,7 @@ static std::string g_self;
 void plat::setSelfPath(const std::string& p) { g_self = p; }
 std::string plat::selfPath() { return g_self.empty() ? g_root + "/sd/switch/TrophyNX.nro" : g_self; }
 std::string plat::sdRoot() { return g_root + "/sd/"; }
-bool plat::readGameFile(uint64_t, const std::string&, std::vector<uint8_t>&, std::string& why) {
+bool openGameFile(uint64_t, const std::string&, GameFile&, std::string& why) {
     why = "not on a Switch";
     return false;
 }

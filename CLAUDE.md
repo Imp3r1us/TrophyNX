@@ -31,15 +31,17 @@ To add a reader: a C++ reader in `save_formats.cpp` plus a line in `evaluateSave
 ## Encrypted saves: never ship passwords
 
 Games such as THEATRHYTHM and Heavenly Bodies use `"key_file": "<name>.txt"`. The password lives only on the player's SD
-card, in `sdmc:/switch/TrophyNX/keys/`. It never goes in the repo, a commit, an issue or a PR. The app finds it, in this
-order:
+card, in `sdmc:/switch/TrophyNX/keys/`. It never goes in the repo, a commit, an issue or a PR (test fixtures use DUMMY
+passwords). The app and the live module find it, in this order:
 1. the key file;
-2. the installed game (`plat::readGameFile`: `fsOpenFileSystemWithPatch`, then the base program NCA through ncm, both
-   refused on some firmwares);
+2. the installed game (`openGameFile` in `source/gamefile_switch.cpp`, shared with the module: with its update, by
+   program id, then the base program NCA through ncm). The file is read in pieces (`es3FindPasswordIn`,
+   `theatrhythmFindPasswordIn`), so the module can search a file of any size. The app is refused on some setups
+   (Heavenly Bodies, issue #33: 2002-3001 / 2002-6000); the module has full file system access and searches Easy Save 3
+   games once per boot, when the game's save is read;
 3. a dumped game file in `keys/` or `sdmc:/nxdumptool/`.
 
-Players can also make the key file with the Save Lab's 🔑 tab (`…/TrophyNX/#key`). The live module reads the same
-folder. When no password is found, the game status is `SaveStatus::NeedsKey`.
+Players can also make the key file with the Save Lab's 🔑 tab (`…/TrophyNX/#key`). When no password is found, the game status is `SaveStatus::NeedsKey`.
 
 ## Versions and releases
 

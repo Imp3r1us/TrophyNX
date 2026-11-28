@@ -10,6 +10,21 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.20.0 (2026-11-28)
+
+Heavenly Bodies (and other Easy Save 3 games) now find their save password by themselves: no dump, no PC.
+
+### New
+- When the app can't open the game's files (it happened with Heavenly Bodies, issue #33), the live module now does it: it reads the password from the installed game the first time it reads the save, writes `switch/TrophyNX/keys/heavenlybodies.txt`, and unlocks your achievements right away. Just play and close the game once, then open TrophyNX.
+- The game file is read a little at a time, so even a very large `resources.assets` works.
+
+### Changed
+- The app tries two more ways to open the game's files before giving up, and its log lists each one with its error code (for example `2002-3001`), so a refusal is easier to report.
+- A dump made with nxdumptool, or the Save Lab's 🔑 tab, still work as before if the automatic search can't open the game.
+
+### Live module 0.16.0
+- Finds the password of Easy Save 3 saves in the installed game (once per game after each console start) and in `keys/` or `sdmc:/nxdumptool`.
+
 ## 0.19.1 (2026-11-28)
 
 KINGDOM HEARTS HD 1.5+2.5 ReMIX is now recognised once you pick a game in its menu, not only on the menu itself.

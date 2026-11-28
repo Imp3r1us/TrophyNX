@@ -299,7 +299,7 @@ void buildLibrary(Library& lib, plat::ProgressFn progress, void* ctx) {
     std::map<uint64_t, GameDef> defs;
     setSaveKeyDir(plat::dataDir() + "/keys");   // passwords of encrypted saves (keys/theatrhythm.txt...), never shipped
     setSaveKeySearchDirs({plat::dataDir() + "/keys", plat::sdRoot() + "nxdumptool"});   // global-metadata.dat to find them
-    setSaveKeyGameReader(plat::readGameFile);   // ...or read straight from the installed game, no dump needed
+    setSaveKeyGameReader(openGameFile);   // ...or read straight from the installed game, no dump needed
     plat::trace("library: built-in definitions");
     loadGameDefs(plat::romfsDir() + "/games", defs, lib.loadErrors, lib.defsLoaded);
     plat::trace("library: SD definitions");
