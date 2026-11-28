@@ -1,0 +1,46 @@
+{
+ "commit": "ba363f5b61eeab9a023e4cd2f24c24643af04b41",
+ "date": "2026-11-28 15:40 UTC",
+ "message": "Merge pull request #106 from Imp3r1us/unlock-sound",
+ "notes": [
+  "When the app can't open the game's files (it happened with Heavenly Bodies, issue #33), the live...",
+  "The game file is read a little at a time, so even a very large resources.assets works.",
+  "Changed: The app tries two more ways to open the game's files before giving up, and its log lists...",
+  "Changed: A dump made with nxdumptool, or the Save Lab's \ud83d\udd11 tab, still work as before if the automa...",
+  "Module: Finds the password of Easy Save 3 saves in the installed game (once per game after each c..."
+ ],
+ "app_version": "0.20.0",
+ "module_version": "0.16.0",
+ "files": [
+  {
+   "path": "atmosphere/contents/420000000000AC01/exefs.nsp",
+   "asset": "sys-trophynx.nsp",
+   "size": 924333,
+   "sha256": "69780d9f418e75eb44076c4f54771b3dd97f7a7be3760c27ecbf04158227d2c5"
+  },
+  {
+   "path": "atmosphere/contents/420000000000AC01/flags/boot2.flag",
+   "asset": "sys-trophynx-flags-boot2.flag",
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "path": "atmosphere/contents/420000000000AC01/toolbox.json",
+   "asset": "sys-trophynx-toolbox.json",
+   "size": 92,
+   "sha256": "950061068b5fd9c554891f1e21538f2755dfd2c81073ef753fef0eadc9d7af49"
+  },
+  {
+   "path": "switch/.overlays/TrophyNX.ovl",
+   "asset": "TrophyNX.ovl",
+   "size": 458808,
+   "sha256": "40b52c38931c27f4da917d112cee5d9b8839017c992540c85d99056d83fb6a15"
+  },
+  {
+   "path": "switch/TrophyNX.nro",
+   "asset": "TrophyNX.nro",
+   "size": 4536438,
+   "sha256": "f2c8859dac13277e59ea3ce990361161d708b3c61badd26ba1bf3ed942d8b15b"
+  }
+ ]
+}
