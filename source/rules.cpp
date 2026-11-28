@@ -511,25 +511,40 @@ static void evaluateBinary(Game& g, SaveSource& src) {
     g.saveStatus = SaveStatus::Ok;
     g.debug.push_back("");
     g.debug.push_back("Achievement values:");
-    for (Achievement& a : g.achs) {
-        RuleType t = a.rule.type;
-        if (!isSaveRule(t)) continue;
-        double best = 0;
-        int bestFile = -1;
-        bool anyBad = false, allSkipped = true;
-        std::string skipNote;
-        for (size_t fi = 0; fi < usable.size(); fi++) {
-            const BinFile& bf = usable[fi];
+    // File (slot) by file, every achievement on it: each slot is read once. Streaming (live module): a slot that
+    // fits in memory is read in one piece, instead of one read per value spread over a big file (Kingdom Hearts:
+    // ~100 slots in 18 MB, which missed the save image cache on almost every value).
+    struct Acc { double best = 0; int bestFile = -1; bool anyBad = false, allSkipped = true; std::string skipNote; };
+    std::vector<Acc> accs(g.achs.size());
+    std::vector<uint8_t> slotBuf;
+    for (size_t fi = 0; fi < usable.size(); fi++) {
+        const BinFile& bf = usable[fi];
+        const uint8_t* mem = stream ? nullptr : bufs[bf.buf].data() + bf.base;
+        if (stream && g.slots.count(bf.file) && bf.size <= 512 * 1024 &&
+            src.memoryAvailable() > bf.size + 128 * 1024) {
+            slotBuf.resize((size_t)bf.size);
+            if (src.readAt(bf.file, bf.base, slotBuf.data(), slotBuf.size())) mem = slotBuf.data();
+        }
+        auto readLe = [&](uint32_t off, int size, uint32_t& v) {
+            if ((uint64_t)off + size > bf.size) return false;
+            uint8_t b[4] = {0, 0, 0, 0};
+            if (mem) memcpy(b, mem + off, size);
+            else if (!src.readAt(bf.file, bf.base + off, b, size)) return false;
+            v = 0;
+            for (int i = 0; i < size; i++) v |= (uint32_t)b[i] << (8 * i);
+            return true;
+        };
+        for (size_t ai = 0; ai < g.achs.size(); ai++) {
+            const Achievement& a = g.achs[ai];
+            RuleType t = a.rule.type;
+            if (!isSaveRule(t)) continue;
             if (!a.rule.file.empty() && a.rule.file != bf.file) continue;
-            auto readLe = [&](uint32_t off, int size, uint32_t& v) {
-                if ((uint64_t)off + size > bf.size) return false;
-                uint8_t b[4] = {0, 0, 0, 0};
-                if (stream) { if (!src.readAt(bf.file, bf.base + off, b, size)) return false; }
-                else memcpy(b, &bufs[bf.buf][bf.base + off], size);
-                v = 0;
-                for (int i = 0; i < size; i++) v |= (uint32_t)b[i] << (8 * i);
-                return true;
-            };
+            Acc& acc = accs[ai];
+            double& best = acc.best;
+            int& bestFile = acc.bestFile;
+            bool& anyBad = acc.anyBad;
+            bool& allSkipped = acc.allSkipped;
+            std::string& skipNote = acc.skipNote;
             if (a.rule.hasNeeds) {
                 uint32_t nv = 0;
                 if (!readLe(a.rule.needsOffset, a.rule.needsSize, nv) || nv < a.rule.needsMin) {
@@ -553,12 +568,18 @@ static void evaluateBinary(Game& g, SaveSource& src) {
             if (bad) { anyBad = true; continue; }   // a suspicious value never unlocks anything
             if (bestFile < 0 || total > best) { best = total; bestFile = (int)fi; }
         }
-        a.value = best;
+    }
+    std::vector<uint8_t>().swap(slotBuf);
+    for (size_t ai = 0; ai < g.achs.size(); ai++) {
+        Achievement& a = g.achs[ai];
+        if (!isSaveRule(a.rule.type)) continue;
+        const Acc& acc = accs[ai];
+        a.value = acc.best;
         std::string line = "  " + a.id + ": " + fmtd(a.value) + " / " + fmtd(a.rule.target);
         line += a.value + 1e-9 >= a.rule.target ? "  [MET]" : "  [not yet]";
-        if (bestFile >= 0 && usable.size() > 1 && best > 0) line += "  in " + usable[bestFile].name;
-        if (allSkipped && !skipNote.empty()) line += "  [" + skipNote + "]";
-        if (anyBad) line += "  !! value out of range: offset probably moved in a game update";
+        if (acc.bestFile >= 0 && usable.size() > 1 && acc.best > 0) line += "  in " + usable[acc.bestFile].name;
+        if (acc.allSkipped && !acc.skipNote.empty()) line += "  [" + acc.skipNote + "]";
+        if (acc.anyBad) line += "  !! value out of range: offset probably moved in a game update";
         g.debug.push_back(line);
     }
     src.close();
