@@ -56,6 +56,7 @@ at the root of the SD card. Then update from the app with ZL.
 | Save file | **Blasphemous** (45 + 4 play-time) | the 45 Steam achievements, from the game's own achievement tracker |
 | Save file | **Slay the Spire** (46 + 4), **Vampire Survivors** (243 + 4), **Vampire Crawlers** (161 + 4) | every Steam achievement, from the game's own record |
 | Save file | **OCTOPATH TRAVELER** (22) | travelers, levels, story chapters, chests, side stories, enemy weaknesses |
+| Save file | **KINGDOM HEARTS HD 1.5+2.5 ReMIX** (53 + 5 play-time) | 53 of the 197 Steam achievements of Kingdom Hearts Final Mix and Kingdom Hearts II Final Mix: keyholes, episodes, cups, superbosses, Data Organization XIII, game clear by difficulty, level, chests, synthesis... (every save slot counts) |
 | Save file | **Paper Mario: The Origami King** (22 + 4 play-time) | coins, battles, enemies, Excellent hits, ring puzzles, museum... |
 
 Unlocks are permanent: if you later delete or overwrite a save, what you unlocked stays unlocked.
@@ -138,9 +139,10 @@ Knight, SIGNALIS, TotK...), not only BotW. Play-time achievements still come fro
   and left to the app (`close_log.txt` says so). MessagePack saves (THEATRHYTHM FINAL BAR LINE) are built with
   only the values the rules use (~2.3 MB instead of ~11 MB for its song records), and the reader stops cleanly
   if even that would not fit. `host/test/test_stream.cpp` checks that the values are identical to the app's.
-- Encrypted saves (THEATRHYTHM) need their password in `sdmc:/switch/TrophyNX/keys/` (never shipped): the app
-  finds it by itself in the game's `global-metadata.dat` dumped with nxdumptool (see
-  `tools/theatrhythm/README.md`).
+- Encrypted saves (THEATRHYTHM, Heavenly Bodies) need their password in `sdmc:/switch/TrophyNX/keys/` (never shipped):
+  the app finds it by itself in the installed game or in the game file dumped with nxdumptool, or the Save Lab's
+  **🔑 Save password** page (<https://imp3r1us.github.io/TrophyNX/#key>) makes the key file from that file and one save
+  (see [docs/dumping-guide.md](docs/dumping-guide.md)).
 - More than 4 new unlocks at once (first scan of an advanced save): 3 cards, then a "+N more achievements" card.
 - `"close_scan": false` in a definition turns it off for that game (set for Mario Kart 8 Deluxe until its
   offsets are fixed).
@@ -375,13 +377,14 @@ Drop a file in `sdmc:/switch/TrophyNX/games/` named after the title ID:
 |---|---|---|
 | `gamedata_hash` | BotW `game_data.sav`: u32 hash / u32 value pairs from 0x0C | CRC32 |
 | `totk_progress` | TotK `progress.sav`: magic `01020304`, pairs from 0x28 to `MetaData.SaveTypeHash` | Murmur3 |
-| `binary_le` | little-endian integers at fixed offsets; optional `file_size` / `magic` checks | — (rules use `offset`/`offsets`, `size`, `max`) |
+| `binary_le` | little-endian integers at fixed offsets; optional `file_size` / `magic` checks | — (rules use `offset`/`offsets`, `size`, `max`, optional `mask` (`"0x0004"`: the value counts as 1 when any of these bits is set, else 0, for bit flags), optional `needs`: `{ "offset": "0x1C", "size": 4, "min": 405 }` keeps the rule locked unless the value there is ≥ `min`, e.g. a table long enough to hold this entry); `bits: true` adds up the set bits of each value (chests opened, reports found); `masks`: one mask per offset, same order as `offsets`; `file`: only that save file counts. Game-level `slots` reads a file holding many save slots: `{ "<save file>": { "base", "stride", "count", "magic", "check": { "offset", "size", "min", "max" } } }`, each slot at `base + i × stride` read like a file of its own (offsets relative to the slot), the best slot counts — Kingdom Hearts HD 1.5+2.5 ReMIX `KHFM.png`) |
 | `byml` | Nintendo BYML tree (`YB`/`BY`) at offset 0 or 0x10 — Super Mario Odyssey `File*.bin` | — (rules use `path`/`paths`, optional `equals`) |
 | `json` | plain-text JSON (optional BOM, trailing NULs ignored) — Unity games such as Hollow Knight `user1.dat` | — (same `path`/`paths` syntax as `byml`) |
 | `gvas` | Unreal Engine 4 / 5 (up to 5.3) SaveGame `.sav` (magic `GVAS`) — property names become keys | — (same `path`/`paths` syntax) |
 | `nrbf` | .NET BinaryFormatter stream (Unity games) — class fields become keys; byte arrays holding JSON text are decoded (Blasphemous) | — (same `path`/`paths` syntax) |
 | `rpgmaker` | RPG Maker MV / MZ save (`.rpgsave` LZString base64, `.rmmzsave` zlib, or plain JSON) — JsonEx markers removed: `switches/_data[12]`, `variables/_data[5]`, `party/_gold`, `party/_items/7`, `actors/_data[1]/_level`, `_header/encoding` | — (same `path`/`paths` syntax) |
 | `gamemaker` | GameMaker text save: INI → `Section/key` (also a base64-wrapped INI), other text → `lines[n]`; numbers parsed, `ds_list_write` / `ds_map_write` hex decoded into lists / objects | — (same `path`/`paths` syntax) |
+| `es3` | Easy Save 3 (Unity asset) with encryption on: 16-byte IV + AES-128-CBC, key = PBKDF2-SHA1(password, IV, 100), JSON inside (gzip accepted) — Heavenly Bodies `slot_0`. Needs `"key_file"`: the password is the game's ES3 setting, never shipped; the app reads it from the installed game's `resources.assets` by itself (or a dump in the keys folder / nxdumptool output) | — (same `path`/`paths` syntax as `json`) |
 | `sgb` | Supergiant Games save (Hades `Profile*.sav`: `SGB1` header + LZ4 + luabins) — the saved Lua globals (`GameState`, `CurrentRun`, `TextLinesRecord`, `CodexStatus`...), number keys written `1`, `2`...; `_header/runs` etc. | — (same `path`/`paths` syntax) |
 
 **`byml` / `json` paths** select values in the tree, segments separated by `/`:

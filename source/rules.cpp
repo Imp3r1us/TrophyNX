@@ -227,6 +227,20 @@ static bool parseRule(cJSON* r, Rule& rule, std::string& err, HashFn fn) {
     rule.size = (int)jnum(r, "size", 4);
     if (rule.size != 1 && rule.size != 2 && rule.size != 4) rule.size = 4;
     rule.maxSane = jnum(r, "max", 0);
+    cJSON* mask = cJSON_GetObjectItemCaseSensitive(r, "mask");
+    if (mask) rule.mask = parseOff(mask);
+    rule.bits = jbool(r, "bits", false);
+    cJSON* masks = cJSON_GetObjectItemCaseSensitive(r, "masks");
+    if (cJSON_IsArray(masks)) { cJSON* m; cJSON_ArrayForEach(m, masks) rule.masks.push_back(parseOff(m)); }
+    cJSON* needs = cJSON_GetObjectItemCaseSensitive(r, "needs");
+    if (cJSON_IsObject(needs)) {
+        rule.hasNeeds = true;
+        rule.needsOffset = parseOff(cJSON_GetObjectItemCaseSensitive(needs, "offset"));
+        rule.needsSize = (int)jnum(needs, "size", 4);
+        if (rule.needsSize != 1 && rule.needsSize != 2 && rule.needsSize != 4) rule.needsSize = 4;
+        rule.needsMin = jnum(needs, "min", 1);
+    }
+    rule.file = jstr(r, "file");
     bool saveRule = rule.type == RuleType::Flag || rule.type == RuleType::Count || rule.type == RuleType::Sum;
     if (saveRule && rule.hashes.empty() && rule.offsets.empty() && rule.paths.empty()) { err = "rule needs name, hash, names, pattern, offset(s) or path(s)"; return false; }
     cJSON* reqs = cJSON_GetObjectItemCaseSensitive(r, "requires");
@@ -290,6 +304,35 @@ static bool gameDefFromJson(cJSON* root, GameDef& d, std::string& err) {
     cJSON* sf = cJSON_GetObjectItemCaseSensitive(root, "save_files");
     cJSON* s;
     if (cJSON_IsArray(sf)) cJSON_ArrayForEach(s, sf) if (cJSON_IsString(s)) d.saveFiles.push_back(s->valuestring);
+    // "slots": { "<save file>": { "base", "stride", "count", "magic", "check": { "offset", "size", "min", "max" } } }
+    auto num = [](cJSON* o, const char* k, double def) -> double {
+        cJSON* v = cJSON_GetObjectItemCaseSensitive(o, k);
+        if (cJSON_IsNumber(v)) return v->valuedouble;
+        if (cJSON_IsString(v)) return (double)strtoull(v->valuestring, nullptr, 0);
+        return def;
+    };
+    cJSON* slots = cJSON_GetObjectItemCaseSensitive(root, "slots");
+    if (cJSON_IsObject(slots)) {
+        cJSON_ArrayForEach(s, slots) {
+            if (!cJSON_IsObject(s) || !s->string) continue;
+            SlotLayout L;
+            L.base = (uint64_t)num(s, "base", 0);
+            L.stride = (uint64_t)num(s, "stride", 0);
+            L.count = (int)num(s, "count", 0);
+            L.magic = jstr(s, "magic");
+            cJSON* c = cJSON_GetObjectItemCaseSensitive(s, "check");
+            if (cJSON_IsObject(c)) {
+                L.hasCheck = true;
+                L.checkOffset = (uint32_t)num(c, "offset", 0);
+                L.checkSize = (int)num(c, "size", 4);
+                if (L.checkSize != 1 && L.checkSize != 2 && L.checkSize != 4) L.checkSize = 4;
+                L.checkMin = num(c, "min", 1);
+                L.checkMax = num(c, "max", 0);
+            }
+            if (L.stride == 0 || L.count <= 0) { err += std::string("slots '") + s->string + "': needs stride and count\n"; continue; }
+            d.slots[s->string] = L;
+        }
+    }
     HashFn fn = d.reader == "totk_progress" ? murmur3str : crc32str;
     parseAchList(cJSON_GetObjectItemCaseSensitive(root, "achievements"), d.achs, err, fn);
     if (!d.id) { err += "missing title_id\n"; return false; }
@@ -326,6 +369,7 @@ void applyGameDef(Game& g, const GameDef& d) {
     g.xorKey = d.xorKey;
     g.keyFile = d.keyFile;
     g.saveFiles = d.saveFiles;
+    g.slots = d.slots;
     g.achs = d.achs;
 }
 
@@ -397,9 +441,11 @@ static void evaluateBinary(Game& g, SaveSource& src) {
     }
     g.debug.push_back("Save mounted (read-only).");
     const bool stream = src.streaming();
-    std::vector<uint8_t> data;   // whole file (app)
-    std::string used;            // file in use
-    uint64_t usedSize = 0;
+    // every recognised file (save slots): each achievement takes its best value over them, like the tree readers
+    // A "slots" file gives one BinFile per valid slot: offsets are relative to `base`, limited to the slot's size.
+    struct BinFile { std::string name, file; uint64_t base, size; int buf; };   // buf: index in bufs (app only)
+    std::vector<std::vector<uint8_t>> bufs;   // whole files (app only), shared by their slots
+    std::vector<BinFile> usable;
     for (const std::string& f : g.saveFiles) {
         std::vector<uint8_t> buf;
         uint64_t size = 0;
@@ -419,13 +465,44 @@ static void evaluateBinary(Game& g, SaveSource& src) {
         else if (!g.magic.empty() && (buf.size() < g.magic.size() || memcmp(buf.data(), g.magic.data(), g.magic.size()) != 0))
             why = "header is not '" + g.magic + "'";
         if (!why.empty()) { g.debug.push_back("  " + f + ": " + why + " -> NOT RECOGNISED"); continue; }
-        g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> OK");
-        if (!stream) data = std::move(buf);
-        used = f;
-        usedSize = size;
-        break;
+        int bi = -1;
+        if (!stream) { bufs.push_back(std::move(buf)); bi = (int)bufs.size() - 1; }
+        auto layout = g.slots.find(f);
+        if (layout == g.slots.end()) {
+            g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes -> OK");
+            usable.push_back(BinFile{f, f, 0, size, bi});
+            continue;
+        }
+        const SlotLayout& L = layout->second;
+        int found = 0;
+        for (int i = 0; i < L.count; i++) {
+            uint64_t start = L.base + (uint64_t)i * L.stride;
+            if (start >= size) break;
+            uint64_t len = std::min<uint64_t>(L.stride, size - start);
+            auto readSlot = [&](uint32_t off, void* out, size_t n) {
+                if ((uint64_t)off + n > len) return false;
+                if (stream) return src.readAt(f, start + off, out, n);
+                memcpy(out, &bufs[bi][start + off], n);
+                return true;
+            };
+            if (!L.magic.empty()) {
+                std::string m(L.magic.size(), '\0');
+                if (!readSlot(0, &m[0], m.size()) || m != L.magic) continue;
+            }
+            if (L.hasCheck) {
+                uint8_t b[4] = {0, 0, 0, 0};
+                if (!readSlot(L.checkOffset, b, L.checkSize)) continue;
+                uint32_t v = 0;
+                for (int k = 0; k < L.checkSize; k++) v |= (uint32_t)b[k] << (8 * k);
+                if (v < L.checkMin || (L.checkMax > 0 && v > L.checkMax)) continue;
+            }
+            usable.push_back(BinFile{f + " slot " + std::to_string(i), f, start, len, bi});
+            found++;
+        }
+        g.debug.push_back("  " + f + ": " + std::to_string(size) + " bytes, " + std::to_string(found) + " save slot(s) -> " +
+                          (found ? "OK" : "NONE"));
     }
-    if (used.empty()) {
+    if (usable.empty()) {
         src.close();
         g.saveStatus = SaveStatus::Unreadable;
         g.debug.push_back("No usable save file: nothing is unlocked from the save (safety).");
@@ -437,23 +514,51 @@ static void evaluateBinary(Game& g, SaveSource& src) {
     for (Achievement& a : g.achs) {
         RuleType t = a.rule.type;
         if (!isSaveRule(t)) continue;
-        double total = 0;
-        bool bad = false;
-        for (uint32_t off : a.rule.offsets) {
-            if ((uint64_t)off + a.rule.size > usedSize) { bad = true; continue; }
-            uint8_t b[4] = {0, 0, 0, 0};
-            if (stream) { if (!src.readAt(used, off, b, a.rule.size)) { bad = true; continue; } }
-            else memcpy(b, &data[off], a.rule.size);
-            uint32_t v = 0;
-            for (int i = 0; i < a.rule.size; i++) v |= (uint32_t)b[i] << (8 * i);
-            if (a.rule.maxSane > 0 && v > a.rule.maxSane) { bad = true; continue; }
-            if (t == RuleType::Count) total += v ? 1 : 0;
-            else total += v;
+        double best = 0;
+        int bestFile = -1;
+        bool anyBad = false, allSkipped = true;
+        std::string skipNote;
+        for (size_t fi = 0; fi < usable.size(); fi++) {
+            const BinFile& bf = usable[fi];
+            if (!a.rule.file.empty() && a.rule.file != bf.file) continue;
+            auto readLe = [&](uint32_t off, int size, uint32_t& v) {
+                if ((uint64_t)off + size > bf.size) return false;
+                uint8_t b[4] = {0, 0, 0, 0};
+                if (stream) { if (!src.readAt(bf.file, bf.base + off, b, size)) return false; }
+                else memcpy(b, &bufs[bf.buf][bf.base + off], size);
+                v = 0;
+                for (int i = 0; i < size; i++) v |= (uint32_t)b[i] << (8 * i);
+                return true;
+            };
+            if (a.rule.hasNeeds) {
+                uint32_t nv = 0;
+                if (!readLe(a.rule.needsOffset, a.rule.needsSize, nv) || nv < a.rule.needsMin) {
+                    skipNote = "not in this save: needs " + fmtd(a.rule.needsMin) + ", has " + std::to_string(nv);
+                    continue;
+                }
+            }
+            allSkipped = false;
+            double total = 0;
+            bool bad = false;
+            for (size_t oi = 0; oi < a.rule.offsets.size(); oi++) {
+                uint32_t off = a.rule.offsets[oi], v = 0;
+                uint32_t mask = oi < a.rule.masks.size() ? a.rule.masks[oi] : a.rule.mask;
+                if (!readLe(off, a.rule.size, v)) { bad = true; continue; }
+                if (a.rule.maxSane > 0 && v > a.rule.maxSane) { bad = true; continue; }
+                if (a.rule.bits) v = (uint32_t)__builtin_popcount(mask ? v & mask : v);
+                else if (mask) v = (v & mask) ? 1 : 0;
+                if (t == RuleType::Count) total += v ? 1 : 0;
+                else total += v;
+            }
+            if (bad) { anyBad = true; continue; }   // a suspicious value never unlocks anything
+            if (bestFile < 0 || total > best) { best = total; bestFile = (int)fi; }
         }
-        a.value = bad ? 0 : total;   // a suspicious value never unlocks anything
+        a.value = best;
         std::string line = "  " + a.id + ": " + fmtd(a.value) + " / " + fmtd(a.rule.target);
         line += a.value + 1e-9 >= a.rule.target ? "  [MET]" : "  [not yet]";
-        if (bad) line += "  !! value out of range: offset probably moved in a game update";
+        if (bestFile >= 0 && usable.size() > 1 && best > 0) line += "  in " + usable[bestFile].name;
+        if (allSkipped && !skipNote.empty()) line += "  [" + skipNote + "]";
+        if (anyBad) line += "  !! value out of range: offset probably moved in a game update";
         g.debug.push_back(line);
     }
     src.close();
@@ -528,6 +633,7 @@ static std::string describeDoc(const DeltaruneDoc& d) { return d.info.summary; }
 static std::string describeDoc(const TheatrhythmDoc& d) { return d.info.summary; }
 static std::string describeDoc(const RpgMakerDoc& d) { return d.info.summary; }
 static std::string describeDoc(const GameMakerDoc& d) { return d.info.summary; }
+static std::string describeDoc(const Es3Doc& d) { return d.info.summary; }
 
 // Rough peak memory of a parsed document per byte of file (BymlDoc keeps the file; the others build
 // a cJSON tree, ~10 bytes of tree per byte of text, more for dense binary formats).
@@ -540,6 +646,7 @@ static size_t memoryFactor(const DeltaruneDoc*) { return 3; }   // parsed JSON t
 static size_t memoryFactor(const RpgMakerDoc*) { return 48; }   // LZString / zlib (x3..x10) then a JSON tree
 static size_t memoryFactor(const GameMakerDoc*) { return 16; }
 static size_t memoryFactor(const TheatrhythmDoc*) { return 4; }   // pre-check only: the reader checks its real need after decrypting
+static size_t memoryFactor(const Es3Doc*) { return 14; }   // decrypted copy + JSON tree
 // (live module: only the rule values are built, ~2.3 MB peak for musicBackup.inf instead of ~11 MB)
 
 // Password of an encrypted save ("key_file"), given to the readers that need one.
@@ -547,35 +654,79 @@ static std::string g_keyDir;
 static std::vector<std::string> g_metaDirs;
 void setSaveKeyDir(const std::string& dir) { g_keyDir = dir; }
 void setSaveKeySearchDirs(const std::vector<std::string>& dirs) { g_metaDirs = dirs; }
+static GameFileOpener g_gameReader;
+void setSaveKeyGameReader(GameFileOpener fn) { g_gameReader = std::move(fn); }
+static std::set<uint64_t> g_keySearched;   // live module: each game's files are searched once per boot
 
-// App only: no password file yet -> look for the game's global-metadata.dat (dumped from the game with nxdumptool,
+// No password file yet -> read the game's global-metadata.dat from the installed game, else from a dump (nxdumptool,
 // or copied to the keys folder), find the password in it with one of the save files, and save it as the key file.
+// Easy Save 3 games ("es3"): same, with the game's resources.assets (it holds the ES3Defaults settings).
+// Game files are read in pieces, so the live module (small heap) does it too, as soon as the game closes:
+// nothing to dump, nothing to do in the app. The module only searches Easy Save 3 games (a THEATRHYTHM save needs
+// ~11 MB to confirm a password) and each game once per boot.
 static std::string findKeyFromGame(Game& g, SaveSource& src, const std::string& keyPath) {
-    if (g.reader != "theatrhythm") return "";
-    std::vector<std::string> metas;
-    for (const std::string& root : g_metaDirs) findFilesNamed(root, "global-metadata.dat", metas);
-    if (metas.empty()) return "";
+    const bool es3 = g.reader == "es3";
+    if (g.reader != "theatrhythm" && !es3) return "";
+    if (src.streaming()) {
+        if (!es3 || !g_keySearched.insert(g.id).second) return "";
+    }
+    const char* fileName = es3 ? "resources.assets" : "global-metadata.dat";
     std::vector<uint8_t> save;
-    for (const std::string& f : g.saveFiles) if (src.readAll(f, save)) break;
+    for (const std::string& f : g.saveFiles) {
+        if (src.streaming()) {   // module: only a small save is read whole
+            uint64_t sz = 0;
+            if (!src.fileSize(f, sz) || sz > (2u << 20)) continue;
+        }
+        if (src.readAll(f, save)) break;
+    }
     if (save.empty()) return "";
-    for (const std::string& m : metas) {
-        std::vector<uint8_t> meta;
-        if (!readFile(m, meta)) continue;
+    auto tryFile = [&](const std::string& label, const ByteReader& rd, uint64_t size) -> std::string {
         std::string pw;
         int idx = -1;
-        if (!theatrhythmFindPassword(meta.data(), meta.size(), save.data(), save.size(), pw, &idx)) {
-            g.debug.push_back("Password search: " + m + " -> no string decrypts this save (other game or version?)");
-            continue;
+        bool found = es3 ? es3FindPasswordIn(rd, size, save.data(), save.size(), pw)
+                         : theatrhythmFindPasswordIn(rd, size, save.data(), save.size(), pw, &idx);
+        if (!found) {
+            g.debug.push_back("Password search: " + label + " -> no string decrypts this save (other game or version?)");
+            return "";
         }
         makeDirs(g_keyDir);
         bool saved = writeFile(keyPath, pw);
-        g.debug.push_back("Password found in " + m + " (string #" + std::to_string(idx) + ")" + (saved ? ", saved to " + keyPath : ", but " + keyPath + " could not be written"));
+        g.debug.push_back("Password found in " + label + (idx >= 0 ? " (string #" + std::to_string(idx) + ")" : std::string()) +
+                          (saved ? ", saved to " + keyPath : ", but " + keyPath + " could not be written"));
         return pw;
+    };
+    // 1. the installed game itself: nothing to dump
+    if (g_gameReader) {
+        std::string rel = es3 ? "Data/resources.assets" : "Data/Managed/Metadata/global-metadata.dat", why;
+        GameFile gf;
+        if (g_gameReader(g.id, rel, gf, why)) {
+            std::string pw = tryFile("the installed game (" + rel + ", " + std::to_string(gf.size) + " bytes)", gf.read, gf.size);
+            if (gf.close) gf.close();
+            if (!pw.empty()) return pw;
+        } else {
+            g.debug.push_back("Password search: can't read " + rel + " from the installed game (" + why + ")");
+        }
+    }
+    // 2. a dump (nxdumptool output, or the file copied to the keys folder)
+    std::vector<std::string> metas;
+    for (const std::string& root : g_metaDirs) findFilesNamed(root, fileName, metas);
+    for (const std::string& m : metas) {
+        FILE* fp = fopen(m.c_str(), "rb");
+        if (!fp) continue;
+        fseek(fp, 0, SEEK_END);
+        long sz = ftell(fp);
+        ByteReader rd = [fp](uint64_t off, void* buf, size_t len) {
+            return fseek(fp, (long)off, SEEK_SET) == 0 && fread(buf, 1, len, fp) == len;
+        };
+        std::string pw = sz > 0 ? tryFile(m, rd, (uint64_t)sz) : "";
+        fclose(fp);
+        if (!pw.empty()) return pw;
     }
     return "";
 }
 template <class Doc> static void giveKey(Doc&, const std::string&) {}
 static void giveKey(TheatrhythmDoc& d, const std::string& k) { d.password = k; }
+static void giveKey(Es3Doc& d, const std::string& k) { d.password = k; }
 // Live module (small heap): readers that can, build only what the rule paths reach, within `budget` bytes.
 template <class Doc> static void givePruning(Doc&, const std::vector<std::string>&, size_t) {}
 static void givePruning(TheatrhythmDoc& d, const std::vector<std::string>& paths, size_t budget) { d.keepPaths = paths; d.memoryBudget = budget; }
@@ -658,13 +809,17 @@ static void evaluateTree(Game& g, SaveSource& src) {
         size_t lead = 0;
         while (lead < key.size() && blank(key[lead])) lead++;
         key = key.substr(lead);
-        if (key.empty() && !src.streaming() && !g_keyDir.empty()) key = findKeyFromGame(g, src, kp);
+        if (key.empty() && !g_keyDir.empty()) key = findKeyFromGame(g, src, kp);
         if (key.empty()) {
             src.close();
-            g.saveStatus = SaveStatus::Unreadable;
-            g.debug.push_back("Encrypted save: password file " + kp + " is missing or empty.");
-            g.debug.push_back("  Put the game's save password in it (one line), or the game's global-metadata.dat in the keys folder");
-            g.debug.push_back("  (TrophyNX then finds the password itself; see the TrophyNX docs). Save skipped.");
+            g.saveStatus = SaveStatus::NeedsKey;
+            const char* gameFile = g.reader == "es3" ? "Data/resources.assets" : "Data/Managed/Metadata/global-metadata.dat";
+            g.debug.push_back("Encrypted save: password file " + kp + " is missing or empty. Save skipped.");
+            if (g.reader == "es3")
+                g.debug.push_back("  The live module (0.16.0+) looks for it in the installed game by itself: close the game once, then reopen TrophyNX.");
+            g.debug.push_back(std::string("  Else, on the Switch: dump the game's RomFS file ") + gameFile + " with nxdumptool,");
+            g.debug.push_back("  then reopen TrophyNX: it finds the password in sdmc:/nxdumptool and writes the key file itself.");
+            g.debug.push_back("  With a phone or PC: imp3r1us.github.io/TrophyNX/#key makes " + g.keyFile + " from that file and a save.");
             return;
         }
         g.debug.push_back("Save password: " + kp + " (" + std::to_string(key.size()) + " bytes).");
@@ -832,6 +987,7 @@ void evaluateSave(Game& g, SaveSource& src) {
     else if (g.reader == "sgb") evaluateTree<SgbDoc>(g, src);
     else if (g.reader == "deltarune") evaluateTree<DeltaruneDoc>(g, src);
     else if (g.reader == "theatrhythm") evaluateTree<TheatrhythmDoc>(g, src);
+    else if (g.reader == "es3") evaluateTree<Es3Doc>(g, src);
     else if (g.reader == "rpgmaker") evaluateTree<RpgMakerDoc>(g, src);
     else if (g.reader == "gamemaker") evaluateTree<GameMakerDoc>(g, src);
     else if (g.reader == "gamedata_hash" || g.reader == "totk_progress") evaluateHashSave(g, src);

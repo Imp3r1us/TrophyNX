@@ -185,9 +185,10 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
         if (progress) progress(i, n, ctx);
         Game& g = lib.games[i];
         g.debug.clear();
-        g.stats = plat::playStats(g.id);
         char idb[24];
         snprintf(idb, sizeof(idb), "%016llX", (unsigned long long)g.id);
+        plat::trace(std::string("save ") + idb + ": play log");
+        g.stats = plat::playStats(g.id);
         g.debug.push_back(std::string("Title ID ") + idb);
         g.debug.push_back(g.stats.valid ? "Play log: " + fmtd(floor(g.stats.playtimeNs / 3.6e10) / 100.0) + " h, " + std::to_string(g.stats.launches) + " launches"
                                         : "Play log: unavailable (pdm query failed)");
@@ -214,6 +215,7 @@ static void evaluateAll(Library& lib, plat::ProgressFn progress, void* ctx) {
                 default: break;
             }
         }
+        plat::trace(std::string("save ") + idb + ": reading");
         PlatSaveSource src;
         evaluateSave(g, src);
     }
@@ -297,13 +299,18 @@ void buildLibrary(Library& lib, plat::ProgressFn progress, void* ctx) {
     std::map<uint64_t, GameDef> defs;
     setSaveKeyDir(plat::dataDir() + "/keys");   // passwords of encrypted saves (keys/theatrhythm.txt...), never shipped
     setSaveKeySearchDirs({plat::dataDir() + "/keys", plat::sdRoot() + "nxdumptool"});   // global-metadata.dat to find them
+    setSaveKeyGameReader(openGameFile);   // ...or read straight from the installed game, no dump needed
+    plat::trace("library: built-in definitions");
     loadGameDefs(plat::romfsDir() + "/games", defs, lib.loadErrors, lib.defsLoaded);
+    plat::trace("library: SD definitions");
     loadGameDefs(plat::dataDir() + "/games", defs, lib.loadErrors, lib.defsLoaded);   // SD card overrides/additions
     std::vector<Achievement> perGame, global;
     loadUniversal(plat::romfsDir() + "/universal.json", perGame, global, lib.loadErrors);
     loadUniversal(plat::dataDir() + "/universal.json", perGame, global, lib.loadErrors);
 
-    lib.liveStatus = plat::liveModuleStatus();   // check/start early so it has time to boot before we read its log
+    plat::trace("library: live module status");
+    lib.liveStatus = plat::liveModuleStatus();
+    plat::trace("library: live module: " + lib.liveStatus);   // check/start early so it has time to boot before we read its log
     Game overview;
     overview.name = "Overview";
     overview.achs = global;
@@ -324,7 +331,9 @@ void buildLibrary(Library& lib, plat::ProgressFn progress, void* ctx) {
         g.achs.insert(g.achs.end(), perGame.begin(), perGame.end());
         lib.games.push_back(std::move(g));
     }
+    plat::trace("library: reading saves");
     evaluateAll(lib, progress, ctx);
+    plat::trace("library: done");
 }
 
 static std::string storeKey(const Library& lib, int gi, const Achievement& a) {

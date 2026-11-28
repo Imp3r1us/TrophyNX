@@ -10,6 +10,106 @@ How to write a section (see `tools/release/changelog.py`):
   written for players: what changed for them, and what they need to do, if anything.
 - A release without a section for its version fails in CI.
 
+## 0.20.0 (2026-11-28)
+
+Heavenly Bodies (and other Easy Save 3 games) now find their save password by themselves: no dump, no PC.
+
+### New
+- When the app can't open the game's files (it happened with Heavenly Bodies, issue #33), the live module now does it: it reads the password from the installed game the first time it reads the save, writes `switch/TrophyNX/keys/heavenlybodies.txt`, and unlocks your achievements right away. Just play and close the game once, then open TrophyNX.
+- The game file is read a little at a time, so even a very large `resources.assets` works.
+
+### Changed
+- The app tries two more ways to open the game's files before giving up, and its log lists each one with its error code (for example `2002-3001`), so a refusal is easier to report.
+- A dump made with nxdumptool, or the Save Lab's 🔑 tab, still work as before if the automatic search can't open the game.
+
+### Live module 0.16.0
+- Finds the password of Easy Save 3 saves in the installed game (once per game after each console start) and in `keys/` or `sdmc:/nxdumptool`.
+
+## 0.19.1 (2026-11-28)
+
+KINGDOM HEARTS HD 1.5+2.5 ReMIX is now recognised once you pick a game in its menu, not only on the menu itself.
+
+### Fixed
+- Collections such as KINGDOM HEARTS HD 1.5+2.5 ReMIX run each game (Final Mix, Re:Chain of Memories, II Final Mix...) as its own program. The overlay and the live module took it for an unknown program as soon as you entered a game, so the overlay showed nothing and no achievement popped up. Every game of a collection now counts as the collection.
+- Days played now include the time spent inside the games of a collection, not only in its menu.
+
+### Live module 0.15.1
+- Follows you from the collection's menu into its games and back without ending the session: achievements keep popping up after each save, and the scan on close runs once, when you close the collection. The log shows `program … = program N of application …` when it happens.
+
+## 0.19.0 (2026-11-27)
+
+KINGDOM HEARTS HD 1.5+2.5 ReMIX now unlocks 53 of its Steam achievements from your saves, from every save slot.
+
+### New
+- KINGDOM HEARTS HD 1.5+2.5 ReMIX (Switch version, not the Cloud Version): 25 achievements from Kingdom Hearts Final Mix (every keyhole, Monstro, the four cups, Ice Titan, Sephiroth, Kurt Zisa, the Phantom, the Mysterious Man, Oathkeeper, chests, Heartless defeated, Ansem Reports, synthesis) and 23 from Kingdom Hearts II Final Mix (every world's episodes, Roxas, the four cups, the Lingering Will, Data Organization XIII, level 99, game clear on Proud and Critical). Plus 5 play-time achievements. Every one of your save slots is read and the best one counts, so a save from any point of your game unlocks what it has reached. Thanks to the player who shared a full playthrough save.
+- Re:Chain of Memories and Birth by Sleep aren't in yet: their save layout still has to be mapped. Achievements the save can't prove (no continue, under 15 hours, gummi ship scores...) are left out.
+- The Cloud Version keeps its saves on the server, so only the play-time achievements work there.
+
+### Changed
+- Custom lists (binary_le reader): `slots` reads a file that holds many save slots, `file` limits a rule to one save file, `bits` counts set bits, and `masks` gives each offset its own mask. The Save Lab understands them too. See the README's reader table.
+
+### Live module 0.15.0
+- Knows the KINGDOM HEARTS list and reads its save slots while you play, so the achievements pop up after the game saves.
+
+## 0.18.3 (2026-11-27)
+
+Poppy Playtime: Chapter 1 now unlocks its official achievements from your save, live while you play.
+
+### New
+- Poppy Playtime: Chapter 1: Use Responsibly (complete the GrabPack), Made-A-Friend (assemble the Cat-Bee toy), Narrow Escape (escape from Huggy Wuggy) and Time to Play (complete the game), plus Hands On (pick up the blue hand). They come from the checkpoint your save reached, so a save made after those moments unlocks them right away. Thanks to the player who shared labelled saves in issue #43.
+- Avid Listener (every VHS tape) and Your Friend Huggy (his theme) can't be added: the game doesn't write them to its save.
+
+### Live module 0.14.2
+- Knows the new Poppy Playtime list, so these achievements pop up a few seconds after the game saves.
+
+## 0.18.2 (2026-11-27)
+
+The app can no longer freeze while reading your games, and a startup log shows where it stops if it ever does.
+
+### Fixed
+- The app could loop forever on "Reading your games" if the system kept returning the same page of installed games. The list now stops after the last page.
+
+### Changed
+- New `switch/TrophyNX/startup_log.txt`: each startup step with its time and your firmware version. If the app freezes or the console turns off while it starts, its last line shows where.
+
+## 0.18.1 (2026-11-27)
+
+Encrypted saves (Heavenly Bodies, THEATRHYTHM) now unlock live, and a new page makes their password in a minute.
+
+### New
+- Save Lab: a new **🔑 Save password** tab (<https://imp3r1us.github.io/TrophyNX/#key>, works on a phone): pick the game, give the game file and one save, and it downloads the key file to copy to `switch/TrophyNX/keys/`.
+- The beginner guide now covers Heavenly Bodies (dump `resources.assets` with nxdumptool, TrophyNX does the rest) and sums up the three ways to get a save password.
+
+### Fixed
+- Finding the save password in the installed game now also tries the base game when the system refuses to open it with its update.
+
+### Changed
+- A game whose encrypted save has no password yet now says so on its page ("Encrypted save: needs its password once"), with what to do in its log (X), instead of "Save found but not readable".
+
+### Live module 0.14.1
+- Encrypted saves (Heavenly Bodies, THEATRHYTHM FINAL BAR LINE) now really unlock live, a few seconds after the game saves: the live module now reads the key files in `switch/TrophyNX/keys/`.
+
+## 0.18.0 (2026-11-27)
+
+New achievement lists for Isaac, Heavenly Bodies, Skyward Sword HD, Pillars of the Earth and more, read from your saves.
+
+### New
+- The Binding of Isaac: Afterbirth+: the 637 official achievements up to Repentance, read from your save (all 3 save slots). Repentance ones count once you have the Repentance DLC.
+- Heavenly Bodies: the 25 official achievements, exactly as the game awards them.
+- The Legend of Zelda: Skyward Sword HD: 39 achievements for your progress: swords, dungeons, Triforce pieces, songs, items, Tycoon Wallet and Hero Mode (any of your files counts).
+- Ken Follett's The Pillars of the Earth: the 41 official achievements, exactly as the game awards them.
+- We Love Katamari REROLL+ Royal Reverie, Once Upon A KATAMARI and Poppy Playtime: Chapter 1: play time, launch, play day and screenshot achievements.
+- Encrypted saves of Unity games that use Easy Save 3 (Heavenly Bodies) can now be read. Their password is never included with TrophyNX: the app finds it in the installed game by itself the first time and keeps it in `switch/TrophyNX/keys/`.
+- Save Lab: Captures → Encrypted saves → Unity "Easy Save 3" games finds such a password in the game's `resources.assets` and downloads the key file, if the app can't find it by itself.
+
+### Changed
+- Save passwords (THEATRHYTHM FINAL BAR LINE too) are now looked for in the installed game first, so most players no longer need to dump anything. A dump in the keys folder or nxdumptool's folder still works.
+- Games with several save slots in a fixed-layout save now count your best slot, not only the first one.
+
+### Live module 0.14.0
+- Reads the new save formats and achievement lists above, and checks every save slot.
+- Encrypted saves (Heavenly Bodies, THEATRHYTHM FINAL BAR LINE) now also unlock live, a few seconds after the game saves, instead of only when you open the app. Open TrophyNX once after installing so it can find the game's password.
+
 ## 0.17.0 (2026-11-25)
 
 Achievements now play a sound when they unlock, play time achievements pop up while you play, and the overlay shows live progress.

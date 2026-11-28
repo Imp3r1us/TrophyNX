@@ -26,6 +26,9 @@ Step-by-step guide for players: [Making your own achievement list](../../docs/cu
    (copy or download), and **Share with everyone**: a pre-filled GitHub issue; `.github/workflows/share-list.yml`
    checks it with `tools/community/import_issue.js` and opens a pull request adding `drafts/community/<TITLEID>.json`.
 6. **PC → Switch**: import the app's `scan_bundle.json` (ZR) and draft rules from a game's Steam achievement list.
+7. **🔑 Save password** (`#key` opens it directly): for every built-in game with a `key_file`, finds the save password
+   in the game file (`resources.assets` / `global-metadata.dat`) checked against one save, and downloads the key file
+   for `sdmc:/switch/TrophyNX/keys/`. Players' page; the app's log links to it when a key file is missing.
 
 Files: `engine.js` (engine, tested by `node test/test_engine.js`), `formats.js` (GVAS and NRBF format modules,
 tested by `node test/test_formats.js` on `test/fixtures/`), `app.html` (interface),

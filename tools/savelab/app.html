@@ -105,6 +105,7 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
   <button data-t="value"><b>4</b><span class="l-en">Known value</span><span class="l-fr">Valeur connue</span></button>
   <button data-t="ach"><b>5</b><span class="l-en">Achievements</span><span class="l-fr">Succès</span></button>
   <button data-t="pc"><b>6</b>PC → Switch</button>
+  <button data-t="key"><b>🔑</b><span class="l-en">Save password</span><span class="l-fr">Mot de passe</span></button>
 </nav>
 <main>
 <div class="card" id="nxPanel" style="display:none"></div>
@@ -141,6 +142,30 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
   </div>
 </section>
 
+<!-- KEY: save passwords -->
+<section id="s-key">
+  <div class="card">
+    <h2><span class="l-en">🔑 Save password (encrypted saves)</span><span class="l-fr">🔑 Mot de passe de sauvegarde (saves chiffrées)</span></h2>
+    <p class="small mute l-en">A few games encrypt their save. TrophyNX needs the game's password once, in a small text file on the SD card. The password is inside the game's own files: TrophyNX never ships it, you get it from <b>your</b> copy. Nothing leaves this browser.</p>
+    <p class="small mute l-fr">Quelques jeux chiffrent leur sauvegarde. TrophyNX a besoin une fois du mot de passe du jeu, dans un petit fichier texte sur la carte SD. Le mot de passe est dans les fichiers du jeu : TrophyNX ne le fournit jamais, vous le tirez de <b>votre</b> copie. Rien ne quitte ce navigateur.</p>
+    <div class="note ok small"><span class="l-en"><b>No PC? Easiest, on the Switch only:</b> dump the one game file below with nxdumptool, then open TrophyNX: it finds the password in the nxdumptool folder and writes the key file itself.</span><span class="l-fr"><b>Pas de PC ? Le plus simple, sur la Switch seule :</b> extrayez le fichier du jeu indiqué ci-dessous avec nxdumptool, puis ouvrez TrophyNX : il trouve le mot de passe dans le dossier de nxdumptool et écrit le fichier de clé tout seul.</span>
+      <a href="https://github.com/Imp3r1us/TrophyNX/blob/main/docs/dumping-guide.md" target="_blank" rel="noopener"><span class="l-en">Step-by-step guide</span><span class="l-fr">Guide pas à pas</span></a></div>
+    <h3><span class="l-en">1. Game</span><span class="l-fr">1. Jeu</span></h3>
+    <select id="kyGame"></select>
+    <div id="kyNeed" class="small" style="margin-top:6px"></div>
+    <h3><span class="l-en">2. The game file</span><span class="l-fr">2. Le fichier du jeu</span></h3>
+    <div class="row"><span class="btn file fix"><span class="l-en">Choose the game file</span><span class="l-fr">Choisir le fichier du jeu</span><input type="file" id="kyAsset"></span><span class="small mute" id="kyAssetInfo"></span></div>
+    <h3><span class="l-en">3. One save of the game (to check the password)</span><span class="l-fr">3. Une sauvegarde du jeu (pour vérifier le mot de passe)</span></h3>
+    <div class="row"><span class="btn file fix"><span class="l-en">Choose a save (file or JKSV .zip)</span><span class="l-fr">Choisir une save (fichier ou .zip JKSV)</span><input type="file" id="kySave" multiple></span><span class="small mute" id="kySaveInfo"></span></div>
+    <p class="small mute"><span class="l-en">Any save works, even a new game. Get it with JKSV, or with TrophyNX (ZR → A records it, ZR → Y shares it over Wi-Fi).</span><span class="l-fr">N'importe quelle save convient, même une nouvelle partie. Récupérez-la avec JKSV, ou avec TrophyNX (ZR → A l'enregistre, ZR → Y la partage en Wi-Fi).</span></p>
+    <p style="margin-top:12px"><button class="btn pri" id="kyRun"><span class="l-en">🔑 Find the password</span><span class="l-fr">🔑 Trouver le mot de passe</span></button></p>
+    <div id="kyOut"></div>
+    <details style="margin-top:10px"><summary class="small"><span class="l-en">I already know the password</span><span class="l-fr">Je connais déjà le mot de passe</span></summary>
+      <div class="row"><input id="kyTyped" type="password" autocomplete="off" spellcheck="false" style="flex:1"><button class="btn sm fix" id="kyTypedDl"><span class="l-en">Make the key file</span><span class="l-fr">Créer le fichier de clé</span></button></div>
+    </details>
+  </div>
+</section>
+
 <!-- 1. CAPTURES -->
 <section id="s-caps">
   <div class="card">
@@ -174,6 +199,16 @@ document.documentElement.lang = SL_LANG; document.documentElement.setAttribute('
       <p class="mute small l-en">Don't have it? Give the game's <b>global-metadata.dat</b> (romfs <code>Data/Managed/Metadata/</code>, e.g. dumped with nxdumptool) with a THEATRHYTHM capture loaded above: the password is found in it, saved here, and you can download <code>theatrhythm.txt</code> for <code>sdmc:/switch/TrophyNX/keys/</code>.</p>
       <p class="mute small l-fr">Vous ne l'avez pas ? Donnez le <b>global-metadata.dat</b> du jeu (romfs <code>Data/Managed/Metadata/</code>, extrait par ex. avec nxdumptool) avec une capture THEATRHYTHM chargée ci-dessus : le mot de passe y est retrouvé, enregistré ici, et vous pouvez télécharger <code>theatrhythm.txt</code> pour <code>sdmc:/switch/TrophyNX/keys/</code>.</p>
       <div class="row"><span class="btn sm file fix"><span class="l-en">Find it in global-metadata.dat</span><span class="l-fr">Le trouver dans global-metadata.dat</span><input type="file" id="thMeta"></span><span class="mute small" id="thMetaOut"></span></div>
+    </details>
+    <details id="es3Box" style="margin-top:6px">
+      <summary class="small"><span class="l-en">Encrypted saves: Unity “Easy Save 3” games (Heavenly Bodies…)</span><span class="l-fr">Saves chiffrées : jeux Unity « Easy Save 3 » (Heavenly Bodies…)</span></summary>
+      <p class="mute small l-en"><b>Usually nothing to do:</b> TrophyNX reads the password from the installed game by itself. Use this only if the game page (X) says the password file is missing.</p>
+      <p class="mute small l-fr"><b>En général rien à faire :</b> TrophyNX lit le mot de passe dans le jeu installé tout seul. Ne servez-vous de ceci que si la page du jeu (X) dit que le fichier de mot de passe manque.</p>
+      <ol class="small l-en"><li>Load a capture of the game above (e.g. its <code>slot_0</code>).</li><li>Give the game's <b>resources.assets</b> (romfs <code>Data/</code>, dumped with nxdumptool).</li><li>Download the key file and copy it to <code>sdmc:/switch/TrophyNX/keys/</code>.</li></ol>
+      <ol class="small l-fr"><li>Chargez une capture du jeu ci-dessus (par ex. son <code>slot_0</code>).</li><li>Donnez le <b>resources.assets</b> du jeu (romfs <code>Data/</code>, extrait avec nxdumptool).</li><li>Téléchargez le fichier de clé et copiez-le dans <code>sdmc:/switch/TrophyNX/keys/</code>.</li></ol>
+      <div class="row"><span class="btn sm file fix"><span class="l-en">Find it in resources.assets</span><span class="l-fr">Le trouver dans resources.assets</span><input type="file" id="es3Asset"></span><span class="mute small" id="es3Out"></span></div>
+      <p class="mute small l-en">The password stays in this browser (localStorage) and is never sent anywhere.</p>
+      <p class="mute small l-fr">Le mot de passe reste dans ce navigateur (localStorage) et n'est envoyé nulle part.</p>
     </details>
   </div>
 
@@ -345,6 +380,8 @@ const E = SaveLab;
 // save passwords typed by the user (never bundled): set before anything is parsed
 const TH_KEY = 'savelab-key-theatrhythm';
 (() => { let k = ''; try { k = localStorage.getItem(TH_KEY) || ''; } catch (e) { } SaveFormats.setPassword('theatrhythm', k); })();
+const ES3_KEY = 'savelab-key-es3';
+(() => { let k = ''; try { k = localStorage.getItem(ES3_KEY) || ''; } catch (e) { } SaveFormats.setPassword('es3', k); })();
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -380,6 +417,129 @@ $('#thMeta').addEventListener('change', async (ev) => {
     $('#thKeyReload').addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
   } catch (e) { out.textContent = T('Error: ', 'Erreur : ') + e.message; }
 });
+$('#es3Asset').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0];
+  ev.target.value = '';
+  if (!f) return;
+  const out = $('#es3Out');
+  // ES3 encrypted files: 16-byte IV + whole AES blocks, random-looking
+  const saves = S.caps.flatMap(c => c.files).filter(x => x.data.length >= 32 && (x.data.length - 16) % 16 === 0);
+  if (!saves.length) { out.textContent = T('Load a capture of the game first (slot_0…).', 'Chargez d\'abord une capture du jeu (slot_0…).'); return; }
+  out.textContent = T('Searching…', 'Recherche…');
+  await new Promise(r => setTimeout(r, 30));
+  try {
+    const asset = new Uint8Array(await f.arrayBuffer());
+    let r = null;
+    for (const s of saves) { r = SaveFormats.es3FindPassword(asset, s.data); if (r) break; }
+    if (!r) { out.textContent = T('No Easy Save 3 password in this file decrypts the save (other game, or not resources.assets?).', 'Aucun mot de passe Easy Save 3 de ce fichier ne déchiffre la sauvegarde (autre jeu, ou pas resources.assets ?).'); return; }
+    try { localStorage.setItem(ES3_KEY, r.password); } catch (e) { }
+    SaveFormats.setPassword('es3', r.password);
+    // file name expected by the game's built-in list ("key_file"), else a generic one
+    const tid = (S.game.title_id || '').toUpperCase();
+    const def = Object.values(BUILTIN).find(d => d.reader === 'es3' && (!tid || d.title_id.toUpperCase() === tid));
+    const name = (def && def.key_file) || 'es3.txt';
+    out.innerHTML = esc(T('Found, saved in this browser. ', 'Trouvé, enregistré dans ce navigateur. ')) + '<a href="#" id="es3Dl">' + esc(T('Download ', 'Télécharger ') + name) + '</a> · <a href="#" id="es3Reload">' + esc(T('Reload to decode', 'Recharger pour décoder')) + '</a>';
+    $('#es3Dl').addEventListener('click', (e) => {
+      e.preventDefault();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([r.password], { type: 'text/plain' }));
+      a.download = name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    });
+    $('#es3Reload').addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
+  } catch (e) { out.textContent = T('Error: ', 'Erreur : ') + e.message; }
+});
+// ---------------------------------------------------------------- 🔑 save passwords (standalone tab)
+// Games whose definition names a "key_file": the game file holding the password, and how to spot their saves.
+const KEY_KINDS = {
+  es3: { file: 'resources.assets', romfs: 'Data/resources.assets', store: ES3_KEY,
+    isSave: (x) => x.data.length >= 32 && (x.data.length - 16) % 16 === 0,
+    find: async (asset, save) => SaveFormats.es3FindPassword(asset, save.data) },
+  theatrhythm: { file: 'global-metadata.dat', romfs: 'Data/Managed/Metadata/global-metadata.dat', store: TH_KEY,
+    isSave: (x) => SaveFormats.isTheatrhythm(x.data, x.path),
+    find: async (asset, save, prog) => SaveFormats.theatrhythmFindPassword(asset, save.data, prog) },
+};
+const KEY_GAMES = Object.values(BUILTIN).filter(d => d.key_file && KEY_KINDS[d.reader]).sort((a, b) => a.name.localeCompare(b.name));
+const KY = { asset: null, saves: [] };
+$('#kyGame').innerHTML = KEY_GAMES.map(d => `<option value="${esc(d.title_id)}">${esc(d.name)}</option>`).join('');
+const kyDef = () => KEY_GAMES.find(d => d.title_id === $('#kyGame').value) || KEY_GAMES[0];
+function kyNeed() {
+  const d = kyDef(); if (!d) return;
+  const k = KEY_KINDS[d.reader];
+  $('#kyNeed').innerHTML = T('Game file: ', 'Fichier du jeu : ') + `<b>${esc(k.file)}</b> ` + T('(in the game\'s RomFS: ', '(dans la RomFS du jeu : ') + `<code>${esc(k.romfs)}</code>)` +
+    '<br>' + T('Key file it makes: ', 'Fichier de clé créé : ') + `<code>sdmc:/switch/TrophyNX/keys/${esc(d.key_file)}</code>` +
+    '<br>' + T('Save files: ', 'Fichiers de save : ') + (d.save_files || []).map(f => `<code>${esc(f)}</code>`).join(', ');
+}
+$('#kyGame').addEventListener('change', kyNeed);
+kyNeed();
+function kyDownload(name, text) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function kyDone(d, pw) {
+  const k = KEY_KINDS[d.reader];
+  try { localStorage.setItem(k.store, pw); } catch (e) { }
+  SaveFormats.setPassword(d.reader, pw);
+  kyDownload(d.key_file, pw);
+  $('#kyOut').innerHTML = `<div class="note ok"><b>${esc(T('Found! ', 'Trouvé ! '))}</b>` + esc(T('Your browser downloaded ', 'Votre navigateur a téléchargé ')) + `<code>${esc(d.key_file)}</code> (<a href="#" id="kyAgain">${esc(T('download again', 'retélécharger'))}</a>).` +
+    '<ol class="small" style="margin:6px 0 0">' +
+    `<li>${T('Copy it to your SD card, in the folder', 'Copiez-le sur votre carte SD, dans le dossier')} <code>switch/TrophyNX/keys/</code> ${T('(create <code>keys</code> if it is missing). Keep the name', '(créez <code>keys</code> s\'il manque). Gardez le nom')} <code>${esc(d.key_file)}</code>.</li>` +
+    `<li>${T('Open TrophyNX once: the game\'s achievements are read from its save. From then on they unlock live, while you play.', 'Ouvrez TrophyNX une fois : les succès du jeu sont lus dans sa save. Ensuite ils se débloquent en direct, pendant que vous jouez.')}</li>` +
+    `<li>${T('Never share this file: it comes from your copy of the game.', 'Ne partagez pas ce fichier : il vient de votre copie du jeu.')}</li></ol></div>`;
+  $('#kyAgain').addEventListener('click', (e) => { e.preventDefault(); kyDownload(d.key_file, pw); });
+}
+$('#kyAsset').addEventListener('change', async (ev) => {
+  const f = ev.target.files[0]; ev.target.value = '';
+  if (!f) return;
+  KY.asset = new Uint8Array(await f.arrayBuffer());
+  // global-metadata.dat starts with its magic (AF 1B B1 FA): switch to a THEATRHYTHM-type game, or away from one
+  const a = KY.asset, isMeta = a.length > 4 && a[0] === 0xAF && a[1] === 0x1B && a[2] === 0xB1 && a[3] === 0xFA;
+  if (isMeta !== (kyDef().reader === 'theatrhythm')) {
+    const g = KEY_GAMES.find(d => (d.reader === 'theatrhythm') === isMeta);
+    if (g) { $('#kyGame').value = g.title_id; kyNeed(); }
+  }
+  $('#kyAssetInfo').textContent = f.name + ' · ' + fmtBytes(a.length);
+});
+$('#kySave').addEventListener('change', async (ev) => {
+  const list = [...ev.target.files]; ev.target.value = '';
+  const files = [];
+  try {
+    for (const f of list) {
+      const data = new Uint8Array(await f.arrayBuffer());
+      if (/\.zip$/i.test(f.name) && data[0] === 0x50 && data[1] === 0x4b) files.push(...await E.unzip(data));
+      else files.push({ path: f.name, data });
+    }
+  } catch (e) { $('#kySaveInfo').textContent = T('Error: ', 'Erreur : ') + e.message; return; }
+  KY.saves = files;
+  $('#kySaveInfo').textContent = files.length === 1 ? files[0].path + ' · ' + fmtBytes(files[0].data.length) : files.length + T(' files', ' fichiers');
+});
+$('#kyRun').addEventListener('click', async () => {
+  const d = kyDef(), out = $('#kyOut');
+  if (!d) return;
+  const k = KEY_KINDS[d.reader];
+  const note = (cls, text) => { out.innerHTML = `<div class="note ${cls}">${esc(text)}</div>`; };
+  if (!KY.asset) { note('bad', T('Choose the game file first (step 2).', 'Choisissez d\'abord le fichier du jeu (étape 2).')); return; }
+  const saves = KY.saves.filter(k.isSave);
+  if (!saves.length) { note('bad', T('Choose a save of this game (step 3): none of the files given is one.', 'Choisissez une save de ce jeu (étape 3) : aucun des fichiers donnés n\'en est une.')); return; }
+  note('small', T('Searching…', 'Recherche…'));
+  await new Promise(r => setTimeout(r, 30));
+  try {
+    let r = null;
+    for (const s of saves) {
+      r = await k.find(KY.asset, s, (n, t) => note('small', T('Searching… ', 'Recherche… ') + Math.round(100 * n / t) + ' %'));
+      if (r) break;
+    }
+    if (r) kyDone(d, r.password);
+    else note('bad', T('No password in this file opens the save. Check that it is ', 'Aucun mot de passe de ce fichier n\'ouvre la save. Vérifiez que c\'est ') + k.file + T(' of this same game.', ' de ce même jeu.'));
+  } catch (e) { note('bad', T('Error: ', 'Erreur : ') + e.message); }
+});
+$('#kyTypedDl').addEventListener('click', () => { const v = $('#kyTyped').value.trim(); if (v) kyDone(kyDef(), v); });
+// imp3r1us.github.io/TrophyNX/#key opens this tab directly (the link TrophyNX shows)
+if (/^#key/i.test(location.hash)) setTimeout(() => showTab('key'), 0);
 $('#thKeySave').addEventListener('click', () => { try { const v = $('#thKey').value.trim(); if (v) localStorage.setItem(TH_KEY, v); else localStorage.removeItem(TH_KEY); } catch (e) { } location.reload(); });
 $('#langBtn').addEventListener('click', () => { try { localStorage.setItem('savelab-lang', SL_LANG === 'fr' ? 'en' : 'fr'); } catch (e) { } location.reload(); });
 $('#clearAll').textContent = T('Clear all', 'Tout effacer');

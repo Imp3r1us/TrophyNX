@@ -24,6 +24,8 @@ jobs:
       - name: Host tests (BYML reader)
         run: |
           apt-get update -qq && apt-get install -y -qq g++ zip >/dev/null
+          g++ -std=gnu++17 -Iinclude host/test/test_title_id.cpp -o /tmp/test_title_id && /tmp/test_title_id
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_es3_key.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_es3_key && /tmp/test_es3_key
           g++ -std=gnu++17 -Iinclude host/test/test_byml.cpp source/byml.cpp -o /tmp/test_byml
           /tmp/test_byml   # no save fixtures in CI: checks that it builds and survives junk input
           g++ -std=gnu++17 -Iinclude host/test/test_json.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_json
@@ -63,6 +65,10 @@ jobs:
             g++ -std=gnu++17 -fno-exceptions -g -fsanitize=undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_overlay_data.cpp source/overlay_data.cpp -x c source/cJSON.c -o /tmp/test_overlay_data_ub
             timeout 300 /tmp/test_overlay_data_ub
           fi
+      - name: Host test (binary_le slots, file, bits, masks)
+        run: |
+          g++ -std=gnu++17 -fno-exceptions -g -fsanitize=address,undefined -fno-sanitize-recover=undefined -Iinclude host/test/test_binary_slots.cpp source/rules.cpp source/memrules.cpp source/fileutil.cpp source/save_formats.cpp source/json_doc.cpp source/byml.cpp -x c source/cJSON.c -o /tmp/test_binary_slots
+          /tmp/test_binary_slots
       - name: Host test (scan on close = same values as the app)
         run: |
           apt-get install -y -qq python3 >/dev/null

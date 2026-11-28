@@ -3,8 +3,10 @@
 // through a SaveSource.
 #pragma once
 #include "achievements.h"
+#include "gamefile.h"
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <set>
 #include <string>
@@ -40,6 +42,7 @@ struct GameDef {
     bool closeScan = true;   // "close_scan": false -> the background module doesn't scan it when the game closes
     bool liveSave = true;    // "live_save": false -> the background module doesn't read the save while the game runs
     std::vector<std::string> saveFiles;
+    std::map<std::string, SlotLayout> slots;   // binary_le "slots": save file -> slot layout
     std::vector<Achievement> achs;
 };
 
@@ -57,6 +60,9 @@ void setSaveKeyDir(const std::string& dir);
 // Where the app looks for a game's global-metadata.dat to find a missing password (recursively), e.g. the keys
 // folder and nxdumptool's output folder (sdmc:/nxdumptool/NCA FS/User/Extracted/...).
 void setSaveKeySearchDirs(const std::vector<std::string>& dirs);
+// Reads files of the installed game itself (romfs with its update, e.g. "Data/resources.assets"), so a missing
+// password can be found with no dump at all. Set by the app and the live module. Not set: dumps only.
+void setSaveKeyGameReader(GameFileOpener fn);
 
 // Reads the save of g (g.reader, g.saveFiles...) and sets a.value of its save-based achievements,
 // g.saveStatus and g.debug.

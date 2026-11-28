@@ -1,14 +1,15 @@
 # Getting game files from your Switch (beginner guide)
 
-Two games in TrophyNX need a file **from the game itself** before all their achievements work:
+A few games in TrophyNX need a file **from the game itself** before all their achievements work:
 
 | Game | What you need | Why |
 |---|---|---|
 | THEATRHYTHM FINAL BAR LINE | `global-metadata.dat` (one file, ~12 MB) | its save is encrypted; the password is written inside this file |
+| Heavenly Bodies | `resources.assets` (one file) | same: encrypted save (Unity “Easy Save 3”), password inside this file |
 | DELTARUNE | the four `game.win` files (chapters 1–4) | a small patch makes the game record its trophies in the save |
 
 TrophyNX never ships these files: they come from **your own copy** of the game, and you copy them yourself. This guide
-does it on the console with **nxdumptool** (no PC needed for THEATRHYTHM). It takes about 10 minutes the first time.
+does it on the console with **nxdumptool** (no PC needed for the encrypted saves). It takes about 10 minutes the first time.
 
 > Every other game in TrophyNX works without any of this.
 
@@ -56,6 +57,25 @@ of the game → choose **nxdumptool**. (Opening it from the Album also works but
 
 ---
 
+## Encrypted saves in short (THEATRHYTHM, Heavenly Bodies)
+
+TrophyNX needs the game's save password **once**, as a one-line text file in `sdmc:/switch/TrophyNX/keys/`
+(`theatrhythm.txt`, `heavenlybodies.txt`). The game page tells you when it is missing (*Encrypted save: needs its
+password once*). Pick **one** way:
+
+| Way | You need | What you do |
+|---|---|---|
+| **A. Switch only** (easiest) | nxdumptool | dump the one game file (Step 2 or 2b below), open TrophyNX: it finds the password and writes the key file itself |
+| **B. Phone or PC** | the game file + one save | open <https://imp3r1us.github.io/TrophyNX/#key> (Save Lab, 🔑 tab), pick the game, give both files, click **Find the password**: it downloads the key file. Copy it to `sdmc:/switch/TrophyNX/keys/` |
+| **C. You already know it** | — | same page, *I already know the password*, or make the text file yourself (just the password, one line) |
+
+Then open TrophyNX once: the save is read, and from then on the achievements **unlock live** while you play (the live
+module uses the same key file). Nothing is sent anywhere: the Save Lab runs in your browser.
+
+**Never post the password or the key file publicly** (it is the game's own key). Share this guide instead.
+
+---
+
 ## Step 2 — THEATRHYTHM FINAL BAR LINE: dump `global-metadata.dat`
 
 In nxdumptool:
@@ -87,16 +107,35 @@ need to move it.**
 > (and it is the simplest path). If the base doesn't work for you, try step 2 with **`dump update`** and the
 > **`Patch RomFS`** section (see Step 3, point 4).
 
-### Without the console (PC)
+### Without the console (phone or PC)
 
-If you already have the file on a PC (for example from a dump made with another tool):
+If you already have the file on a phone or PC (for example from a dump made with another tool):
 
-- open the **Save Lab** (<https://imp3r1us.github.io/TrophyNX/>), add a THEATRHYTHM save capture (step 1 of the page),
-  open *Encrypted saves*, click **Find it in global-metadata.dat** and pick the file. It finds the password, keeps it in
-  your browser, and offers **`theatrhythm.txt`**: copy that file to `sdmc:/switch/TrophyNX/keys/` on the SD card.
+- open <https://imp3r1us.github.io/TrophyNX/#key> (the Save Lab's **🔑 Save password** tab), pick THEATRHYTHM, give
+  `global-metadata.dat` and one save file (`backup.inf`, or the whole JKSV `.zip`), click **Find the password**. It
+  downloads **`theatrhythm.txt`**: copy that file to `sdmc:/switch/TrophyNX/keys/` on the SD card.
 - or, with Python: `python tools/theatrhythm/find_password.py global-metadata.dat backup.inf theatrhythm.txt`.
 
-**Never post the password or `theatrhythm.txt` publicly** (it is the game's own key). Share this guide instead.
+---
+
+## Step 2b — Heavenly Bodies: dump `resources.assets`
+
+TrophyNX first tries to read this file from the installed game by itself; some firmwares refuse it (the X page then
+says *the system didn't open the game's files*). In that case, in nxdumptool:
+
+1. **`user titles menu`** → choose **Heavenly Bodies**.
+2. **`nca / nca fs dump options`** → **`dump base application`**.
+3. Choose **`Program #0`**, then the section that says **`RomFS`**.
+4. Keep **`use layeredfs dir`** on **`no`**, then **`browse nca fs section`**.
+5. Go into **`Data`**, select **`resources.assets`** and press **A**. Then **+** to quit.
+
+Open **TrophyNX**: it finds `resources.assets` under `sdmc:/nxdumptool/`, takes the password from it and saves
+`sdmc:/switch/TrophyNX/keys/heavenlybodies.txt`. Check it with **X** on the game: `Password found in …resources.assets`,
+then `Save password: …heavenlybodies.txt`. You can delete the dumped file afterwards.
+
+With a phone or PC instead: <https://imp3r1us.github.io/TrophyNX/#key>, pick Heavenly Bodies, give `resources.assets`
+and one save file (`slot_0`, or the JKSV `.zip`), click **Find the password**, copy `heavenlybodies.txt` to
+`sdmc:/switch/TrophyNX/keys/`.
 
 ---
 

@@ -1,5 +1,6 @@
 // PC test harness: fake games and stats, scripted input, frames written as PNG.
 #ifndef __SWITCH__
+#include "gamefile.h"
 #include "platform.h"
 #include "history.h"
 #include <cstdio>
@@ -120,6 +121,7 @@ void plat::listSaveFiles(std::vector<std::pair<std::string, uint64_t>>& out) {
 }
 void plat::closeSave() { g_mounted = 0; }
 std::string plat::lastError() { return "no save folder (host)"; }
+void plat::trace(const std::string& step) { fprintf(stderr, "[trace] %s\n", step.c_str()); }
 std::string plat::liveModuleStatus() { return "not available on PC"; }
 // Updates on PC: https://api.github.com/repos/<repo>/contents/<path>?ref=<branch> is read from
 // $ACH_UPDATE_DIR/<path> (a copy of the "builds" branch). A token "bad" in update.json -> 401.
@@ -151,6 +153,10 @@ static std::string g_self;
 void plat::setSelfPath(const std::string& p) { g_self = p; }
 std::string plat::selfPath() { return g_self.empty() ? g_root + "/sd/switch/TrophyNX.nro" : g_self; }
 std::string plat::sdRoot() { return g_root + "/sd/"; }
+bool openGameFile(uint64_t, const std::string&, GameFile&, std::string& why) {
+    why = "not on a Switch";
+    return false;
+}
 bool plat::restartLiveModule(std::string& msg) { msg = "live module restarted (PC: nothing to do)"; return true; }
 void plat::relaunchSelf() {}
 

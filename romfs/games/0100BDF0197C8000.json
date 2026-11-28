@@ -1,0 +1,79 @@
+{
+ "title_id": "0100BDF0197C8000",
+ "name": "Once Upon A KATAMARI",
+ "reader": "",
+ "save_files": [],
+ "_note": "Play statistics only (issue #35): the save could not be read yet. A Save batch issue with labelled backups can turn this into save-based achievements.",
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Once Upon a Time",
+   "desc": "Launch the game 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Time Traveller",
+   "desc": "Play for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Through the Ages",
+   "desc": "Play for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_12",
+   "name": "History in the Making",
+   "desc": "Play for 12 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 12
+   }
+  },
+  {
+   "id": "t_hours_25",
+   "name": "King-Sized Legacy",
+   "desc": "Play for 25 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 25
+   }
+  },
+  {
+   "id": "t_days_10",
+   "name": "Daily Roll",
+   "desc": "Play on 10 different days",
+   "points": 25,
+   "rule": {
+    "type": "days_played",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_shots_10",
+   "name": "Snapshot of an Era",
+   "desc": "Take 10 screenshots of the game",
+   "points": 10,
+   "rule": {
+    "type": "screenshots",
+    "target": 10
+   }
+  }
+ ]
+}

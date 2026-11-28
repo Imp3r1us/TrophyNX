@@ -1,0 +1,79 @@
+{
+ "title_id": "0100C22018D20000",
+ "name": "We Love Katamari REROLL+ Royal Reverie",
+ "reader": "",
+ "save_files": [],
+ "_note": "Play statistics only (issue #35): the save could not be read yet. A Save batch issue with labelled backups can turn this into save-based achievements.",
+ "achievements": [
+  {
+   "id": "t_launch",
+   "name": "Fan Mail",
+   "desc": "Launch the game 5 times",
+   "points": 10,
+   "rule": {
+    "type": "launches",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_1",
+   "name": "Small Roller",
+   "desc": "Play for 1 hour",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 1
+   }
+  },
+  {
+   "id": "t_hours_5",
+   "name": "Growing Katamari",
+   "desc": "Play for 5 hours",
+   "points": 10,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 5
+   }
+  },
+  {
+   "id": "t_hours_12",
+   "name": "Royal Favourite",
+   "desc": "Play for 12 hours",
+   "points": 25,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 12
+   }
+  },
+  {
+   "id": "t_hours_25",
+   "name": "Roll Up the Cosmos",
+   "desc": "Play for 25 hours",
+   "points": 50,
+   "rule": {
+    "type": "playtime_hours",
+    "target": 25
+   }
+  },
+  {
+   "id": "t_days_10",
+   "name": "Daily Roll",
+   "desc": "Play on 10 different days",
+   "points": 25,
+   "rule": {
+    "type": "days_played",
+    "target": 10
+   }
+  },
+  {
+   "id": "t_shots_10",
+   "name": "Look How Big It Got",
+   "desc": "Take 10 screenshots of the game",
+   "points": 10,
+   "rule": {
+    "type": "screenshots",
+    "target": 10
+   }
+  }
+ ]
+}

@@ -47,6 +47,17 @@ struct Rule {
     std::vector<uint32_t> offsets;
     int size = 4;          // bytes per value (1, 2 or 4)
     double maxSane = 0;    // > 0: values above this are treated as garbage (offset moved in a game update)
+    uint32_t mask = 0;     // != 0: each value becomes 1 when any of these bits is set, else 0 (bit flags)
+    std::vector<uint32_t> masks;   // "masks": one mask per offset (same order), instead of one for all
+    bool bits = false;     // "bits": each value counts its set bits (within mask, if any): chests opened, reports found...
+    // "needs": the rule only counts when the value at needsOffset is >= needsMin (e.g. a table long enough
+    // to hold this entry: DLC achievements in Binding of Isaac)
+    bool hasNeeds = false;
+    uint32_t needsOffset = 0;
+    int needsSize = 4;
+    double needsMin = 1;
+    // "file": only this save file (and its slots) counts, for games whose save_files hold different layouts
+    std::string file;
     // "byml" / "json" readers: paths into the document tree (see byml.h, json_doc.h), e.g. "ShineData[*]/IsGet"
     std::vector<std::string> paths;
     bool hasEqualsStr = false;  // byml/json: matched values must equal this (string, number, true/false)
@@ -77,7 +88,20 @@ struct Achievement {
     uint64_t unlockTime = 0;
 };
 
-enum class SaveStatus { None, Ok, NoSave, Unreadable };
+// "binary_le" reader, "slots": one save file holding many save slots at base + i * stride (Kingdom Hearts HD
+// 1.5+2.5 ReMIX keeps every slot of a game in one .png). Each slot is read like a file of its own; offsets are
+// relative to the slot. A slot counts only when its magic matches and its check value is within [min, max].
+struct SlotLayout {
+    uint64_t base = 0, stride = 0;
+    int count = 0;
+    std::string magic;          // required bytes at the start of the slot ("" = any)
+    bool hasCheck = false;
+    uint32_t checkOffset = 0;
+    int checkSize = 4;
+    double checkMin = 1, checkMax = 0;   // checkMax 0 = no upper limit
+};
+
+enum class SaveStatus { None, Ok, NoSave, Unreadable, NeedsKey };   // NeedsKey: encrypted save, its password file is missing
 
 struct Game {
     uint64_t id = 0;
@@ -88,6 +112,7 @@ struct Game {
     std::vector<std::string> saveFiles; // relative paths inside the save
     uint64_t fileSize = 0;              // binary_le: required file size (0 = any)
     std::string magic;                  // binary_le: required bytes at offset 0
+    std::map<std::string, SlotLayout> slots;   // binary_le: save file -> its slot layout ("slots")
     std::string xorKey;                 // tree readers: repeating-key XOR undone before parsing ("xor_key")
     std::string keyFile;                // encrypted saves: password file in <data folder>/keys ("key_file")
     std::vector<Achievement> achs;
