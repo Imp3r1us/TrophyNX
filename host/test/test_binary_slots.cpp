@@ -10,6 +10,9 @@
 struct MemSource : SaveSource {
     std::map<std::string, std::vector<uint8_t>> files;
     bool stream = false;
+    size_t avail = (size_t)-1;
+    int reads = 0;
+    size_t memoryAvailable() override { return avail; }
     bool open(uint64_t) override { return true; }
     void close() override {}
     std::string lastError() override { return "none"; }
@@ -27,6 +30,7 @@ struct MemSource : SaveSource {
         return true;
     }
     bool readAt(const std::string& rel, uint64_t off, void* buf, size_t len) override {
+        reads++;
         auto it = files.find(rel);
         if (it == files.end() || off + len > it->second.size()) return false;
         memcpy(buf, it->second.data() + off, len);
@@ -90,13 +94,19 @@ int main() {
     b[0x08 + 3 * 0x20 + 0x04] = 0xFF; b[0x08 + 3 * 0x20 + 0x05] = 0xFF;
     src.files["b.png"] = b;
 
-    for (int stream = 0; stream < 2; stream++) {
-        src.stream = stream;
+    // 0: whole file (app), 1: streaming with memory (each slot read in one piece), 2: streaming with almost no
+    // memory (one read per value)
+    for (int stream = 0; stream < 3; stream++) {
+        src.stream = stream > 0;
+        src.avail = stream == 2 ? 1024 : (size_t)-1;
+        src.reads = 0;
         Game g;
         g.id = def.id;
         applyGameDef(g, def);
         evaluateSave(g, src);
-        printf("-- %s mode\n", stream ? "streaming" : "whole-file");
+        printf("-- %s mode (%d reads)\n", stream == 0 ? "whole-file" : stream == 1 ? "streaming" : "streaming, low memory", src.reads);
+        if (stream == 1) check(src.reads <= 16, "streaming: a few reads per slot, not one per value");
+        if (stream == 2) check(src.reads > 16, "low memory: one read per value instead");
         check(g.saveStatus == SaveStatus::Ok, "save readable");
         check(value(g, "a_level") == 55, "a.png: best valid slot, skipped slots ignored (55)");
         check(value(g, "a_bits") == 9, "bits: set bits summed over offsets (9)");
