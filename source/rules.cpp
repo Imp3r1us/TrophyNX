@@ -621,24 +621,37 @@ static std::string g_keyDir;
 static std::vector<std::string> g_metaDirs;
 void setSaveKeyDir(const std::string& dir) { g_keyDir = dir; }
 void setSaveKeySearchDirs(const std::vector<std::string>& dirs) { g_metaDirs = dirs; }
-static GameFileReader g_gameReader;
-void setSaveKeyGameReader(GameFileReader fn) { g_gameReader = std::move(fn); }
+static GameFileOpener g_gameReader;
+void setSaveKeyGameReader(GameFileOpener fn) { g_gameReader = std::move(fn); }
+static std::set<uint64_t> g_keySearched;   // live module: each game's files are searched once per boot
 
-// App only: no password file yet -> read the game's global-metadata.dat from the installed game, else from a dump
-// (nxdumptool, or copied to the keys folder), find the password in it with one of the save files, and save it as the key file.
+// No password file yet -> read the game's global-metadata.dat from the installed game, else from a dump (nxdumptool,
+// or copied to the keys folder), find the password in it with one of the save files, and save it as the key file.
 // Easy Save 3 games ("es3"): same, with the game's resources.assets (it holds the ES3Defaults settings).
+// Game files are read in pieces, so the live module (small heap) does it too, as soon as the game closes:
+// nothing to dump, nothing to do in the app. The module only searches Easy Save 3 games (a THEATRHYTHM save needs
+// ~11 MB to confirm a password) and each game once per boot.
 static std::string findKeyFromGame(Game& g, SaveSource& src, const std::string& keyPath) {
     const bool es3 = g.reader == "es3";
     if (g.reader != "theatrhythm" && !es3) return "";
+    if (src.streaming()) {
+        if (!es3 || !g_keySearched.insert(g.id).second) return "";
+    }
     const char* fileName = es3 ? "resources.assets" : "global-metadata.dat";
     std::vector<uint8_t> save;
-    for (const std::string& f : g.saveFiles) if (src.readAll(f, save)) break;
+    for (const std::string& f : g.saveFiles) {
+        if (src.streaming()) {   // module: only a small save is read whole
+            uint64_t sz = 0;
+            if (!src.fileSize(f, sz) || sz > (2u << 20)) continue;
+        }
+        if (src.readAll(f, save)) break;
+    }
     if (save.empty()) return "";
-    auto tryFile = [&](const std::string& label, const std::vector<uint8_t>& meta) -> std::string {
+    auto tryFile = [&](const std::string& label, const ByteReader& rd, uint64_t size) -> std::string {
         std::string pw;
         int idx = -1;
-        bool found = es3 ? es3FindPassword(meta.data(), meta.size(), save.data(), save.size(), pw)
-                         : theatrhythmFindPassword(meta.data(), meta.size(), save.data(), save.size(), pw, &idx);
+        bool found = es3 ? es3FindPasswordIn(rd, size, save.data(), save.size(), pw)
+                         : theatrhythmFindPasswordIn(rd, size, save.data(), save.size(), pw, &idx);
         if (!found) {
             g.debug.push_back("Password search: " + label + " -> no string decrypts this save (other game or version?)");
             return "";
@@ -652,9 +665,10 @@ static std::string findKeyFromGame(Game& g, SaveSource& src, const std::string& 
     // 1. the installed game itself: nothing to dump
     if (g_gameReader) {
         std::string rel = es3 ? "Data/resources.assets" : "Data/Managed/Metadata/global-metadata.dat", why;
-        std::vector<uint8_t> meta;
-        if (g_gameReader(g.id, rel, meta, why)) {
-            std::string pw = tryFile("the installed game (" + rel + ")", meta);
+        GameFile gf;
+        if (g_gameReader(g.id, rel, gf, why)) {
+            std::string pw = tryFile("the installed game (" + rel + ", " + std::to_string(gf.size) + " bytes)", gf.read, gf.size);
+            if (gf.close) gf.close();
             if (!pw.empty()) return pw;
         } else {
             g.debug.push_back("Password search: can't read " + rel + " from the installed game (" + why + ")");
@@ -664,9 +678,15 @@ static std::string findKeyFromGame(Game& g, SaveSource& src, const std::string& 
     std::vector<std::string> metas;
     for (const std::string& root : g_metaDirs) findFilesNamed(root, fileName, metas);
     for (const std::string& m : metas) {
-        std::vector<uint8_t> meta;
-        if (!readFile(m, meta)) continue;
-        std::string pw = tryFile(m, meta);
+        FILE* fp = fopen(m.c_str(), "rb");
+        if (!fp) continue;
+        fseek(fp, 0, SEEK_END);
+        long sz = ftell(fp);
+        ByteReader rd = [fp](uint64_t off, void* buf, size_t len) {
+            return fseek(fp, (long)off, SEEK_SET) == 0 && fread(buf, 1, len, fp) == len;
+        };
+        std::string pw = sz > 0 ? tryFile(m, rd, (uint64_t)sz) : "";
+        fclose(fp);
         if (!pw.empty()) return pw;
     }
     return "";
@@ -756,13 +776,15 @@ static void evaluateTree(Game& g, SaveSource& src) {
         size_t lead = 0;
         while (lead < key.size() && blank(key[lead])) lead++;
         key = key.substr(lead);
-        if (key.empty() && !src.streaming() && !g_keyDir.empty()) key = findKeyFromGame(g, src, kp);
+        if (key.empty() && !g_keyDir.empty()) key = findKeyFromGame(g, src, kp);
         if (key.empty()) {
             src.close();
             g.saveStatus = SaveStatus::NeedsKey;
             const char* gameFile = g.reader == "es3" ? "Data/resources.assets" : "Data/Managed/Metadata/global-metadata.dat";
             g.debug.push_back("Encrypted save: password file " + kp + " is missing or empty. Save skipped.");
-            g.debug.push_back(std::string("  Easiest, on the Switch: dump the game's RomFS file ") + gameFile + " with nxdumptool,");
+            if (g.reader == "es3")
+                g.debug.push_back("  The live module (0.16.0+) looks for it in the installed game by itself: close the game once, then reopen TrophyNX.");
+            g.debug.push_back(std::string("  Else, on the Switch: dump the game's RomFS file ") + gameFile + " with nxdumptool,");
             g.debug.push_back("  then reopen TrophyNX: it finds the password in sdmc:/nxdumptool and writes the key file itself.");
             g.debug.push_back("  With a phone or PC: imp3r1us.github.io/TrophyNX/#key makes " + g.keyFile + " from that file and a save.");
             return;

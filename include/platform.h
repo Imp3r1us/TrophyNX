@@ -63,9 +63,6 @@ namespace plat {
     void setSelfPath(const std::string& path);   // argv[0] of the running .nro
     std::string selfPath();
     std::string sdRoot();                          // "sdmc:/" (host: <root>/sd/)
-    // Reads a file of an installed game (its romfs with the update applied), e.g. "Data/resources.assets".
-    // false + why when the system refuses or the file isn't there (host: never available).
-    bool readGameFile(uint64_t titleId, const std::string& rel, std::vector<uint8_t>& out, std::string& why);
     bool restartLiveModule(std::string& msg);      // stops and starts sys-trophynx (new exefs.nsp)
     void relaunchSelf();                           // reload this .nro when the app exits
     // Closes the app's own .nro (romfs reads keep it open, and an open file can't be deleted or replaced).

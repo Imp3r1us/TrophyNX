@@ -10,6 +10,7 @@
 // maps and Dictionary<K,V> -> lists of {"Key","Value"}; enums -> number (NRBF) or name (GVAS);
 // GUIDs -> 32 hex digits; dates -> ticks; values that cannot be decoded -> null.
 #include "json_doc.h"
+#include "gamefile.h"
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -94,6 +95,9 @@ bool isTheatrhythm(const uint8_t* data, size_t size);   // size check only (the 
 // Finds the password in the game's own global-metadata.dat (romfs Data/Managed/Metadata, e.g. dumped with nxdumptool):
 // tries its string literals against one save file. false if none decrypts it.
 bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t* save, size_t saveSize, std::string& password, int* index = nullptr);
+// Same, reading global-metadata.dat in pieces (header, string literal table, then each string): ~8 bytes per literal in memory.
+bool theatrhythmFindPasswordIn(const ByteReader& meta, uint64_t metaSize, const uint8_t* save, size_t saveSize, std::string& password,
+                               int* index = nullptr);
 cJSON* theatrhythmToJson(const uint8_t* data, size_t size, const std::string& password, std::string& error, SaveFormatInfo* info = nullptr,
                          const std::vector<std::string>* keepPaths = nullptr, size_t memoryBudget = 0);
 
@@ -104,6 +108,8 @@ cJSON* es3ToJson(const uint8_t* data, size_t size, const std::string& password, 
 // Finds the password in the game's resources.assets (romfs Data/, e.g. dumped with nxdumptool): the strings right after
 // "ES3Defaults" are tried on one save file. false if none decrypts it.
 bool es3FindPassword(const uint8_t* asset, size_t assetSize, const uint8_t* save, size_t saveSize, std::string& password);
+// Same, reading resources.assets in pieces (256 KB at a time): the live module can search a file of any size.
+bool es3FindPasswordIn(const ByteReader& asset, uint64_t assetSize, const uint8_t* save, size_t saveSize, std::string& password);
 
 class Es3Doc : public JsonDoc {
 public:

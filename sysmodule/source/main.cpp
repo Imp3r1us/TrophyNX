@@ -33,7 +33,7 @@
 #include "overlay_data.h"
 #include "playlog.h"
 
-#define MODULE_VERSION "0.15.1"
+#define MODULE_VERSION "0.16.0"
 static const u64 BOTW_ID = 0x01007EF00011E000ULL;
 
 extern "C" {
@@ -356,6 +356,10 @@ int main(int, char**) {
     // passwords of encrypted saves (keys/<key_file>, written by the app the first time it finds one): without this,
     // encrypted saves (Easy Save 3, THEATRHYTHM) were only read by the app, never live
     setSaveKeyDir(dataDir() + "/keys");
+    // no key file yet: the module (full file system access) reads the password from the installed game
+    // itself when the game closes, even where the app is refused, or from a dump in keys/ or sdmc:/nxdumptool
+    setSaveKeySearchDirs({dataDir() + "/keys", "sdmc:/nxdumptool"});
+    setSaveKeyGameReader(openGameFile);
     heapSetLog(logf);
     finishPendingAppUpdate();
     popupStart(logf);

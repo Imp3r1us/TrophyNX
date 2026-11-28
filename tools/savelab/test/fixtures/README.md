@@ -8,3 +8,6 @@
 
 Utilisés par `tools/savelab/test/test_formats.js` et `host/test/test_formats.cpp`, qui vérifient que le Save Lab
 et l'app donnent exactement le même arbre.
+
+- `es3/` : sauvegarde Easy Save 3 chiffrée **synthétique** (`SaveFile.es3`, JSON de deux valeurs) avec un mot de passe
+  factice (`password.txt`), pour `host/test/test_es3_key.cpp` (recherche du mot de passe par morceaux).

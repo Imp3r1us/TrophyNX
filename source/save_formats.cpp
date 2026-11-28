@@ -2397,16 +2397,22 @@ bool TheatrhythmDoc::parse(std::vector<uint8_t>&& data) {
 // The password is a string literal of the game's global-metadata.dat (IL2CPP, version 24+ header: magic
 // 0xFAB11BAF, then stringLiteralOffset / stringLiteralSize / stringLiteralDataOffset). Its index changes with
 // game updates, so every literal is tried, nearest to the known indexes first (instant on known versions).
-bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t* save, size_t saveSize, std::string& password, int* index) {
+bool theatrhythmFindPasswordIn(const ByteReader& rd, uint64_t metaSize, const uint8_t* save, size_t saveSize, std::string& password, int* index) {
     if (metaSize < 32) return false;
-    auto rd32 = [&](size_t o) { uint32_t v; memcpy(&v, meta + o, 4); return v; };
-    if (rd32(0) != 0xFAB11BAFu) return false;
-    uint32_t lo = rd32(8), lsz = rd32(12), dO = rd32(16), dsz = rd32(20);
+    uint8_t hdr[32];
+    if (!rd(0, hdr, 32)) return false;
+    auto h32 = [&](size_t o) { uint32_t v; memcpy(&v, hdr + o, 4); return v; };
+    if (h32(0) != 0xFAB11BAFu) return false;
+    uint32_t lo = h32(8), lsz = h32(12), dO = h32(16), dsz = h32(20);
     if ((uint64_t)lo + lsz > metaSize || (uint64_t)dO + dsz > metaSize) return false;
+    if (lsz > (64u << 20)) return false;   // 8 bytes per literal: millions of literals is not a metadata file
     size_t bl = 0;
     bool ps4 = false;
     const uint8_t* body = theatrhythmBody(save, saveSize, bl, ps4);
     if (!body) return false;
+    std::vector<uint8_t> table(lsz);
+    if (lsz && !rd(lo, table.data(), lsz)) return false;
+    auto t32 = [&](size_t o) { uint32_t v; memcpy(&v, table.data() + o, 4); return v; };
     uint8_t salt[16], key[16], tail[16];
     memcpy(salt, body, 8);
     memcpy(salt + 8, body + 24, 8);
@@ -2423,10 +2429,12 @@ bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t
     }
     std::sort(order.begin(), order.end());
     std::set<std::string> tried;
+    char sbuf[128];
     for (auto& o : order) {
-        uint32_t len = rd32(lo + 8u * (uint32_t)o.second), di = rd32(lo + 8u * (uint32_t)o.second + 4);
+        uint32_t len = t32(8u * (uint32_t)o.second), di = t32(8u * (uint32_t)o.second + 4);
         if (len < 4 || len > 128 || (uint64_t)di + len > dsz) continue;
-        std::string pw((const char*)meta + dO + di, len);
+        if (!rd((uint64_t)dO + di, sbuf, len)) continue;
+        std::string pw(sbuf, len);
         if (!tried.insert(pw).second) continue;
         pbkdf2Sha1(pw, salt, 16, 1000, key, 16);
         aes128CbcDecrypt(key, ct + clen - 32, ct + clen - 16, 16, tail);
@@ -2443,6 +2451,18 @@ bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t
         return true;
     }
     return false;
+}
+
+static ByteReader memoryReader(const uint8_t* d, size_t n) {
+    return [d, n](uint64_t off, void* buf, size_t len) {
+        if (off > n || len > n - off) return false;
+        memcpy(buf, d + off, len);
+        return true;
+    };
+}
+
+bool theatrhythmFindPassword(const uint8_t* meta, size_t metaSize, const uint8_t* save, size_t saveSize, std::string& password, int* index) {
+    return theatrhythmFindPasswordIn(memoryReader(meta, metaSize), metaSize, save, saveSize, password, index);
 }
 
 // ================================================================== Easy Save 3 (Unity asset), encrypted
@@ -2512,30 +2532,42 @@ bool Es3Doc::parse(std::vector<uint8_t>&& data) {
 
 // The password is a field of the ES3Defaults MonoBehaviour (Unity strings: u32 length + bytes, 4-aligned) a few
 // fields after its name; every length-prefixed string just after each "ES3Defaults" is tried on the save.
-bool es3FindPassword(const uint8_t* asset, size_t assetSize, const uint8_t* save, size_t saveSize, std::string& password) {
+bool es3FindPasswordIn(const ByteReader& rd, uint64_t assetSize, const uint8_t* save, size_t saveSize, std::string& password) {
     static const char tag[] = "ES3Defaults";
     const size_t tl = sizeof(tag) - 1;
+    const size_t chunk = 256 * 1024, reach = tl + 1024 + 4 + 128;   // a tag near the end of a piece needs this much after it
+    std::vector<uint8_t> buf(chunk + reach);
     std::set<std::string> tried;
-    for (size_t i = 0; i + tl <= assetSize; i++) {
-        if (memcmp(asset + i, tag, tl) != 0) continue;
-        size_t end = std::min(assetSize, i + tl + 1024);
-        for (size_t o = i + tl; o + 4 < end; o++) {
-            uint32_t len;
-            memcpy(&len, asset + o, 4);
-            if (len < 1 || len > 128 || o + 4 + len > assetSize) continue;
-            bool text = true;
-            for (uint32_t k = 0; text && k < len; k++) { uint8_t c = asset[o + 4 + k]; text = c >= 32 && c < 127; }
-            if (!text) continue;
-            std::string pw((const char*)asset + o + 4, len);
-            if (!tried.insert(pw).second) continue;
-            std::vector<uint8_t> pt;
-            std::string err;
-            if (!es3Decrypt(save, saveSize, pw, pt, err) || !es3LooksLikeJson(pt)) continue;
-            password = pw;
-            return true;
+    for (uint64_t pos = 0; pos < assetSize; pos += chunk) {
+        size_t n = (size_t)std::min<uint64_t>(assetSize - pos, chunk + reach);
+        if (!rd(pos, buf.data(), n)) return false;
+        const uint8_t* a = buf.data();
+        size_t starts = std::min(n, chunk);   // tags starting in this piece (the rest is the next piece's)
+        for (size_t i = 0; i < starts && i + tl <= n; i++) {
+            if (a[i] != 'E' || memcmp(a + i, tag, tl) != 0) continue;
+            size_t end = (size_t)std::min<uint64_t>(assetSize - pos, i + tl + 1024);
+            for (size_t o = i + tl; o + 4 < end; o++) {
+                uint32_t len;
+                memcpy(&len, a + o, 4);
+                if (len < 1 || len > 128 || o + 4 + len > n) continue;
+                bool text = true;
+                for (uint32_t k = 0; text && k < len; k++) { uint8_t c = a[o + 4 + k]; text = c >= 32 && c < 127; }
+                if (!text) continue;
+                std::string pw((const char*)a + o + 4, len);
+                if (!tried.insert(pw).second) continue;
+                std::vector<uint8_t> pt;
+                std::string err;
+                if (!es3Decrypt(save, saveSize, pw, pt, err) || !es3LooksLikeJson(pt)) continue;
+                password = pw;
+                return true;
+            }
         }
     }
     return false;
+}
+
+bool es3FindPassword(const uint8_t* asset, size_t assetSize, const uint8_t* save, size_t saveSize, std::string& password) {
+    return es3FindPasswordIn(memoryReader(asset, assetSize), assetSize, save, saveSize, password);
 }
 
 // ================================================================== RPG Maker MV / MZ (fileN.rpgsave / fileN.rmmzsave)
